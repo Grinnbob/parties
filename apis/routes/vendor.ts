@@ -1,0 +1,96 @@
+import * as API from '../base';
+const Base = 'vendor';
+
+interface VENDOR {
+  id: Number;
+  name?: String;
+  phoneNumber?: String;
+  description?: String;
+  service?: String;
+  taxId?: Number;
+  UserId?: Number;
+}
+
+interface AVATAR {
+  id: number;
+  uri: string;
+}
+
+export const create = async (data: VENDOR) => {
+  const response = await API.postApi(`${Base}/`, data);
+  return response;
+};
+
+export const update = async (data: VENDOR) => {
+  const response = await API.putApi(`${Base}/${data.id}`, data);
+  return response;
+};
+
+export const getById = async (id: string) => {
+  const response = await API.getApi(`${Base}/${id}}`);
+  return response;
+};
+
+export const deleteById = async (id: string) => {
+  const response = await API.deleteApi(`${Base}/${id}`);
+  return response;
+};
+
+export const getAll = async (query: any = {}) => {
+  let url = `${Base}/`;
+  let first = true;
+  let queryArray = Object.keys(query);
+  for (const el of queryArray) {
+    if (first) {
+      first = false;
+      url += `?${el}=${query[el]}`;
+    } else {
+      url += `&${el}=${query[el]}`;
+    }
+  }
+  const response = await API.getApi(url);
+  return response;
+};
+
+export const getAllService = async (query: any = {}) => {
+  let url = `${Base}/service`;
+  let first = true;
+  let queryArray = Object.keys(query);
+  for (const el of queryArray) {
+    if (first) {
+      first = false;
+      url += `?${el}=${query[el]}`;
+    } else {
+      url += `&${el}=${query[el]}`;
+    }
+  }
+  const response = await API.getApi(url);
+  return response;
+};
+
+export const getAllSearch = async (search: string) => {
+  let url = `${Base}/search?search=${search}`;
+
+  const response = await API.getApi(url);
+  return response;
+};
+
+export const getSearchResults = async (search: string) => {
+  let url = `${Base}/results?search=${search}`;
+  const response = await API.getApi(url);
+
+  return response;
+};
+
+export const UploadAvatar = async (data: AVATAR) => {
+  const { uri, id } = data;
+  const uploadRes = await API.imageApi("avatar", id, uri);
+  if (uploadRes.success) {
+    const avatarBody = {
+      avatar: uploadRes?.data?.key,
+    };
+
+    const response = await API.putApi(`${Base}/${id}`, avatarBody);
+    return response;
+  }
+};
