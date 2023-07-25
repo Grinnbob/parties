@@ -2,7 +2,7 @@ import React from "react";
 
 import { createStackNavigator } from "@react-navigation/stack";
 
-import HostDrawerNav from "./HostDrawerNav";
+import HostDrawerNav from "./hostDrawerNav";
 import EditAccount from "../screens/Host/EditAccount";
 import DeleteAccountModal from "../screens/Host/DeleteAccountModal";
 import UpdateUser from "../screens/Host/UpdateUser";

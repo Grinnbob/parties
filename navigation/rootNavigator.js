@@ -9,7 +9,7 @@ import loadApp from "./loadApp";
 import useGlobalState from "../stateManagement/hook";
 import StateTypes from "../stateManagement/StateTypes";
 // import Drawer from "./drawerNav";
-import VendorDrawerNav from "./VendorDrawerNav";
+import VendorDrawerNav from "./vendorDrawerNav";
 import VerifyNav from "./VerifyNav";
 
 const Stack = createStackNavigator();
