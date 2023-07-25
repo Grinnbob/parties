@@ -80,7 +80,9 @@ const AlbumTypeScreen = ({ navigation }) => {
 
       <View style={styles.container}>
         <FlatList
-          contentContainerStyle={{ paddingBottom: 220 }}
+          contentContainerStyle={{
+            paddingBottom: 220,
+          }}
           data={selections}
           numColumns={2}
           keyExtractor={(item, index) => item.id}
@@ -118,19 +120,12 @@ const styles = StyleSheet.create({
   },
   container: {
     alignItems: "center",
+    justifyContent: "center",
   },
   albumtypescreen: {
     width: "100%",
     overflow: "hidden",
     flex: 1,
-  },
-  boxcontainer: {
-    borderRadius: 16,
-    width: 155,
-    height: 155,
-    alignItems: "center",
-    justifyContent: "center",
-    margin: 5,
   },
 });
 

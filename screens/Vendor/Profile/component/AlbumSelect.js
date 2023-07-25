@@ -14,6 +14,11 @@ const AlbumSelect = ({ title, asset }) => {
   const navigation = useNavigation();
   return (
     <Pressable
+      style={{
+        width: "50%",
+        // paddingVertical: 5,
+        // paddingHorizontal: 5,
+      }}
       onPress={() =>
         navigation.navigate("AlbumNavigator", {
           screen: "Holiday",
@@ -27,6 +32,7 @@ const AlbumSelect = ({ title, asset }) => {
         style={styles.boxcontainer}
         resizeMode="cover"
         source={asset}
+        imageStyle={{ borderRadius: 16 }}
       >
         <Text style={[styles.favorites, styles.title1FlexBox]}>{title}</Text>
       </ImageBackground>
@@ -60,12 +66,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   boxcontainer: {
-    borderRadius: 16,
-    minWidth: 155,
     height: 155,
     alignItems: "center",
     justifyContent: "center",
-    margin: 5,
+    margin: 10,
+    width: "100%",
+    padding: 10,
   },
 });
 
