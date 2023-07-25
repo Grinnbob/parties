@@ -31,6 +31,10 @@ const OnboardScreen = ({ route }) => {
     try {
       setIsLoading(true);
       if (selected === 1) {
+        const res = await apis.user.update({
+          id: route?.params?.id || user.id,
+          role: "host",
+        });
         navigation.navigate("OnboardSelectScreen");
       } else {
         const res = await apis.user.update({
@@ -51,39 +55,29 @@ const OnboardScreen = ({ route }) => {
   return (
     <DismissKeyboard>
       <View style={styles.onboardscreen}>
+        <Image
+          style={styles.background}
+          resizeMode="cover"
+          source={require("../../assets/bg16.png")}
+        />
         <View style={[styles.alertmodalbg, styles.bgIconPosition]} />
-        <View style={{ flex: 1, justifyContent: "space-around" }}>
-          <View>
-            <View style={styles.title}>
-              <Text
-                style={styles.title1}
-              >{`Welcome to ${"\n"}Party Favor!`}</Text>
-              <Text style={[styles.title2, styles.title2Typo]}>
-                Let’s quickly choose your role to get to start!
-              </Text>
-            </View>
-            <View style={styles.switcher}>
-              {selections.map((item, i) => (
-                <GradientButton
-                  key={i}
-                  title={item.title}
-                  enable={selected === item.id}
-                  onPress={() => handlePress(item)}
-                />
-              ))}
-            </View>
-          </View>
-          <View style={{ width: "100%", alignItems: "center" }}>
-            <MidGradientButton
+        <View style={{ height: 120 }} />
+        <View style={styles.title}>
+          <Text style={styles.title1}>{`Welcome to ${"\n"}Party Favor!`}</Text>
+          <Text style={[styles.title2, styles.title2Typo]}>
+            Let’s quickly choose your role to get to start!
+          </Text>
+        </View>
+        <View style={styles.switcher}>
+          {selections.map((item, i) => (
+            <GradientButton
+              key={i}
+              title={item.title}
+              enable={selected === item.id}
+              handlePressIn={() => handlePress(item)}
               onPress={handleNext}
-              isLoading={isLoading}
-              disabled={!selected}
-              label="Ok!"
-              formBackgroundColor="unset"
-              formMarginTop="unset"
-              labelColor="#fff"
             />
-          </View>
+          ))}
         </View>
       </View>
     </DismissKeyboard>
@@ -100,7 +94,6 @@ const styles = StyleSheet.create({
     fontWeight: "300",
   },
   alertmodalbg: {
-    backgroundColor: Color.labelColorLightPrimary,
     width: "100%",
     overflow: "hidden",
   },
@@ -129,11 +122,14 @@ const styles = StyleSheet.create({
     margin: 40,
   },
   onboardscreen: {
-    backgroundColor: Color.labelColorDarkPrimary,
     flex: 1,
     width: "100%",
     overflow: "hidden",
+  },
+  background: {
+    width: "100%",
     height: "100%",
+    position: "absolute",
   },
 });
 

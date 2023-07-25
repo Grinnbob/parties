@@ -487,9 +487,7 @@ const styles = StyleSheet.create({
     height: 56,
   },
   passwordscreen: {
-    // backgroundColor: Color.labelColorDarkPrimary,
     overflow: "hidden",
-    // height: 812,
     width: "100%",
     flex: 1,
   },

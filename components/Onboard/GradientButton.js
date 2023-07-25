@@ -1,12 +1,18 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, Pressable } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { FontFamily, Border, FontSize, Color } from "../../GlobalStyles";
 
-export default ({ title, enable, onPress = () => {} }) => {
+export default ({
+  title,
+  enable,
+  onPress = () => {},
+  handlePressIn = () => {},
+}) => {
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={onPress}
+      onPressIn={handlePressIn}
       style={[
         styles.button,
         {
@@ -28,7 +34,7 @@ export default ({ title, enable, onPress = () => {} }) => {
       >
         <Text style={[styles.iamAParty, styles.partyTypo]}>{title}</Text>
       </LinearGradient>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
