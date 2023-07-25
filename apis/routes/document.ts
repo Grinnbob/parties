@@ -35,6 +35,7 @@ interface DOCUMENT_UPLOAD {
 
 export const create = async (data: DOCUMENT_UPLOAD) => {
   const {uri, VendorId, type, AlbumId, compression, size} = data;
+  console.log("DATA COMING IN CREATE DOC", data)
   const id = AlbumId? AlbumId : VendorId;
   if(!id) return {success: false}
   const uploadRes = await API.imageApi(type, id, uri, size, compression);

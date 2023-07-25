@@ -290,7 +290,6 @@ const VendorCreate = () => {
           uri: avatar,
           id: res?.data?.id,
         });
-        console.log("AVATAR RES", avatarRes);
       }
       const list = [];
 
@@ -304,6 +303,7 @@ const VendorCreate = () => {
           uri: el,
           VendorId: res?.data?.id,
           type: serviceType,
+          compression: 0.7,
         });
       }
 
