@@ -12,18 +12,32 @@ interface DOCUMENT {
   uri?: string;
   AlbumId?: number;
 }
+
+interface COMPRESSION {
+    compress: number;
+    format: SaveFormat;
+}
+
+interface SIZE {
+  resize: { 
+    height: number;
+    width: number; 
+  }
+}
 interface DOCUMENT_UPLOAD {
   VendorId?: number;
   uri: string;
   type: string;
   AlbumId?: number;
+  compression?: COMPRESSION;
+  size?: SIZE[];
 }
 
 export const create = async (data: DOCUMENT_UPLOAD) => {
-  const {uri, VendorId, type, AlbumId} = data;
+  const {uri, VendorId, type, AlbumId, compression, size} = data;
   const id = AlbumId? AlbumId : VendorId;
   if(!id) return {success: false}
-  const uploadRes = await API.imageApi(type, id, uri);
+  const uploadRes = await API.imageApi(type, id, uri, size, compression);
   if (uploadRes.success) {
     const docBody = {
       key: uploadRes?.data?.key,

@@ -1,16 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Text, View } from "native-base";
 import { NavigationContainer, DarkTheme } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import AuthNav from "./AuthNavigator";
 import HostNavigator from "./HostNavigator";
-// import VendorNavigator from "./VendorNavigator";
 import loadApp from "./loadApp";
 import useGlobalState from "../stateManagement/hook";
 import StateTypes from "../stateManagement/StateTypes";
-// import Drawer from "./drawerNav";
 import VendorDrawerNav from "./vendorDrawerNav";
 import VerifyNav from "./VerifyNav";
+import VendorCreate from "../screens/Vendor/VendorCreate";
+import apis from "../apis";
 
 const Stack = createStackNavigator();
 
@@ -23,9 +23,29 @@ export default (props) => {
     StateTypes.user.key,
     StateTypes.user.default
   );
+  const [vendorEdit, setVendorEdit] = useState(false);
+
   useEffect(() => {
     loadApp(setToken, setUser);
   }, []);
+
+  useEffect(() => {
+    grabVendor();
+  }, [user]);
+
+  const grabVendor = async () => {
+    const res = await apis.vendor.getAll({ UserId: user.id });
+
+    if (res.length < 1 && user.role === "vendor") {
+      setVendorEdit(true);
+    } else {
+      setVendorEdit(false);
+    }
+  };
+
+  const vendorCreate = () => {
+    return <VendorCreate />;
+  };
 
   const selectStack = () => {
     switch (token) {
@@ -84,6 +104,8 @@ export default (props) => {
     }
   };
   return (
-    <NavigationContainer theme={DarkTheme}>{selectStack()}</NavigationContainer>
+    <NavigationContainer theme={DarkTheme}>
+      {vendorEdit ? vendorCreate() : selectStack()}
+    </NavigationContainer>
   );
 };
