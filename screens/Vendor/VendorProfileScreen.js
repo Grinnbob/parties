@@ -8,6 +8,7 @@ import {
   ImageBackground,
   FlatList,
   TouchableOpacity,
+  Share,
 } from "react-native";
 import { Pressable } from "native-base";
 import LinearGradient from "react-native-linear-gradient";
@@ -47,6 +48,25 @@ const VendorProfileScreen = ({ route }) => {
   const [album, setAlbum] = useState([]);
   const [service, setService] = useState([]);
   const [backgroundLink, setBackgroundLink] = useState("");
+
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message: "Check out my profile on the app PartyFavor",
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      Alert.alert(error.message);
+    }
+  };
 
   const getVendor = async () => {
     try {
@@ -160,7 +180,7 @@ const VendorProfileScreen = ({ route }) => {
                     source={require("../../assets/pencil1.png")}
                   />
                 </Pressable>
-                <Pressable>
+                <Pressable onPress={onShare}>
                   <Image
                     style={[styles.pencilIcon1, styles.iconSpaceBlock]}
                     resizeMode="cover"
