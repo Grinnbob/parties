@@ -173,7 +173,7 @@ const VendorProfileScreen = ({ route }) => {
                 ></View>
               </View>
               <View style={{ flexDirection: "row" }}>
-                <Pressable>
+                <Pressable onPress={() => navigate("Edit")}>
                   <Image
                     style={[styles.pencilIcon1, styles.iconSpaceBlock]}
                     resizeMode="cover"

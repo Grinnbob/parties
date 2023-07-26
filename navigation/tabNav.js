@@ -13,6 +13,7 @@ import Services from "../screens/Vendor/Services";
 import PhotoAlbumScreen from "../screens/Vendor/Profile/PhotoAlbumScreen";
 import HelpSearchScreen from "../screens/Host/HelpSearchScreen";
 import CameraRollScreen from "../screens/Vendor/Profile/CameraRollScreen";
+import VendorEdit from "../screens/Vendor/VendorEdit";
 
 // const BottomTab = createBottomTabNavigator();
 
@@ -103,6 +104,11 @@ function CalendarNavigator() {
       <CalendarStack.Screen
         name="Album"
         component={AlbumTypeScreen}
+        options={{ headerShown: false, gestureEnabled: false }}
+      />
+      <CalendarStack.Screen
+        name="Edit"
+        component={VendorEdit}
         options={{ headerShown: false, gestureEnabled: false }}
       />
     </CalendarStack.Navigator>
