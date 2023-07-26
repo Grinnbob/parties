@@ -138,7 +138,7 @@ const VendorProfileScreen = ({ route }) => {
               }}
             >
               <View style={{ flexDirection: "row" }}>
-                <Pressable onPress={toggleDrawer}>
+                <Pressable onPress={toggleDrawer} hitSlop={20}>
                   <Image
                     style={styles.xIconLayout}
                     resizeMode="cover"

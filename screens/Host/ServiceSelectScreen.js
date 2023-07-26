@@ -6,7 +6,7 @@ import {
   ScrollView,
   ImageBackground,
   FlatList,
-  TouchableOpacity,
+  Pressable,
   TextInput,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
@@ -19,7 +19,7 @@ import {
 } from "../../GlobalStyles";
 import { useNavigation } from "@react-navigation/core";
 import HorizontalBar from "../../assets/horizontalbar.svg";
-import { HStack, Text, Pressable } from "native-base";
+import { HStack, Text } from "native-base";
 import apis from "../../apis";
 
 import MagnifyGlass from "../../assets/magnifyGlassSearch.svg";
@@ -94,12 +94,13 @@ const VendorProfileScreen = () => {
           resizeMode="cover"
           source={require("../../assets/img3.png")}
         >
-          <TouchableOpacity
+          <Pressable
             style={{ marginVertical: 70, marginLeft: 30 }}
             onPress={toggleDrawer}
+            hitSlop={20}
           >
             <HorizontalBar />
-          </TouchableOpacity>
+          </Pressable>
 
           <View style={{ alignItems: "center", justifyContent: "center" }}>
             <Text style={[styles.manuelsRentals, styles.descriptionTypo]}>
