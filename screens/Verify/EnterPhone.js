@@ -20,14 +20,24 @@ import {
 import apis from "../../apis";
 import useGlobalState from "../../stateManagement/hook";
 import types from "../../stateManagement/types";
+import StateTypes from "../../stateManagement/StateTypes";
 import { PhoneMask } from "../../components/Input/BasicMasks";
 import DismissKeyboard from "../../layouts/DismissKeyboard";
+import loadApp from "../../navigation/loadApp";
 
 const EnterPhone = () => {
   const toast = useToast();
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
   const [phoneMasked, setPhoneMasked] = useState("");
+  const [token, setToken] = useGlobalState(
+    StateTypes.token.key,
+    StateTypes.token.default
+  );
+  const [user, setUser] = useGlobalState(
+    StateTypes.user.key,
+    StateTypes.user.default
+  );
 
   const [phone, setPhone] = useGlobalState(
     types.updateTypes.phone.key,
@@ -59,6 +69,10 @@ const EnterPhone = () => {
     }
   };
 
+  const handleBack = async () => {
+    await loadApp(setToken, setUser);
+  };
+
   return (
     <DismissKeyboard>
       <View style={styles.forgotpasswordscreen}>
@@ -75,7 +89,7 @@ const EnterPhone = () => {
                 <TouchableOpacity
                   style={styles.vector}
                   activeOpacity={0.2}
-                  onPress={() => navigation.navigate("LoginScreen")}
+                  onPress={handleBack}
                 >
                   <Image
                     style={styles.icon1}

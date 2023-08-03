@@ -370,7 +370,7 @@ const VendorCreate = () => {
                 </TouchableOpacity>
               </View>
               <View style={styles.titlePosition}>
-                <Text style={styles.title1}>Company Information</Text>
+                <Text style={styles.title1}>Service Information</Text>
                 <Text style={[styles.title2, styles.titleLayout]}>
                   Complete your business profile page to {"\n"}inform people of
                   the services that you offer.

@@ -43,7 +43,7 @@ const VendorEdit = () => {
   const [serviceType, setServiceType] = useState("");
   const [phone, setPhone] = useState("");
   const [serviceArea, setServiceArea] = useState("");
-  const [serviceDescription, setServiceDescriprion] = useState("");
+  const [serviceDescription, setServiceDescription] = useState("");
   const [ein, setEin] = useState("");
   const [imageOne, setImageOne] = useState("");
   const [imageTwo, setImageTwo] = useState("");
@@ -161,8 +161,22 @@ const VendorEdit = () => {
   const grabVendor = async () => {
     try {
       const res = await apis.vendorType.getAll();
-      console.log("VENDOR TYPE RES", res.data);
+
       setVendorType(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const grabVendorInfo = async () => {
+    try {
+      const res = await apis.vendor.getAll({ UserId: user.id });
+      console.log("RES", res);
+      setServiceName(res.data[0].name);
+      // setServiceType(res.data[0].)
+      setServiceDescription(res.data[0].description);
+      setEin(res.data[0].taxId);
+      setPhone(res.data[0].phoneNumber);
     } catch (error) {
       console.log(error);
     }
@@ -175,6 +189,7 @@ const VendorEdit = () => {
 
   useEffect(() => {
     grabVendor();
+    grabVendorInfo();
   }, [user]);
 
   const ImageCard = ({ image, setImage }) => {
@@ -366,7 +381,7 @@ const VendorEdit = () => {
                 </TouchableOpacity>
               </View>
               <View style={styles.titlePosition}>
-                <Text style={styles.title1}>Company Information</Text>
+                <Text style={styles.title1}>Service Information</Text>
                 <Text style={[styles.title2, styles.titleLayout]}>
                   Complete your business profile page to {"\n"}inform people of
                   the services that you offer.
@@ -532,7 +547,8 @@ const VendorEdit = () => {
                   placeholderTextColor="#8a8a8a"
                   multiline={true}
                   maxLength={40}
-                  onChangeText={(text) => setServiceDescriprion(text)}
+                  value={serviceDescription}
+                  onChangeText={(text) => setServiceDescription(text)}
                 />
                 <Pressable onPress={handleModal}>
                   {searchList && searchList.length > 0 ? (
