@@ -204,43 +204,6 @@ const VendorProfileScreen = ({ route }) => {
           useAngle={true}
           angle={180}
         >
-          {/* <View style={styles.user}> */}
-          {/* <View style={styles.title4}>
-              <View style={styles.starsParent}>
-                <View style={styles.stars}>
-                  <Image
-                    style={styles.vectorIconLayout}
-                    resizeMode="cover"
-                    source={require("../../assets/vector9.png")}
-                  />
-                  <Image
-                    style={[styles.vectorIcon1, styles.vectorIconLayout]}
-                    resizeMode="cover"
-                    source={require("../../assets/vector10.png")}
-                  />
-                  <Image
-                    style={[styles.vectorIcon1, styles.vectorIconLayout]}
-                    resizeMode="cover"
-                    source={require("../../assets/vector11.png")}
-                  />
-                  <Image
-                    style={[styles.vectorIcon1, styles.vectorIconLayout]}
-                    resizeMode="cover"
-                    source={require("../../assets/vector12.png")}
-                  />
-                  <Image
-                    style={[styles.vectorIcon1, styles.vectorIconLayout]}
-                    resizeMode="cover"
-                    source={require("../../assets/vector13.png")}
-                  />
-                </View>
-                <Text style={[styles.text, styles.textLayout]}>4.1</Text>
-              </View>
-              <Text style={[styles.totalServiced0, styles.youClr]}>
-                Total serviced 0 parties
-              </Text>
-            </View> */}
-          {/* </View> */}
           <View style={styles.title}>
             <Text style={[styles.foodServicesParty, styles.uploadNowTypo]}>
               Food Services, Party Rentals
@@ -307,7 +270,7 @@ const VendorProfileScreen = ({ route }) => {
                 </View>
               </View>
             </View>
-            <View style={styles.buttons}>
+            {/* <View style={styles.buttons}>
               <LinearGradient
                 style={[styles.connect, styles.btnShadowBox]}
                 locations={[0, 1]}
@@ -324,7 +287,7 @@ const VendorProfileScreen = ({ route }) => {
                   style={[styles.connectYourStripe, styles.uploadNowTypo]}
                 >{`Review & Accept Jobs`}</Text>
               </View>
-            </View>
+            </View> */}
           </View>
           <View style={[styles.desc, styles.descBorder]}>
             <Text style={[styles.description, styles.descriptionTypo]}>
