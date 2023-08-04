@@ -70,7 +70,7 @@ const EnterPhone = () => {
   };
 
   const handleBack = async () => {
-    await loadApp(setToken, setUser);
+    navigation.navigate("WelcomeScreen");
   };
 
   return (

@@ -10,11 +10,53 @@ import OnboardHolidaySelect from "../screens/Verify/Host/OnboardHolidaySelect";
 import VendorCreate from "../screens/Verify/Vendor/VendorCreate";
 import VendorReadySell from "../screens/Verify/Vendor/VendorReadySell";
 import ServicePackageScreen from "../screens/Verify/Vendor/ServicePackage";
+import WelcomeScreen from "../screens/Auth/WelcomeScreen";
+import LoginScreen from "../screens/Auth/LoginScreen";
+import ForgotPasswordScreen from "../screens/Auth/ForgotPasswordScreen";
+import PasswordScreen from "../screens/Auth/PasswordScreen";
+import SignUpScreen from "../screens/Auth/SignUpScreen";
+import VerifyScreen from "../screens/Auth/VerifyScreen";
+import AccountSettingScreen from "../screens/Auth/AccountSettingScreen";
 
 const Stack = createStackNavigator();
 export default (props) => {
   return (
     <Stack.Navigator>
+      <Stack.Screen
+        name="LoginScreen"
+        component={LoginScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ForgotPasswordScreen"
+        component={ForgotPasswordScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PasswordScreen"
+        component={PasswordScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SignUpScreen"
+        component={SignUpScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="WelcomeScreen"
+        component={WelcomeScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="VerifyScreen"
+        component={VerifyScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="AccountSettingScreen"
+        component={AccountSettingScreen}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="EnterPhone"
         component={EnterPhone}
