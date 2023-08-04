@@ -34,9 +34,9 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import Config from "react-native-config";
 import SearchModal from "../../components/Modal/SearchModal";
 
-const VendorEdit = () => {
+const VendorEdit = ({ route, navigation }) => {
   const toast = useToast();
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [serviceName, setServiceName] = useState("");
@@ -62,6 +62,10 @@ const VendorEdit = () => {
   const [user, setUser] = useGlobalState(
     StateTypes.user.key,
     StateTypes.user.default
+  );
+  const [vendor, setVendor] = useGlobalState(
+    StateTypes.vendor.key,
+    StateTypes.vendor.default
   );
   const [searchList, setSearchList] = useGlobalState(
     types.albumType.searchlist.key,
@@ -168,20 +172,6 @@ const VendorEdit = () => {
     }
   };
 
-  const grabVendorInfo = async () => {
-    try {
-      const res = await apis.vendor.getAll({ UserId: user.id });
-      console.log("RES", res);
-      setServiceName(res.data[0].name);
-      // setServiceType(res.data[0].)
-      setServiceDescription(res.data[0].description);
-      setEin(res.data[0].taxId);
-      setPhone(res.data[0].phoneNumber);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const handleRemoveTag = async (tag) => {
     const removed = searchList.filter((item, i) => item.id !== tag.id);
     setSearchList(removed);
@@ -189,7 +179,6 @@ const VendorEdit = () => {
 
   useEffect(() => {
     grabVendor();
-    grabVendorInfo();
   }, [user]);
 
   const ImageCard = ({ image, setImage }) => {
@@ -394,7 +383,7 @@ const VendorEdit = () => {
               <View style={styles.forms}>
                 <TextInput
                   style={styles.form}
-                  value={serviceName}
+                  value={vendor[0].name}
                   onChangeText={setServiceName}
                   placeholder="Service Name"
                   keyboardType="default"
@@ -547,7 +536,7 @@ const VendorEdit = () => {
                   placeholderTextColor="#8a8a8a"
                   multiline={true}
                   maxLength={40}
-                  value={serviceDescription}
+                  value={vendor[0].description}
                   onChangeText={(text) => setServiceDescription(text)}
                 />
                 <Pressable onPress={handleModal}>
@@ -617,7 +606,7 @@ const VendorEdit = () => {
                 </HStack>
                 <TextInput
                   style={styles.form}
-                  value={ein}
+                  value={vendor[0].taxId}
                   onChangeText={setEin}
                   maxLength={9}
                   placeholder="TAX ID/ EIN"
@@ -627,7 +616,7 @@ const VendorEdit = () => {
                   marginTop={20}
                 />
                 <PhoneMask
-                  value={phone}
+                  value={vendor[0].phoneNumber}
                   onChangeText={(masked) => {
                     setPhone(masked);
                   }}

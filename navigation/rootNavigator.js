@@ -23,6 +23,10 @@ export default (props) => {
     StateTypes.user.key,
     StateTypes.user.default
   );
+  const [vendor, setVendor] = useGlobalState(
+    StateTypes.vendor.key,
+    StateTypes.vendor.default
+  );
   const [vendorEdit, setVendorEdit] = useState(false);
 
   useEffect(() => {
@@ -36,6 +40,7 @@ export default (props) => {
   const grabVendor = async () => {
     const res = await apis.vendor.getAll({ UserId: user.id });
 
+    setVendor(res.data);
     if (res.length < 1 && user.role === "vendor") {
       setVendorEdit(true);
     } else {
