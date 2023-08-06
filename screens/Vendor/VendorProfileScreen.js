@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   Share,
 } from "react-native";
-import { Pressable } from "native-base";
+import { Pressable, Box } from "native-base";
 import LinearGradient from "react-native-linear-gradient";
 import {
   FontSize,
@@ -23,6 +23,7 @@ import apis from "../../apis";
 import useGlobalState from "../../stateManagement/hook";
 import StateTypes from "../../stateManagement/StateTypes";
 import { useNavigation } from "@react-navigation/core";
+import GradientBar from "./components/GradientBar";
 
 const data = [
   { id: 1, title: "Food & Beverage" },
@@ -44,10 +45,17 @@ const VendorProfileScreen = ({ route }) => {
     StateTypes.user.key,
     StateTypes.user.default
   );
-  const [vendorProfile, setVendorProfile] = useState([]);
+  const [vendor, setVendor] = useGlobalState(
+    StateTypes.vendor.key,
+    StateTypes.vendor.default
+  );
   const [album, setAlbum] = useState([]);
   const [service, setService] = useState([]);
   const [backgroundLink, setBackgroundLink] = useState("");
+  const [percent, setPercent] = useState(0);
+  const [media, setMedia] = useState(false);
+  const [busDescription, setBusDescription] = useState(false);
+  const [addService, setAddService] = useState(false);
 
   const onShare = async () => {
     try {
@@ -68,21 +76,16 @@ const VendorProfileScreen = ({ route }) => {
     }
   };
 
-  const getVendor = async () => {
-    try {
-      const res = await apis.vendor.getAll({ UserId: user.id });
-      if (res && res.success) {
-        setVendorProfile(res.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const getService = async () => {
     try {
-      const res = await apis.service.getAll({ VendorId: vendorProfile[0]?.id });
-      setService(res.data);
+      const res = await apis.service.getAll({ VendorId: vendor[0]?.id });
+
+      if (res && res.data) {
+        setService(res.data);
+      }
+      if (res.length > 0) {
+        setAddService(true);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -90,8 +93,14 @@ const VendorProfileScreen = ({ route }) => {
 
   const getAlbum = async () => {
     try {
-      const res = await apis.album.getAll({ VendorId: vendorProfile[0]?.id });
-      setAlbum(res.data);
+      const res = await apis.album.getAll({ VendorId: vendor[0]?.id });
+      console.log("ALBUM RES", res);
+      if (res && res.data) {
+        setAlbum(res.data);
+      }
+      if (res.length > 0) {
+        setMedia(true);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -100,9 +109,9 @@ const VendorProfileScreen = ({ route }) => {
   const getBackground = async () => {
     try {
       const res = await apis.document.getAll({
-        VendorId: vendorProfile[0]?.id,
+        VendorId: vendor[0]?.id,
       });
-      console.log("RES FROM DOC", res);
+
       setBackgroundLink(res.data[0].link);
     } catch (error) {
       console.log(error);
@@ -110,18 +119,30 @@ const VendorProfileScreen = ({ route }) => {
   };
 
   useEffect(() => {
-    if (user) {
-      getVendor();
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (vendorProfile && vendorProfile[0]?.id) {
+    if (vendor && vendor[0]?.id) {
       getAlbum();
       getService();
       getBackground();
     }
-  }, [vendorProfile, route]);
+    if (vendor && vendor[0]?.description) {
+      setBusDescription(true);
+    }
+  }, [vendor, route]);
+
+  useEffect(() => {
+    if (busDescription && !media && !addService) {
+      setPercent(20);
+    } else if (
+      (!media && busDescription && addService) ||
+      (media && busDescription && !addService)
+    ) {
+      setPercent(50);
+    } else if (media && busDescription && addService) {
+      setPercent(100);
+    } else {
+      setPercent(0);
+    }
+  }, [busDescription, media, addService]);
 
   return (
     <ScrollView
@@ -193,7 +214,7 @@ const VendorProfileScreen = ({ route }) => {
 
           <View style={{ alignItems: "center" }}>
             <Text style={[styles.titlemain, styles.descriptionTypo]}>
-              {vendorProfile[0]?.name}
+              {vendor && vendor[0]?.name}
             </Text>
           </View>
         </ImageBackground>
@@ -213,13 +234,16 @@ const VendorProfileScreen = ({ route }) => {
             </Text>
             <View style={styles.title2}>
               <Text style={[styles.title3, styles.labelLayout]}>
-                Your page is 20% complete
+                Your page is {percent}% complete
               </Text>
-              <Image
-                style={[styles.progressIcon, styles.progressIconLayout]}
-                resizeMode="cover"
-                source={require("../../assets/progress1.png")}
-              />
+              {busDescription && <GradientBar value="20%" />}
+              {(!media && busDescription && addService) ||
+                (media && busDescription && !addService && (
+                  <GradientBar value="50%" />
+                ))}
+              {busDescription && addService && media && (
+                <GradientBar value="100%" />
+              )}
             </View>
           </View>
           <View style={styles.createProfile}>
@@ -238,36 +262,75 @@ const VendorProfileScreen = ({ route }) => {
                 </Text>
               </View>
               <View style={styles.list}>
-                <View style={styles.title4}>
-                  <Image
-                    style={[styles.checkIcon, styles.iconLayout]}
-                    resizeMode="cover"
-                    source={require("../../assets/check3.png")}
-                  />
-                  <Text style={styles.iProvideFoodTypo}>
-                    Edit Your Business Description
-                  </Text>
-                </View>
-                <View style={styles.view1}>
-                  <Image
-                    style={[styles.checkIcon, styles.iconLayout]}
-                    resizeMode="cover"
-                    source={require("../../assets/check4.png")}
-                  />
-                  <Text style={styles.iProvideFoodTypo}>
-                    Add Media of your past work
-                  </Text>
-                </View>
-                <View style={styles.view1}>
-                  <Image
-                    style={[styles.checkIcon, styles.iconLayout]}
-                    resizeMode="cover"
-                    source={require("../../assets/check4.png")}
-                  />
-                  <Text style={styles.iProvideFoodTypo}>
-                    Add + Price your service
-                  </Text>
-                </View>
+                {busDescription ? (
+                  <View style={styles.title4}>
+                    <Image
+                      style={[styles.checkIcon, styles.iconLayout]}
+                      resizeMode="cover"
+                      source={require("../../assets/check3.png")}
+                    />
+                    <Text style={styles.iProvideFoodTypo}>
+                      Edit Your Business Description
+                    </Text>
+                  </View>
+                ) : (
+                  <View style={styles.title4}>
+                    <Image
+                      style={[styles.checkIcon, styles.iconLayout]}
+                      resizeMode="cover"
+                      source={require("../../assets/check4.png")}
+                    />
+                    <Text style={styles.iProvideFoodTypo}>
+                      Edit Your Business Description
+                    </Text>
+                  </View>
+                )}
+                {media ? (
+                  <View style={styles.view1}>
+                    <Image
+                      style={[styles.checkIcon, styles.iconLayout]}
+                      resizeMode="cover"
+                      source={require("../../assets/check3.png")}
+                    />
+                    <Text style={styles.iProvideFoodTypo}>
+                      Add Media of your past work
+                    </Text>
+                  </View>
+                ) : (
+                  <View style={styles.view1}>
+                    <Image
+                      style={[styles.checkIcon, styles.iconLayout]}
+                      resizeMode="cover"
+                      source={require("../../assets/check4.png")}
+                    />
+                    <Text style={styles.iProvideFoodTypo}>
+                      Add Media of your past work
+                    </Text>
+                  </View>
+                )}
+                {addService ? (
+                  <View style={styles.view1}>
+                    <Image
+                      style={[styles.checkIcon, styles.iconLayout]}
+                      resizeMode="cover"
+                      source={require("../../assets/check3.png")}
+                    />
+                    <Text style={styles.iProvideFoodTypo}>
+                      Add + Price your service
+                    </Text>
+                  </View>
+                ) : (
+                  <View style={styles.view1}>
+                    <Image
+                      style={[styles.checkIcon, styles.iconLayout]}
+                      resizeMode="cover"
+                      source={require("../../assets/check4.png")}
+                    />
+                    <Text style={styles.iProvideFoodTypo}>
+                      Add + Price your service
+                    </Text>
+                  </View>
+                )}
               </View>
             </View>
             {/* <View style={styles.buttons}>
@@ -294,7 +357,7 @@ const VendorProfileScreen = ({ route }) => {
               Description
             </Text>
             <Text style={[styles.iProvideFood, styles.iProvideFoodTypo]}>
-              {vendorProfile[0]?.description}
+              {vendor[0]?.description}
             </Text>
           </View>
           <View style={styles.vendorSpecialties}>
@@ -385,7 +448,7 @@ const VendorProfileScreen = ({ route }) => {
                   navigate("AlbumNavigator", {
                     screen: "Service",
                     params: {
-                      vendorId: vendorProfile[0]?.id,
+                      vendorId: vendor[0]?.id,
                     },
                   })
                 }
