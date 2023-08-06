@@ -236,14 +236,7 @@ const VendorProfileScreen = ({ route }) => {
               <Text style={[styles.title3, styles.labelLayout]}>
                 Your page is {percent}% complete
               </Text>
-              {busDescription && <GradientBar value="20%" />}
-              {(!media && busDescription && addService) ||
-                (media && busDescription && !addService && (
-                  <GradientBar value="50%" />
-                ))}
-              {busDescription && addService && media && (
-                <GradientBar value="100%" />
-              )}
+              {percent > 0 && <GradientBar value={`${percent}%`} />}
             </View>
           </View>
           <View style={styles.createProfile}>
@@ -357,7 +350,7 @@ const VendorProfileScreen = ({ route }) => {
               Description
             </Text>
             <Text style={[styles.iProvideFood, styles.iProvideFoodTypo]}>
-              {vendor[0]?.description}
+              {vendor && vendor[0]?.description}
             </Text>
           </View>
           <View style={styles.vendorSpecialties}>
