@@ -177,7 +177,6 @@ const VendorEdit = ({ route, navigation }) => {
       const res = await apis.joinVendorVendorType.getAll({
         VendorId: vendor[0].id,
       });
-      // console.log("RES VENDOR", res);
 
       vendorType.map((type, i) => {
         if (type.id === res.data[0].VendorTypeId) {
@@ -347,6 +346,7 @@ const VendorEdit = ({ route, navigation }) => {
         VendorId: res?.data?.id,
         VendorTypeId: serviceType,
       });
+
       if (res && res.success === false) {
         toast.show({
           placement: "top",

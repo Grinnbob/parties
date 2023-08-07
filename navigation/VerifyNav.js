@@ -21,8 +21,8 @@ import AccountSettingScreen from "../screens/Auth/AccountSettingScreen";
 const Stack = createStackNavigator();
 export default (props) => {
   return (
-    <Stack.Navigator>
-      <Stack.Screen
+    <Stack.Navigator initialRouteName="EnterPhone">
+      {/* <Stack.Screen
         name="LoginScreen"
         component={LoginScreen}
         options={{ headerShown: false }}
@@ -56,7 +56,7 @@ export default (props) => {
         name="AccountSettingScreen"
         component={AccountSettingScreen}
         options={{ headerShown: false }}
-      />
+      /> */}
       <Stack.Screen
         name="EnterPhone"
         component={EnterPhone}

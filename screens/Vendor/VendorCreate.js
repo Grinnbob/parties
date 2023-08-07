@@ -50,14 +50,15 @@ const VendorCreate = () => {
   const [imageThree, setImageThree] = useState("");
   const [imageFour, setImageFour] = useState("");
   const [avatar, setAvatar] = useState("");
+  const [address, setAddress] = useState("");
   const [state, setState] = useState("");
   const [city, setCity] = useState("");
   const [lat, setLat] = useState(0);
   const [long, setLong] = useState(0);
   const [vendorType, setVendorType] = useState([]);
   const [imageList, setImageList] = useGlobalState(
-    StateTypes.imageUploadList.key,
-    StateTypes.imageUploadList.default
+    StateTypes.vendorImageList.key,
+    StateTypes.vendorImageList.default
   );
   const [user, setUser] = useGlobalState(
     StateTypes.user.key,
@@ -165,7 +166,7 @@ const VendorCreate = () => {
   const grabVendor = async () => {
     try {
       const res = await apis.vendorType.getAll();
-      console.log("VENDOR TYPE RES", res.data);
+
       setVendorType(res.data);
     } catch (error) {
       console.log(error);
@@ -287,6 +288,7 @@ const VendorCreate = () => {
         completed: 0,
         city: city,
         state: state,
+        address: address,
         point: { type: "Point", coordinates: [long, lat] },
       });
 
@@ -312,10 +314,12 @@ const VendorCreate = () => {
         });
       }
 
-      await apis.joinVendorKey.createMulti({
+      const key = await apis.joinVendorKey.createMulti({
         searchList,
         VendorId: res?.data?.id,
       });
+
+      console.log("KEY", key);
 
       const joinVendorType = await apis.joinVendorVendorType.create({
         VendorId: res?.data?.id,
@@ -433,6 +437,7 @@ const VendorCreate = () => {
                   placeholder="Location"
                   fetchDetails={true}
                   onPress={(data, details = null) => {
+                    setAddress(details.formatted_address);
                     setLat(details?.geometry?.location?.lat);
                     setLong(details?.geometry?.location?.lng);
                     setCity(
