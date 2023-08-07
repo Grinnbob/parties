@@ -312,6 +312,11 @@ const VendorCreate = () => {
         });
       }
 
+      await apis.joinVendorKey.createMulti({
+        searchList,
+        VendorId: res?.data?.id,
+      });
+
       const joinVendorType = await apis.joinVendorVendorType.create({
         VendorId: res?.data?.id,
         VendorTypeId: serviceType,

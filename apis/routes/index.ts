@@ -22,7 +22,8 @@ import * as partyType from "./partyType";
 import * as recentSearch from  "./recentSearch";
 import * as serviceType from "./serviceType";
 import * as joinServiceServiceType from "./joinServiceServiceType";
-import * as joinVendorVendorType from "./joinVendorVendorType"
+import * as joinVendorVendorType from "./joinVendorVendorType";
+import * as joinVendorKey from "./joinVendorKey"
 export default {
   auth,
   device,
@@ -48,5 +49,6 @@ export default {
   recentSearch,
   serviceType,
   joinServiceServiceType,
-  joinVendorVendorType
+  joinVendorVendorType,
+  joinVendorKey
 };

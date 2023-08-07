@@ -73,10 +73,10 @@ const VendorEdit = ({ route, navigation }) => {
   );
 
   useEffect(() => {
-    setImageOne(imageList[0] ? imageList[0] : "");
-    setImageTwo(imageList[1] ? imageList[1] : "");
-    setImageThree(imageList[2] ? imageList[2] : "");
-    setImageFour(imageList[3] ? imageList[3] : "");
+    setImageOne(imageList[0] ? imageList[0].link : "");
+    setImageTwo(imageList[1] ? imageList[1].link : "");
+    setImageThree(imageList[2] ? imageList[2].link : "");
+    setImageFour(imageList[3] ? imageList[3].link : "");
   }, [imageList]);
 
   const handleCamera = async (setter) => {
@@ -172,6 +172,35 @@ const VendorEdit = ({ route, navigation }) => {
     }
   };
 
+  const grabServiceType = async () => {
+    try {
+      const res = await apis.joinVendorVendorType.getAll({
+        VendorId: vendor[0].id,
+      });
+      // console.log("RES VENDOR", res);
+
+      vendorType.map((type, i) => {
+        if (type.id === res.data[0].VendorTypeId) {
+          setServiceType(type.title);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getCoverImages = async () => {
+    try {
+      const res = await apis.document.getAll({
+        VendorId: vendor[0]?.id,
+      });
+
+      setImageList(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleRemoveTag = async (tag) => {
     const removed = searchList.filter((item, i) => item.id !== tag.id);
     setSearchList(removed);
@@ -179,6 +208,8 @@ const VendorEdit = ({ route, navigation }) => {
 
   useEffect(() => {
     grabVendor();
+    grabServiceType();
+    getCoverImages();
   }, [user]);
 
   const ImageCard = ({ image, setImage }) => {
@@ -511,20 +542,20 @@ const VendorEdit = ({ route, navigation }) => {
                   onValueChange={(itemValue) => setServiceArea(itemValue)}
                 >
                   <Select.Item
-                    label={`20 miles from ${city ? city : "--"}, ${
-                      state ? state : "--"
+                    label={`20 miles from ${vendor ? vendor[0].city : "--"}, ${
+                      vendor ? vendor[0].state : "--"
                     }`}
                     value="20"
                   />
                   <Select.Item
-                    label={`30 miles from ${city ? city : "--"}, ${
-                      state ? state : "--"
+                    label={`30 miles from ${vendor ? vendor[0].city : "--"}, ${
+                      vendor ? vendor[0].state : "--"
                     }`}
                     value="30"
                   />
                   <Select.Item
-                    label={`50 miles from ${city ? city : "--"}, ${
-                      state ? state : "--"
+                    label={`50 miles from ${vendor ? vendor[0].city : "--"}, ${
+                      vendor ? vendor[0].state : "--"
                     }`}
                     value="50"
                   />
@@ -615,6 +646,7 @@ const VendorEdit = ({ route, navigation }) => {
                   placeholderTextColor="#8a8a8a"
                   marginTop={20}
                 />
+
                 <PhoneMask
                   value={vendor[0].phoneNumber}
                   onChangeText={(masked) => {
