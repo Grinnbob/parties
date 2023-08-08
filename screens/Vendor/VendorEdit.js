@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Image,
   StyleSheet,
@@ -36,6 +36,7 @@ import SearchModal from "../../components/Modal/SearchModal";
 
 const VendorEdit = ({ route, navigation }) => {
   const toast = useToast();
+  const ref = useRef();
   // const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -200,6 +201,15 @@ const VendorEdit = ({ route, navigation }) => {
     }
   };
 
+  const getKeys = async () => {
+    try {
+      const res = await apis.joinVendorKey.getAll({ VendorId: vendor[0]?.id });
+      console.log("RES", res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleRemoveTag = async (tag) => {
     const removed = searchList.filter((item, i) => item.id !== tag.id);
     setSearchList(removed);
@@ -209,6 +219,7 @@ const VendorEdit = ({ route, navigation }) => {
     grabVendor();
     grabServiceType();
     getCoverImages();
+    getKeys();
   }, [user]);
 
   const ImageCard = ({ image, setImage }) => {
@@ -371,6 +382,10 @@ const VendorEdit = ({ route, navigation }) => {
     setModalVisible(true);
   };
 
+  useEffect(() => {
+    ref.current?.setAddressText(vendor[0].address);
+  }, []);
+
   return (
     <>
       <SearchModal
@@ -456,6 +471,7 @@ const VendorEdit = ({ route, navigation }) => {
                   })}
                 </Select>
                 <GooglePlacesAutocomplete
+                  ref={ref}
                   placeholder="Location"
                   fetchDetails={true}
                   onPress={(data, details = null) => {
@@ -474,6 +490,7 @@ const VendorEdit = ({ route, navigation }) => {
                       )?.short_name ?? "N/A"
                     );
                   }}
+                  get
                   query={{
                     key: Config.GOOGLE_MAP_KEY,
                     language: "en",
