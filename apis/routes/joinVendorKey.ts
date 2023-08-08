@@ -3,7 +3,7 @@ const Base = 'joinVendorKey';
 
 interface JOIN_VENDOR_KEY {
   id?: string;
-  AlbumId?: string;
+  VendorId?: string;
   KeyId?: string;
 }
 

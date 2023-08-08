@@ -50,13 +50,14 @@ const VendorCreate = () => {
   const [imageFour, setImageFour] = useState("");
   const [avatar, setAvatar] = useState("");
   const [state, setState] = useState("");
+  const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [lat, setLat] = useState(0);
   const [long, setLong] = useState(0);
   const [vendorType, setVendorType] = useState([]);
   const [imageList, setImageList] = useGlobalState(
-    StateTypes.imageUploadList.key,
-    StateTypes.imageUploadList.default
+    StateTypes.vendorImageList.key,
+    StateTypes.vendorImageList.default
   );
   const [user, setUser] = useGlobalState(
     StateTypes.user.key,
@@ -160,7 +161,7 @@ const VendorCreate = () => {
   const grabVendor = async () => {
     try {
       const res = await apis.vendorType.getAll();
-      console.log("VENDOR TYPE RES", res.data);
+
       setVendorType(res.data);
     } catch (error) {
       console.log(error);
@@ -269,21 +270,30 @@ const VendorCreate = () => {
   const handleNext = async () => {
     try {
       setIsLoading(true);
+
       const res = await apis.vendor.create({
         name: serviceName,
         description: serviceDescription,
         phoneNumber: phone,
         taxId: ein,
         UserId: user.id,
+        distance: serviceArea,
         views: 0,
         sales: 0.0,
         favorites: 0,
         request: 0,
         completed: 0,
+        address: address,
         city: city,
         state: state,
         point: { type: "Point", coordinates: [long, lat] },
       });
+
+      const key = await apis.joinVendorKey.createMulti({
+        searchList,
+        VendorId: res?.data?.id,
+      });
+      console.log("KEY", key);
 
       if (avatar) {
         const avatarRes = await apis.vendor.UploadAvatar({
@@ -423,6 +433,7 @@ const VendorCreate = () => {
                   placeholder="Location"
                   fetchDetails={true}
                   onPress={(data, details = null) => {
+                    setAddress(details.formatted_address);
                     setLat(details?.geometry?.location?.lat);
                     setLong(details?.geometry?.location?.lng);
                     setCity(
