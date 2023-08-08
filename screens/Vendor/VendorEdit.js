@@ -173,6 +173,15 @@ const VendorEdit = ({ route, navigation }) => {
     }
   };
 
+  const grabKeyTypes = async () => {
+    try {
+      const res = await apis.key.getAll();
+      console.log("RES KEYA", res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const grabServiceType = async () => {
     try {
       const res = await apis.joinVendorVendorType.getAll({
@@ -220,6 +229,7 @@ const VendorEdit = ({ route, navigation }) => {
     grabServiceType();
     getCoverImages();
     getKeys();
+    grabKeyTypes();
   }, [user]);
 
   const ImageCard = ({ image, setImage }) => {
@@ -654,7 +664,7 @@ const VendorEdit = ({ route, navigation }) => {
                 </HStack>
                 <TextInput
                   style={styles.form}
-                  value={vendor[0].taxId}
+                  value={vendor[0].taxId.toString()}
                   onChangeText={setEin}
                   maxLength={9}
                   placeholder="TAX ID/ EIN"
@@ -674,6 +684,7 @@ const VendorEdit = ({ route, navigation }) => {
                   blurOnSubmit={true}
                   style={styles.form}
                   placeholder={"Telephone Number"}
+                  paddingLeft={13}
                 />
               </View>
             </View>
