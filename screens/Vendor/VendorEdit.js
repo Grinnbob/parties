@@ -37,7 +37,6 @@ import SearchModal from "../../components/Modal/SearchModal";
 const VendorEdit = ({ route, navigation }) => {
   const toast = useToast();
   const ref = useRef();
-  // const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [serviceName, setServiceName] = useState("");
@@ -72,6 +71,12 @@ const VendorEdit = ({ route, navigation }) => {
     types.albumType.searchlist.key,
     types.albumType.searchlist.default
   );
+
+  // const navigation = useNavigation();
+  const defaultCity = vendor ? vendor[0].city : "--";
+  const defaultState = vendor ? vendor[0].state : "--";
+  const defaultDistance = vendor ? vendor[0].distance : "--";
+  const serviceAreaLabel = `${defaultDistance} miles from ${defaultCity}, ${defaultState}`;
 
   useEffect(() => {
     setImageOne(imageList[0] ? imageList[0].link : "");
@@ -542,7 +547,8 @@ const VendorEdit = ({ route, navigation }) => {
                 <Select
                   selectedValue={serviceArea}
                   accessibilityLabel="Service Area"
-                  placeholder="Service Area"
+                  placeholder={serviceAreaLabel}
+                  placeholderTextColor={"#FFF"}
                   dropdownCloseIcon={
                     <AntDesign
                       name="down"
