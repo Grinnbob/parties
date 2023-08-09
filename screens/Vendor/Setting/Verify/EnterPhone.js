@@ -92,8 +92,9 @@ export default ({ route }) => {
                   setPhoneMasked(masked);
                   setPhone(unMasked);
                 }}
-                returnKeyType="default"
+                returnKeyType="done"
                 blurOnSubmit={true}
+                keyboardType="numeric"
               />
             </View>
           </View>
