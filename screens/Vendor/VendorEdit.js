@@ -81,10 +81,10 @@ const VendorEdit = ({ route, navigation }) => {
   const serviceAreaLabel = `${distance} miles from ${city}, ${state}`;
 
   useEffect(() => {
-    setImageOne(imageList[0] ? imageList[0] : "");
-    setImageTwo(imageList[1] ? imageList[1] : "");
-    setImageThree(imageList[2] ? imageList[2] : "");
-    setImageFour(imageList[3] ? imageList[3] : "");
+    setImageOne(imageList[0] ? imageList[0].link : "");
+    setImageTwo(imageList[1] ? imageList[1].link : "");
+    setImageThree(imageList[2] ? imageList[2].link : "");
+    setImageFour(imageList[3] ? imageList[3].link : "");
   }, [imageList]);
 
   useFocusEffect(
@@ -96,6 +96,10 @@ const VendorEdit = ({ route, navigation }) => {
       getKeys();
     }, [user])
   );
+
+  useEffect(() => {
+    setDistance(serviceArea);
+  }, [serviceArea]);
 
   const getVendorInfo = async () => {
     try {
@@ -266,7 +270,7 @@ const VendorEdit = ({ route, navigation }) => {
         console.log(error);
       }
     };
-
+    console.log("IMAGE", image);
     return (
       <TouchableOpacity
         onPress={() => {
@@ -283,7 +287,7 @@ const VendorEdit = ({ route, navigation }) => {
           <ImageBackground
             style={styles.photo}
             imageStyle={{ borderRadius: 8 }}
-            source={{ uri: image.link }}
+            source={{ uri: image }}
           >
             <Pressable onPress={handleDeleteImage}>
               <Close style={{ bottom: 35, left: 35 }} />
@@ -398,6 +402,13 @@ const VendorEdit = ({ route, navigation }) => {
         });
         console.log("DOC RES", document);
       }
+
+      const key = await apis.joinVendorKey.createMulti({
+        searchList,
+        VendorId: vendor[0].id,
+      });
+
+      console.log("KEY", key);
 
       const joinVendorType = await apis.joinVendorVendorType.create({
         id: vendor[0].id,
