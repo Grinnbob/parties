@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   },
   buttons: {
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: 30,
     marginTop: 100,
   },
   party: {
