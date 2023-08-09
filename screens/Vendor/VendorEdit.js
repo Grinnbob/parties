@@ -184,7 +184,6 @@ const VendorEdit = ({ route, navigation }) => {
         VendorId: vendor[0].id,
       });
       if (res && res.data) {
-        console.log("SERVICE", res.data[0].title);
         setService(res.data[0].title);
       }
     } catch (error) {
@@ -322,7 +321,8 @@ const VendorEdit = ({ route, navigation }) => {
   const handleNext = async () => {
     try {
       setIsLoading(true);
-      const res = await apis.vendor.create({
+      const res = await apis.vendor.update({
+        id: vendor[0].id,
         name: serviceName,
         description: serviceDescription,
         phoneNumber: phone,
@@ -337,6 +337,8 @@ const VendorEdit = ({ route, navigation }) => {
         state: state,
         point: { type: "Point", coordinates: [long, lat] },
       });
+
+      console.log("UPDATE", res);
 
       if (avatar) {
         const avatarRes = await apis.vendor.UploadAvatar({
@@ -375,7 +377,7 @@ const VendorEdit = ({ route, navigation }) => {
       setIsLoading(false);
       if (res && res.success) {
         setSearchList(types.albumType.searchlist.default);
-        navigation.navigate("VendorReadySell", { vendorId: res?.data?.id });
+        navigation.pop();
       }
     } catch (error) {
       toast.show({
@@ -498,7 +500,6 @@ const VendorEdit = ({ route, navigation }) => {
                       )?.short_name ?? "N/A"
                     );
                   }}
-                  get
                   query={{
                     key: Config.GOOGLE_MAP_KEY,
                     language: "en",
@@ -588,12 +589,12 @@ const VendorEdit = ({ route, navigation }) => {
                 </Select>
                 <TextInput
                   style={styles.textarea}
-                  placeholder="Service Description"
+                  placeholder={vendor[0].description}
+                  placeholderTextColor={"#FFF"}
                   keyboardType="default"
-                  placeholderTextColor="#8a8a8a"
                   multiline={true}
-                  maxLength={40}
-                  value={vendor[0].description}
+                  maxLength={240}
+                  value={serviceDescription}
                   onChangeText={(text) => setServiceDescription(text)}
                 />
                 <Pressable onPress={handleModal}>
@@ -663,18 +664,18 @@ const VendorEdit = ({ route, navigation }) => {
                 </HStack>
                 <TextInput
                   style={styles.form}
-                  value={vendor[0].taxId.toString()}
+                  value={ein}
+                  placeholder={vendor[0].taxId.toString()}
+                  placeholderTextColor={"#FFF"}
                   onChangeText={setEin}
                   maxLength={9}
-                  placeholder="TAX ID/ EIN"
                   returnKeyType={"next"}
                   keyboardType={"phone-pad"}
-                  placeholderTextColor="#8a8a8a"
                   marginTop={20}
                 />
 
                 <PhoneMask
-                  value={vendor[0].phoneNumber}
+                  value={phone}
                   onChangeText={(masked) => {
                     setPhone(masked);
                   }}
@@ -682,8 +683,10 @@ const VendorEdit = ({ route, navigation }) => {
                   keyboardType={"phone-pad"}
                   blurOnSubmit={true}
                   style={styles.form}
-                  placeholder={"Telephone Number"}
+                  placeholder={vendor[0].phoneNumber}
+                  placeholderTextColor={"#FFF"}
                   paddingLeft={13}
+                  fontSize={14}
                 />
               </View>
             </View>
