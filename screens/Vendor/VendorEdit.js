@@ -226,6 +226,7 @@ const VendorEdit = ({ route, navigation }) => {
     grabServiceType();
     getCoverImages();
     getKeys();
+    setAvatar(vendor[0].avatar);
   }, [user]);
 
   const ImageCard = ({ image, setImage }) => {
