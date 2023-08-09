@@ -545,7 +545,7 @@ const VendorCreate = () => {
                   keyboardType="default"
                   placeholderTextColor="#8a8a8a"
                   multiline={true}
-                  maxLength={40}
+                  maxLength={440}
                   onChangeText={(text) => setServiceDescriprion(text)}
                 />
                 <Pressable onPress={handleModal}>
