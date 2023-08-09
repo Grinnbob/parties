@@ -65,7 +65,7 @@ const OnboardScreen = ({ route }) => {
         <View style={styles.title}>
           <Text style={styles.title1}>{`Welcome to ${"\n"}Party Favor!`}</Text>
           <Text style={[styles.title2, styles.title2Typo]}>
-            Let’s quickly choose your role to get to start!
+            Let’s quickly choose your role to get started!
           </Text>
         </View>
         <View style={styles.switcher}>
