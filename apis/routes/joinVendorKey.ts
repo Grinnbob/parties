@@ -46,3 +46,19 @@ export const getAll = async (query: any = {}) => {
   const response = await API.getApi(url);
   return response;
 };
+
+export const getAllKeys = async (query: any = {}) => {
+  let url = `${Base}/getAllKey`;
+  let first = true;
+  let queryArray = Object.keys(query);
+  for (const el of queryArray) {
+    if (first) {
+      first = false;
+      url += `?${el}=${query[el]}`;
+    } else {
+      url += `&${el}=${query[el]}`;
+    }
+  }
+  const response = await API.getApi(url);
+  return response;
+};

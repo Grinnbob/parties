@@ -94,7 +94,6 @@ const VendorEdit = ({ route, navigation }) => {
         quality: 1,
       });
       if (result.canceled) return;
-      // console.log("results", result.assets[0]);
 
       if (!result.canceled) {
         setter(result.assets[0].uri);
@@ -178,15 +177,6 @@ const VendorEdit = ({ route, navigation }) => {
     }
   };
 
-  const grabKeyTypes = async () => {
-    try {
-      const res = await apis.key.getAll();
-      console.log("RES KEYA", res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const grabServiceType = async () => {
     try {
       const res = await apis.joinVendorVendorType.getAll({
@@ -217,8 +207,11 @@ const VendorEdit = ({ route, navigation }) => {
 
   const getKeys = async () => {
     try {
-      const res = await apis.joinVendorKey.getAll({ VendorId: vendor[0]?.id });
+      const res = await apis.joinVendorKey.getAllKeys({
+        VendorId: vendor[0]?.id,
+      });
       console.log("RES", res.data);
+      setSearchList(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -234,7 +227,6 @@ const VendorEdit = ({ route, navigation }) => {
     grabServiceType();
     getCoverImages();
     getKeys();
-    grabKeyTypes();
   }, [user]);
 
   const ImageCard = ({ image, setImage }) => {
