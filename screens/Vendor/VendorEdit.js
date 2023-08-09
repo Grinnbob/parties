@@ -10,7 +10,7 @@ import {
   Pressable,
   FlatList,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import MidGradientButton from "../../components/MidGradientButton";
 
 import { Padding, FontFamily, Color } from "../../GlobalStyles";
@@ -35,27 +35,6 @@ import Config from "react-native-config";
 import SearchModal from "../../components/Modal/SearchModal";
 
 const VendorEdit = ({ route, navigation }) => {
-  const toast = useToast();
-  const ref = useRef();
-  const [isLoading, setIsLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [serviceName, setServiceName] = useState("");
-  const [serviceType, setServiceType] = useState("");
-  const [service, setService] = useState("");
-  const [phone, setPhone] = useState("");
-  const [serviceArea, setServiceArea] = useState("");
-  const [serviceDescription, setServiceDescription] = useState("");
-  const [ein, setEin] = useState("");
-  const [imageOne, setImageOne] = useState("");
-  const [imageTwo, setImageTwo] = useState("");
-  const [imageThree, setImageThree] = useState("");
-  const [imageFour, setImageFour] = useState("");
-  const [avatar, setAvatar] = useState("");
-  const [state, setState] = useState("");
-  const [city, setCity] = useState("");
-  const [lat, setLat] = useState(0);
-  const [long, setLong] = useState(0);
-  const [vendorType, setVendorType] = useState([]);
   const [imageList, setImageList] = useGlobalState(
     StateTypes.imageUploadList.key,
     StateTypes.imageUploadList.default
@@ -73,18 +52,68 @@ const VendorEdit = ({ route, navigation }) => {
     types.albumType.searchlist.default
   );
 
-  // const navigation = useNavigation();
-  const defaultCity = vendor ? vendor[0].city : "--";
-  const defaultState = vendor ? vendor[0].state : "--";
-  const defaultDistance = vendor ? vendor[0].distance : "--";
-  const serviceAreaLabel = `${defaultDistance} miles from ${defaultCity}, ${defaultState}`;
+  const toast = useToast();
+  const ref = useRef();
+  const [isLoading, setIsLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [serviceName, setServiceName] = useState(vendor[0].name || "");
+  const [serviceType, setServiceType] = useState("");
+  const [service, setService] = useState("");
+  const [phone, setPhone] = useState(vendor[0].phoneNumber || "");
+  const [serviceArea, setServiceArea] = useState("");
+  const [serviceDescription, setServiceDescription] = useState(
+    vendor[0].description || ""
+  );
+  const [ein, setEin] = useState(vendor[0].taxId.toString() || "");
+  const [imageOne, setImageOne] = useState("");
+  const [imageTwo, setImageTwo] = useState("");
+  const [imageThree, setImageThree] = useState("");
+  const [imageFour, setImageFour] = useState("");
+  const [avatar, setAvatar] = useState("");
+  const [address, setAddress] = useState("");
+  const [state, setState] = useState(vendor[0].state || "");
+  const [city, setCity] = useState(vendor[0].city || "");
+  const [lat, setLat] = useState(0);
+  const [long, setLong] = useState(0);
+  const [distance, setDistance] = useState(vendor[0].distance || "");
+  const [vendorType, setVendorType] = useState([]);
+
+  const serviceAreaLabel = `${distance} miles from ${city}, ${state}`;
 
   useEffect(() => {
-    setImageOne(imageList[0] ? imageList[0].link : "");
-    setImageTwo(imageList[1] ? imageList[1].link : "");
-    setImageThree(imageList[2] ? imageList[2].link : "");
-    setImageFour(imageList[3] ? imageList[3].link : "");
+    setImageOne(imageList[0] ? imageList[0] : "");
+    setImageTwo(imageList[1] ? imageList[1] : "");
+    setImageThree(imageList[2] ? imageList[2] : "");
+    setImageFour(imageList[3] ? imageList[3] : "");
   }, [imageList]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getVendorInfo();
+      grabVendor();
+      grabServiceType();
+      getCoverImages();
+      getKeys();
+    }, [user])
+  );
+
+  const getVendorInfo = async () => {
+    try {
+      const res = await apis.vendor.getById(vendor[0].id);
+      console.log("RES", res.data);
+      setServiceName(res.data.name);
+      setServiceDescription(res.data.description);
+      setEin(res.data.taxId.toString());
+      setPhone(res.data.phoneNumber);
+      setAvatar(res.data.avatar);
+      setCity(res.data.city);
+      setState(res.data.state);
+      ref.current?.setAddressText(res.data.address);
+      setDistance(res.data.distance);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleCamera = async (setter) => {
     try {
@@ -220,15 +249,19 @@ const VendorEdit = ({ route, navigation }) => {
     setSearchList(removed);
   };
 
-  useEffect(() => {
-    grabVendor();
-    grabServiceType();
-    getCoverImages();
-    getKeys();
-    setAvatar(vendor[0].avatar);
-  }, [user]);
-
   const ImageCard = ({ image, setImage }) => {
+    const handleDeleteImage = async () => {
+      try {
+        const res = await apis.document.deleteById(image.id);
+
+        if (image) return setImage("");
+
+        handleCamera(setImage);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     return (
       <TouchableOpacity
         onPress={() => {
@@ -245,14 +278,9 @@ const VendorEdit = ({ route, navigation }) => {
           <ImageBackground
             style={styles.photo}
             imageStyle={{ borderRadius: 8 }}
-            source={{ uri: image }}
+            source={{ uri: image.link }}
           >
-            <Pressable
-              onPress={() => {
-                if (image) return setImage("");
-                handleCamera(setImage);
-              }}
-            >
+            <Pressable onPress={handleDeleteImage}>
               <Close style={{ bottom: 35, left: 35 }} />
             </Pressable>
           </ImageBackground>
@@ -335,6 +363,8 @@ const VendorEdit = ({ route, navigation }) => {
         completed: 0,
         city: city,
         state: state,
+        address: address,
+        distance: distance,
         point: { type: "Point", coordinates: [long, lat] },
       });
 
@@ -343,8 +373,9 @@ const VendorEdit = ({ route, navigation }) => {
       if (avatar) {
         const avatarRes = await apis.vendor.UploadAvatar({
           uri: avatar,
-          id: res?.data?.id,
+          id: vendor[0]?.id,
         });
+        console.log("AVATAR RES", avatarRes);
       }
       const list = [];
 
@@ -356,16 +387,18 @@ const VendorEdit = ({ route, navigation }) => {
       for (const el of list) {
         const document = await apis.document.create({
           uri: el,
-          VendorId: res?.data?.id,
+          id: vendor[0].id,
           type: serviceType,
           compression: 0.7,
         });
+        console.log("DOC RES", document);
       }
 
       const joinVendorType = await apis.joinVendorVendorType.create({
-        VendorId: res?.data?.id,
+        id: vendor[0].id,
         VendorTypeId: serviceType,
       });
+      console.log("VENDOR TYPE RES", joinVendorType);
 
       if (res && res.success === false) {
         toast.show({
@@ -376,6 +409,10 @@ const VendorEdit = ({ route, navigation }) => {
       }
       setIsLoading(false);
       if (res && res.success) {
+        toast.show({
+          placement: "top",
+          description: "Service information updated successfully!",
+        });
         setSearchList(types.albumType.searchlist.default);
         navigation.pop();
       }
@@ -390,10 +427,6 @@ const VendorEdit = ({ route, navigation }) => {
   const handleModal = () => {
     setModalVisible(true);
   };
-
-  useEffect(() => {
-    ref.current?.setAddressText(vendor[0].address);
-  }, []);
 
   return (
     <>
@@ -438,7 +471,7 @@ const VendorEdit = ({ route, navigation }) => {
               <View style={styles.forms}>
                 <TextInput
                   style={styles.form}
-                  value={vendor[0].name}
+                  value={serviceName}
                   onChangeText={setServiceName}
                   placeholder="Service Name"
                   keyboardType="default"
@@ -448,7 +481,7 @@ const VendorEdit = ({ route, navigation }) => {
                   selectedValue={serviceType}
                   accessibilityLabel="Choose Service"
                   placeholder={service}
-                  placeholderTextColor={"#FFF"}
+                  placeholderTextColor="#FFF"
                   dropdownCloseIcon={
                     <AntDesign
                       name="down"
@@ -485,6 +518,7 @@ const VendorEdit = ({ route, navigation }) => {
                   placeholder="Location"
                   fetchDetails={true}
                   onPress={(data, details = null) => {
+                    setAddress(details.formatted_address);
                     setLat(details?.geometry?.location?.lat);
                     setLong(details?.geometry?.location?.lng);
                     setCity(
@@ -542,7 +576,7 @@ const VendorEdit = ({ route, navigation }) => {
                   selectedValue={serviceArea}
                   accessibilityLabel="Service Area"
                   placeholder={serviceAreaLabel}
-                  placeholderTextColor={"#FFF"}
+                  placeholderTextColor="#FFF"
                   dropdownCloseIcon={
                     <AntDesign
                       name="down"
@@ -569,31 +603,31 @@ const VendorEdit = ({ route, navigation }) => {
                   onValueChange={(itemValue) => setServiceArea(itemValue)}
                 >
                   <Select.Item
-                    label={`20 miles from ${vendor ? vendor[0].city : "--"}, ${
-                      vendor ? vendor[0].state : "--"
+                    label={`20 miles from ${city || vendor[0].city}, ${
+                      state || vendor[0].state
                     }`}
                     value="20"
                   />
                   <Select.Item
-                    label={`30 miles from ${vendor ? vendor[0].city : "--"}, ${
-                      vendor ? vendor[0].state : "--"
+                    label={`30 miles from ${city || vendor[0].city}, ${
+                      state || vendor[0].state
                     }`}
                     value="30"
                   />
                   <Select.Item
-                    label={`50 miles from ${vendor ? vendor[0].city : "--"}, ${
-                      vendor ? vendor[0].state : "--"
+                    label={`50 miles from ${city || vendor[0].city}, ${
+                      state || vendor[0].state
                     }`}
                     value="50"
                   />
                 </Select>
                 <TextInput
                   style={styles.textarea}
-                  placeholder={vendor[0].description}
-                  placeholderTextColor={"#FFF"}
+                  placeholder={"Service Description"}
+                  placeholderTextColor="#8a8a8a"
                   keyboardType="default"
                   multiline={true}
-                  maxLength={240}
+                  maxLength={440}
                   value={serviceDescription}
                   onChangeText={(text) => setServiceDescription(text)}
                 />
@@ -624,12 +658,8 @@ const VendorEdit = ({ route, navigation }) => {
                     </View>
                   )}
                 </Pressable>
-                <VStack width="90%" marginBottom={5}>
-                  <Text style={styles.subtext}>
-                    Please seperate them by a comma
-                  </Text>
-                </VStack>
-                <Box alignItems="center">
+
+                <Box alignItems="center" mt={3}>
                   <Input
                     w={327}
                     py="0"
@@ -665,8 +695,8 @@ const VendorEdit = ({ route, navigation }) => {
                 <TextInput
                   style={styles.form}
                   value={ein}
-                  placeholder={vendor[0].taxId.toString()}
-                  placeholderTextColor={"#FFF"}
+                  placeholder={"TAX ID/EIN"}
+                  placeholderTextColor="#8a8a8a"
                   onChangeText={setEin}
                   maxLength={9}
                   returnKeyType={"next"}
@@ -683,8 +713,8 @@ const VendorEdit = ({ route, navigation }) => {
                   keyboardType={"phone-pad"}
                   blurOnSubmit={true}
                   style={styles.form}
-                  placeholder={vendor[0].phoneNumber}
-                  placeholderTextColor={"#FFF"}
+                  placeholder={"Business Phone"}
+                  placeholderTextColor="#8a8a8a"
                   paddingLeft={13}
                   fontSize={14}
                 />
@@ -701,6 +731,7 @@ const VendorEdit = ({ route, navigation }) => {
               formPosition="unset"
               disabled={
                 !serviceName ||
+                !address ||
                 !serviceArea ||
                 !serviceDescription ||
                 !serviceType ||
@@ -784,8 +815,6 @@ const styles = StyleSheet.create({
     width: 40,
   },
   alertmodalbg: {
-    left: 0,
-    top: 0,
     height: "100%",
     overflow: "hidden",
   },

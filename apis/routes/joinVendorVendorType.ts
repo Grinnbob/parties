@@ -13,6 +13,7 @@ export const create = async (data: JOIN_VENDOR_VENDOR_TYPE) => {
 };
 
 export const update = async (data: JOIN_VENDOR_VENDOR_TYPE) => {
+  console.log("DATA VENDOR TYPE", data)
   const response = await API.putApi(`${Base}/${data.id}`, data);
   return response;
 };

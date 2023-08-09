@@ -94,7 +94,7 @@ const VendorProfileScreen = ({ route }) => {
   const getAlbum = async () => {
     try {
       const res = await apis.album.getAll({ VendorId: vendor[0]?.id });
-      console.log("ALBUM RES", res);
+
       if (res && res.data) {
         setAlbum(res.data);
       }
@@ -226,9 +226,6 @@ const VendorProfileScreen = ({ route }) => {
           angle={180}
         >
           <View style={styles.title}>
-            <Text style={[styles.foodServicesParty, styles.uploadNowTypo]}>
-              Food Services, Party Rentals
-            </Text>
             <Text style={[styles.title1, styles.titleTypo]}>
               Welcome to your new Party Favor Business Service Page
             </Text>
