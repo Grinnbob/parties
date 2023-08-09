@@ -53,7 +53,6 @@ export const create = async (data: DOCUMENT_UPLOAD) => {
 };
 
 export const update = async (data: DOCUMENT) => {
-  console.log("DATA DOC", data)
   const response = await API.putApi(`${Base}/${data.id}`, data);
   return response;
 };

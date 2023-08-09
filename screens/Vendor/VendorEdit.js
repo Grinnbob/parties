@@ -100,7 +100,7 @@ const VendorEdit = ({ route, navigation }) => {
   const getVendorInfo = async () => {
     try {
       const res = await apis.vendor.getById(vendor[0].id);
-      console.log("RES", res.data);
+
       setServiceName(res.data.name);
       setServiceDescription(res.data.description);
       setEin(res.data.taxId.toString());
@@ -245,8 +245,13 @@ const VendorEdit = ({ route, navigation }) => {
   };
 
   const handleRemoveTag = async (tag) => {
-    const removed = searchList.filter((item, i) => item.id !== tag.id);
-    setSearchList(removed);
+    try {
+      const res = await apis.joinVendorKey.deleteById(tag.id);
+      const removed = searchList.filter((item, i) => item.id !== tag.id);
+      setSearchList(removed);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const ImageCard = ({ image, setImage }) => {
