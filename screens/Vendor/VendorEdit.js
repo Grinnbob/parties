@@ -41,6 +41,7 @@ const VendorEdit = ({ route, navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [serviceName, setServiceName] = useState("");
   const [serviceType, setServiceType] = useState("");
+  const [service, setService] = useState("");
   const [phone, setPhone] = useState("");
   const [serviceArea, setServiceArea] = useState("");
   const [serviceDescription, setServiceDescription] = useState("");
@@ -179,15 +180,13 @@ const VendorEdit = ({ route, navigation }) => {
 
   const grabServiceType = async () => {
     try {
-      const res = await apis.joinVendorVendorType.getAll({
+      const res = await apis.joinVendorVendorType.getAllVendorType({
         VendorId: vendor[0].id,
       });
-
-      vendorType.map((type, i) => {
-        if (type.id === res.data[0].VendorTypeId) {
-          setServiceType(type.title);
-        }
-      });
+      if (res && res.data) {
+        console.log("SERVICE", res.data[0].title);
+        setService(res.data[0].title);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -210,7 +209,7 @@ const VendorEdit = ({ route, navigation }) => {
       const res = await apis.joinVendorKey.getAllKeys({
         VendorId: vendor[0]?.id,
       });
-      console.log("RES", res.data);
+
       setSearchList(res.data);
     } catch (error) {
       console.log(error);
@@ -445,7 +444,8 @@ const VendorEdit = ({ route, navigation }) => {
                 <Select
                   selectedValue={serviceType}
                   accessibilityLabel="Choose Service"
-                  placeholder="Choose Service"
+                  placeholder={service}
+                  placeholderTextColor={"#FFF"}
                   dropdownCloseIcon={
                     <AntDesign
                       name="down"
