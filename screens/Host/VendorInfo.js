@@ -33,7 +33,8 @@ const VendorProfileScreen = ({ route, navigation }) => {
   const [backgroundLink, setBackgroundLink] = useState("");
 
   const handleCall = () => {
-    Linking.openURL(`tel:${vendorProfile.phoneNumber}`);
+    console.log(vendorProfile.phoneNumber);
+    Linking.openURL(`tel:${vendorProfile.phoneNumber.replace(/\D/g, "")}`);
   };
 
   const getService = async () => {
