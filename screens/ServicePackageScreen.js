@@ -179,7 +179,7 @@ const ServicePackageScreen = ({ navigation, route }) => {
                 borderWidth={1}
                 borderRadius={8}
                 variant="unstyled"
-                width={170}
+                width={150}
                 color={"#FFF"}
                 onValueChange={(itemValue) => setRate(itemValue)}
               >
@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
   },
   form2: {
     marginLeft: 8,
-    width: 60,
+    width: 80,
     borderWidth: 1,
     borderColor: "rgba(138, 138, 138, 0.3)",
     color: "#FFF",

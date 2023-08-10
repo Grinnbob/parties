@@ -6,7 +6,8 @@ import {
   View,
   TextInput,
   ScrollView,
-  Pressable,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import {
   Padding,
@@ -98,159 +99,165 @@ const ServicePackageScreen = ({ navigation, route }) => {
         modalVisible={isModalVisible}
         setModalVisible={setModalVisible}
       />
-      <ScrollView style={{ backgroundColor: Color.labelColorLightPrimary }}>
-        <View style={styles.servicepackagescreen}>
-          <Image
-            style={styles.bgIcon}
-            resizeMode="cover"
-            source={require("../../../assets/bg3.png")}
-          />
-          <TopNavigationContent
-            RightComponent={<Close />}
-            LeftComponent={() => navigation.navigate("VendorReadySell")}
-          />
-          <View style={styles.title}>
-            <View>
-              <Text style={styles.title1}>Service Package</Text>
-              <Text style={styles.title2}>
-                By filling your service information you can {"\n"}create your
-                service package for hosts to {"\n"}find
-              </Text>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : null}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+      >
+        <ScrollView style={{ backgroundColor: Color.labelColorLightPrimary }}>
+          <View style={styles.servicepackagescreen}>
+            <Image
+              style={styles.bgIcon}
+              resizeMode="cover"
+              source={require("../../../assets/bg3.png")}
+            />
+            <TopNavigationContent
+              RightComponent={<Close />}
+              LeftComponent={() => navigation.navigate("VendorReadySell")}
+            />
+            <View style={styles.title}>
+              <View>
+                <Text style={styles.title1}>Service Package</Text>
+                <Text style={styles.title2}>
+                  By filling your service information you can {"\n"}create your
+                  service package for hosts to {"\n"}find
+                </Text>
+              </View>
             </View>
-          </View>
 
-          <View style={[styles.packagePosition]}>
-            <View style={[styles.packageName]}>
-              <TextInput
-                style={[styles.form, styles.formBorder]}
-                placeholder="Package Name"
-                keyboardType="default"
-                placeholderTextColor="#8a8a8a"
-                value={packageName}
-                onChangeText={setPackageName}
-              />
-              <Select
-                selectedValue={serviceType}
-                accessibilityLabel="Service Type"
-                placeholder="Service Type"
-                dropdownCloseIcon={
-                  <AntDesign
-                    name="down"
-                    size={15}
-                    style={{ right: 20, color: "#FF077E" }}
-                  />
-                }
-                dropdownOpenIcon={
-                  <AntDesign
-                    name="down"
-                    size={15}
-                    style={{ right: 20, color: "#FF077E" }}
-                  />
-                }
-                borderColor="rgba(255, 255, 255, 0.2)"
-                borderWidth={1}
-                borderRadius={8}
-                variant="unstyled"
-                marginTop={2}
-                marginBottom={5}
-                paddingLeft={6}
-                color={"#FFF"}
-                onValueChange={(itemValue) => setServiceType(itemValue)}
-              >
-                {allService.map((service, i) => {
-                  return (
-                    <Select.Item
-                      label={service.title}
-                      value={service.id}
-                      key={i}
+            <View style={[styles.packagePosition]}>
+              <View style={[styles.packageName]}>
+                <TextInput
+                  style={[styles.form, styles.formBorder]}
+                  placeholder="Package Name"
+                  keyboardType="default"
+                  placeholderTextColor="#8a8a8a"
+                  value={packageName}
+                  onChangeText={setPackageName}
+                />
+                <Select
+                  selectedValue={serviceType}
+                  accessibilityLabel="Service Type"
+                  placeholder="Service Type"
+                  dropdownCloseIcon={
+                    <AntDesign
+                      name="down"
+                      size={15}
+                      style={{ right: 20, color: "#FF077E" }}
                     />
-                  );
-                })}
-              </Select>
-            </View>
-            <Text style={styles.estimateThisPackage}>
-              Estimate This Package Price
-            </Text>
-            <View style={[styles.starting, styles.formSpaceBlock1]}>
-              <Text style={styles.perTypo}>Starting at</Text>
+                  }
+                  dropdownOpenIcon={
+                    <AntDesign
+                      name="down"
+                      size={15}
+                      style={{ right: 20, color: "#FF077E" }}
+                    />
+                  }
+                  borderColor="rgba(255, 255, 255, 0.2)"
+                  borderWidth={1}
+                  borderRadius={8}
+                  variant="unstyled"
+                  marginTop={2}
+                  marginBottom={5}
+                  paddingLeft={6}
+                  color={"#FFF"}
+                  onValueChange={(itemValue) => setServiceType(itemValue)}
+                >
+                  {allService.map((service, i) => {
+                    return (
+                      <Select.Item
+                        label={service.title}
+                        value={service.id}
+                        key={i}
+                      />
+                    );
+                  })}
+                </Select>
+              </View>
+              <Text style={styles.estimateThisPackage}>
+                Estimate This Package Price
+              </Text>
+              <View style={[styles.starting, styles.formSpaceBlock1]}>
+                <Text style={styles.perTypo}>Starting at</Text>
+                <TextInput
+                  style={[styles.form2, styles.formSpaceBlock]}
+                  placeholder="$--"
+                  placeholderTextColor="#8a8a8a"
+                  returnKeyType={"next"}
+                  keyboardType={"phone-pad"}
+                  value={price}
+                  onChangeText={setPrice}
+                />
+                <Text style={[styles.per, styles.perTypo]}>per</Text>
+                <Select
+                  selectedValue={rate}
+                  accessibilityLabel="---"
+                  placeholder="---"
+                  dropdownCloseIcon={
+                    <AntDesign
+                      name="down"
+                      size={15}
+                      style={{ right: 20, color: "#FF077E" }}
+                    />
+                  }
+                  dropdownOpenIcon={
+                    <AntDesign
+                      name="down"
+                      size={15}
+                      style={{ right: 20, color: "#FF077E" }}
+                    />
+                  }
+                  borderColor="rgba(255, 255, 255, 0.2)"
+                  borderWidth={1}
+                  borderRadius={8}
+                  variant="unstyled"
+                  width={150}
+                  color={"#FFF"}
+                  onValueChange={(itemValue) => setRate(itemValue)}
+                >
+                  <Select.Item label="Person" value="person" />
+                  <Select.Item label="Hour" value="hour" />
+                  <Select.Item label="Day" value="day" />
+                </Select>
+              </View>
               <TextInput
-                style={[styles.form2, styles.formSpaceBlock]}
-                placeholder="$--"
+                style={[styles.form4, styles.formSpaceBlock1]}
+                placeholder="Service Package Description"
+                keyboardType="default"
+                multiline={true}
                 placeholderTextColor="#8a8a8a"
+                value={description}
+                onChangeText={setDescription}
+              />
+              <TextInput
+                style={[styles.form5, styles.formSpaceBlock1]}
+                placeholder="Serves XX People"
                 returnKeyType={"next"}
                 keyboardType={"phone-pad"}
-                value={price}
-                onChangeText={setPrice}
+                placeholderTextColor="#8a8a8a"
+                value={serveAmount}
+                onChangeText={setServeAmount}
               />
-              <Text style={[styles.per, styles.perTypo]}>per</Text>
-              <Select
-                selectedValue={rate}
-                accessibilityLabel="---"
-                placeholder="---"
-                dropdownCloseIcon={
-                  <AntDesign
-                    name="down"
-                    size={15}
-                    style={{ right: 20, color: "#FF077E" }}
-                  />
-                }
-                dropdownOpenIcon={
-                  <AntDesign
-                    name="down"
-                    size={15}
-                    style={{ right: 20, color: "#FF077E" }}
-                  />
-                }
-                borderColor="rgba(255, 255, 255, 0.2)"
-                borderWidth={1}
-                borderRadius={8}
-                variant="unstyled"
-                width={170}
-                color={"#FFF"}
-                onValueChange={(itemValue) => setRate(itemValue)}
-              >
-                <Select.Item label="Person" value="person" />
-                <Select.Item label="Hour" value="hour" />
-                <Select.Item label="Day" value="day" />
-              </Select>
             </View>
-            <TextInput
-              style={[styles.form4, styles.formSpaceBlock1]}
-              placeholder="Service Package Description"
-              keyboardType="default"
-              multiline={true}
-              placeholderTextColor="#8a8a8a"
-              value={description}
-              onChangeText={setDescription}
-            />
-            <TextInput
-              style={[styles.form5, styles.formSpaceBlock1]}
-              placeholder="Serves XX People"
-              returnKeyType={"next"}
-              keyboardType={"phone-pad"}
-              placeholderTextColor="#8a8a8a"
-              value={serveAmount}
-              onChangeText={setServeAmount}
-            />
+            <VStack
+              style={{
+                marginVertical: 40,
+                alignItems: "center",
+                marginBottom: 80,
+              }}
+            >
+              <MidGradientButton
+                onPress={handleSave}
+                isLoading={isLoading}
+                label="Save"
+                formBackgroundColor="rgba(255, 255, 255, 0.1)"
+                formMarginTop="unset"
+                labelColor="#FFF"
+              />
+            </VStack>
           </View>
-          <VStack
-            style={{
-              marginVertical: 40,
-              alignItems: "center",
-              marginBottom: 80,
-            }}
-          >
-            <MidGradientButton
-              onPress={handleSave}
-              isLoading={isLoading}
-              label="Save"
-              formBackgroundColor="rgba(255, 255, 255, 0.1)"
-              formMarginTop="unset"
-              labelColor="#FFF"
-            />
-          </VStack>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </>
   );
 };
@@ -351,7 +358,7 @@ const styles = StyleSheet.create({
   },
   form2: {
     marginLeft: 8,
-    width: 60,
+    width: 80,
     borderWidth: 1,
     borderColor: "rgba(138, 138, 138, 0.3)",
     color: "#FFF",
