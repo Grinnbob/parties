@@ -75,15 +75,6 @@ const SearchServiceCard = ({
           }}
         ></View>
       )}
-
-      {/* <View
-        style={{
-          backgroundColor: "grey",
-          width: "100%",
-          height: 134,
-          borderRadius: 18,
-        }}
-      ></View> */}
       {/* <View style={styles.priceWrapper}>
           <View style={[styles.price]}>
             <Text style={[styles.food, styles.miFlexBox]}>{service}</Text>
@@ -97,42 +88,11 @@ const SearchServiceCard = ({
             </Text>
           </View>
         </View> */}
-      {/* </ImageBackground> */}
       <View style={[styles.bottomSection, styles.btnFlexBox]}>
         <View style={styles.manuelsRentalsParent}>
           <Text style={[styles.manuelsRentals, styles.miFlexBox]}>
             {manuelsRentals}
           </Text>
-          {/* <View style={[styles.rateDistance, styles.btnFlexBox]}>
-            <Text style={[styles.mi, styles.miFlexBox]}>12.8 mi</Text>
-            <View style={styles.stars}>
-              <Image
-                style={styles.vectorIconLayout}
-                resizeMode="cover"
-                source={require("../assets/vector4.png")}
-              />
-              <Image
-                style={[styles.vectorIcon1, styles.vectorIconLayout]}
-                resizeMode="cover"
-                source={require("../assets/vector5.png")}
-              />
-              <Image
-                style={[styles.vectorIcon1, styles.vectorIconLayout]}
-                resizeMode="cover"
-                source={require("../assets/vector6.png")}
-              />
-              <Image
-                style={[styles.vectorIcon1, styles.vectorIconLayout]}
-                resizeMode="cover"
-                source={require("../assets/vector7.png")}
-              />
-              <Image
-                style={[styles.vectorIcon1, styles.vectorIconLayout]}
-                resizeMode="cover"
-                source={require("../assets/vector8.png")}
-              />
-            </View>
-          </View> */}
         </View>
         <LinearGradient
           style={[styles.btn, styles.btnFlexBox, btnStyle]}

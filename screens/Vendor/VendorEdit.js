@@ -48,9 +48,9 @@ const VendorEdit = ({ route, navigation }) => {
     StateTypes.vendor.key,
     StateTypes.vendor.default
   );
-  const [searchList, setSearchList] = useGlobalState(
-    types.albumType.searchlist.key,
-    types.albumType.searchlist.default
+  const [searchEditList, setSearchEditList] = useGlobalState(
+    types.albumType.searchEditList.key,
+    types.albumType.searchEditList.default
   );
 
   const toast = useToast();
@@ -72,6 +72,7 @@ const VendorEdit = ({ route, navigation }) => {
   const [imageFour, setImageFour] = useState("");
   const [avatar, setAvatar] = useState("");
   const [address, setAddress] = useState("");
+  const [add, setAdd] = useState("");
   const [state, setState] = useState(vendor[0].state || "");
   const [city, setCity] = useState(vendor[0].city || "");
   const [lat, setLat] = useState(0);
@@ -113,6 +114,7 @@ const VendorEdit = ({ route, navigation }) => {
       setAvatar(res.data.avatar);
       setCity(res.data.city);
       setState(res.data.state);
+      setAdd(res.data.address);
       ref.current?.setAddressText(res.data.address);
       setDistance(res.data.distance);
     } catch (error) {
@@ -243,7 +245,7 @@ const VendorEdit = ({ route, navigation }) => {
         VendorId: vendor[0]?.id,
       });
 
-      setSearchList(res.data);
+      setSearchEditList(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -252,8 +254,8 @@ const VendorEdit = ({ route, navigation }) => {
   const handleRemoveTag = async (tag) => {
     try {
       const res = await apis.joinVendorKey.deleteById(tag.id);
-      const removed = searchList.filter((item, i) => item.id !== tag.id);
-      setSearchList(removed);
+      const removed = searchEditList.filter((item, i) => item.id !== tag.id);
+      setSearchEditList(removed);
     } catch (error) {
       console.log(error);
     }
@@ -373,19 +375,18 @@ const VendorEdit = ({ route, navigation }) => {
         completed: 0,
         city: city,
         state: state,
-        address: address,
+        address: address ? address : add,
         distance: distance,
         point: { type: "Point", coordinates: [long, lat] },
       });
 
-      console.log("UPDATE", res);
+      // console.log("UPDATE", res);
 
       if (avatar) {
         const avatarRes = await apis.vendor.UploadAvatar({
           uri: avatar,
           id: vendor[0]?.id,
         });
-        console.log("AVATAR RES", avatarRes);
       }
       const list = [];
 
@@ -401,17 +402,16 @@ const VendorEdit = ({ route, navigation }) => {
           type: serviceType,
           compression: 0.7,
         });
-        console.log("DOC RES", document);
+        // console.log("DOC RES", document);
       }
 
       const key = await apis.joinVendorKey.createMulti({
-        searchList,
+        searchEditList,
         VendorId: vendor[0].id,
       });
 
-      console.log("KEY", key);
-
-      const joinVendorType = await apis.joinVendorVendorType.create({
+      // console.log("KEY", key);
+      const joinVendorType = await apis.joinVendorVendorType.update({
         id: vendor[0].id,
         VendorTypeId: serviceType,
       });
@@ -430,7 +430,7 @@ const VendorEdit = ({ route, navigation }) => {
           placement: "top",
           description: "Service information updated successfully!",
         });
-        setSearchList(types.albumType.searchlist.default);
+        setSearchEditList(types.albumType.searchEditList.default);
         navigation.pop();
       }
     } catch (error) {
@@ -654,7 +654,7 @@ const VendorEdit = ({ route, navigation }) => {
                     onChangeText={(text) => setServiceDescription(text)}
                   />
                   <Pressable onPress={handleModal}>
-                    {searchList && searchList.length > 0 ? (
+                    {searchEditList && searchEditList.length > 0 ? (
                       <View style={styles.form}>
                         <View
                           style={{
@@ -665,7 +665,7 @@ const VendorEdit = ({ route, navigation }) => {
                           }}
                         >
                           <FlatList
-                            data={searchList}
+                            data={searchEditList}
                             renderItem={renderItem}
                             horizontal={true}
                             showsHorizontalScrollIndicator={false}
@@ -760,7 +760,7 @@ const VendorEdit = ({ route, navigation }) => {
                 formPosition="unset"
                 disabled={
                   !serviceName ||
-                  !address ||
+                  // !address ||
                   !serviceArea ||
                   !serviceDescription ||
                   !serviceType ||

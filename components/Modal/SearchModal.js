@@ -22,9 +22,9 @@ const SearchModal = ({ modalVisible, setModalVisible }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchResult, setSearchResult] = useState([]);
   const [debouceValue, setDebounceValue] = useState("");
-  const [searchList, setSearchList] = useGlobalState(
-    types.albumType.searchlist.key,
-    types.albumType.searchlist.default
+  const [searchEditList, setSearchEditList] = useGlobalState(
+    types.albumType.searchEditList.key,
+    types.albumType.searchEditList.default
   );
 
   const onSwipeDown = () => {
@@ -37,7 +37,7 @@ const SearchModal = ({ modalVisible, setModalVisible }) => {
 
   const setSearch = async (item) => {
     if (item.id) {
-      setSearchList((searchList) => [...searchList, item]);
+      setSearchEditList((searchEditList) => [...searchEditList, item]);
       setModalVisible(false);
       setSearchTerm("");
       return;
@@ -45,7 +45,7 @@ const SearchModal = ({ modalVisible, setModalVisible }) => {
 
     const res = await apis.key.create(item);
 
-    setSearchList((searchList) => [...searchList, res.data]);
+    setSearchEditList((searchEditList) => [...searchEditList, res.data]);
     setModalVisible(false);
     setSearchTerm("");
   };
