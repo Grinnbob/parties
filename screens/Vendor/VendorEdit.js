@@ -404,8 +404,8 @@ const VendorEdit = ({ route, navigation }) => {
         });
         // console.log("DOC RES", document);
       }
-
-      const key = await apis.joinVendorKey.createMulti({
+      console.log("SEARCH EDIT LIST", searchEditList);
+      const key = await apis.joinVendorKey.createEditMulti({
         searchEditList,
         VendorId: vendor[0].id,
       });
@@ -415,7 +415,7 @@ const VendorEdit = ({ route, navigation }) => {
         id: vendor[0].id,
         VendorTypeId: serviceType,
       });
-      console.log("VENDOR TYPE RES", joinVendorType);
+      // console.log("VENDOR TYPE RES", joinVendorType);
 
       if (res && res.success === false) {
         toast.show({

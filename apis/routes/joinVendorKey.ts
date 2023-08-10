@@ -16,6 +16,12 @@ export const createMulti = async (data: JOIN_VENDOR_KEY) => {
   return response;
 };
 
+export const createEditMulti = async (data: JOIN_VENDOR_KEY) => {
+  const response = await API.postApi(`${Base}/editMulti`, data);
+  return response;
+};
+
+
 export const update = async (data: JOIN_VENDOR_KEY) => {
   const response = await API.putApi(`${Base}/${data.id}`, data);
   return response;
