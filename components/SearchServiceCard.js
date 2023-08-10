@@ -40,12 +40,20 @@ const SearchServiceCard = ({
 
   return (
     <View style={[styles.cards, cardsStyle]}>
-      <ImageBackground
+      {/* <ImageBackground
         style={styles.imgBgIcon}
         resizeMode="cover"
         source={imgBg}
-      >
-        {/* <View style={styles.priceWrapper}>
+      > */}
+      <View
+        style={{
+          backgroundColor: "grey",
+          width: "100%",
+          height: 134,
+          borderRadius: 18,
+        }}
+      ></View>
+      {/* <View style={styles.priceWrapper}>
           <View style={[styles.price]}>
             <Text style={[styles.food, styles.miFlexBox]}>{service}</Text>
             <Text
@@ -58,7 +66,7 @@ const SearchServiceCard = ({
             </Text>
           </View>
         </View> */}
-      </ImageBackground>
+      {/* </ImageBackground> */}
       <View style={[styles.bottomSection, styles.btnFlexBox]}>
         <View style={styles.manuelsRentalsParent}>
           <Text style={[styles.manuelsRentals, styles.miFlexBox]}>
