@@ -26,8 +26,8 @@ const HelpSearchScreen = () => {
   const [recentResult, setRecentResult] = useState([]);
   const [debouceValue, setDebounceValue] = useState("");
   const [searchList, setSearchList] = useGlobalState(
-    types.albumType.searchlist.key,
-    types.albumType.searchlist.default
+    types.albumType.searchList.key,
+    types.albumType.searchList.default
   );
   const [user, setUser] = useGlobalState(
     StateTypes.user.key,

@@ -240,7 +240,7 @@ const VendorProfileScreen = ({ route, navigation }) => {
                       style={{
                         backgroundColor: "#323232",
                         borderTopLeftRadius: 16,
-                        height: 45,
+                        height: 50,
                         width: "40%",
                         paddingLeft: 15,
                       }}
@@ -262,7 +262,7 @@ const VendorProfileScreen = ({ route, navigation }) => {
                       style={{
                         backgroundColor: "#FF077E",
                         borderTopRightRadius: 16,
-                        height: 45,
+                        height: 50,
                         width: "60%",
                       }}
                     >

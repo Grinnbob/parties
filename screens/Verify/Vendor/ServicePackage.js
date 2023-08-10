@@ -249,6 +249,9 @@ const ServicePackageScreen = ({ navigation, route }) => {
               <MidGradientButton
                 onPress={handleSave}
                 isLoading={isLoading}
+                disabled={
+                  !price || !serveAmount || !rate || packageName || description
+                }
                 label="Save"
                 formBackgroundColor="rgba(255, 255, 255, 0.1)"
                 formMarginTop="unset"

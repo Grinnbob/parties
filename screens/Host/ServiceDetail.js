@@ -44,8 +44,8 @@ const ServiceDetails = ({ route }) => {
   const [searchResult, setSearchResult] = useState([]);
   const [debouceValue, setDebounceValue] = useState("");
   const [searchList, setSearchList] = useGlobalState(
-    types.albumType.searchlist.key,
-    types.albumType.searchlist.default
+    types.albumType.searchList.key,
+    types.albumType.searchList.default
   );
 
   useEffect(() => {

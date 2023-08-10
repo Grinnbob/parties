@@ -404,7 +404,7 @@ const VendorEdit = ({ route, navigation }) => {
         });
         // console.log("DOC RES", document);
       }
-      console.log("SEARCH EDIT LIST", searchEditList);
+
       const key = await apis.joinVendorKey.createEditMulti({
         searchEditList,
         VendorId: vendor[0].id,
