@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Text,
   StyleSheet,
@@ -11,6 +11,7 @@ import {
 import LinearGradient from "react-native-linear-gradient";
 import { Color, FontFamily, FontSize, Border, Padding } from "../GlobalStyles";
 import { useNavigation } from "@react-navigation/native";
+import apis from "../apis";
 
 const getStyleValue = (key, value) => {
   if (value === undefined) return;
@@ -26,6 +27,7 @@ const SearchServiceCard = ({
   vendor,
 }) => {
   const { navigate } = useNavigation();
+  const [backgroundLink, setBackgroundLink] = useState("");
   const cardsStyle = useMemo(() => {
     return {
       ...getStyleValue("marginTop", cardsMarginTop),
@@ -38,21 +40,50 @@ const SearchServiceCard = ({
     };
   }, [btnShadowOffset]);
 
+  const getBackground = async () => {
+    try {
+      const res = await apis.document.getAll({
+        VendorId: vendor?.id,
+      });
+
+      setBackgroundLink(res.data[0].link);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getBackground();
+  }, []);
+
   return (
     <View style={[styles.cards, cardsStyle]}>
-      {/* <ImageBackground
-        style={styles.imgBgIcon}
-        resizeMode="cover"
-        source={imgBg}
-      > */}
-      <View
+      {backgroundLink ? (
+        <ImageBackground
+          style={styles.imgBgIcon}
+          imageStyle={{ borderRadius: 18 }}
+          resizeMode="cover"
+          source={{ uri: backgroundLink }}
+        />
+      ) : (
+        <View
+          style={{
+            backgroundColor: "grey",
+            width: "100%",
+            height: 134,
+            borderRadius: 18,
+          }}
+        ></View>
+      )}
+
+      {/* <View
         style={{
           backgroundColor: "grey",
           width: "100%",
           height: 134,
           borderRadius: 18,
         }}
-      ></View>
+      ></View> */}
       {/* <View style={styles.priceWrapper}>
           <View style={[styles.price]}>
             <Text style={[styles.food, styles.miFlexBox]}>{service}</Text>
