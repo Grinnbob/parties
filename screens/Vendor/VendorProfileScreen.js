@@ -385,7 +385,10 @@ const VendorProfileScreen = ({ route }) => {
                       resizeMode="cover"
                       source={require("../../assets/camera.png")}
                     />
-                    <Text style={[styles.uploadNow, styles.uploadNowTypo]}>
+                    <Text
+                      style={[styles.uploadNow, styles.uploadNowTypo]}
+                      numberOfLines={1}
+                    >
                       Upload now
                     </Text>
                   </View>
@@ -449,7 +452,10 @@ const VendorProfileScreen = ({ route }) => {
                     resizeMode="cover"
                     source={require("../../assets/union7.png")}
                   />
-                  <Text style={[styles.uploadNow, styles.uploadNowTypo]}>
+                  <Text
+                    style={[styles.uploadNow, styles.uploadNowTypo]}
+                    numberOfLines={1}
+                  >
                     Service package
                   </Text>
                 </View>
@@ -638,7 +644,7 @@ const styles = StyleSheet.create({
   parentBorder: {
     paddingHorizontal: Padding.p_3xs,
     backgroundColor: "rgba(255, 7, 126, 0.2)",
-    width: 119,
+    width: "100%",
     marginBottom: 10,
     borderRadius: Border.br_5xs,
     paddingVertical: Padding.p_5xs,
@@ -651,7 +657,7 @@ const styles = StyleSheet.create({
   parentBorderService: {
     paddingHorizontal: Padding.p_3xs,
     backgroundColor: "rgba(255, 7, 126, 0.2)",
-    width: 146,
+    width: "50%",
     marginBottom: 10,
     borderRadius: Border.br_5xs,
     paddingVertical: Padding.p_5xs,
@@ -897,7 +903,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
     borderTopWidth: 1,
     borderColor: "#232323",
-    width: 327,
+    width: "100%",
   },
   vendorDesc: {
     marginTop: 340,
