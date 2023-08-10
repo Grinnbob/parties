@@ -6,4 +6,5 @@ export default {
   selectedTiles: { key: "selectedTiles", default: [] },
   imageUploadList: { key: "imageUploadList", default: [] },
   vendorImageList: { key: "vendorImageList", default: [] },
+  searchlist: { key: "searchlist", default: [] },
 };

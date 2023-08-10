@@ -9,6 +9,7 @@ import {
   ImageBackground,
   Pressable,
   FlatList,
+  KeyboardAvoidingView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import MidGradientButton from "../../../components/MidGradientButton";
@@ -31,7 +32,7 @@ import Back from "../../../assets/back.svg";
 import Cancel from "../../../assets/cancel.svg";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Config from "react-native-config";
-import SearchModal from "../../../components/Modal/SearchModal";
+import SearchModal from "../../../components/Modal/VendorSearchModal";
 
 const VendorCreate = () => {
   const toast = useToast();
@@ -54,6 +55,7 @@ const VendorCreate = () => {
   const [city, setCity] = useState("");
   const [lat, setLat] = useState(0);
   const [long, setLong] = useState(0);
+  const [distance, setDistance] = useState(0);
   const [vendorType, setVendorType] = useState([]);
   const [imageList, setImageList] = useGlobalState(
     StateTypes.vendorImageList.key,
@@ -64,9 +66,13 @@ const VendorCreate = () => {
     StateTypes.user.default
   );
   const [searchList, setSearchList] = useGlobalState(
-    types.albumType.searchlist.key,
-    types.albumType.searchlist.default
+    StateTypes.searchlist.key,
+    StateTypes.searchlist.default
   );
+
+  useEffect(() => {
+    setDistance(serviceArea);
+  }, [serviceArea]);
 
   useEffect(() => {
     setImageOne(imageList[0] ? imageList[0] : "");
@@ -284,6 +290,7 @@ const VendorCreate = () => {
         request: 0,
         completed: 0,
         address: address,
+        distance: distance,
         city: city,
         state: state,
         point: { type: "Point", coordinates: [long, lat] },
@@ -351,315 +358,328 @@ const VendorCreate = () => {
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
       />
-      <ScrollView
-        style={{ backgroundColor: "#000" }}
-        keyboardShouldPersistTaps="handled"
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : null}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
       >
-        <View style={styles.signupscreen}>
-          <Image
-            style={[styles.background, styles.bgIconPosition]}
-            resizeMode="cover"
-            source={require("../../../assets/bg16.png")}
-          />
-          <View style={[styles.alertmodalbg, styles.alertmodalbgLayout]} />
-          <View
-            style={{ flex: 1, justifyContent: "space-between", padding: 10 }}
-          >
-            <View>
-              <View style={styles.accessoryPosition}>
-                <TouchableOpacity onPress={() => navigation.pop()}>
-                  <Back />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.pop()}>
-                  <X />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.titlePosition}>
-                <Text style={styles.title1}>Service Information</Text>
-                <Text style={[styles.title2, styles.titleLayout]}>
-                  Complete your business profile page to {"\n"}inform people of
-                  the services that you offer.
-                </Text>
-              </View>
-              <View style={{ width: "100%", alignItems: "center" }}>
-                <AvatarImage image={avatar} setImage={setAvatar} />
-              </View>
-
-              <View style={styles.forms}>
-                <TextInput
-                  style={styles.form}
-                  value={serviceName}
-                  onChangeText={setServiceName}
-                  placeholder="Service Name"
-                  keyboardType="default"
-                  placeholderTextColor="#8a8a8a"
-                />
-                <Select
-                  selectedValue={serviceType}
-                  accessibilityLabel="Choose Service"
-                  placeholder="Choose Service"
-                  dropdownCloseIcon={
-                    <AntDesign
-                      name="down"
-                      size={15}
-                      style={{ right: 20, color: "#FF077E" }}
-                    />
-                  }
-                  dropdownOpenIcon={
-                    <AntDesign
-                      name="down"
-                      size={15}
-                      style={{ right: 20, color: "#FF077E" }}
-                    />
-                  }
-                  borderColor="rgba(255, 255, 255, 0.2)"
-                  borderWidth={1}
-                  borderRadius={8}
-                  variant="unstyled"
-                  width={327}
-                  fontSize={13}
-                  marginBottom={2}
-                  marginTop={2}
-                  color={"#FFF"}
-                  onValueChange={(itemValue) => setServiceType(itemValue)}
-                >
-                  {vendorType.map((vendor, i) => {
-                    return (
-                      <Select.Item label={vendor.title} value={vendor.id} />
-                    );
-                  })}
-                </Select>
-                <GooglePlacesAutocomplete
-                  placeholder="Location"
-                  fetchDetails={true}
-                  onPress={(data, details = null) => {
-                    setAddress(details.formatted_address);
-                    setLat(details?.geometry?.location?.lat);
-                    setLong(details?.geometry?.location?.lng);
-                    setCity(
-                      details?.address_components.find((addressComponent) =>
-                        addressComponent.types.includes("locality")
-                      )?.short_name ?? "N/A"
-                    );
-                    setState(
-                      details?.address_components.find((addressComponent) =>
-                        addressComponent.types.includes(
-                          "administrative_area_level_1"
-                        )
-                      )?.short_name ?? "N/A"
-                    );
-                  }}
-                  query={{
-                    key: Config.GOOGLE_MAP_KEY,
-                    language: "en",
-                  }}
-                  textInputProps={{
-                    placeholderTextColor: "#8a8a8a",
-                  }}
-                  styles={{
-                    textInputContainer: {
-                      width: 327,
-                      borderWidth: 1,
-                      borderRadius: 8,
-                      borderColor: "rgba(255, 255, 255, 0.2)",
-                      height: 48,
-                      overflow: "hidden",
-                      fontSize: 14,
-                    },
-                    textInput: {
-                      marginLeft: 0,
-                      marginRight: 0,
-                      height: 46,
-                      backgroundColor: "transparent",
-                      borderRadius: 8,
-                      paddingLeft: 13,
-                      paddingRight: 13,
-                      fontSize: 14,
-                      color: "#FFF",
-                    },
-                    container: {
-                      width: 327,
-                      fontSize: 14,
-                    },
-                    description: {
-                      fontSize: 14,
-                    },
-                  }}
-                />
-
-                <Select
-                  selectedValue={serviceArea}
-                  accessibilityLabel="Service Area"
-                  placeholder="Service Area"
-                  dropdownCloseIcon={
-                    <AntDesign
-                      name="down"
-                      size={15}
-                      style={{ right: 20, color: "#FF077E" }}
-                    />
-                  }
-                  dropdownOpenIcon={
-                    <AntDesign
-                      name="down"
-                      size={15}
-                      style={{ right: 20, color: "#FF077E" }}
-                    />
-                  }
-                  borderColor="rgba(255, 255, 255, 0.2)"
-                  borderWidth={1}
-                  borderRadius={8}
-                  variant="unstyled"
-                  width={327}
-                  marginBottom={2}
-                  marginTop={2}
-                  fontSize={13}
-                  color={"#FFF"}
-                  onValueChange={(itemValue) => setServiceArea(itemValue)}
-                >
-                  <Select.Item
-                    label={`20 miles from ${city ? city : "--"}, ${
-                      state ? state : "--"
-                    }`}
-                    value="20"
-                  />
-                  <Select.Item
-                    label={`30 miles from ${city ? city : "--"}, ${
-                      state ? state : "--"
-                    }`}
-                    value="30"
-                  />
-                  <Select.Item
-                    label={`50 miles from ${city ? city : "--"}, ${
-                      state ? state : "--"
-                    }`}
-                    value="50"
-                  />
-                </Select>
-                <TextInput
-                  style={styles.textarea}
-                  placeholder="Service Description"
-                  keyboardType="default"
-                  placeholderTextColor="#8a8a8a"
-                  multiline={true}
-                  maxLength={440}
-                  onChangeText={(text) => setServiceDescriprion(text)}
-                />
-                <Pressable onPress={handleModal}>
-                  {searchList && searchList.length > 0 ? (
-                    <View style={styles.form}>
-                      <View
-                        style={{
-                          width: "100%",
-                          flexDirection: "row",
-                          flexWrap: "wrap",
-                          alignItems: "center",
-                        }}
-                      >
-                        <FlatList
-                          data={searchList}
-                          renderItem={renderItem}
-                          horizontal={true}
-                          showsHorizontalScrollIndicator={false}
-                        />
-                      </View>
-                    </View>
-                  ) : (
-                    <View style={styles.form}>
-                      <Text color={"#8a8a8a"}>
-                        Please enter 5 of your specialty keywords
-                      </Text>
-                    </View>
-                  )}
-                </Pressable>
-                <VStack width="90%" marginBottom={5}>
-                  <Text style={styles.subtext}>
-                    Please seperate them by a comma
+        <ScrollView
+          style={{ backgroundColor: "#000" }}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.signupscreen}>
+            <Image
+              style={[styles.background, styles.bgIconPosition]}
+              resizeMode="cover"
+              source={require("../../../assets/bg16.png")}
+            />
+            <View style={[styles.alertmodalbg, styles.alertmodalbgLayout]} />
+            <View
+              style={{ flex: 1, justifyContent: "space-between", padding: 10 }}
+            >
+              <View>
+                <View style={styles.accessoryPosition}>
+                  <TouchableOpacity onPress={() => navigation.pop()}>
+                    <Back />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => navigation.pop()}>
+                    <X />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.titlePosition}>
+                  <Text style={styles.title1}>Service Information</Text>
+                  <Text style={[styles.title2, styles.titleLayout]}>
+                    Complete your business profile page to {"\n"}inform people
+                    of the services that you offer.
                   </Text>
-                </VStack>
-                <Box alignItems="center">
-                  <Input
-                    w={327}
-                    py="0"
-                    borderRadius={8}
-                    borderColor={"rgba(255, 255, 255, 0.2)"}
-                    InputRightElement={
-                      <SelectButton image={imageOne} setImage={setImageOne} />
-                    }
-                    placeholder="Service cover image"
-                    placeholderTextColor={"#8A8A8A"}
-                    fontSize={14}
+                </View>
+                <View style={{ width: "100%", alignItems: "center" }}>
+                  <AvatarImage image={avatar} setImage={setAvatar} />
+                </View>
+
+                <View style={styles.forms}>
+                  <TextInput
+                    style={styles.form}
+                    value={serviceName}
+                    onChangeText={setServiceName}
+                    placeholder="Service Name"
+                    keyboardType="default"
+                    placeholderTextColor="#8a8a8a"
                   />
-                </Box>
-                <HStack style={{ width: "100%", marginLeft: 45 }}>
-                  <ScrollView
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
+                  <Select
+                    selectedValue={serviceType}
+                    accessibilityLabel="Choose Service"
+                    placeholder="Choose Service"
+                    dropdownCloseIcon={
+                      <AntDesign
+                        name="down"
+                        size={15}
+                        style={{ right: 20, color: "#FF077E" }}
+                      />
+                    }
+                    dropdownOpenIcon={
+                      <AntDesign
+                        name="down"
+                        size={15}
+                        style={{ right: 20, color: "#FF077E" }}
+                      />
+                    }
+                    borderColor="rgba(255, 255, 255, 0.2)"
+                    borderWidth={1}
+                    borderRadius={8}
+                    variant="unstyled"
+                    width={327}
+                    fontSize={13}
+                    marginBottom={2}
+                    marginTop={2}
+                    color={"#FFF"}
+                    onValueChange={(itemValue) => setServiceType(itemValue)}
                   >
-                    {imageOne && (
-                      <ImageCard image={imageOne} setImage={setImageOne} />
+                    {vendorType.map((vendor, i) => {
+                      return (
+                        <Select.Item label={vendor.title} value={vendor.id} />
+                      );
+                    })}
+                  </Select>
+                  <GooglePlacesAutocomplete
+                    placeholder="Location"
+                    fetchDetails={true}
+                    onPress={(data, details = null) => {
+                      setAddress(details.formatted_address);
+                      setLat(details?.geometry?.location?.lat);
+                      setLong(details?.geometry?.location?.lng);
+                      setCity(
+                        details?.address_components.find((addressComponent) =>
+                          addressComponent.types.includes("locality")
+                        )?.short_name ?? "N/A"
+                      );
+                      setState(
+                        details?.address_components.find((addressComponent) =>
+                          addressComponent.types.includes(
+                            "administrative_area_level_1"
+                          )
+                        )?.short_name ?? "N/A"
+                      );
+                    }}
+                    query={{
+                      key: Config.GOOGLE_MAP_KEY,
+                      language: "en",
+                    }}
+                    textInputProps={{
+                      placeholderTextColor: "#8a8a8a",
+                    }}
+                    styles={{
+                      textInputContainer: {
+                        width: 327,
+                        borderWidth: 1,
+                        borderRadius: 8,
+                        borderColor: "rgba(255, 255, 255, 0.2)",
+                        height: 48,
+                        overflow: "hidden",
+                        fontSize: 14,
+                      },
+                      textInput: {
+                        marginLeft: 0,
+                        marginRight: 0,
+                        height: 46,
+                        backgroundColor: "transparent",
+                        borderRadius: 8,
+                        paddingLeft: 13,
+                        paddingRight: 13,
+                        fontSize: 14,
+                        color: "#FFF",
+                      },
+                      container: {
+                        width: 327,
+                        fontSize: 14,
+                      },
+                      description: {
+                        fontSize: 14,
+                      },
+                    }}
+                  />
+
+                  <Select
+                    selectedValue={serviceArea}
+                    accessibilityLabel="Service Area"
+                    placeholder="Service Area"
+                    dropdownCloseIcon={
+                      <AntDesign
+                        name="down"
+                        size={15}
+                        style={{ right: 20, color: "#FF077E" }}
+                      />
+                    }
+                    dropdownOpenIcon={
+                      <AntDesign
+                        name="down"
+                        size={15}
+                        style={{ right: 20, color: "#FF077E" }}
+                      />
+                    }
+                    borderColor="rgba(255, 255, 255, 0.2)"
+                    borderWidth={1}
+                    borderRadius={8}
+                    variant="unstyled"
+                    width={327}
+                    marginBottom={2}
+                    marginTop={2}
+                    fontSize={13}
+                    color={"#FFF"}
+                    onValueChange={(itemValue) => setServiceArea(itemValue)}
+                  >
+                    <Select.Item
+                      label={`20 miles from ${city ? city : "--"}, ${
+                        state ? state : "--"
+                      }`}
+                      value="20"
+                    />
+                    <Select.Item
+                      label={`30 miles from ${city ? city : "--"}, ${
+                        state ? state : "--"
+                      }`}
+                      value="30"
+                    />
+                    <Select.Item
+                      label={`50 miles from ${city ? city : "--"}, ${
+                        state ? state : "--"
+                      }`}
+                      value="50"
+                    />
+                  </Select>
+                  <TextInput
+                    style={styles.textarea}
+                    placeholder="Service Description"
+                    keyboardType="default"
+                    placeholderTextColor="#8a8a8a"
+                    multiline={true}
+                    maxLength={440}
+                    onChangeText={(text) => setServiceDescriprion(text)}
+                  />
+                  <Pressable onPress={handleModal}>
+                    {searchList && searchList.length > 0 ? (
+                      <View style={styles.form}>
+                        <View
+                          style={{
+                            width: "100%",
+                            flexDirection: "row",
+                            flexWrap: "wrap",
+                            alignItems: "center",
+                          }}
+                        >
+                          <FlatList
+                            data={searchList}
+                            renderItem={renderItem}
+                            horizontal={true}
+                            showsHorizontalScrollIndicator={false}
+                          />
+                        </View>
+                      </View>
+                    ) : (
+                      <View style={styles.form}>
+                        <Text color={"#8a8a8a"}>
+                          Please enter 5 of your specialty keywords
+                        </Text>
+                      </View>
                     )}
-                    {imageOne && (
-                      <ImageCard image={imageTwo} setImage={setImageTwo} />
-                    )}
-                    {imageOne && imageTwo && (
-                      <ImageCard image={imageThree} setImage={setImageThree} />
-                    )}
-                    {imageOne && imageTwo && imageThree && (
-                      <ImageCard image={imageFour} setImage={setImageFour} />
-                    )}
-                  </ScrollView>
-                </HStack>
-                <TextInput
-                  style={styles.form}
-                  value={ein}
-                  onChangeText={setEin}
-                  maxLength={9}
-                  placeholder="TAX ID/ EIN"
-                  returnKeyType={"next"}
-                  keyboardType={"phone-pad"}
-                  placeholderTextColor="#8a8a8a"
-                  marginTop={20}
-                />
-                <PhoneMask
-                  value={phone}
-                  onChangeText={(masked) => {
-                    setPhone(masked);
-                  }}
-                  returnKeyType={"next"}
-                  keyboardType={"phone-pad"}
-                  blurOnSubmit={true}
-                  style={styles.form}
-                  placeholder={"Telephone Number"}
-                />
+                  </Pressable>
+                  <VStack width="90%" marginBottom={5}>
+                    <Text style={styles.subtext}>
+                      Please seperate them by a comma
+                    </Text>
+                  </VStack>
+                  <Box alignItems="center">
+                    <Input
+                      w={327}
+                      py="0"
+                      borderRadius={8}
+                      borderColor={"rgba(255, 255, 255, 0.2)"}
+                      InputRightElement={
+                        <SelectButton image={imageOne} setImage={setImageOne} />
+                      }
+                      placeholder="Service cover image"
+                      placeholderTextColor={"#8A8A8A"}
+                      fontSize={14}
+                    />
+                  </Box>
+                  <HStack style={{ width: "100%", marginLeft: 45 }}>
+                    <ScrollView
+                      horizontal={true}
+                      showsHorizontalScrollIndicator={false}
+                    >
+                      {imageOne && (
+                        <ImageCard image={imageOne} setImage={setImageOne} />
+                      )}
+                      {imageOne && (
+                        <ImageCard image={imageTwo} setImage={setImageTwo} />
+                      )}
+                      {imageOne && imageTwo && (
+                        <ImageCard
+                          image={imageThree}
+                          setImage={setImageThree}
+                        />
+                      )}
+                      {imageOne && imageTwo && imageThree && (
+                        <ImageCard image={imageFour} setImage={setImageFour} />
+                      )}
+                    </ScrollView>
+                  </HStack>
+                  <TextInput
+                    style={styles.form}
+                    value={ein}
+                    onChangeText={setEin}
+                    maxLength={9}
+                    placeholder="TAX ID/ EIN"
+                    returnKeyType={"next"}
+                    keyboardType={"phone-pad"}
+                    placeholderTextColor="#8a8a8a"
+                    marginTop={20}
+                  />
+                  <PhoneMask
+                    value={phone}
+                    onChangeText={(masked) => {
+                      setPhone(masked);
+                    }}
+                    returnKeyType={"next"}
+                    keyboardType={"phone-pad"}
+                    blurOnSubmit={true}
+                    style={styles.form}
+                    placeholder={"Telephone Number"}
+                  />
+                </View>
               </View>
             </View>
+            <View
+              style={{
+                width: "100%",
+                alignItems: "center",
+                marginVertical: 20,
+              }}
+            >
+              <MidGradientButton
+                onPress={handleNext}
+                isLoading={isLoading}
+                label="Create your profile page"
+                formPosition="unset"
+                disabled={
+                  !serviceName ||
+                  !serviceArea ||
+                  !serviceDescription ||
+                  !serviceType ||
+                  !ein ||
+                  !phone ||
+                  phone.length < 10
+                }
+                formTop="unset"
+                formLeft="unset"
+                formBackgroundColor="rgba(255, 255, 255, 0.1)"
+                formMarginTop="unset"
+                labelColor="#FFF"
+              />
+            </View>
           </View>
-          <View
-            style={{ width: "100%", alignItems: "center", marginVertical: 20 }}
-          >
-            <MidGradientButton
-              onPress={handleNext}
-              isLoading={isLoading}
-              label="Create your profile page"
-              formPosition="unset"
-              disabled={
-                !serviceName ||
-                !serviceArea ||
-                !serviceDescription ||
-                !serviceType ||
-                !ein ||
-                !phone ||
-                phone.length < 10
-              }
-              formTop="unset"
-              formLeft="unset"
-              formBackgroundColor="rgba(255, 255, 255, 0.1)"
-              formMarginTop="unset"
-              labelColor="#FFF"
-            />
-          </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </>
   );
 };

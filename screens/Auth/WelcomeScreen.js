@@ -2,7 +2,7 @@ import * as React from "react";
 import {
   StyleSheet,
   View,
-  Image,
+  KeyboardAvoidingView,
   ImageBackground,
   Text,
   TouchableOpacity,
@@ -16,49 +16,55 @@ const WelcomeScreen = () => {
   const navigation = useNavigation();
 
   return (
-    <ImageBackground
-      style={styles.bgPosition}
-      resizeMode="cover"
-      source={require("../../assets/rectangle-2.png")}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : null}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
     >
-      <View style={{ flex: 1, justifyContent: "space-between" }}>
-        <View style={{ height: 1 }}></View>
-        <View>
-          <Text style={styles.title}>
-            <Text style={styles.party}>PARTY</Text>
-            <Text style={styles.text2}>{` `}</Text>
-            <Text style={styles.favor}>FAVOR</Text>
-          </Text>
-        </View>
-        <View style={styles.buttons}>
-          <MidGradientButton
-            onPress={() => navigation.navigate("SignUpScreen")}
-            label="Sign Up"
-            formPosition="unset"
-            formTop="unset"
-            formLeft="unset"
-            formBackgroundColor="unset"
-            formMarginTop="unset"
-            labelColor="#fff"
-          />
-          <TouchableOpacity
-            style={styles.alreadyHaveAnContainer}
-            activeOpacity={0.2}
-            onPress={() => navigation.navigate("LoginScreen")}
-          >
-            <Text style={styles.text}>
-              <Text style={styles.alreadyHaveAnAccount}>
-                <Text style={styles.alreadyHaveAn}>
-                  Already have an account?
-                </Text>
-                <Text style={styles.text1}>{` `}</Text>
-              </Text>
-              <Text style={styles.signIn}>Sign In</Text>
+      <ImageBackground
+        style={styles.bgPosition}
+        resizeMode="cover"
+        source={require("../../assets/rectangle-2.png")}
+      >
+        <View style={{ flex: 1, justifyContent: "space-between" }}>
+          <View style={{ height: 1 }}></View>
+          <View>
+            <Text style={styles.title}>
+              <Text style={styles.party}>PARTY</Text>
+              <Text style={styles.text2}>{` `}</Text>
+              <Text style={styles.favor}>FAVOR</Text>
             </Text>
-          </TouchableOpacity>
+          </View>
+          <View style={styles.buttons}>
+            <MidGradientButton
+              onPress={() => navigation.navigate("SignUpScreen")}
+              label="Sign Up"
+              formPosition="unset"
+              formTop="unset"
+              formLeft="unset"
+              formBackgroundColor="unset"
+              formMarginTop="unset"
+              labelColor="#fff"
+            />
+            <TouchableOpacity
+              style={styles.alreadyHaveAnContainer}
+              activeOpacity={0.2}
+              onPress={() => navigation.navigate("LoginScreen")}
+            >
+              <Text style={styles.text}>
+                <Text style={styles.alreadyHaveAnAccount}>
+                  <Text style={styles.alreadyHaveAn}>
+                    Already have an account?
+                  </Text>
+                  <Text style={styles.text1}>{` `}</Text>
+                </Text>
+                <Text style={styles.signIn}>Sign In</Text>
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </ImageBackground>
+      </ImageBackground>
+    </KeyboardAvoidingView>
   );
 };
 

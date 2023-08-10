@@ -158,14 +158,13 @@ export const imageApi = async (
   type: string,
   id: number,
   uri: string,
-  size = [{ resize: { height: 300, width: 400 } }],
   compression = {
     compress: 0.8,
     format: SaveFormat.PNG,
   }
 ) => {
   try {
-    const manipResult = await manipulateAsync(uri, size, compression);
+    const manipResult = await manipulateAsync(uri, [],compression);
     const linkRes = await assets.createRequest({
       key: `${type}/${id}`,
       contentType: "image/png",
