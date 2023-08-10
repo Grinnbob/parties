@@ -25,26 +25,16 @@ import StateTypes from "../../stateManagement/StateTypes";
 import { useNavigation } from "@react-navigation/core";
 import GradientBar from "./components/GradientBar";
 
-const data = [
-  { id: 1, title: "Food & Beverage" },
-  { id: 2, title: "Party Rentals" },
-  { id: 3, title: "Decorations" },
-];
-
 const renderItem = ({ item }) => {
   return (
     <View style={[styles.partyRentals, styles.foodComboSpaceBlock]}>
-      <Text style={[styles.foodBeverage, styles.textLayout]}>{item.title}</Text>
+      <Text style={[styles.foodBeverage, styles.textLayout]}>{item.name}</Text>
     </View>
   );
 };
 
 const VendorProfileScreen = ({ route }) => {
   const { navigate, toggleDrawer } = useNavigation();
-  const [user, setUser] = useGlobalState(
-    StateTypes.user.key,
-    StateTypes.user.default
-  );
   const [vendor, setVendor] = useGlobalState(
     StateTypes.vendor.key,
     StateTypes.vendor.default
@@ -56,6 +46,19 @@ const VendorProfileScreen = ({ route }) => {
   const [media, setMedia] = useState(false);
   const [busDescription, setBusDescription] = useState(false);
   const [addService, setAddService] = useState(false);
+  const [key, setKey] = useState([]);
+
+  const getKeys = async () => {
+    try {
+      const res = await apis.joinVendorKey.getAllKeys({
+        VendorId: vendor[0]?.id,
+      });
+
+      setKey(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const onShare = async () => {
     try {
@@ -123,6 +126,7 @@ const VendorProfileScreen = ({ route }) => {
       getAlbum();
       getService();
       getBackground();
+      getKeys();
     }
     if (vendor && vendor[0]?.description) {
       setBusDescription(true);
@@ -365,7 +369,7 @@ const VendorProfileScreen = ({ route }) => {
             </View>
             <View style={styles.links}>
               <FlatList
-                data={data}
+                data={key}
                 renderItem={renderItem}
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
