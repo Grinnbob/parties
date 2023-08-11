@@ -85,12 +85,6 @@ const VendorEdit = ({ route, navigation }) => {
   const serviceAreaLabel = `${distance} miles from ${city}, ${state}`;
 
   useEffect(() => {
-    console.log("SERVICE AREA", serviceArea);
-    console.log("SERVICE AREA LABEL", serviceAreaLabel);
-    console.log("distance", distance);
-  }, [serviceArea, serviceAreaLabel, distance]);
-
-  useEffect(() => {
     setImageOne(imageList[0] ? imageList[0].link : "");
     setImageTwo(imageList[1] ? imageList[1].link : "");
     setImageThree(imageList[2] ? imageList[2].link : "");
