@@ -56,6 +56,7 @@ const VendorEdit = ({ route, navigation }) => {
   const toast = useToast();
   const ref = useRef();
   const [isLoading, setIsLoading] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [serviceName, setServiceName] = useState(vendor[0].name || "");
 
@@ -85,10 +86,10 @@ const VendorEdit = ({ route, navigation }) => {
   const serviceAreaLabel = `${distance} miles from ${city}, ${state}`;
 
   useEffect(() => {
-    setImageOne(imageList[0] ? imageList[0].link : "");
-    setImageTwo(imageList[1] ? imageList[1].link : "");
-    setImageThree(imageList[2] ? imageList[2].link : "");
-    setImageFour(imageList[3] ? imageList[3].link : "");
+    setImageOne(imageList[0] ? imageList[0] : "");
+    setImageTwo(imageList[1] ? imageList[1] : "");
+    setImageThree(imageList[2] ? imageList[2] : "");
+    setImageFour(imageList[3] ? imageList[3] : "");
   }, [imageList]);
 
   useFocusEffect(
@@ -107,6 +108,7 @@ const VendorEdit = ({ route, navigation }) => {
 
   const getVendorInfo = async () => {
     try {
+      setInitialLoad(true);
       const res = await apis.vendor.getById(vendor[0].id);
 
       setServiceName(res.data.name);
@@ -119,6 +121,7 @@ const VendorEdit = ({ route, navigation }) => {
       setAdd(res.data.address);
       ref.current?.setAddressText(res.data.address);
       setDistance(res.data.distance);
+      setInitialLoad(false);
     } catch (error) {
       console.log(error);
     }
@@ -267,7 +270,9 @@ const VendorEdit = ({ route, navigation }) => {
   const ImageCard = ({ image, setImage }) => {
     const handleDeleteImage = async () => {
       try {
-        const res = await apis.document.deleteById(image.id);
+        if (image && image.id) {
+          const res = await apis.document.deleteById(image.id);
+        }
 
         if (image) return setImage("");
 
@@ -293,7 +298,7 @@ const VendorEdit = ({ route, navigation }) => {
           <ImageBackground
             style={styles.photo}
             imageStyle={{ borderRadius: 8 }}
-            source={{ uri: image }}
+            source={{ uri: image && image.link ? image.link : image }}
           >
             <Pressable onPress={handleDeleteImage}>
               <Close style={{ bottom: 35, left: 35 }} />
@@ -398,6 +403,16 @@ const VendorEdit = ({ route, navigation }) => {
       if (imageThree !== "") list.push(imageThree);
       if (imageFour !== "") list.push(imageFour);
 
+      for (const el of list) {
+        if (el && !el.id) {
+          const document = await apis.document.create({
+            uri: el,
+            VendorId: vendor[0].id,
+            type: serviceType ? serviceType : serviceInitialType,
+          });
+        }
+      }
+
       // for (const el of list) {
       //   const document = await apis.document.create({
       //     uri: el,
@@ -408,16 +423,16 @@ const VendorEdit = ({ route, navigation }) => {
       //   // console.log("DOC RES", document);
       // }
 
-      const key = await apis.joinVendorKey.createEditMulti({
-        searchEditList,
-        VendorId: vendor[0].id,
-      });
+      // const key = await apis.joinVendorKey.createEditMulti({
+      //   searchEditList,
+      //   VendorId: vendor[0].id,
+      // });
 
-      const joinVendorType = await apis.joinVendorVendorType.update({
-        id: vendor[0].id,
-        VendorTypeId: serviceType,
-        PrevVendorType: serviceInitialType,
-      });
+      // const joinVendorType = await apis.joinVendorVendorType.update({
+      //   id: vendor[0].id,
+      //   VendorTypeId: serviceType,
+      //   PrevVendorType: serviceInitialType,
+      // });
 
       if (res && res.success === false) {
         toast.show({

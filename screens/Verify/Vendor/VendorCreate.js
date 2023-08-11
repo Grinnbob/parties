@@ -337,7 +337,7 @@ const VendorCreate = () => {
       }
       setIsLoading(false);
       if (res && res.success) {
-        setSearchList(types.albumType.searchlist.default);
+        setSearchList(StateTypes.searchlist.default);
         navigation.navigate("VendorReadySell", { vendorId: res?.data?.id });
       }
     } catch (error) {

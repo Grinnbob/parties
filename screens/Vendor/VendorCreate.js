@@ -341,7 +341,7 @@ const VendorCreate = () => {
       }
       setIsLoading(false);
       if (res && res.success) {
-        setSearchList(types.albumType.searchlist.default);
+        setSearchList(StateTypes.searchlist.default);
         await loadApp(setToken, setUser);
       }
     } catch (error) {

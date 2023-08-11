@@ -19,6 +19,7 @@ interface COMPRESSION {
 }
 
 interface DOCUMENT_UPLOAD {
+  id?: number;
   VendorId?: number;
   uri: string;
   type: string;
