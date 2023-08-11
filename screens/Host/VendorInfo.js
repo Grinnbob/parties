@@ -20,16 +20,10 @@ import {
 } from "../../GlobalStyles";
 import apis from "../../apis";
 import MidGradientButton from "../../components/MidGradientButton";
-import Heart from "../../assets/heart.svg";
-import Dots from "../../assets/DotsThree.svg";
-import Export from "../../assets/export.svg";
 
 const VendorProfileScreen = ({ route, navigation }) => {
   const [vendorProfile, setVendorProfile] = useState();
   const [service, setService] = useState([]);
-  const [food, setFood] = useState([]);
-  const [partyRental, setPartyRental] = useState([]);
-  const [bartend, setBartend] = useState([]);
   const [backgroundLink, setBackgroundLink] = useState("");
 
   const handleCall = () => {

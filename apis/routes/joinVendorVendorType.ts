@@ -5,6 +5,7 @@ interface JOIN_VENDOR_VENDOR_TYPE {
   id?: string;
   VendorId?: string;
   VendorType?: string;
+  PrevVendorType?: string;
 }
 
 export const create = async (data: JOIN_VENDOR_VENDOR_TYPE) => {
@@ -13,7 +14,7 @@ export const create = async (data: JOIN_VENDOR_VENDOR_TYPE) => {
 };
 
 export const update = async (data: JOIN_VENDOR_VENDOR_TYPE) => {
-  const response = await API.putApi(`${Base}/${data.id}`, data);
+  const response = await API.putApi(`${Base}/`, data);
   return response;
 };
 

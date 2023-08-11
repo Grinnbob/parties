@@ -59,6 +59,7 @@ const VendorEdit = ({ route, navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [serviceName, setServiceName] = useState(vendor[0].name || "");
   const [serviceType, setServiceType] = useState("");
+  const [serviceInitialType, setServiceInitialType] = useState("");
   const [service, setService] = useState("");
   const [phone, setPhone] = useState(vendor[0].phoneNumber || "");
   const [serviceArea, setServiceArea] = useState("");
@@ -220,6 +221,8 @@ const VendorEdit = ({ route, navigation }) => {
         VendorId: vendor[0].id,
       });
       if (res && res.data) {
+        console.log("RES DATA", res.data);
+        setServiceInitialType(res.data[0].id);
         setService(res.data[0].title);
       }
     } catch (error) {
@@ -382,12 +385,12 @@ const VendorEdit = ({ route, navigation }) => {
 
       // console.log("UPDATE", res);
 
-      if (avatar) {
-        const avatarRes = await apis.vendor.UploadAvatar({
-          uri: avatar,
-          id: vendor[0]?.id,
-        });
-      }
+      // if (avatar) {
+      //   const avatarRes = await apis.vendor.UploadAvatar({
+      //     uri: avatar,
+      //     id: vendor[0]?.id,
+      //   });
+      // }
       const list = [];
 
       if (imageOne !== "") list.push(imageOne);
@@ -395,25 +398,26 @@ const VendorEdit = ({ route, navigation }) => {
       if (imageThree !== "") list.push(imageThree);
       if (imageFour !== "") list.push(imageFour);
 
-      for (const el of list) {
-        const document = await apis.document.create({
-          uri: el,
-          id: vendor[0].id,
-          type: serviceType,
-          compression: 0.7,
-        });
-        // console.log("DOC RES", document);
-      }
+      // for (const el of list) {
+      //   const document = await apis.document.create({
+      //     uri: el,
+      //     id: vendor[0].id,
+      //     type: serviceType,
+      //     compression: 0.7,
+      //   });
+      //   // console.log("DOC RES", document);
+      // }
 
-      const key = await apis.joinVendorKey.createEditMulti({
-        searchEditList,
-        VendorId: vendor[0].id,
-      });
+      // const key = await apis.joinVendorKey.createEditMulti({
+      //   searchEditList,
+      //   VendorId: vendor[0].id,
+      // });
 
       // console.log("KEY", key);
       const joinVendorType = await apis.joinVendorVendorType.update({
         id: vendor[0].id,
         VendorTypeId: serviceType,
+        PrevVendorType: serviceInitialType,
       });
       // console.log("VENDOR TYPE RES", joinVendorType);
 
