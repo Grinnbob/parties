@@ -58,9 +58,10 @@ const VendorEdit = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [serviceName, setServiceName] = useState(vendor[0].name || "");
-  const [serviceType, setServiceType] = useState("");
+
   const [serviceInitialType, setServiceInitialType] = useState("");
   const [service, setService] = useState("");
+  const [serviceType, setServiceType] = useState("");
   const [phone, setPhone] = useState(vendor[0].phoneNumber || "");
   const [serviceArea, setServiceArea] = useState("");
   const [serviceDescription, setServiceDescription] = useState(
@@ -82,6 +83,12 @@ const VendorEdit = ({ route, navigation }) => {
   const [vendorType, setVendorType] = useState([]);
 
   const serviceAreaLabel = `${distance} miles from ${city}, ${state}`;
+
+  useEffect(() => {
+    console.log("SERVICE AREA", serviceArea);
+    console.log("SERVICE AREA LABEL", serviceAreaLabel);
+    console.log("distance", distance);
+  }, [serviceArea, serviceAreaLabel, distance]);
 
   useEffect(() => {
     setImageOne(imageList[0] ? imageList[0].link : "");
@@ -221,7 +228,6 @@ const VendorEdit = ({ route, navigation }) => {
         VendorId: vendor[0].id,
       });
       if (res && res.data) {
-        console.log("RES DATA", res.data);
         setServiceInitialType(res.data[0].id);
         setService(res.data[0].title);
       }
@@ -408,18 +414,16 @@ const VendorEdit = ({ route, navigation }) => {
       //   // console.log("DOC RES", document);
       // }
 
-      // const key = await apis.joinVendorKey.createEditMulti({
-      //   searchEditList,
-      //   VendorId: vendor[0].id,
-      // });
+      const key = await apis.joinVendorKey.createEditMulti({
+        searchEditList,
+        VendorId: vendor[0].id,
+      });
 
-      // console.log("KEY", key);
       const joinVendorType = await apis.joinVendorVendorType.update({
         id: vendor[0].id,
         VendorTypeId: serviceType,
         PrevVendorType: serviceInitialType,
       });
-      // console.log("VENDOR TYPE RES", joinVendorType);
 
       if (res && res.success === false) {
         toast.show({
@@ -504,9 +508,10 @@ const VendorEdit = ({ route, navigation }) => {
                     placeholderTextColor="#8a8a8a"
                   />
                   <Select
-                    selectedValue={serviceType}
+                    selectedValue={
+                      serviceType ? serviceType : serviceInitialType
+                    }
                     accessibilityLabel="Choose Service"
-                    placeholder={service}
                     placeholderTextColor="#FFF"
                     dropdownCloseIcon={
                       <AntDesign
@@ -535,7 +540,11 @@ const VendorEdit = ({ route, navigation }) => {
                   >
                     {vendorType.map((vendor, i) => {
                       return (
-                        <Select.Item label={vendor.title} value={vendor.id} />
+                        <Select.Item
+                          label={vendor.title}
+                          value={vendor.id}
+                          key={vendor.id}
+                        />
                       );
                     })}
                   </Select>
@@ -599,9 +608,11 @@ const VendorEdit = ({ route, navigation }) => {
                   />
 
                   <Select
-                    selectedValue={serviceArea}
+                    selectedValue={
+                      serviceArea ? serviceArea : distance.toString()
+                    }
                     accessibilityLabel="Service Area"
-                    placeholder={serviceAreaLabel}
+                    // placeholder={serviceAreaLabel}
                     placeholderTextColor="#FFF"
                     dropdownCloseIcon={
                       <AntDesign
@@ -764,10 +775,10 @@ const VendorEdit = ({ route, navigation }) => {
                 formPosition="unset"
                 disabled={
                   !serviceName ||
-                  // !address ||
-                  !serviceArea ||
+                  !add ||
+                  !distance ||
                   !serviceDescription ||
-                  !serviceType ||
+                  !serviceInitialType ||
                   !ein ||
                   !phone ||
                   phone.length < 10
