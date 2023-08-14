@@ -412,29 +412,24 @@ const VendorEdit = ({ route, navigation }) => {
             VendorId: vendor[0].id,
             type: serviceType ? serviceType : serviceInitialType,
           });
+          console.log("DOC RES", document);
         }
       }
 
-      // for (const el of list) {
-      //   const document = await apis.document.create({
-      //     uri: el,
-      //     id: vendor[0].id,
-      //     type: serviceType,
-      //     compression: 0.7,
-      //   });
-      //   // console.log("DOC RES", document);
-      // }
+      const key = await apis.joinVendorKey.createEditMulti({
+        searchEditList,
+        VendorId: vendor[0].id,
+      });
 
-      // const key = await apis.joinVendorKey.createEditMulti({
-      //   searchEditList,
-      //   VendorId: vendor[0].id,
-      // });
+      if (serviceType && serviceInitialType) {
+        const joinVendorType = await apis.joinVendorVendorType.update({
+          id: vendor[0].id,
+          VendorTypeId: serviceType,
+          PrevVendorType: serviceInitialType,
+        });
 
-      // const joinVendorType = await apis.joinVendorVendorType.update({
-      //   id: vendor[0].id,
-      //   VendorTypeId: serviceType,
-      //   PrevVendorType: serviceInitialType,
-      // });
+        console.log("JOIN VENDOR", joinVendorType);
+      }
 
       if (res && res.success === false) {
         toast.show({
@@ -831,7 +826,7 @@ const VendorEdit = ({ route, navigation }) => {
                   !add ||
                   !distance ||
                   !serviceDescription ||
-                  !serviceInitialType ||
+                  // !serviceInitialType ||
                   !ein ||
                   !phone ||
                   phone.length < 10
