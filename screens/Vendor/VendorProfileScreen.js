@@ -48,10 +48,8 @@ const VendorProfileScreen = ({ route }) => {
   const [busDescription, setBusDescription] = useState(false);
   const [addService, setAddService] = useState(false);
   const [key, setKey] = useState([]);
-  const [serviceName, setServiceName] = useState(vendor[0].name || "");
-  const [serviceDescription, setServiceDescription] = useState(
-    vendor[0].description || ""
-  );
+  const [serviceName, setServiceName] = useState("");
+  const [serviceDescription, setServiceDescription] = useState("");
 
   const onShare = async () => {
     try {

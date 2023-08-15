@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import MidGradientButton from "../../components/MidGradientButton";
-
+import Skeleton from "./components/Skeleton";
 import { Padding, FontFamily, Color } from "../../GlobalStyles";
 import ProfileImage from "../../assets/onboard/add.svg";
 import apis from "../../apis";
@@ -22,7 +22,7 @@ import { HStack, Select, VStack, Text, useToast } from "native-base";
 import types from "../../stateManagement/types";
 import { PhoneMask } from "../../components/Input/BasicMasks";
 import * as ImagePicker from "expo-image-picker";
-import { Input, Button, Box, Skeleton } from "native-base";
+import { Input, Button, Box } from "native-base";
 import useGlobalState from "../../stateManagement/hook";
 import StateTypes from "../../stateManagement/StateTypes";
 import Plus from "../../assets/uniongrey.svg";
@@ -56,18 +56,15 @@ const VendorEdit = ({ route, navigation }) => {
   const toast = useToast();
   const ref = useRef();
   const [isLoading, setIsLoading] = useState(false);
-  const [initialLoad, setInitialLoad] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [serviceName, setServiceName] = useState(vendor[0].name || "");
+  const [serviceName, setServiceName] = useState("");
 
   const [serviceInitialType, setServiceInitialType] = useState("");
   const [service, setService] = useState("");
   const [serviceType, setServiceType] = useState("");
   const [phone, setPhone] = useState(vendor[0].phoneNumber || "");
   const [serviceArea, setServiceArea] = useState("");
-  const [serviceDescription, setServiceDescription] = useState(
-    vendor[0].description || ""
-  );
+  const [serviceDescription, setServiceDescription] = useState("");
   const [ein, setEin] = useState(vendor[0].taxId.toString() || "");
   const [imageOne, setImageOne] = useState("");
   const [imageTwo, setImageTwo] = useState("");
@@ -82,12 +79,14 @@ const VendorEdit = ({ route, navigation }) => {
   const [long, setLong] = useState(0);
   const [distance, setDistance] = useState(vendor[0].distance || "");
   const [vendorType, setVendorType] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setImageOne(imageList[0] ? imageList[0] : "");
     setImageTwo(imageList[1] ? imageList[1] : "");
     setImageThree(imageList[2] ? imageList[2] : "");
     setImageFour(imageList[3] ? imageList[3] : "");
+    console.log("IMAGE LIST", imageList);
   }, [imageList]);
 
   useFocusEffect(
@@ -105,6 +104,7 @@ const VendorEdit = ({ route, navigation }) => {
     try {
       const res = await apis.vendor.getById(vendor[0].id);
       // console.log("RES addy", res.data);
+      setLoading(true);
       if (res && res.data) {
         setServiceName(res.data.name);
         setServiceDescription(res.data.description);
@@ -120,7 +120,9 @@ const VendorEdit = ({ route, navigation }) => {
         setServiceInitialType(res.data.listOfType[0].id);
         setService(res.data.listOfType[0].title);
         setSearchEditList(res.data.listOfKeys);
+        setLoading(false);
       }
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -229,8 +231,6 @@ const VendorEdit = ({ route, navigation }) => {
   };
 
   const ImageCard = ({ image, setImage }) => {
-    console.log("IMAGE", image);
-    console.log("SET IMAGE", setImage);
     const handleDeleteImage = async () => {
       try {
         if (image && image.id) {
