@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { Pressable, Box } from "native-base";
 import LinearGradient from "react-native-linear-gradient";
+import { useFocusEffect } from "@react-navigation/native";
 import {
   FontSize,
   Color,
@@ -47,18 +48,10 @@ const VendorProfileScreen = ({ route }) => {
   const [busDescription, setBusDescription] = useState(false);
   const [addService, setAddService] = useState(false);
   const [key, setKey] = useState([]);
-
-  const getKeys = async () => {
-    try {
-      const res = await apis.joinVendorKey.getAllKeys({
-        VendorId: vendor[0]?.id,
-      });
-
-      setKey(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const [serviceName, setServiceName] = useState(vendor[0].name || "");
+  const [serviceDescription, setServiceDescription] = useState(
+    vendor[0].description || ""
+  );
 
   const onShare = async () => {
     try {
@@ -109,29 +102,31 @@ const VendorProfileScreen = ({ route }) => {
     }
   };
 
-  const getBackground = async () => {
+  const getVendorInfo = async () => {
     try {
-      const res = await apis.document.getAll({
-        VendorId: vendor[0]?.id,
-      });
+      const res = await apis.vendor.getById(vendor[0].id);
 
-      setBackgroundLink(res.data[0].link);
+      if (res && res.data) {
+        setKey(res.data.listOfKeys);
+        setBackgroundLink(res.data.Documents[0].link);
+        setServiceName(res.data.name);
+        setServiceDescription(res.data.description);
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    if (vendor && vendor[0]?.id) {
+  useFocusEffect(
+    React.useCallback(() => {
       getAlbum();
       getService();
-      getBackground();
-      getKeys();
-    }
-    if (vendor && vendor[0]?.description) {
-      setBusDescription(true);
-    }
-  }, [vendor, route]);
+      getVendorInfo();
+      if (vendor && vendor[0]?.description) {
+        setBusDescription(true);
+      }
+    }, [vendor])
+  );
 
   useEffect(() => {
     if (busDescription && !media && !addService) {
@@ -218,7 +213,7 @@ const VendorProfileScreen = ({ route }) => {
 
           <View style={{ alignItems: "center" }}>
             <Text style={[styles.titlemain, styles.descriptionTypo]}>
-              {vendor && vendor[0]?.name}
+              {serviceName}
             </Text>
           </View>
         </ImageBackground>
@@ -351,7 +346,7 @@ const VendorProfileScreen = ({ route }) => {
               Description
             </Text>
             <Text style={[styles.iProvideFood, styles.iProvideFoodTypo]}>
-              {vendor && vendor[0]?.description}
+              {serviceDescription}
             </Text>
           </View>
           <View style={styles.vendorSpecialties}>
