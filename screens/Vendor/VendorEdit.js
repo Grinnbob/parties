@@ -156,10 +156,12 @@ const VendorEdit = ({ route, navigation }) => {
         aspect: [4, 3],
         quality: 1,
       });
-      if (result.canceled) return;
 
-      if (!result.canceled) {
-        setter(result.assets[0].uri);
+      if (!result.cancelled) {
+        // Loop through selected images and update the state for each one
+        result.assets.forEach((asset) => {
+          setter(asset.uri);
+        });
       }
     } catch (error) {
       console.log(error);
@@ -233,14 +235,20 @@ const VendorEdit = ({ route, navigation }) => {
   const ImageCard = ({ image, setImage }) => {
     const handleDeleteImage = async () => {
       try {
-        if (image && image.id) {
-          const res = await apis.document.deleteById(image.id);
+        if (!image) {
+          handleCamera(setImage);
+          return;
+        }
+
+        if (!image.id) {
           return setImage("");
         }
 
-        if (image) return setImage("");
+        // Delete the image from the backend
+        const res = await apis.document.deleteById(image.id);
 
-        handleCamera(setImage);
+        // Update the UI by removing the deleted image from the imageList
+        setImageList(imageList.filter((img) => img.id !== image.id));
       } catch (error) {
         console.log(error);
       }
