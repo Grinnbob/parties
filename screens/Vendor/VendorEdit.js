@@ -94,9 +94,6 @@ const VendorEdit = ({ route, navigation }) => {
     React.useCallback(() => {
       getVendorInfo();
       grabVendor();
-      grabServiceType();
-      getCoverImages();
-      getKeys();
     }, [user])
   );
 
@@ -108,16 +105,42 @@ const VendorEdit = ({ route, navigation }) => {
     try {
       const res = await apis.vendor.getById(vendor[0].id);
       console.log("RES addy", res.data);
-      setServiceName(res.data.name);
-      setServiceDescription(res.data.description);
-      setEin(res.data.taxId.toString());
-      setPhone(res.data.phoneNumber);
-      setAvatar(res.data.avatar);
-      setCity(res.data.city);
-      setState(res.data.state);
-      setAdd(res.data.address);
-      ref.current?.setAddressText(res?.data?.address);
-      setDistance(res.data.distance);
+      if (res && res.data) {
+        setServiceName(res.data.name);
+        setServiceDescription(res.data.description);
+        setEin(res.data.taxId.toString());
+        setPhone(res.data.phoneNumber);
+        setAvatar(res.data.avatar);
+        setCity(res.data.city);
+        setState(res.data.state);
+        setAdd(res.data.address);
+        ref.current?.setAddressText(res?.data?.address);
+        setDistance(res.data.distance);
+        setImageList(res.data.Documents);
+        setServiceInitialType(res.data.listOfType[0].id);
+        setService(res.data.listOfType[0].title);
+        setSearchEditList(res.data.listOfKeys);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const grabVendor = async () => {
+    try {
+      const res = await apis.vendorType.getAll();
+
+      setVendorType(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleRemoveTag = async (tag) => {
+    try {
+      const res = await apis.joinVendorKey.deleteById(tag.id);
+      const removed = searchEditList.filter((item, i) => item.id !== tag.id);
+      setSearchEditList(removed);
     } catch (error) {
       console.log(error);
     }
@@ -205,69 +228,14 @@ const VendorEdit = ({ route, navigation }) => {
     );
   };
 
-  const grabVendor = async () => {
-    try {
-      const res = await apis.vendorType.getAll();
-
-      setVendorType(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const grabServiceType = async () => {
-    try {
-      const res = await apis.joinVendorVendorType.getAllVendorType({
-        VendorId: vendor[0].id,
-      });
-      if (res && res.data) {
-        setServiceInitialType(res.data[0].id);
-        setService(res.data[0].title);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getCoverImages = async () => {
-    try {
-      const res = await apis.document.getAll({
-        VendorId: vendor[0]?.id,
-      });
-
-      setImageList(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getKeys = async () => {
-    try {
-      const res = await apis.joinVendorKey.getAllKeys({
-        VendorId: vendor[0]?.id,
-      });
-
-      setSearchEditList(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleRemoveTag = async (tag) => {
-    try {
-      const res = await apis.joinVendorKey.deleteById(tag.id);
-      const removed = searchEditList.filter((item, i) => item.id !== tag.id);
-      setSearchEditList(removed);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const ImageCard = ({ image, setImage }) => {
+    console.log("IMAGE", image);
+    console.log("SET IMAGE", setImage);
     const handleDeleteImage = async () => {
       try {
         if (image && image.id) {
           const res = await apis.document.deleteById(image.id);
+          return setImage("");
         }
 
         if (image) return setImage("");
