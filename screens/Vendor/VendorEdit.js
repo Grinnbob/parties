@@ -104,7 +104,7 @@ const VendorEdit = ({ route, navigation }) => {
   const getVendorInfo = async () => {
     try {
       const res = await apis.vendor.getById(vendor[0].id);
-      console.log("RES addy", res.data);
+      // console.log("RES addy", res.data);
       if (res && res.data) {
         setServiceName(res.data.name);
         setServiceDescription(res.data.description);
@@ -673,7 +673,11 @@ const VendorEdit = ({ route, navigation }) => {
                       InputRightElement={
                         <SelectButton image={imageOne} setImage={setImageOne} />
                       }
-                      placeholder="Service cover image"
+                      placeholder={
+                        imageList
+                          ? `Photo (${imageList.length})`
+                          : "Service cover image"
+                      }
                       placeholderTextColor={"#8A8A8A"}
                       fontSize={14}
                     />
