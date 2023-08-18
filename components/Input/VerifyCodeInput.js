@@ -55,6 +55,7 @@ const VerifyCodeInput = ({
               onBlur={() => setIsFocused(false)}
               ref={inputRef}
               value={value}
+              keyboardType={"number-pad"}
               style={[
                 styles.input,
                 {
