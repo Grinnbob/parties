@@ -171,13 +171,7 @@ const SignUpScreen = () => {
           <MidGradientButton
             onPress={handleSignUp}
             isLoading={isLoading}
-            disabled={
-              !email ||
-              !firstName ||
-              !lastName ||
-              emailInUse ||
-              showValidationError
-            }
+            disabled={!firstName || !lastName || !emailFree}
             label="Next"
             formPosition="unset"
             formTop="unset"

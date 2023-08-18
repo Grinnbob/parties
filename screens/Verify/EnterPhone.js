@@ -23,7 +23,6 @@ import types from "../../stateManagement/types";
 import StateTypes from "../../stateManagement/StateTypes";
 import { PhoneMask } from "../../components/Input/BasicMasks";
 import DismissKeyboard from "../../layouts/DismissKeyboard";
-import loadApp from "../../navigation/loadApp";
 
 const EnterPhone = () => {
   const toast = useToast();
@@ -33,10 +32,6 @@ const EnterPhone = () => {
   const [token, setToken] = useGlobalState(
     StateTypes.token.key,
     StateTypes.token.default
-  );
-  const [user, setUser] = useGlobalState(
-    StateTypes.user.key,
-    StateTypes.user.default
   );
 
   const [phone, setPhone] = useGlobalState(
@@ -70,7 +65,7 @@ const EnterPhone = () => {
   };
 
   const handleBack = async () => {
-    navigation.navigate("WelcomeScreen");
+    await apis.device.deleteById(setToken);
   };
 
   return (
