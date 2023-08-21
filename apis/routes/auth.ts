@@ -1,7 +1,11 @@
-import * as API from '../base';
-import {registerForRememberDevice} from './device';
-
-const BASE = 'auth';
+import * as API from "../base";
+import { registerForRememberDevice } from "./device";
+import { getSelf } from "./user";
+import {
+  loginNotifications,
+  logoutNotifications,
+} from "../../utils/notifications";
+const BASE = "auth";
 export const signup = async (data: object) => {
   const response = await API.postApi(`${BASE}/signup`, data);
   await registerForRememberDevice();
@@ -16,6 +20,13 @@ export const checkEmail = async (email: string) => {
 export const signIn = async (data: object) => {
   const response = await API.postApi(`${BASE}/login`, data);
   await registerForRememberDevice();
+  if (response.success) {
+    const user = await getSelf();
+    console.log("logIn", user);
+    if (user.success) {
+      loginNotifications(user.data.id, user.data.email, user.data.phoneNumber);
+    }
+  }
   return response;
 };
 
@@ -44,6 +55,6 @@ export const passcodeVerify = async (data: object) => {
   return response;
 };
 export const resetPassword = async (password: string) => {
-  const response = await API.postApi(`${BASE}/password/reset`, {password});
+  const response = await API.postApi(`${BASE}/password/reset`, { password });
   return response;
 };

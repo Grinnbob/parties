@@ -10,8 +10,8 @@ import useGlobalState from "../../stateManagement/hook";
 import DismissKeyboard from "../../layouts/DismissKeyboard";
 
 const selections = [
-  { id: 1, title: "I’am a party host!" },
-  { id: 2, title: "I Provide Party Services" },
+  { id: 1, title: "I'm a party host!" },
+  { id: 2, title: "I provide party services" },
 ];
 
 const OnboardScreen = ({ route }) => {
