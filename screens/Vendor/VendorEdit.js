@@ -82,10 +82,10 @@ const VendorEdit = ({ route, navigation }) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setImageOne(imageList[0] ? imageList[0] : "");
-    setImageTwo(imageList[1] ? imageList[1] : "");
-    setImageThree(imageList[2] ? imageList[2] : "");
-    setImageFour(imageList[3] ? imageList[3] : "");
+    setImageOne(imageList ? (imageList[0] ? imageList[0] : "") : "");
+    setImageTwo(imageList ? (imageList[1] ? imageList[1] : "") : "");
+    setImageThree(imageList ? (imageList[2] ? imageList[2] : "") : "");
+    setImageFour(imageList ? (imageList[3] ? imageList[3] : "") : "");
     console.log("IMAGE LIST", imageList);
   }, [imageList]);
 
@@ -362,12 +362,12 @@ const VendorEdit = ({ route, navigation }) => {
 
       // console.log("UPDATE", res);
 
-      // if (avatar) {
-      //   const avatarRes = await apis.vendor.UploadAvatar({
-      //     uri: avatar,
-      //     id: vendor[0]?.id,
-      //   });
-      // }
+      if (avatar) {
+        const avatarRes = await apis.vendor.UploadAvatar({
+          uri: avatar,
+          id: vendor[0]?.id,
+        });
+      }
       const list = [];
 
       if (imageOne !== "") list.push(imageOne);

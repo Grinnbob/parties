@@ -7,7 +7,6 @@ import * as assets from "./routes/assets";
 let AUTH_TOKEN = "Bearer false";
 const LOGGING = false;
 
-
 interface EncryptedReturn {
   success?: boolean;
   data: string;
@@ -24,12 +23,12 @@ export const setAUTH_TOKEN = async (key: string) => {
 
 export const deleteApi = async (path: string) => {
   try {
-    log(path, "DELETE REQUEST", "none")
+    log(path, "DELETE REQUEST", "none");
     const headers = { crossorigin: true, Authorization: AUTH_TOKEN };
     const res = await axios.delete(`${Config.API_URL_BASE}${path}`, {
       headers,
     });
-    log(path, "DELETE RES", res.data)
+    log(path, "DELETE RES", res.data);
     setAUTH_TOKEN(res.headers.authorization);
     return res.data;
   } catch (error) {
@@ -45,12 +44,12 @@ export const getBlob = async (fileUri: string) => {
 
 export const getApi = async (path: string) => {
   try {
-    log(path, "GET REQUEST", "none")
+    log(path, "GET REQUEST", "none");
     const headers = { crossorigin: true, Authorization: AUTH_TOKEN };
     const res = await axios.get(`${Config.API_URL_BASE}${path}`, {
       headers,
     });
-    log(path, "GET RES", res.data)
+    log(path, "GET RES", res.data);
     setAUTH_TOKEN(res.headers.authorization);
     return res.data;
   } catch (error) {
@@ -60,7 +59,7 @@ export const getApi = async (path: string) => {
 
 export const postApi = async (path: string, data: object, token?: string) => {
   try {
-    log(path, "POST REQUEST", data)
+    log(path, "POST REQUEST", data);
     let headers = {
       crossorigin: true,
       Authorization: token ? token : AUTH_TOKEN,
@@ -70,7 +69,7 @@ export const postApi = async (path: string, data: object, token?: string) => {
     const res = await axios.post(`${Config.API_URL_BASE}${path}`, obj, {
       headers,
     });
-    log(path, "POST RES", res.data)
+    log(path, "POST RES", res.data);
     setAUTH_TOKEN(res.headers.authorization);
 
     return res.data;
@@ -80,13 +79,13 @@ export const postApi = async (path: string, data: object, token?: string) => {
 };
 export const putApi = async (path: string, data: object) => {
   try {
-    log(path, "PUT REQUEST", data)
+    log(path, "PUT REQUEST", data);
     const headers = { crossorigin: true, Authorization: AUTH_TOKEN };
     const res = await axios.put(`${Config.API_URL_BASE}${path}`, data, {
       headers,
     });
     setAUTH_TOKEN(res.headers.authorization);
-    log(path, "PUT RES", res.data)
+    log(path, "PUT RES", res.data);
     return res.data;
   } catch (error) {
     return errorHandling(error);
@@ -159,12 +158,12 @@ export const imageApi = async (
   id: number,
   uri: string,
   compression = {
-    compress: 0.8,
-    format: SaveFormat.PNG,
+    compress: 0.5,
+    format: SaveFormat.JPEG,
   }
 ) => {
   try {
-    const manipResult = await manipulateAsync(uri, [],compression);
+    const manipResult = await manipulateAsync(uri, [], compression);
     const linkRes = await assets.createRequest({
       key: `${type}/${id}`,
       contentType: "image/png",
@@ -206,7 +205,6 @@ export const queryBuilder = (Base, query) => {
 };
 
 const errorHandling = (error: any) => {
-
   if (error.response) {
     /*
      * The request was made and the server responded with a
@@ -243,8 +241,8 @@ const errorHandling = (error: any) => {
   }
 };
 
-const log = (path="", type="", body:any, shouldLog=false) => {
-  if(LOGGING || shouldLog){
-    console.log(`${Config.API_URL_BASE}${path}`,type,body)
+const log = (path = "", type = "", body: any, shouldLog = false) => {
+  if (LOGGING || shouldLog) {
+    console.log(`${Config.API_URL_BASE}${path}`, type, body);
   }
-}
+};
