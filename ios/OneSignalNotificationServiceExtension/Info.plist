@@ -20,12 +20,12 @@
   <string>$(APP_VERSION)</string>
   <key>CFBundleVersion</key>
   <string>$(APP_BUILD_NUMBER)</string>
-  <key>NSExtension</key>
-  <dict>
-    <key>NSExtensionPointIdentifier</key>
-    <string>com.apple.usernotifications.service</string>
-    <key>NSExtensionPrincipalClass</key>
-    <string>NotificationService</string>
-  </dict>
+	<key>NSExtension</key>
+	<dict>
+		<key>NSExtensionPointIdentifier</key>
+		<string>com.apple.usernotifications.service</string>
+		<key>NSExtensionPrincipalClass</key>
+		<string>NotificationService</string>
+	</dict>
 </dict>
 </plist>

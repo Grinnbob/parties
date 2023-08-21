@@ -1,3 +1,7 @@
+target 'OneSignalNotificationServiceExtension' do
+  pod 'OneSignalXCFramework', '>= 5.0', '< 6.0'
+end
+
 require File.join(File.dirname(`node --print "require.resolve('expo/package.json')"`), "scripts/autolinking")
 # Resolve react_native_pods.rb with node to allow for hoisting
 require Pod::Executable.execute_command('node', ['-p',
@@ -26,9 +30,7 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
-target 'OneSignalNotificationServiceExtension' do
-  pod 'OneSignalXCFramework'
-end
+
 target 'ReactNativeStructure' do
   use_expo_modules!
   post_integrate do |installer|
