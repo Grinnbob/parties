@@ -50,6 +50,10 @@ const HelpSearchScreen = () => {
     }
   };
 
+  const viewRecentSearch = (recent) => {
+    navigation.navigate("ServiceDetails", { search: recent.name });
+  };
+
   const grabRecentSearch = async () => {
     try {
       const res = await apis.recentSearch.getRecentSearch({ UserId: user.id });
@@ -180,7 +184,7 @@ const HelpSearchScreen = () => {
               <VStack mt={5} ml={2}>
                 {recentResult.map((recent, i) => {
                   return (
-                    <Pressable key={i}>
+                    <Pressable key={i} onPress={() => viewRecentSearch(recent)}>
                       <Text style={styles.searchTerm}>{recent.name}</Text>
                     </Pressable>
                   );
