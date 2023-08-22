@@ -57,7 +57,7 @@ const HelpSearchScreen = () => {
   const grabRecentSearch = async () => {
     try {
       const res = await apis.recentSearch.getRecentSearch({ UserId: user.id });
-      console.log("RES", res);
+
       if (res && res.success) {
         setRecentResult(res.data);
       }
@@ -84,7 +84,7 @@ const HelpSearchScreen = () => {
       setIsLoading(true);
 
       const res = await apis.vendor.getAllSearch(txt);
-      console.log("RES FROM VENDOR", res);
+
       if (res.success) {
         setSearchResult(res.data);
       }

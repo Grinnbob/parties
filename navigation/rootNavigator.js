@@ -11,6 +11,8 @@ import VendorDrawerNav from "./vendorDrawerNav";
 import VerifyNav from "./VerifyNav";
 import VendorCreate from "../screens/Vendor/VendorCreate";
 import apis from "../apis";
+import layout from "../utils/layout";
+import { ImageBackground } from "react-native";
 
 const Stack = createStackNavigator();
 
@@ -56,8 +58,15 @@ export default (props) => {
     switch (token) {
       case "loading":
         return (
-          <View justifyContent={"center"} alignItems={"center"} marginTop={40}>
-            <Text>load</Text>
+          <View justifyContent={"center"} alignItems={"center"}>
+            <ImageBackground
+              style={{
+                width: layout.window.width,
+                height: layout.window.height,
+              }}
+              resizeMode="cover"
+              source={require("../assets/rectangle-2.png")}
+            />
           </View>
         );
       case "auth":
