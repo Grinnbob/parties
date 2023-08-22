@@ -56,7 +56,7 @@ const HelpSearchScreen = () => {
 
   const grabRecentSearch = async () => {
     try {
-      const res = await apis.recentSearch.getRecentSearch({ UserId: user.id });
+      const res = await apis.recentSearch.getAll({ UserId: user.id });
 
       if (res && res.success) {
         setRecentResult(res.data);
