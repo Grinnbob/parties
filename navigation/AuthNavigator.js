@@ -9,6 +9,10 @@ import PasswordScreen from "../screens/Auth/PasswordScreen";
 import ForgotPasswordScreen from "../screens/Auth/ForgotPasswordScreen";
 import VerifyScreen from "../screens/Auth/VerifyScreen";
 import AccountSettingScreen from "../screens/Auth/AccountSettingScreen";
+import Term from "../screens/Setting/Term";
+import { TouchableOpacity } from "native-base";
+import VendorBackButton from "../components/navigation/VendorBackButton";
+import Back from "../assets/back.svg";
 
 const AuthNav = () => {
   return (
@@ -50,6 +54,14 @@ const AuthNav = () => {
         name="AccountSettingScreen"
         component={AccountSettingScreen}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Term"
+        component={Term}
+        options={({ navigation }) => ({
+          headerShown: true,
+          headerLeft: () => <VendorBackButton navigation={navigation} />,
+        })}
       />
     </Stack.Navigator>
   );

@@ -249,9 +249,7 @@ const PasswordScreen = ({ route }) => {
                 </Text>
                 <Pressable
                   onPress={() => {
-                    navigation.navigate("Terms & Conditions", {
-                      ...route.params,
-                    });
+                    navigation.navigate("Term");
                   }}
                 >
                   <Text

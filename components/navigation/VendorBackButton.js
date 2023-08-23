@@ -4,13 +4,13 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Back from "../../assets/back.svg";
 
-const VendorBackButton = ({ path }) => {
+const VendorBackButton = ({ path, navigation }) => {
   const { toggleDrawer, navigate } = useNavigation();
-
+  console.log("PATH", navigation.goBack);
   return (
     <TouchableOpacity
-      //   onPress={path ? () => navigate(path.path, path.options) : toggleDrawer}
-      onPress={toggleDrawer}
+      onPress={path ? navigation.goBack() : toggleDrawer}
+      // onPress={toggleDrawer}
       style={{ padding: 5 }}
     >
       <Back />
