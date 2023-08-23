@@ -1,19 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Image,
   StyleSheet,
   View,
   TouchableOpacity,
   ActivityIndicator,
+  Keyboard,
 } from "react-native";
-import MidGradientButton from "../../components/MidGradientButton";
-import {
-  Padding,
-  Border,
-  Color,
-  FontSize,
-  FontFamily,
-} from "../../GlobalStyles";
+import DismissKeyboard from "../../layouts/DismissKeyboard";
+import { Padding, Color, FontSize, FontFamily } from "../../GlobalStyles";
 import { Text, VStack } from "native-base";
 
 import apis from "../../apis";
@@ -26,6 +21,27 @@ const VerifyScreen = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setKeyboardVisible(true); // or some other action
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setKeyboardVisible(false); // or some other action
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
 
   const handleVerifyCode = async (txt) => {
     setIsLoading(true);
@@ -53,41 +69,47 @@ const VerifyScreen = ({ route, navigation }) => {
   };
   const EnterPasscode = () => {
     return (
-      <VStack
-        style={{
-          flex: 1,
-          padding: 20,
-          justifyContent: "space-between",
-        }}
-      >
-        <VStack alignSelf={"center"}>
-          <VerifyCodeInput
-            codeLength={6}
-            value={passcode}
-            onChangeText={(text) => {
-              console.log("code", /^[0-9]{0,6}$/.test(text));
-              if (/^[0-9]{0,6}$/.test(text) && !isLoading) {
-                setPasscode(text);
-                if (text.length === 6) {
-                  handleVerifyCode(text);
+      <DismissKeyboard>
+        <VStack
+          style={{
+            flex: 1,
+            padding: 20,
+            justifyContent: "space-between",
+          }}
+        >
+          <VStack alignSelf={"center"}>
+            <VerifyCodeInput
+              codeLength={6}
+              value={passcode}
+              onChangeText={(text) => {
+                console.log("code", /^[0-9]{0,6}$/.test(text));
+                if (/^[0-9]{0,6}$/.test(text) && !isLoading) {
+                  setPasscode(text);
+                  if (text.length === 6) {
+                    handleVerifyCode(text);
+                  }
                 }
-              }
-            }}
-          />
-          {showError && <Text color={"#f00"}>Invalid passcode</Text>}
-          {isLoading && <ActivityIndicator size={"large"} />}
+              }}
+            />
+            {showError && <Text color={"#f00"}>Invalid passcode</Text>}
+            {isLoading && <ActivityIndicator size={"large"} />}
+          </VStack>
+          {isKeyboardVisible && (
+            <VStack alignSelf="center">
+              <Text
+                color="#89939E"
+                fontSize={14}
+                fontWeight={"400"}
+                onPress={() => {
+                  if (!isLoading) onResendPress();
+                }}
+              >
+                Didn’t recieve a text message?
+              </Text>
+            </VStack>
+          )}
         </VStack>
-        <VStack alignSelf="center">
-          <Text
-            color="#FFF"
-            onPress={() => {
-              if (!isLoading) onResendPress();
-            }}
-          >
-            Didn’t recieve a text message?
-          </Text>
-        </VStack>
-      </VStack>
+      </DismissKeyboard>
     );
   };
   const Verified = () => {
@@ -135,17 +157,6 @@ const VerifyScreen = ({ route, navigation }) => {
           </VStack>
         </View>
         {isVerified ? Verified() : EnterPasscode()}
-        <View style={{ width: "100%", alignItems: "center", marginBottom: 30 }}>
-          <MidGradientButton
-            onPress={() => navigation.navigate("OnboardScreen")}
-            disabled={!passcode}
-            isLoading={isLoading}
-            label="Continue"
-            formBackgroundColor="unset"
-            formMarginTop="unset"
-            labelColor="#fff"
-          />
-        </View>
       </View>
     </View>
   );

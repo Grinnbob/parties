@@ -6,15 +6,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import MidGradientButton from "../../components/MidGradientButton";
-import {
-  Padding,
-  Border,
-  Color,
-  FontSize,
-  FontFamily,
-} from "../../GlobalStyles";
+import { Padding, Color, FontSize, FontFamily } from "../../GlobalStyles";
 import { Text, VStack, useToast } from "native-base";
 
 import apis from "../../apis";
@@ -27,7 +19,28 @@ const VerifyScreen = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const { phone, phoneMasked } = route.params;
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setKeyboardVisible(true); // or some other action
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setKeyboardVisible(false); // or some other action
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
 
   const handleVerifyCode = async (txt) => {
     setIsLoading(true);
@@ -84,16 +97,20 @@ const VerifyScreen = ({ route, navigation }) => {
           {showError && <Text color={"#f00"}>Invalid passcode</Text>}
           {isLoading && <ActivityIndicator size={"large"} />}
         </VStack>
-        <VStack alignSelf="center">
-          <Text
-            color="#FFF"
-            onPress={() => {
-              if (!isLoading) onResendPress();
-            }}
-          >
-            Didn’t recieve a text message?
-          </Text>
-        </VStack>
+        {isKeyboardVisible && (
+          <VStack alignSelf="center">
+            <Text
+              color="#89939E"
+              fontSize={14}
+              fontWeight={"400"}
+              onPress={() => {
+                if (!isLoading) onResendPress();
+              }}
+            >
+              Didn’t recieve a text message?
+            </Text>
+          </VStack>
+        )}
       </VStack>
     );
   };
@@ -147,18 +164,6 @@ const VerifyScreen = ({ route, navigation }) => {
           </VStack>
         </View>
         {isVerified ? Verified() : EnterPasscode()}
-        <View style={{ width: "100%", alignItems: "center", marginBottom: 30 }}>
-          <MidGradientButton
-            onPress={() =>
-              navigation.navigate("AccountSettingScreen", { id: res.user })
-            }
-            isLoading={isLoading}
-            label="Continue"
-            formBackgroundColor="unset"
-            formMarginTop="unset"
-            labelColor="#fff"
-          />
-        </View>
       </View>
     </View>
   );
