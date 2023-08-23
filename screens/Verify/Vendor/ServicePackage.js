@@ -37,6 +37,10 @@ const ServicePackageScreen = ({ navigation, route }) => {
     StateTypes.user.key,
     StateTypes.user.default
   );
+  const [vendor, setVendor] = useGlobalState(
+    StateTypes.vendor.key,
+    StateTypes.vendor.default
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [packageName, setPackageName] = useState("");
   const [serviceType, setServiceType] = useState("");
@@ -50,7 +54,7 @@ const ServicePackageScreen = ({ navigation, route }) => {
   const grabService = async () => {
     try {
       const res = await apis.serviceType.getAll();
-      console.log("RES", res);
+
       setAllService(res.data);
     } catch (error) {
       console.log(error);
@@ -66,7 +70,7 @@ const ServicePackageScreen = ({ navigation, route }) => {
         rate: rate,
         description: description,
         amount: serveAmount,
-        VendorId: route?.params?.vendorId,
+        VendorId: vendor[0].id,
       });
 
       const joinServiceType = await apis.joinServiceServiceType.create({
@@ -250,7 +254,11 @@ const ServicePackageScreen = ({ navigation, route }) => {
                 onPress={handleSave}
                 isLoading={isLoading}
                 disabled={
-                  !price || !serveAmount || !rate || packageName || description
+                  !price ||
+                  !serveAmount ||
+                  !rate ||
+                  !packageName ||
+                  !description
                 }
                 label="Save"
                 formBackgroundColor="rgba(255, 255, 255, 0.1)"

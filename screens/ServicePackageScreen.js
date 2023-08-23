@@ -16,6 +16,8 @@ import MidGradientButton from "../components/MidGradientButton";
 import TopNavigationContent from "../components/TopNavigationContent";
 import Close from "../assets/x.svg";
 import ServicePackageModal from "../components/ServicePackageModal";
+import StateTypes from "../stateManagement/StateTypes";
+import useGlobalState from "../stateManagement/hook";
 
 const ServicePackageScreen = ({ navigation, route }) => {
   const toast = useToast();
@@ -28,11 +30,15 @@ const ServicePackageScreen = ({ navigation, route }) => {
   const [serveAmount, setServeAmount] = useState("");
   const [isModalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [vendor, setVendor] = useGlobalState(
+    StateTypes.vendor.key,
+    StateTypes.vendor.default
+  );
 
   const grabService = async () => {
     try {
       const res = await apis.serviceType.getAll();
-      console.log("RES", res);
+
       setAllService(res.data);
     } catch (error) {
       console.log(error);
@@ -49,7 +55,7 @@ const ServicePackageScreen = ({ navigation, route }) => {
         rate: rate,
         description: description,
         amount: serveAmount,
-        VendorId: route?.params?.vendorId,
+        VendorId: vendor[0].id,
       });
       setIsLoading(false);
       if (res && res.success === false) {
@@ -218,7 +224,7 @@ const ServicePackageScreen = ({ navigation, route }) => {
               onPress={handleSave}
               isLoading={isLoading}
               disabled={
-                !price || !serveAmount || !rate || packageName || description
+                !price || !serveAmount || !rate || !packageName || !description
               }
               label="Save"
               formBackgroundColor="rgba(255, 255, 255, 0.1)"
