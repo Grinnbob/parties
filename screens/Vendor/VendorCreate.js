@@ -18,7 +18,6 @@ import ProfileImage from "../../assets/onboard/add.svg";
 import apis from "../../apis";
 import { AntDesign } from "@expo/vector-icons";
 import { HStack, Select, VStack, Text, useToast } from "native-base";
-import types from "../../stateManagement/types";
 import { PhoneMask } from "../../components/Input/BasicMasks";
 import * as ImagePicker from "expo-image-picker";
 import { Input, Button, Box } from "native-base";
@@ -325,8 +324,6 @@ const VendorCreate = () => {
         searchList,
         VendorId: res?.data?.id,
       });
-
-      console.log("KEY", key);
 
       const joinVendorType = await apis.joinVendorVendorType.create({
         VendorId: res?.data?.id,
@@ -666,6 +663,7 @@ const VendorCreate = () => {
                 label="Create your profile page"
                 formPosition="unset"
                 disabled={
+                  !avatar ||
                   !serviceName ||
                   !serviceArea ||
                   !serviceDescription ||

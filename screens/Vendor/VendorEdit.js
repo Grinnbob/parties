@@ -754,6 +754,7 @@ const VendorEdit = ({ route, navigation }) => {
                 label="Create your profile page"
                 formPosition="unset"
                 disabled={
+                  !avatar ||
                   !serviceName ||
                   !add ||
                   !distance ||

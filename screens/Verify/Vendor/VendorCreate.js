@@ -662,6 +662,7 @@ const VendorCreate = () => {
                 label="Create your profile page"
                 formPosition="unset"
                 disabled={
+                  !avatar ||
                   !serviceName ||
                   !serviceArea ||
                   !serviceDescription ||
