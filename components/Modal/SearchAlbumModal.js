@@ -10,24 +10,26 @@ import {
   PanResponder,
 } from "react-native";
 import { FlatList, Input } from "native-base";
-import StateTypes from "../../stateManagement/StateTypes";
+import { Divider } from "native-base";
+import { RectButton, PanGestureHandler } from "react-native-gesture-handler";
+import types from "../../stateManagement/types";
 import useGlobalState from "../../stateManagement/hook";
 import apis from "../../apis";
 import SearchBar from "../Input/SearchBar";
 
-const SearchModal = ({ modalVisible, setModalVisible }) => {
+const SearchAlbumModal = ({ modalVisible, setModalVisible }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [searchResult, setSearchResult] = useState([]);
   const [debouceValue, setDebounceValue] = useState("");
-  const [vendorCreateList, setVendorCreateList] = useGlobalState(
-    StateTypes.vendorCreateList.key,
-    StateTypes.vendorCreateList.default
+  const [searchEditList, setSearchEditList] = useGlobalState(
+    types.albumType.searchEditList.key,
+    types.albumType.searchEditList.default
   );
 
   const setSearch = async (item) => {
     if (item.id) {
-      setVendorCreateList((vendorCreateList) => [...vendorCreateList, item]);
+      setSearchEditList((searchEditList) => [...searchEditList, item]);
       setModalVisible(false);
       setSearchTerm("");
       return;
@@ -35,7 +37,7 @@ const SearchModal = ({ modalVisible, setModalVisible }) => {
 
     const res = await apis.key.create(item);
 
-    setVendorCreateList((vendorCreateList) => [...vendorCreateList, res.data]);
+    setSearchEditList((searchEditList) => [...searchEditList, res.data]);
     setModalVisible(false);
     setSearchTerm("");
   };
@@ -164,4 +166,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SearchModal;
+export default SearchAlbumModal;

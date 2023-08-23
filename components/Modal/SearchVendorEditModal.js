@@ -15,19 +15,18 @@ import useGlobalState from "../../stateManagement/hook";
 import apis from "../../apis";
 import SearchBar from "../Input/SearchBar";
 
-const SearchModal = ({ modalVisible, setModalVisible }) => {
+const SearchVendorEditModal = ({ modalVisible, setModalVisible }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [searchResult, setSearchResult] = useState([]);
   const [debouceValue, setDebounceValue] = useState("");
-  const [vendorCreateList, setVendorCreateList] = useGlobalState(
-    StateTypes.vendorCreateList.key,
-    StateTypes.vendorCreateList.default
+  const [vendorKeyList, setVendorKeyList] = useGlobalState(
+    StateTypes.vendorKeyList.key,
+    StateTypes.vendorKeyList.default
   );
-
   const setSearch = async (item) => {
     if (item.id) {
-      setVendorCreateList((vendorCreateList) => [...vendorCreateList, item]);
+      setVendorKeyList((vendorKeyList) => [...vendorKeyList, item]);
       setModalVisible(false);
       setSearchTerm("");
       return;
@@ -35,7 +34,7 @@ const SearchModal = ({ modalVisible, setModalVisible }) => {
 
     const res = await apis.key.create(item);
 
-    setVendorCreateList((vendorCreateList) => [...vendorCreateList, res.data]);
+    setVendorKeyList((vendorKeyList) => [...vendorKeyList, res.data]);
     setModalVisible(false);
     setSearchTerm("");
   };
@@ -164,4 +163,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SearchModal;
+export default SearchVendorEditModal;

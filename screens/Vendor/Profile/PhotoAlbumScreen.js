@@ -22,7 +22,7 @@ import MidGradientButton from "../../../components/MidGradientButton";
 import Close from "../../../assets/x.svg";
 import CloseCircle from "../../../assets/closecircle.svg";
 import Cancel from "../../../assets/cancel.svg";
-import SearchModal from "../../../components/Modal/SearchModal";
+import SearchAlbumModal from "../../../components/Modal/SearchAlbumModal";
 import apis from "../../../apis";
 import useGlobalState from "../../../stateManagement/hook";
 import StateTypes from "../../../stateManagement/StateTypes";
@@ -41,10 +41,11 @@ const PhotoAlbumScreen = ({ route, navigation }) => {
     StateTypes.user.key,
     StateTypes.user.default
   );
-  const [searchList, setSearchList] = useGlobalState(
-    types.albumType.searchlist.key,
-    types.albumType.searchlist.default
+  const [searchEditList, setSearchEditList] = useGlobalState(
+    types.albumType.searchEditList.key,
+    types.albumType.searchEditList.default
   );
+
   const [photoAlbum, setPhotoAlbum] = useGlobalState(
     types.albumType.photoalbum.key,
     types.albumType.photoalbum.default
@@ -59,8 +60,8 @@ const PhotoAlbumScreen = ({ route, navigation }) => {
   );
 
   const handleRemoveTag = async (tag) => {
-    const removed = searchList.filter((item, i) => item.id !== tag.id);
-    setSearchList(removed);
+    const removed = searchEditList.filter((item, i) => item.id !== tag.id);
+    setSearchEditList(removed);
   };
 
   const handleRemoveImage = async (image) => {
@@ -149,7 +150,7 @@ const PhotoAlbumScreen = ({ route, navigation }) => {
       }
 
       await apis.joinAlbumKey.createMulti({
-        searchList,
+        list: searchEditList,
         AlbumId: res?.data?.id,
       });
 
@@ -163,7 +164,7 @@ const PhotoAlbumScreen = ({ route, navigation }) => {
       if (res && res.success) {
         setIsLoading(false);
         setSelectedPhoto(types.albumType.selectedphoto.default);
-        setSearchList(types.albumType.searchlist.default);
+        setSearchEditList(types.albumType.searchEditList.default);
         navigation.navigate("Profile", { success: true });
       }
       setIsLoading(false);
@@ -178,7 +179,7 @@ const PhotoAlbumScreen = ({ route, navigation }) => {
 
   return (
     <>
-      <SearchModal
+      <SearchAlbumModal
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
       />
@@ -258,7 +259,7 @@ const PhotoAlbumScreen = ({ route, navigation }) => {
                     Add key words
                   </Text>
                   <View style={[styles.keywords, styles.form1Border]}>
-                    {searchList && searchList.length > 0 ? (
+                    {searchEditList && searchEditList.length > 0 ? (
                       <View
                         style={{
                           width: "100%",
@@ -268,7 +269,7 @@ const PhotoAlbumScreen = ({ route, navigation }) => {
                         }}
                       >
                         <FlatList
-                          data={searchList}
+                          data={searchEditList}
                           renderItem={renderItem}
                           horizontal={true}
                           showsHorizontalScrollIndicator={false}

@@ -13,13 +13,11 @@ import {
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import MidGradientButton from "../../components/MidGradientButton";
-import Skeleton from "./components/Skeleton";
 import { Padding, FontFamily, Color } from "../../GlobalStyles";
 import ProfileImage from "../../assets/onboard/add.svg";
 import apis from "../../apis";
 import { AntDesign } from "@expo/vector-icons";
 import { HStack, Select, VStack, Text, useToast } from "native-base";
-import types from "../../stateManagement/types";
 import { PhoneMask } from "../../components/Input/BasicMasks";
 import * as ImagePicker from "expo-image-picker";
 import { Input, Button, Box } from "native-base";
@@ -33,7 +31,7 @@ import Back from "../../assets/back.svg";
 import Cancel from "../../assets/cancel.svg";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Config from "react-native-config";
-import SearchModal from "../../components/Modal/SearchModal";
+import SearchVendorEditModal from "../../components/Modal/SearchVendorEditModal";
 
 const VendorEdit = ({ route, navigation }) => {
   const [imageList, setImageList] = useGlobalState(
@@ -48,9 +46,9 @@ const VendorEdit = ({ route, navigation }) => {
     StateTypes.vendor.key,
     StateTypes.vendor.default
   );
-  const [searchEditList, setSearchEditList] = useGlobalState(
-    types.albumType.searchEditList.key,
-    types.albumType.searchEditList.default
+  const [vendorKeyList, setVendorKeyList] = useGlobalState(
+    StateTypes.vendorKeyList.key,
+    StateTypes.vendorKeyList.default
   );
 
   const toast = useToast();
@@ -81,13 +79,12 @@ const VendorEdit = ({ route, navigation }) => {
   const [vendorType, setVendorType] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    setImageOne(imageList ? (imageList[0] ? imageList[0] : "") : "");
-    setImageTwo(imageList ? (imageList[1] ? imageList[1] : "") : "");
-    setImageThree(imageList ? (imageList[2] ? imageList[2] : "") : "");
-    setImageFour(imageList ? (imageList[3] ? imageList[3] : "") : "");
-    console.log("IMAGE LIST", imageList);
-  }, [imageList]);
+  // useEffect(() => {
+  //   setImageOne(imageList ? (imageList[0] ? imageList[0] : "") : "");
+  //   setImageTwo(imageList ? (imageList[1] ? imageList[1] : "") : "");
+  //   setImageThree(imageList ? (imageList[2] ? imageList[2] : "") : "");
+  //   setImageFour(imageList ? (imageList[3] ? imageList[3] : "") : "");
+  // }, [imageList]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -119,7 +116,7 @@ const VendorEdit = ({ route, navigation }) => {
         setImageList(res.data.Documents);
         setServiceInitialType(res.data.listOfType[0].id);
         setService(res.data.listOfType[0].title);
-        setSearchEditList(res.data.listOfKeys);
+        setVendorKeyList(res.data.listOfKeys);
         setLoading(false);
       }
       setLoading(false);
@@ -141,8 +138,8 @@ const VendorEdit = ({ route, navigation }) => {
   const handleRemoveTag = async (tag) => {
     try {
       const res = await apis.joinVendorKey.deleteById(tag.id);
-      const removed = searchEditList.filter((item, i) => item.id !== tag.id);
-      setSearchEditList(removed);
+      const removed = vendorKeyList.filter((item, i) => item.id !== tag.id);
+      setVendorKeyList(removed);
     } catch (error) {
       console.log(error);
     }
@@ -368,26 +365,26 @@ const VendorEdit = ({ route, navigation }) => {
           id: vendor[0]?.id,
         });
       }
-      const list = [];
+      // const list = [];
 
-      if (imageOne !== "") list.push(imageOne);
-      if (imageTwo !== "") list.push(imageTwo);
-      if (imageThree !== "") list.push(imageThree);
-      if (imageFour !== "") list.push(imageFour);
+      // if (imageOne !== "") list.push(imageOne);
+      // if (imageTwo !== "") list.push(imageTwo);
+      // if (imageThree !== "") list.push(imageThree);
+      // if (imageFour !== "") list.push(imageFour);
 
-      for (const el of list) {
-        if (el && !el.id) {
-          const document = await apis.document.create({
-            uri: el,
-            VendorId: vendor[0].id,
-            type: serviceType ? serviceType : serviceInitialType,
-          });
-          console.log("DOC RES", document);
-        }
-      }
+      // for (const el of list) {
+      //   if (el && !el.id) {
+      //     const document = await apis.document.create({
+      //       uri: el,
+      //       VendorId: vendor[0].id,
+      //       type: serviceType ? serviceType : serviceInitialType,
+      //     });
+      //     console.log("DOC RES", document);
+      //   }
+      // }
 
       const key = await apis.joinVendorKey.createEditMulti({
-        searchEditList,
+        list: vendorKeyList,
         VendorId: vendor[0].id,
       });
 
@@ -414,7 +411,7 @@ const VendorEdit = ({ route, navigation }) => {
           placement: "top",
           description: "Service information updated successfully!",
         });
-        setSearchEditList(types.albumType.searchEditList.default);
+        setVendorKeyList(StateTypes.vendorKeyList.default);
         navigation.pop();
       }
     } catch (error) {
@@ -431,7 +428,7 @@ const VendorEdit = ({ route, navigation }) => {
 
   return (
     <>
-      <SearchModal
+      <SearchVendorEditModal
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
       />
@@ -645,7 +642,7 @@ const VendorEdit = ({ route, navigation }) => {
                     onChangeText={(text) => setServiceDescription(text)}
                   />
                   <Pressable onPress={handleModal}>
-                    {searchEditList && searchEditList.length > 0 ? (
+                    {vendorKeyList && vendorKeyList.length > 0 ? (
                       <View style={styles.form}>
                         <View
                           style={{
@@ -656,7 +653,7 @@ const VendorEdit = ({ route, navigation }) => {
                           }}
                         >
                           <FlatList
-                            data={searchEditList}
+                            data={vendorKeyList}
                             renderItem={renderItem}
                             horizontal={true}
                             showsHorizontalScrollIndicator={false}
@@ -672,7 +669,7 @@ const VendorEdit = ({ route, navigation }) => {
                     )}
                   </Pressable>
 
-                  <Box alignItems="center" mt={3}>
+                  {/* <Box alignItems="center" mt={3}>
                     <Input
                       w={327}
                       py="0"
@@ -689,8 +686,8 @@ const VendorEdit = ({ route, navigation }) => {
                       placeholderTextColor={"#8A8A8A"}
                       fontSize={14}
                     />
-                  </Box>
-                  <HStack style={{ width: "100%", marginLeft: 45 }}>
+                  </Box> */}
+                  {/* <HStack style={{ width: "100%", marginLeft: 45 }}>
                     <ScrollView
                       horizontal={true}
                       showsHorizontalScrollIndicator={false}
@@ -711,7 +708,7 @@ const VendorEdit = ({ route, navigation }) => {
                         <ImageCard image={imageFour} setImage={setImageFour} />
                       )}
                     </ScrollView>
-                  </HStack>
+                  </HStack> */}
                   <TextInput
                     style={styles.form}
                     value={ein}

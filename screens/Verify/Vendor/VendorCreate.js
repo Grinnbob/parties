@@ -32,7 +32,7 @@ import Back from "../../../assets/back.svg";
 import Cancel from "../../../assets/cancel.svg";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Config from "react-native-config";
-import SearchModal from "../../../components/Modal/VendorSearchModal";
+import SearchModal from "../../../components/Modal/SearchModal";
 
 const VendorCreate = () => {
   const toast = useToast();
@@ -65,21 +65,21 @@ const VendorCreate = () => {
     StateTypes.user.key,
     StateTypes.user.default
   );
-  const [searchList, setSearchList] = useGlobalState(
-    StateTypes.searchlist.key,
-    StateTypes.searchlist.default
+  const [vendorCreateList, setVendorCreateList] = useGlobalState(
+    StateTypes.vendorCreateList.key,
+    StateTypes.vendorCreateList.default
   );
 
   useEffect(() => {
     setDistance(serviceArea);
   }, [serviceArea]);
 
-  useEffect(() => {
-    setImageOne(imageList[0] ? imageList[0] : "");
-    setImageTwo(imageList[1] ? imageList[1] : "");
-    setImageThree(imageList[2] ? imageList[2] : "");
-    setImageFour(imageList[3] ? imageList[3] : "");
-  }, [imageList]);
+  // useEffect(() => {
+  //   setImageOne(imageList[0] ? imageList[0] : "");
+  //   setImageTwo(imageList[1] ? imageList[1] : "");
+  //   setImageThree(imageList[2] ? imageList[2] : "");
+  //   setImageFour(imageList[3] ? imageList[3] : "");
+  // }, [imageList]);
 
   const handleCamera = async (setter) => {
     try {
@@ -175,8 +175,8 @@ const VendorCreate = () => {
   };
 
   const handleRemoveTag = async (tag) => {
-    const removed = searchList.filter((item, i) => item.id !== tag.id);
-    setSearchList(removed);
+    const removed = vendorCreateList.filter((item, i) => item.id !== tag.id);
+    setVendorCreateList(removed);
   };
 
   useEffect(() => {
@@ -297,7 +297,7 @@ const VendorCreate = () => {
       });
 
       const key = await apis.joinVendorKey.createMulti({
-        searchList,
+        list: vendorCreateList,
         VendorId: res?.data?.id,
       });
       console.log("KEY", key);
@@ -308,21 +308,21 @@ const VendorCreate = () => {
           id: res?.data?.id,
         });
       }
-      const list = [];
+      // const list = [];
 
-      if (imageOne !== "") list.push(imageOne);
-      if (imageTwo !== "") list.push(imageTwo);
-      if (imageThree !== "") list.push(imageThree);
-      if (imageFour !== "") list.push(imageFour);
+      // if (imageOne !== "") list.push(imageOne);
+      // if (imageTwo !== "") list.push(imageTwo);
+      // if (imageThree !== "") list.push(imageThree);
+      // if (imageFour !== "") list.push(imageFour);
 
-      for (const el of list) {
-        const document = await apis.document.create({
-          uri: el,
-          VendorId: res?.data?.id,
-          type: serviceType,
-          compression: 0.7,
-        });
-      }
+      // for (const el of list) {
+      //   const document = await apis.document.create({
+      //     uri: el,
+      //     VendorId: res?.data?.id,
+      //     type: serviceType,
+      //     compression: 0.7,
+      //   });
+      // }
 
       const joinVendorType = await apis.joinVendorVendorType.create({
         VendorId: res?.data?.id,
@@ -337,7 +337,7 @@ const VendorCreate = () => {
       }
       setIsLoading(false);
       if (res && res.success) {
-        setSearchList(StateTypes.searchlist.default);
+        setVendorCreateList(StateTypes.vendorCreateList.default);
         navigation.navigate("VendorReadySell", { vendorId: res?.data?.id });
       }
     } catch (error) {
@@ -557,7 +557,7 @@ const VendorCreate = () => {
                     onChangeText={(text) => setServiceDescriprion(text)}
                   />
                   <Pressable onPress={handleModal}>
-                    {searchList && searchList.length > 0 ? (
+                    {vendorCreateList && vendorCreateList.length > 0 ? (
                       <View style={styles.form}>
                         <View
                           style={{
@@ -568,7 +568,7 @@ const VendorCreate = () => {
                           }}
                         >
                           <FlatList
-                            data={searchList}
+                            data={vendorCreateList}
                             renderItem={renderItem}
                             horizontal={true}
                             showsHorizontalScrollIndicator={false}
@@ -583,7 +583,7 @@ const VendorCreate = () => {
                       </View>
                     )}
                   </Pressable>
-                  <VStack width="90%" marginBottom={5}>
+                  {/* <VStack width="90%" marginBottom={5}>
                     <Text style={styles.subtext}>
                       Please seperate them by a comma
                     </Text>
@@ -601,8 +601,8 @@ const VendorCreate = () => {
                       placeholderTextColor={"#8A8A8A"}
                       fontSize={14}
                     />
-                  </Box>
-                  <HStack style={{ width: "100%", marginLeft: 45 }}>
+                  </Box> */}
+                  {/* <HStack style={{ width: "100%", marginLeft: 45 }}>
                     <ScrollView
                       horizontal={true}
                       showsHorizontalScrollIndicator={false}
@@ -623,7 +623,7 @@ const VendorCreate = () => {
                         <ImageCard image={imageFour} setImage={setImageFour} />
                       )}
                     </ScrollView>
-                  </HStack>
+                  </HStack> */}
                   <TextInput
                     style={styles.form}
                     value={ein}

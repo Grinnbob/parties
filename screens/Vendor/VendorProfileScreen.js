@@ -99,14 +99,16 @@ const VendorProfileScreen = ({ route }) => {
       console.log(error);
     }
   };
-
+  useEffect(() => {
+    console.log("VENDOR", vendor);
+  }, [vendor]);
   const getVendorInfo = async () => {
     try {
       const res = await apis.vendor.getById(vendor[0].id);
-
+      console.log("RES", res.data);
       if (res && res.data) {
         setKey(res.data.listOfKeys);
-        setBackgroundLink(res.data.Documents[0].link);
+        setBackgroundLink(res.data.avatar);
         setServiceName(res.data.name);
         setServiceDescription(res.data.description);
       }

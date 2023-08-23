@@ -7,4 +7,6 @@ export default {
   imageUploadList: { key: "imageUploadList", default: [] },
   vendorImageList: { key: "vendorImageList", default: [] },
   searchlist: { key: "searchlist", default: [] },
+  vendorKeyList: { key: "vendorKeyList", default: [] },
+  vendorCreateList: { key: "vendorCreateList", default: [] },
 };

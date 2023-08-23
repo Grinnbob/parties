@@ -31,7 +31,7 @@ import Back from "../../assets/back.svg";
 import Cancel from "../../assets/cancel.svg";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Config from "react-native-config";
-import SearchModal from "../../components/Modal/VendorSearchModal";
+import SearchModal from "../../components/Modal/SearchModal";
 import loadApp from "../../navigation/loadApp";
 
 const VendorCreate = () => {
@@ -69,21 +69,21 @@ const VendorCreate = () => {
     StateTypes.token.key,
     StateTypes.token.default
   );
-  const [searchList, setSearchList] = useGlobalState(
-    StateTypes.searchlist.key,
-    StateTypes.searchlist.default
+  const [vendorCreateList, setVendorCreateList] = useGlobalState(
+    StateTypes.vendorCreateList.key,
+    StateTypes.vendorCreateList.default
   );
 
   useEffect(() => {
     setDistance(serviceArea);
   }, [serviceArea]);
 
-  useEffect(() => {
-    setImageOne(imageList[0] ? imageList[0] : "");
-    setImageTwo(imageList[1] ? imageList[1] : "");
-    setImageThree(imageList[2] ? imageList[2] : "");
-    setImageFour(imageList[3] ? imageList[3] : "");
-  }, [imageList]);
+  // useEffect(() => {
+  //   setImageOne(imageList[0] ? imageList[0] : "");
+  //   setImageTwo(imageList[1] ? imageList[1] : "");
+  //   setImageThree(imageList[2] ? imageList[2] : "");
+  //   setImageFour(imageList[3] ? imageList[3] : "");
+  // }, [imageList]);
 
   const handleCamera = async (setter) => {
     try {
@@ -179,8 +179,8 @@ const VendorCreate = () => {
   };
 
   const handleRemoveTag = async (tag) => {
-    const removed = searchList.filter((item, i) => item.id !== tag.id);
-    setSearchList(removed);
+    const removed = vendorCreateList.filter((item, i) => item.id !== tag.id);
+    setVendorCreateList(removed);
   };
 
   useEffect(() => {
@@ -305,23 +305,23 @@ const VendorCreate = () => {
         });
         console.log("AVATAR RES", avatarRes);
       }
-      const list = [];
+      // const list = [];
 
-      if (imageOne !== "") list.push(imageOne);
-      if (imageTwo !== "") list.push(imageTwo);
-      if (imageThree !== "") list.push(imageThree);
-      if (imageFour !== "") list.push(imageFour);
+      // if (imageOne !== "") list.push(imageOne);
+      // if (imageTwo !== "") list.push(imageTwo);
+      // if (imageThree !== "") list.push(imageThree);
+      // if (imageFour !== "") list.push(imageFour);
 
-      for (const el of list) {
-        const document = await apis.document.create({
-          uri: el,
-          VendorId: res?.data?.id,
-          type: serviceType,
-        });
-      }
+      // for (const el of list) {
+      //   const document = await apis.document.create({
+      //     uri: el,
+      //     VendorId: res?.data?.id,
+      //     type: serviceType,
+      //   });
+      // }
 
       const key = await apis.joinVendorKey.createMulti({
-        searchList,
+        list: vendorCreateList,
         VendorId: res?.data?.id,
       });
 
@@ -338,7 +338,7 @@ const VendorCreate = () => {
       }
       setIsLoading(false);
       if (res && res.success) {
-        setSearchList(StateTypes.searchlist.default);
+        setVendorCreateList(StateTypes.vendorCreateList.default);
         await loadApp(setToken, setUser);
       }
     } catch (error) {
@@ -558,7 +558,7 @@ const VendorCreate = () => {
                     onChangeText={(text) => setServiceDescriprion(text)}
                   />
                   <Pressable onPress={handleModal}>
-                    {searchList && searchList.length > 0 ? (
+                    {vendorCreateList && vendorCreateList.length > 0 ? (
                       <View style={styles.form}>
                         <View
                           style={{
@@ -569,7 +569,7 @@ const VendorCreate = () => {
                           }}
                         >
                           <FlatList
-                            data={searchList}
+                            data={vendorCreateList}
                             renderItem={renderItem}
                             horizontal={true}
                             showsHorizontalScrollIndicator={false}

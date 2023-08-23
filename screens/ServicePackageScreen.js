@@ -66,6 +66,11 @@ const ServicePackageScreen = ({ navigation, route }) => {
       }
       if (res && res.success) {
         setModalVisible(true);
+        setPrice("");
+        setRate("");
+        setDescription("");
+        setServeAmount("");
+        setPackageName("");
       }
     } catch (error) {
       console.log(error);
