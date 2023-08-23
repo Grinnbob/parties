@@ -130,12 +130,12 @@ const VendorProfileScreen = ({ route }) => {
 
   useEffect(() => {
     if (busDescription && !media && !addService) {
-      setPercent(20);
+      setPercent(33);
     } else if (
       (!media && busDescription && addService) ||
       (media && busDescription && !addService)
     ) {
-      setPercent(50);
+      setPercent(66);
     } else if (media && busDescription && addService) {
       setPercent(100);
     } else {
