@@ -3,9 +3,9 @@ import { Image, StyleSheet, View, Dimensions } from "react-native";
 import TopNavigationContent from "../../../components/TopNavigationContent";
 import { Color } from "../../../GlobalStyles";
 import UploadModal from "../../../components/Modal/UploadModal";
-import apis from "../../../apis";
 import useGlobalState from "../../../stateManagement/hook";
-import types from "../../../stateManagement/types";
+// import types from "../../../stateManagement/types";
+import StateTypes from "../../../stateManagement/StateTypes";
 import { Text, Pressable } from "native-base";
 import CustomCameraSelect from "./component/CustomCameraSelect";
 import StaggeredList from "@mindinventory/react-native-stagger-view";
@@ -13,17 +13,17 @@ import { useCameraRoll } from "@react-native-camera-roll/camera-roll";
 
 const width = Dimensions.get("screen").width;
 
-const CameraRollScreen = ({ route, navigation }) => {
+const EditVendorCameraRoll = ({ route, navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [imageStyles, setImageStyles] = useState([]);
   const [selection, setSelection] = useState([]);
   const [photoAlbum, setPhotoAlbum] = useGlobalState(
-    types.albumType.photoalbum.key,
-    types.albumType.photoalbum.default
+    StateTypes.photoalbum.key,
+    StateTypes.photoalbum.default
   );
   const [selectedPhoto, setSelectedPhoto] = useGlobalState(
-    types.albumType.selectedphoto.key,
-    types.albumType.selectedphoto.default
+    StateTypes.selectedphoto.key,
+    StateTypes.selectedphoto.default
   );
   const [photos, getPhotos, save] = useCameraRoll();
 
@@ -55,27 +55,16 @@ const CameraRollScreen = ({ route, navigation }) => {
   }, [photoAlbum]);
 
   const handlePress = (id) => {
-    const select = selectedPhoto.find(
+    const selections = photoAlbum.find(
       (item, i) => item?.node?.image?.uri === id
     );
-    if (select) {
-      const answers = selectedPhoto.filter(
-        (item, i) => item?.node?.image?.uri !== id
-      );
 
-      setSelection(answers);
-    } else {
-      const selections = photoAlbum.find(
-        (item, i) => item?.node?.image?.uri === id
-      );
-
-      setSelection((prev) => [...prev, selections]);
-    }
+    setSelection([selections]);
   };
 
   const handleDone = () => {
     setSelectedPhoto(selection);
-    navigation.navigate("Photo");
+    navigation.navigate("Edit");
   };
 
   const renderItem = (item, index) => {
@@ -180,4 +169,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CameraRollScreen;
+export default EditVendorCameraRoll;

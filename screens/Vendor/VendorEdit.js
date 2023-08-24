@@ -50,6 +50,10 @@ const VendorEdit = ({ route, navigation }) => {
     StateTypes.vendorKeyList.key,
     StateTypes.vendorKeyList.default
   );
+  const [selectedPhoto, setSelectedPhoto] = useGlobalState(
+    StateTypes.selectedphoto.key,
+    StateTypes.selectedphoto.default
+  );
 
   const toast = useToast();
   const ref = useRef();
@@ -145,42 +149,46 @@ const VendorEdit = ({ route, navigation }) => {
     }
   };
 
-  const handleCamera = async (setter) => {
-    try {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
+  // const handleCamera = async (setter) => {
+  //   try {
+  //     let result = await ImagePicker.launchImageLibraryAsync({
+  //       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  //       allowsEditing: true,
+  //       aspect: [4, 3],
+  //       quality: 1,
+  //     });
 
-      if (!result.cancelled) {
-        // Loop through selected images and update the state for each one
-        result.assets.forEach((asset) => {
-          setter(asset.uri);
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //     if (!result.cancelled) {
+  //       // Loop through selected images and update the state for each one
+  //       result.assets.forEach((asset) => {
+  //         setter(asset.uri);
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
-  const handleAvatar = async () => {
-    try {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-      if (result.canceled) return;
+  // const handleAvatar = async () => {
+  //   try {
+  //     let result = await ImagePicker.launchImageLibraryAsync({
+  //       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  //       allowsEditing: true,
+  //       aspect: [4, 3],
+  //       quality: 1,
+  //     });
+  //     if (result.canceled) return;
 
-      if (!result.canceled) {
-        setAvatar(result.assets[0].uri);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  //     if (!result.canceled) {
+  //       setAvatar(result.assets[0].uri);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const handleAvatar = () => {
+    navigation.navigate("CameraEdit", { success: true });
   };
 
   const AvatarImage = ({ image, setImage }) => {
@@ -207,7 +215,11 @@ const VendorEdit = ({ route, navigation }) => {
                 height: 110,
               }}
               imageStyle={{ borderRadius: 100 }}
-              source={{ uri: image }}
+              source={{
+                uri: selectedPhoto[0]?.node?.image?.uri
+                  ? selectedPhoto[0]?.node?.image?.uri
+                  : avatar,
+              }}
             >
               <Pressable
                 onPress={() => {
@@ -229,80 +241,80 @@ const VendorEdit = ({ route, navigation }) => {
     );
   };
 
-  const ImageCard = ({ image, setImage }) => {
-    const handleDeleteImage = async () => {
-      try {
-        if (!image) {
-          handleCamera(setImage);
-          return;
-        }
+  // const ImageCard = ({ image, setImage }) => {
+  //   const handleDeleteImage = async () => {
+  //     try {
+  //       if (!image) {
+  //         handleCamera(setImage);
+  //         return;
+  //       }
 
-        if (!image.id) {
-          return setImage("");
-        }
+  //       if (!image.id) {
+  //         return setImage("");
+  //       }
 
-        // Delete the image from the backend
-        const res = await apis.document.deleteById(image.id);
+  //       // Delete the image from the backend
+  //       const res = await apis.document.deleteById(image.id);
 
-        // Update the UI by removing the deleted image from the imageList
-        setImageList(imageList.filter((img) => img.id !== image.id));
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  //       // Update the UI by removing the deleted image from the imageList
+  //       setImageList(imageList.filter((img) => img.id !== image.id));
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
 
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          if (image !== "") return setImage("");
-          handleCamera(setImage);
-        }}
-        style={styles.addPhoto}
-      >
-        {image === "" ? (
-          <View style={{ alignItems: "center" }}>
-            <Plus />
-          </View>
-        ) : (
-          <ImageBackground
-            style={styles.photo}
-            imageStyle={{ borderRadius: 8 }}
-            source={{ uri: image && image.link ? image.link : image }}
-          >
-            <Pressable onPress={handleDeleteImage}>
-              <Close style={{ bottom: 35, left: 35 }} />
-            </Pressable>
-          </ImageBackground>
-        )}
-      </TouchableOpacity>
-    );
-  };
+  //   return (
+  //     <TouchableOpacity
+  //       onPress={() => {
+  //         if (image !== "") return setImage("");
+  //         handleCamera(setImage);
+  //       }}
+  //       style={styles.addPhoto}
+  //     >
+  //       {image === "" ? (
+  //         <View style={{ alignItems: "center" }}>
+  //           <Plus />
+  //         </View>
+  //       ) : (
+  //         <ImageBackground
+  //           style={styles.photo}
+  //           imageStyle={{ borderRadius: 8 }}
+  //           source={{ uri: image && image.link ? image.link : image }}
+  //         >
+  //           <Pressable onPress={handleDeleteImage}>
+  //             <Close style={{ bottom: 35, left: 35 }} />
+  //           </Pressable>
+  //         </ImageBackground>
+  //       )}
+  //     </TouchableOpacity>
+  //   );
+  // };
 
-  const SelectButton = ({ image, setImage }) => {
-    return (
-      <Button
-        size="xs"
-        w={79}
-        h={37}
-        borderRadius={8}
-        backgroundColor={"#6C1B9E"}
-        margin={2}
-        onPress={() => {
-          if (image !== "") return setImage("");
-          handleCamera(setImage);
-        }}
-      >
-        <Text
-          fontWeight="300"
-          fontSize={14}
-          lineHeight={21}
-          style={{ color: "#FFF" }}
-        >
-          Select
-        </Text>
-      </Button>
-    );
-  };
+  // const SelectButton = ({ image, setImage }) => {
+  //   return (
+  //     <Button
+  //       size="xs"
+  //       w={79}
+  //       h={37}
+  //       borderRadius={8}
+  //       backgroundColor={"#6C1B9E"}
+  //       margin={2}
+  //       onPress={() => {
+  //         if (image !== "") return setImage("");
+  //         handleCamera(setImage);
+  //       }}
+  //     >
+  //       <Text
+  //         fontWeight="300"
+  //         fontSize={14}
+  //         lineHeight={21}
+  //         style={{ color: "#FFF" }}
+  //       >
+  //         Select
+  //       </Text>
+  //     </Button>
+  //   );
+  // };
 
   const renderItem = ({ item }) => {
     return (
@@ -359,9 +371,9 @@ const VendorEdit = ({ route, navigation }) => {
 
       // console.log("UPDATE", res);
 
-      if (avatar) {
+      if (selectedPhoto[0].node.image.uri) {
         const avatarRes = await apis.vendor.UploadAvatar({
-          uri: avatar,
+          uri: selectedPhoto[0].node.image.uri,
           id: vendor[0]?.id,
         });
       }

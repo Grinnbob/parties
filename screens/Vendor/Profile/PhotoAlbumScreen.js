@@ -46,10 +46,6 @@ const PhotoAlbumScreen = ({ route, navigation }) => {
     types.albumType.searchEditList.default
   );
 
-  const [photoAlbum, setPhotoAlbum] = useGlobalState(
-    types.albumType.photoalbum.key,
-    types.albumType.photoalbum.default
-  );
   const [selectedPhoto, setSelectedPhoto] = useGlobalState(
     types.albumType.selectedphoto.key,
     types.albumType.selectedphoto.default

@@ -34,11 +34,6 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import Config from "react-native-config";
 import SearchModal from "../../components/Modal/SearchModal";
 import loadApp from "../../navigation/loadApp";
-import CustomCameraSelect from "./Profile/component/CustomCameraSelect";
-import StaggeredList from "@mindinventory/react-native-stagger-view";
-import { useCameraRoll } from "@react-native-camera-roll/camera-roll";
-
-const width = Dimensions.get("screen").width;
 
 const VendorCreate = () => {
   const toast = useToast();
@@ -79,34 +74,6 @@ const VendorCreate = () => {
     StateTypes.vendorCreateList.key,
     StateTypes.vendorCreateList.default
   );
-  const [photos, getPhotos, save] = useCameraRoll();
-
-  const handleCameraRoll = () => {
-    getPhotos();
-  };
-
-  useEffect(() => {
-    handleCameraRoll();
-  }, [route]);
-
-  useEffect(() => {
-    setPhotoAlbum(photos.edges);
-  }, [photos]);
-
-  useEffect(() => {
-    const temp = [];
-
-    for (const el of photoAlbum) {
-      temp.push({
-        width: (width - 18) / 2,
-        height: Number(Math.random() * 20 + 12) * 10,
-        backgroundColor: "gray",
-        margin: 4,
-        borderRadius: 18,
-      });
-    }
-    setImageStyles([...temp]);
-  }, [photoAlbum]);
 
   useEffect(() => {
     setDistance(serviceArea);
@@ -138,22 +105,26 @@ const VendorCreate = () => {
   //   }
   // };
 
-  const handleAvatar = async () => {
-    try {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-      if (result.canceled) return;
+  // const handleAvatar = async () => {
+  //   try {
+  //     let result = await ImagePicker.launchImageLibraryAsync({
+  //       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  //       allowsEditing: true,
+  //       aspect: [4, 3],
+  //       quality: 1,
+  //     });
+  //     if (result.canceled) return;
 
-      if (!result.canceled) {
-        setAvatar(result.assets[0].uri);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  //     if (!result.canceled) {
+  //       setAvatar(result.assets[0].uri);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const handleAvatar = () => {
+    navigation.navigate("Camera", { success: true });
   };
 
   const AvatarImage = ({ image, setImage }) => {
