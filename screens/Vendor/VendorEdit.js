@@ -453,10 +453,16 @@ const VendorEdit = ({ route, navigation }) => {
             >
               <View>
                 <View style={styles.accessoryPosition}>
-                  <TouchableOpacity onPress={() => navigation.pop()}>
+                  <TouchableOpacity
+                    onPress={() => navigation.pop()}
+                    hitSlop={20}
+                  >
                     <Back />
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => navigation.pop()}>
+                  <TouchableOpacity
+                    onPress={() => navigation.pop()}
+                    hitSlop={20}
+                  >
                     <X />
                   </TouchableOpacity>
                 </View>

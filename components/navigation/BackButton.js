@@ -15,6 +15,7 @@ const BackButton = ({ path }) => {
           : () => navigation.pop()
       }
       style={{ padding: 5 }}
+      hitSlop={20}
     >
       <Back />
     </TouchableOpacity>

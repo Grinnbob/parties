@@ -10,6 +10,7 @@ const VendorBackButton = ({ path, navigation }) => {
   return (
     <TouchableOpacity
       onPress={path ? navigation.goBack() : toggleDrawer}
+      hitSlop={20}
       // onPress={toggleDrawer}
       style={{ padding: 5 }}
     >

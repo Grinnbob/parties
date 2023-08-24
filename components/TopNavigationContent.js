@@ -16,6 +16,7 @@ const TopNavigationContent = ({
       <Pressable
         onPress={LeftComponent ? LeftComponent : () => navigation.pop()}
         style={{ marginLeft: 10, ...backStyle }}
+        hitSlop={20}
       >
         <Back />
       </Pressable>
