@@ -51,7 +51,7 @@ const VendorReadySell = ({ route }) => {
           <HStack
             justifyContent="flex-end"
             paddingRight={5}
-            paddingBottom={12}
+            marginBottom={45}
             marginTop={10}
           >
             <Close />
