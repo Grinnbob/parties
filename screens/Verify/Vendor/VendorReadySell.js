@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   },
   formbold: {
     marginTop: 10,
-    marginBottom: 10,
+    marginBottom: 20,
     color: "#FFF",
     fontWeight: "700",
   },
