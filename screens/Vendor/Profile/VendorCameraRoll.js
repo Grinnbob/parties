@@ -13,7 +13,7 @@ import { useCameraRoll } from "@react-native-camera-roll/camera-roll";
 
 const width = Dimensions.get("screen").width;
 
-const EditVendorCameraRoll = ({ route, navigation }) => {
+const VendorCameraRoll = ({ route, navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [imageStyles, setImageStyles] = useState([]);
   const [selection, setSelection] = useState([]);
@@ -64,7 +64,13 @@ const EditVendorCameraRoll = ({ route, navigation }) => {
 
   const handleDone = () => {
     setSelectedPhoto(selection);
-    navigation.navigate("Edit");
+    if (route.params.params === "create") {
+      navigation.navigate("VendorCreate");
+    } else if (route.params.params === "verify") {
+      navigation.navigate("VerifyCreate");
+    } else {
+      navigation.navigate("Edit");
+    }
   };
 
   const renderItem = (item, index) => {
@@ -169,4 +175,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EditVendorCameraRoll;
+export default VendorCameraRoll;

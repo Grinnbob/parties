@@ -12,8 +12,7 @@ import Quotes from "../screens/Vendor/Quotes";
 import Services from "../screens/Vendor/Services";
 import PhotoAlbumScreen from "../screens/Vendor/Profile/PhotoAlbumScreen";
 import HelpSearchScreen from "../screens/Host/HelpSearchScreen";
-// import CameraRollScreen from "../screens/Vendor/Profile/CameraRollScreen";
-import EditVendorCameraRoll from "../screens/Vendor/Profile/EditVendorCameraRoll";
+import VendorCameraRoll from "../screens/Vendor/Profile/VendorCameraRoll";
 import VendorEdit from "../screens/Vendor/VendorEdit";
 
 // const BottomTab = createBottomTabNavigator();
@@ -114,7 +113,7 @@ function CalendarNavigator() {
       />
       <CalendarStack.Screen
         name="CameraEdit"
-        component={EditVendorCameraRoll}
+        component={VendorCameraRoll}
         options={{ headerShown: false, gestureEnabled: false }}
       />
     </CalendarStack.Navigator>

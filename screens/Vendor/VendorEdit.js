@@ -188,7 +188,7 @@ const VendorEdit = ({ route, navigation }) => {
   // };
 
   const handleAvatar = () => {
-    navigation.navigate("CameraEdit", { success: true });
+    navigation.navigate("CameraEdit", { pararms: "Edit" });
   };
 
   const AvatarImage = ({ image, setImage }) => {

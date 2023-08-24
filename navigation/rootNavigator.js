@@ -13,6 +13,7 @@ import VendorCreate from "../screens/Vendor/VendorCreate";
 import apis from "../apis";
 import layout from "../utils/layout";
 import { ImageBackground } from "react-native";
+import VendorCameraRoll from "../screens/Vendor/Profile/VendorCameraRoll";
 
 const Stack = createStackNavigator();
 
@@ -50,8 +51,25 @@ export default (props) => {
     }
   };
 
+  useEffect(() => {
+    console.log("TOKEN", token);
+  }, [token]);
+
   const vendorCreate = () => {
-    return <VendorCreate />;
+    return (
+      <Stack.Navigator>
+        <Stack.Screen
+          name="VerifyCreate"
+          component={VendorCreate}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="VerifyCameraRoll"
+          component={VendorCameraRoll}
+          options={{ headerShown: false }}
+        />
+      </Stack.Navigator>
+    );
   };
 
   const selectStack = () => {
@@ -119,7 +137,7 @@ export default (props) => {
   };
   return (
     <NavigationContainer theme={DarkTheme}>
-      {vendorEdit ? vendorCreate() : selectStack()}
+      {token !== "auth" && vendorEdit ? vendorCreate() : selectStack()}
     </NavigationContainer>
   );
 };

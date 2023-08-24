@@ -17,6 +17,7 @@ import EnterPhone from "../screens/Vendor/Setting/Verify/EnterPhone";
 import VerifyPhone from "../screens/Vendor/Setting/Verify/VerifyPhone";
 import { Text } from "native-base";
 import VendorBackButton from "../components/navigation/VendorBackButton";
+import VendorCameraRoll from "../screens/Vendor/Profile/VendorCameraRoll";
 
 const Drawer = createDrawerNavigator();
 export default (props) => {
@@ -38,6 +39,11 @@ export default (props) => {
       <Drawer.Screen
         name="AlbumNavigator"
         component={AlbumNavigator}
+        options={{ headerShown: false }}
+      />
+      <Drawer.Screen
+        name="VerifyCameraRoll"
+        component={VendorCameraRoll}
         options={{ headerShown: false }}
       />
       <Drawer.Screen

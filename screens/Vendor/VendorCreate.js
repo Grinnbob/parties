@@ -20,12 +20,8 @@ import apis from "../../apis";
 import { AntDesign } from "@expo/vector-icons";
 import { HStack, Select, VStack, Text, useToast } from "native-base";
 import { PhoneMask } from "../../components/Input/BasicMasks";
-import * as ImagePicker from "expo-image-picker";
-import { Input, Button, Box } from "native-base";
 import useGlobalState from "../../stateManagement/hook";
 import StateTypes from "../../stateManagement/StateTypes";
-import Plus from "../../assets/uniongrey.svg";
-import Close from "../../assets/close.svg";
 import Add from "../../assets/addpencil.svg";
 import X from "../../assets/x.svg";
 import Back from "../../assets/back.svg";
@@ -73,6 +69,10 @@ const VendorCreate = () => {
   const [vendorCreateList, setVendorCreateList] = useGlobalState(
     StateTypes.vendorCreateList.key,
     StateTypes.vendorCreateList.default
+  );
+  const [selectedPhoto, setSelectedPhoto] = useGlobalState(
+    StateTypes.selectedphoto.key,
+    StateTypes.selectedphoto.default
   );
 
   useEffect(() => {
@@ -124,19 +124,20 @@ const VendorCreate = () => {
   // };
 
   const handleAvatar = () => {
-    navigation.navigate("Camera", { success: true });
+    navigation.navigate("VerifyCameraRoll", {
+      params: "verify",
+    });
   };
 
-  const AvatarImage = ({ image, setImage }) => {
+  const AvatarImage = () => {
     return (
       <TouchableOpacity
         onPress={() => {
-          if (image !== "") return setImage("");
-          handleAvatar(setImage);
+          handleAvatar();
         }}
         style={styles.avatar}
       >
-        {image === "" ? (
+        {selectedPhoto.length === 0 ? (
           <>
             <ProfileImage />
             <Text style={{ color: "#FFF", fontSize: 16, marginVertical: 20 }}>
@@ -151,13 +152,13 @@ const VendorCreate = () => {
                 height: 110,
               }}
               imageStyle={{ borderRadius: 100 }}
-              source={{ uri: image }}
+              source={{
+                uri: selectedPhoto[0]?.node?.image?.uri,
+              }}
             >
               <Pressable
                 onPress={() => {
-                  if (image !== "") {
-                    handleAvatar(setImage);
-                  }
+                  handleAvatar();
                 }}
                 style={{ position: "absolute" }}
               >
@@ -184,72 +185,76 @@ const VendorCreate = () => {
   };
 
   const handleRemoveTag = async (tag) => {
-    const removed = vendorCreateList.filter((item, i) => item.id !== tag.id);
-    setVendorCreateList(removed);
+    try {
+      const removed = vendorCreateList.filter((item, i) => item.id !== tag.id);
+      setVendorCreateList(removed);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
     grabVendor();
   }, [user]);
 
-  const ImageCard = ({ image, setImage }) => {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          if (image !== "") return setImage("");
-          handleCamera(setImage);
-        }}
-        style={styles.addPhoto}
-      >
-        {image === "" ? (
-          <View style={{ alignItems: "center" }}>
-            <Plus />
-          </View>
-        ) : (
-          <ImageBackground
-            style={styles.photo}
-            imageStyle={{ borderRadius: 8 }}
-            source={{ uri: image }}
-          >
-            <Pressable
-              onPress={() => {
-                if (image) return setImage("");
-                handleCamera(setImage);
-              }}
-            >
-              <Close style={{ bottom: 35, left: 35 }} />
-            </Pressable>
-          </ImageBackground>
-        )}
-      </TouchableOpacity>
-    );
-  };
+  // const ImageCard = ({ image, setImage }) => {
+  //   return (
+  //     <TouchableOpacity
+  //       onPress={() => {
+  //         if (image !== "") return setImage("");
+  //         handleCamera(setImage);
+  //       }}
+  //       style={styles.addPhoto}
+  //     >
+  //       {image === "" ? (
+  //         <View style={{ alignItems: "center" }}>
+  //           <Plus />
+  //         </View>
+  //       ) : (
+  //         <ImageBackground
+  //           style={styles.photo}
+  //           imageStyle={{ borderRadius: 8 }}
+  //           source={{ uri: image }}
+  //         >
+  //           <Pressable
+  //             onPress={() => {
+  //               if (image) return setImage("");
+  //               handleCamera(setImage);
+  //             }}
+  //           >
+  //             <Close style={{ bottom: 35, left: 35 }} />
+  //           </Pressable>
+  //         </ImageBackground>
+  //       )}
+  //     </TouchableOpacity>
+  //   );
+  // };
 
-  const SelectButton = ({ image, setImage }) => {
-    return (
-      <Button
-        size="xs"
-        w={79}
-        h={37}
-        borderRadius={8}
-        backgroundColor={"#6C1B9E"}
-        margin={2}
-        onPress={() => {
-          if (image !== "") return setImage("");
-          handleCamera(setImage);
-        }}
-      >
-        <Text
-          fontWeight="300"
-          fontSize={14}
-          lineHeight={21}
-          style={{ color: "#FFF" }}
-        >
-          Select
-        </Text>
-      </Button>
-    );
-  };
+  // const SelectButton = ({ image, setImage }) => {
+  //   return (
+  //     <Button
+  //       size="xs"
+  //       w={79}
+  //       h={37}
+  //       borderRadius={8}
+  //       backgroundColor={"#6C1B9E"}
+  //       margin={2}
+  //       onPress={() => {
+  //         if (image !== "") return setImage("");
+  //         handleCamera(setImage);
+  //       }}
+  //     >
+  //       <Text
+  //         fontWeight="300"
+  //         fontSize={14}
+  //         lineHeight={21}
+  //         style={{ color: "#FFF" }}
+  //       >
+  //         Select
+  //       </Text>
+  //     </Button>
+  //   );
+  // };
 
   const renderItem = ({ item }) => {
     return (
@@ -303,9 +308,9 @@ const VendorCreate = () => {
         point: { type: "Point", coordinates: [long, lat] },
       });
 
-      if (avatar) {
+      if (selectedPhoto[0]?.node?.image?.uri) {
         const avatarRes = await apis.vendor.UploadAvatar({
-          uri: avatar,
+          uri: selectedPhoto[0]?.node?.image?.uri,
           id: res?.data?.id,
         });
         console.log("AVATAR RES", avatarRes);
@@ -344,6 +349,7 @@ const VendorCreate = () => {
       setIsLoading(false);
       if (res && res.success) {
         setVendorCreateList(StateTypes.vendorCreateList.default);
+        setSelectedPhoto(StateTypes.selectedphoto.default);
         await loadApp(setToken, setUser);
       }
     } catch (error) {
@@ -356,6 +362,10 @@ const VendorCreate = () => {
 
   const handleModal = () => {
     setModalVisible(true);
+  };
+
+  const logout = async () => {
+    await apis.device.deleteById(setToken);
   };
 
   return (
@@ -385,16 +395,10 @@ const VendorCreate = () => {
             >
               <View>
                 <View style={styles.accessoryPosition}>
-                  <TouchableOpacity
-                    onPress={() => navigation.pop()}
-                    hitSlop={20}
-                  >
+                  <TouchableOpacity onPress={logout} hitSlop={20}>
                     <Back />
                   </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => navigation.pop()}
-                    hitSlop={20}
-                  >
+                  <TouchableOpacity onPress={logout} hitSlop={20}>
                     <X />
                   </TouchableOpacity>
                 </View>
@@ -406,7 +410,7 @@ const VendorCreate = () => {
                   </Text>
                 </View>
                 <View style={{ width: "100%", alignItems: "center" }}>
-                  <AvatarImage image={avatar} setImage={setAvatar} />
+                  <AvatarImage />
                 </View>
 
                 <View style={styles.forms}>
@@ -595,7 +599,7 @@ const VendorCreate = () => {
                       </View>
                     )}
                   </Pressable>
-                  <VStack width="90%" marginBottom={5}>
+                  {/* <VStack width="90%" marginBottom={5}>
                     <Text style={styles.subtext}>
                       Please seperate them by a comma
                     </Text>
@@ -635,7 +639,7 @@ const VendorCreate = () => {
                         <ImageCard image={imageFour} setImage={setImageFour} />
                       )}
                     </ScrollView>
-                  </HStack>
+                  </HStack> */}
                   <TextInput
                     style={styles.form}
                     value={ein}
@@ -674,7 +678,7 @@ const VendorCreate = () => {
                 label="Create your profile page"
                 formPosition="unset"
                 disabled={
-                  !avatar ||
+                  !selectedPhoto[0]?.node?.image?.uri ||
                   !serviceName ||
                   !serviceArea ||
                   !serviceDescription ||

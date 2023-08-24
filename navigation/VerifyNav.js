@@ -8,6 +8,7 @@ import OnboardScreen from "../screens/Verify/OnboardScreen";
 import OnboardSelectScreen from "../screens/Verify/Host/OnboardSelectScreen";
 import OnboardHolidaySelect from "../screens/Verify/Host/OnboardHolidaySelect";
 import VendorCreate from "../screens/Verify/Vendor/VendorCreate";
+import VendorCameraRoll from "../screens/Vendor/Profile/VendorCameraRoll";
 import VendorReadySell from "../screens/Verify/Vendor/VendorReadySell";
 import ServicePackageScreen from "../screens/Verify/Vendor/ServicePackage";
 import WelcomeScreen from "../screens/Auth/WelcomeScreen";
@@ -85,6 +86,11 @@ export default (props) => {
       <Stack.Screen
         name="VendorCreate"
         component={VendorCreate}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="VendorCamera"
+        component={VendorCameraRoll}
         options={{ headerShown: false }}
       />
       <Stack.Screen

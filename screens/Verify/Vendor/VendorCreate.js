@@ -57,10 +57,6 @@ const VendorCreate = () => {
   const [long, setLong] = useState(0);
   const [distance, setDistance] = useState(0);
   const [vendorType, setVendorType] = useState([]);
-  const [imageList, setImageList] = useGlobalState(
-    StateTypes.vendorImageList.key,
-    StateTypes.vendorImageList.default
-  );
   const [user, setUser] = useGlobalState(
     StateTypes.user.key,
     StateTypes.user.default
@@ -68,6 +64,11 @@ const VendorCreate = () => {
   const [vendorCreateList, setVendorCreateList] = useGlobalState(
     StateTypes.vendorCreateList.key,
     StateTypes.vendorCreateList.default
+  );
+
+  const [selectedPhoto, setSelectedPhoto] = useGlobalState(
+    StateTypes.selectedphoto.key,
+    StateTypes.selectedphoto.default
   );
 
   useEffect(() => {
@@ -81,53 +82,58 @@ const VendorCreate = () => {
   //   setImageFour(imageList[3] ? imageList[3] : "");
   // }, [imageList]);
 
-  const handleCamera = async (setter) => {
-    try {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-      if (result.canceled) return;
-      // console.log("results", result.assets[0]);
+  // const handleCamera = async (setter) => {
+  //   try {
+  //     let result = await ImagePicker.launchImageLibraryAsync({
+  //       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  //       allowsEditing: true,
+  //       aspect: [4, 3],
+  //       quality: 1,
+  //     });
+  //     if (result.canceled) return;
+  //     // console.log("results", result.assets[0]);
 
-      if (!result.canceled) {
-        setter(result.assets[0].uri);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  //     if (!result.canceled) {
+  //       setter(result.assets[0].uri);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // const handleAvatar = async () => {
+  //   try {
+  //     let result = await ImagePicker.launchImageLibraryAsync({
+  //       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  //       allowsEditing: true,
+  //       aspect: [4, 3],
+  //       quality: 1,
+  //     });
+  //     if (result.canceled) return;
+
+  //     if (!result.canceled) {
+  //       setAvatar(result.assets[0].uri);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const handleAvatar = () => {
+    navigation.navigate("VendorCamera", {
+      params: "create",
+    });
   };
 
-  const handleAvatar = async () => {
-    try {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-      if (result.canceled) return;
-
-      if (!result.canceled) {
-        setAvatar(result.assets[0].uri);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const AvatarImage = ({ image, setImage }) => {
+  const AvatarImage = () => {
     return (
       <TouchableOpacity
         onPress={() => {
-          if (image !== "") return setImage("");
-          handleAvatar(setImage);
+          handleAvatar();
         }}
         style={styles.avatar}
       >
-        {image === "" ? (
+        {selectedPhoto.length === 0 ? (
           <>
             <ProfileImage />
             <Text style={{ color: "#FFF", fontSize: 16, marginVertical: 20 }}>
@@ -142,13 +148,13 @@ const VendorCreate = () => {
                 height: 110,
               }}
               imageStyle={{ borderRadius: 100 }}
-              source={{ uri: image }}
+              source={{
+                uri: selectedPhoto[0]?.node?.image?.uri,
+              }}
             >
               <Pressable
                 onPress={() => {
-                  if (image !== "") {
-                    handleAvatar(setImage);
-                  }
+                  handleAvatar();
                 }}
                 style={{ position: "absolute" }}
               >
@@ -175,72 +181,76 @@ const VendorCreate = () => {
   };
 
   const handleRemoveTag = async (tag) => {
-    const removed = vendorCreateList.filter((item, i) => item.id !== tag.id);
-    setVendorCreateList(removed);
+    try {
+      const removed = vendorCreateList.filter((item, i) => item.id !== tag.id);
+      setVendorCreateList(removed);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
     grabVendor();
   }, [user]);
 
-  const ImageCard = ({ image, setImage }) => {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          if (image !== "") return setImage("");
-          handleCamera(setImage);
-        }}
-        style={styles.addPhoto}
-      >
-        {image === "" ? (
-          <View style={{ alignItems: "center" }}>
-            <Plus />
-          </View>
-        ) : (
-          <ImageBackground
-            style={styles.photo}
-            imageStyle={{ borderRadius: 8 }}
-            source={{ uri: image }}
-          >
-            <Pressable
-              onPress={() => {
-                if (image) return setImage("");
-                handleCamera(setImage);
-              }}
-            >
-              <Close style={{ bottom: 35, left: 35 }} />
-            </Pressable>
-          </ImageBackground>
-        )}
-      </TouchableOpacity>
-    );
-  };
+  // const ImageCard = ({ image, setImage }) => {
+  //   return (
+  //     <TouchableOpacity
+  //       onPress={() => {
+  //         if (image !== "") return setImage("");
+  //         handleCamera(setImage);
+  //       }}
+  //       style={styles.addPhoto}
+  //     >
+  //       {image === "" ? (
+  //         <View style={{ alignItems: "center" }}>
+  //           <Plus />
+  //         </View>
+  //       ) : (
+  //         <ImageBackground
+  //           style={styles.photo}
+  //           imageStyle={{ borderRadius: 8 }}
+  //           source={{ uri: image }}
+  //         >
+  //           <Pressable
+  //             onPress={() => {
+  //               if (image) return setImage("");
+  //               handleCamera(setImage);
+  //             }}
+  //           >
+  //             <Close style={{ bottom: 35, left: 35 }} />
+  //           </Pressable>
+  //         </ImageBackground>
+  //       )}
+  //     </TouchableOpacity>
+  //   );
+  // };
 
-  const SelectButton = ({ image, setImage }) => {
-    return (
-      <Button
-        size="xs"
-        w={79}
-        h={37}
-        borderRadius={8}
-        backgroundColor={"#6C1B9E"}
-        margin={2}
-        onPress={() => {
-          if (image !== "") return setImage("");
-          handleCamera(setImage);
-        }}
-      >
-        <Text
-          fontWeight="300"
-          fontSize={14}
-          lineHeight={21}
-          style={{ color: "#FFF" }}
-        >
-          Select
-        </Text>
-      </Button>
-    );
-  };
+  // const SelectButton = ({ image, setImage }) => {
+  //   return (
+  //     <Button
+  //       size="xs"
+  //       w={79}
+  //       h={37}
+  //       borderRadius={8}
+  //       backgroundColor={"#6C1B9E"}
+  //       margin={2}
+  //       onPress={() => {
+  //         if (image !== "") return setImage("");
+  //         handleCamera(setImage);
+  //       }}
+  //     >
+  //       <Text
+  //         fontWeight="300"
+  //         fontSize={14}
+  //         lineHeight={21}
+  //         style={{ color: "#FFF" }}
+  //       >
+  //         Select
+  //       </Text>
+  //     </Button>
+  //   );
+  // };
 
   const renderItem = ({ item }) => {
     return (
@@ -302,9 +312,9 @@ const VendorCreate = () => {
       });
       console.log("KEY", key);
 
-      if (avatar) {
+      if (selectedPhoto[0]?.node?.image?.uri) {
         const avatarRes = await apis.vendor.UploadAvatar({
-          uri: avatar,
+          uri: selectedPhoto[0]?.node?.image?.uri,
           id: res?.data?.id,
         });
       }
@@ -338,6 +348,7 @@ const VendorCreate = () => {
       setIsLoading(false);
       if (res && res.success) {
         setVendorCreateList(StateTypes.vendorCreateList.default);
+        setSelectedPhoto(StateTypes.selectedphoto.default);
         navigation.navigate("VendorReadySell", { vendorId: res?.data?.id });
       }
     } catch (error) {
@@ -672,7 +683,7 @@ const VendorCreate = () => {
                 label="Create your profile page"
                 formPosition="unset"
                 disabled={
-                  !avatar ||
+                  !selectedPhoto[0]?.node?.image?.uri ||
                   !serviceName ||
                   !serviceArea ||
                   !serviceDescription ||
