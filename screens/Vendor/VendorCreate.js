@@ -9,6 +9,7 @@ import {
   ImageBackground,
   Pressable,
   FlatList,
+  Dimensions,
   KeyboardAvoidingView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -33,6 +34,11 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import Config from "react-native-config";
 import SearchModal from "../../components/Modal/SearchModal";
 import loadApp from "../../navigation/loadApp";
+import CustomCameraSelect from "./Profile/component/CustomCameraSelect";
+import StaggeredList from "@mindinventory/react-native-stagger-view";
+import { useCameraRoll } from "@react-native-camera-roll/camera-roll";
+
+const width = Dimensions.get("screen").width;
 
 const VendorCreate = () => {
   const toast = useToast();
@@ -57,10 +63,10 @@ const VendorCreate = () => {
   const [distance, setDistance] = useState(0);
   const [long, setLong] = useState(0);
   const [vendorType, setVendorType] = useState([]);
-  const [imageList, setImageList] = useGlobalState(
-    StateTypes.vendorImageList.key,
-    StateTypes.vendorImageList.default
-  );
+  // const [imageList, setImageList] = useGlobalState(
+  //   StateTypes.vendorImageList.key,
+  //   StateTypes.vendorImageList.default
+  // );
   const [user, setUser] = useGlobalState(
     StateTypes.user.key,
     StateTypes.user.default
@@ -73,6 +79,34 @@ const VendorCreate = () => {
     StateTypes.vendorCreateList.key,
     StateTypes.vendorCreateList.default
   );
+  const [photos, getPhotos, save] = useCameraRoll();
+
+  const handleCameraRoll = () => {
+    getPhotos();
+  };
+
+  useEffect(() => {
+    handleCameraRoll();
+  }, [route]);
+
+  useEffect(() => {
+    setPhotoAlbum(photos.edges);
+  }, [photos]);
+
+  useEffect(() => {
+    const temp = [];
+
+    for (const el of photoAlbum) {
+      temp.push({
+        width: (width - 18) / 2,
+        height: Number(Math.random() * 20 + 12) * 10,
+        backgroundColor: "gray",
+        margin: 4,
+        borderRadius: 18,
+      });
+    }
+    setImageStyles([...temp]);
+  }, [photoAlbum]);
 
   useEffect(() => {
     setDistance(serviceArea);
@@ -85,24 +119,24 @@ const VendorCreate = () => {
   //   setImageFour(imageList[3] ? imageList[3] : "");
   // }, [imageList]);
 
-  const handleCamera = async (setter) => {
-    try {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-      if (result.canceled) return;
-      // console.log("results", result.assets[0]);
+  // const handleCamera = async (setter) => {
+  //   try {
+  //     let result = await ImagePicker.launchImageLibraryAsync({
+  //       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  //       allowsEditing: true,
+  //       aspect: [4, 3],
+  //       quality: 1,
+  //     });
+  //     if (result.canceled) return;
+  //     // console.log("results", result.assets[0]);
 
-      if (!result.canceled) {
-        setter(result.assets[0].uri);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //     if (!result.canceled) {
+  //       setter(result.assets[0].uri);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const handleAvatar = async () => {
     try {

@@ -46,9 +46,14 @@ const VendorReadySell = ({ route }) => {
         resizeMode="cover"
         source={require("../../../assets/bg16.png")}
       />
-      <View style={{ flex: 1, justifyContent: "space-around" }}>
+      <View style={{ flex: 1, justifyContent: "space-between" }}>
         <View>
-          <HStack justifyContent="flex-end" paddingRight={5} paddingBottom={12}>
+          <HStack
+            justifyContent="flex-end"
+            paddingRight={5}
+            paddingBottom={12}
+            marginTop={10}
+          >
             <Close />
           </HStack>
           <View style={[styles.titlePosition]}>
@@ -70,8 +75,6 @@ const VendorReadySell = ({ route }) => {
               <Text style={styles.form}>Create service profile page</Text>
               <Text style={styles.formgrey}>Add service package</Text>
               <Text style={styles.formgrey}>Find upcoming parties</Text>
-              <Text style={styles.formgrey}>Submit a quote</Text>
-              <Text style={styles.formgrey}>Start to sell!</Text>
             </View>
           </HStack>
         </View>
@@ -160,7 +163,7 @@ const styles = StyleSheet.create({
   },
   formbold: {
     marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 10,
     color: "#FFF",
     fontWeight: "700",
   },
