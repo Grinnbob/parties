@@ -13,6 +13,7 @@ import Term from "../screens/Setting/Term";
 import { TouchableOpacity } from "native-base";
 import VendorBackButton from "../components/navigation/VendorBackButton";
 import Back from "../assets/back.svg";
+import { Pressable } from "react-native";
 
 const AuthNav = () => {
   return (
@@ -60,7 +61,11 @@ const AuthNav = () => {
         component={Term}
         options={({ navigation }) => ({
           headerShown: true,
-          headerLeft: () => <VendorBackButton navigation={navigation} />,
+          headerLeft: () => (
+            <Pressable onPress={() => navigation.pop()}>
+              <Back />
+            </Pressable>
+          ),
         })}
       />
     </Stack.Navigator>
