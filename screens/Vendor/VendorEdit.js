@@ -518,6 +518,12 @@ const VendorEdit = ({ route, navigation }) => {
                         style={{ right: 20, color: "#FF077E" }}
                       />
                     }
+                    _actionSheetContent={{ bg: "rgba(29, 26, 31, 1)" }}
+                    _item={{
+                      bg: "rgba(29, 26, 31, 1)",
+                      _text: { color: "#FFF" },
+                    }}
+                    _selectedItem={{ bg: "rgba(29, 26, 31, 1)" }}
                     borderColor="rgba(255, 255, 255, 0.2)"
                     borderWidth={1}
                     borderRadius={8}
@@ -619,6 +625,12 @@ const VendorEdit = ({ route, navigation }) => {
                         style={{ right: 20, color: "#FF077E" }}
                       />
                     }
+                    _actionSheetContent={{ bg: "rgba(29, 26, 31, 1)" }}
+                    _item={{
+                      bg: "rgba(29, 26, 31, 1)",
+                      _text: { color: "#FFF" },
+                    }}
+                    _selectedItem={{ bg: "rgba(29, 26, 31, 1)" }}
                     borderColor="rgba(255, 255, 255, 0.2)"
                     borderWidth={1}
                     borderRadius={8}
