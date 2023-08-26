@@ -440,10 +440,10 @@ const VendorEdit = ({ route, navigation }) => {
 
   return (
     <>
-      <SearchVendorEditModal
+      {/* <SearchVendorEditModal
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
-      />
+      /> */}
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : null}
@@ -671,7 +671,7 @@ const VendorEdit = ({ route, navigation }) => {
                     value={serviceDescription}
                     onChangeText={(text) => setServiceDescription(text)}
                   />
-                  <Pressable onPress={handleModal}>
+                  <Pressable onPress={() => navigation.navigate("SearchModal")}>
                     {vendorKeyList && vendorKeyList.length > 0 ? (
                       <View style={styles.form}>
                         <View

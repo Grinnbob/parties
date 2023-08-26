@@ -1,14 +1,5 @@
 import React, { useState, useRef } from "react";
-import {
-  Image,
-  StyleSheet,
-  Text,
-  View,
-  Modal,
-  TouchableOpacity,
-  Pressable,
-  PanResponder,
-} from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { FlatList, Input } from "native-base";
 import StateTypes from "../../stateManagement/StateTypes";
 import useGlobalState from "../../stateManagement/hook";
@@ -59,89 +50,51 @@ const SearchVendorEditModal = ({ modalVisible, setModalVisible }) => {
     }
   };
 
-  // Create a ref to the modal view
-  const modalRef = useRef(null);
-
-  const panResponder = useRef(
-    PanResponder.create({
-      onMoveShouldSetPanResponder: (_, gestureState) => {
-        // Only capture vertical swipes (up and down)
-        return Math.abs(gestureState.dy) > Math.abs(gestureState.dx);
-      },
-      onPanResponderMove: (_, gestureState) => {
-        // Nothing to do here; just needed to handle the responder move event
-      },
-      onPanResponderRelease: (_, gestureState) => {
-        // Get the swipe direction and distance
-        const swipeDirection = gestureState.dy > 0 ? "down" : "up";
-        const swipeDistance = Math.abs(gestureState.dy);
-
-        // Calculate the threshold for considering the swipe as a close action
-        const closeThreshold = 80;
-
-        if (swipeDirection === "down" && swipeDistance > closeThreshold) {
-          // If swiped down more than the threshold, close the modal
-          setModalVisible(false);
-        }
-      },
-    })
-  ).current;
-
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={modalVisible}
-      onRequestClose={() => {
-        setModalVisible(!modalVisible);
-      }}
-    >
-      <View style={styles.container} {...panResponder.panHandlers}>
-        <View
-          style={{
-            height: "70%",
-            marginTop: "auto",
-            backgroundColor: "rgba(29, 26, 31, 1)",
-            borderRadius: 20,
-          }}
-          ref={modalRef}
-        >
-          <SearchBar
-            placeholder="Search"
-            placeholderTextColor={"#8A8A8A"}
-            onChangeText={(text) => setSearchTerm(text)}
-            value={searchTerm}
-            onDebounce={onDebounce}
-            onCancel={handleCancel}
-            cancelEnabled={searchTerm.length}
-            delay={1000}
-          />
-          <FlatList
-            data={searchResult}
-            renderItem={({ item }) => (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View
+        style={{
+          height: "70%",
+          marginTop: "auto",
+          backgroundColor: "rgba(29, 26, 31, 1)",
+          borderRadius: 20,
+        }}
+      >
+        <SearchBar
+          placeholder="Search"
+          placeholderTextColor={"#8A8A8A"}
+          onChangeText={(text) => setSearchTerm(text)}
+          value={searchTerm}
+          onDebounce={onDebounce}
+          onCancel={handleCancel}
+          cancelEnabled={searchTerm.length}
+          delay={1000}
+        />
+        <FlatList
+          data={searchResult}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={styles.border}
+              onPress={() => setSearch(item)}
+            >
+              <Text style={styles.search}>{item.name}</Text>
+            </TouchableOpacity>
+          )}
+          ListEmptyComponent={() =>
+            debouceValue.length ? (
               <TouchableOpacity
                 style={styles.border}
-                onPress={() => setSearch(item)}
+                onPress={() => setSearch({ name: debouceValue })}
               >
-                <Text style={styles.search}>{item.name}</Text>
+                <Text style={styles.search}>Add new tag</Text>
               </TouchableOpacity>
-            )}
-            ListEmptyComponent={() =>
-              debouceValue.length ? (
-                <TouchableOpacity
-                  style={styles.border}
-                  onPress={() => setSearch({ name: debouceValue })}
-                >
-                  <Text style={styles.search}>Add new tag</Text>
-                </TouchableOpacity>
-              ) : (
-                <View />
-              )
-            }
-          />
-        </View>
+            ) : (
+              <View />
+            )
+          }
+        />
       </View>
-    </Modal>
+    </View>
   );
 };
 

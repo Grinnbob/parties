@@ -14,6 +14,7 @@ import PhotoAlbumScreen from "../screens/Vendor/Profile/PhotoAlbumScreen";
 import HelpSearchScreen from "../screens/Host/HelpSearchScreen";
 import VendorCameraRoll from "../screens/Vendor/Profile/VendorCameraRoll";
 import VendorEdit from "../screens/Vendor/VendorEdit";
+import SearchVendorEditModal from "../components/Modal/SearchVendorEditModal";
 
 // const BottomTab = createBottomTabNavigator();
 
@@ -115,6 +116,15 @@ function CalendarNavigator() {
         name="CameraEdit"
         component={VendorCameraRoll}
         options={{ headerShown: false, gestureEnabled: false }}
+      />
+      <CalendarStack.Screen
+        name="SearchModal"
+        component={SearchVendorEditModal}
+        options={{
+          headerShown: false,
+          // gestureEnabled: true,
+          presentation: "modal",
+        }}
       />
     </CalendarStack.Navigator>
   );
