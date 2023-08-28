@@ -19,19 +19,14 @@ import apis from "../../apis";
 import { AntDesign } from "@expo/vector-icons";
 import { HStack, Select, VStack, Text, useToast } from "native-base";
 import { PhoneMask } from "../../components/Input/BasicMasks";
-import * as ImagePicker from "expo-image-picker";
-import { Input, Button, Box } from "native-base";
 import useGlobalState from "../../stateManagement/hook";
 import StateTypes from "../../stateManagement/StateTypes";
-import Plus from "../../assets/uniongrey.svg";
-import Close from "../../assets/close.svg";
 import Add from "../../assets/addpencil.svg";
 import X from "../../assets/x.svg";
 import Back from "../../assets/back.svg";
 import Cancel from "../../assets/cancel.svg";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Config from "react-native-config";
-import SearchVendorEditModal from "../../components/Modal/SearchVendorEditModal";
 
 const VendorEdit = ({ route, navigation }) => {
   const [imageList, setImageList] = useGlobalState(
@@ -58,7 +53,6 @@ const VendorEdit = ({ route, navigation }) => {
   const toast = useToast();
   const ref = useRef();
   const [isLoading, setIsLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
   const [serviceName, setServiceName] = useState("");
 
   const [serviceInitialType, setServiceInitialType] = useState("");
@@ -90,6 +84,7 @@ const VendorEdit = ({ route, navigation }) => {
   //   setImageFour(imageList ? (imageList[3] ? imageList[3] : "") : "");
   // }, [imageList]);
 
+  // this effect is causing a rerender issue
   useFocusEffect(
     React.useCallback(() => {
       getVendorInfo();
@@ -104,7 +99,7 @@ const VendorEdit = ({ route, navigation }) => {
   const getVendorInfo = async () => {
     try {
       const res = await apis.vendor.getById(vendor[0].id);
-      // console.log("RES addy", res.data);
+      console.log("API CALLIN...");
       setLoading(true);
       if (res && res.data) {
         setServiceName(res.data.name);
@@ -120,7 +115,7 @@ const VendorEdit = ({ route, navigation }) => {
         setImageList(res.data.Documents);
         setServiceInitialType(res.data.listOfType[0].id);
         setService(res.data.listOfType[0].title);
-        setVendorKeyList(res.data.listOfKeys);
+        // setVendorKeyList(res.data.listOfKeys);
         setLoading(false);
       }
       setLoading(false);
@@ -189,56 +184,6 @@ const VendorEdit = ({ route, navigation }) => {
 
   const handleAvatar = () => {
     navigation.navigate("CameraEdit", { pararms: "Edit" });
-  };
-
-  const AvatarImage = ({ image, setImage }) => {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          if (image !== "") return setImage("");
-          handleAvatar(setImage);
-        }}
-        style={styles.avatar}
-      >
-        {image === "" ? (
-          <>
-            <ProfileImage />
-            <Text style={{ color: "#FFF", fontSize: 16, marginVertical: 20 }}>
-              Profile Image
-            </Text>
-          </>
-        ) : (
-          <>
-            <ImageBackground
-              style={{
-                width: 110,
-                height: 110,
-              }}
-              imageStyle={{ borderRadius: 100 }}
-              source={{
-                uri: selectedPhoto[0]?.node?.image?.uri
-                  ? selectedPhoto[0]?.node?.image?.uri
-                  : avatar,
-              }}
-            >
-              <Pressable
-                onPress={() => {
-                  if (image !== "") {
-                    handleAvatar(setImage);
-                  }
-                }}
-                style={{ position: "absolute" }}
-              >
-                <Add style={{ top: 95, left: 43 }} />
-              </Pressable>
-            </ImageBackground>
-            <Text style={{ color: "#FFF", fontSize: 16, marginVertical: 20 }}>
-              Profile Image
-            </Text>
-          </>
-        )}
-      </TouchableOpacity>
-    );
   };
 
   // const ImageCard = ({ image, setImage }) => {
@@ -434,23 +379,15 @@ const VendorEdit = ({ route, navigation }) => {
     }
   };
 
-  const handleModal = () => {
-    setModalVisible(true);
-  };
-
   return (
     <>
-      {/* <SearchVendorEditModal
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-      /> */}
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : null}
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
       >
         <ScrollView
-          style={{ backgroundColor: "#000" }}
+          style={{ backgroundColor: "#000", width: "100%" }}
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.signupscreen}>
@@ -459,7 +396,7 @@ const VendorEdit = ({ route, navigation }) => {
               resizeMode="cover"
               source={require("../../assets/bg16.png")}
             />
-            <View style={[styles.alertmodalbg, styles.alertmodalbgLayout]} />
+            {/* <View style={[styles.alertmodalbg, styles.alertmodalbgLayout]} /> */}
             <View
               style={{ flex: 1, justifyContent: "space-between", padding: 10 }}
             >
@@ -486,7 +423,36 @@ const VendorEdit = ({ route, navigation }) => {
                   </Text>
                 </View>
                 <View style={{ width: "100%", alignItems: "center" }}>
-                  <AvatarImage image={avatar} setImage={setAvatar} />
+                  <TouchableOpacity
+                    onPress={handleAvatar}
+                    style={styles.avatar}
+                  >
+                    <>
+                      <ImageBackground
+                        style={{
+                          width: 110,
+                          height: 110,
+                        }}
+                        imageStyle={{ borderRadius: 100 }}
+                        source={{
+                          uri: selectedPhoto[0]?.node?.image?.uri
+                            ? selectedPhoto[0]?.node?.image?.uri
+                            : avatar,
+                        }}
+                      >
+                        <Add style={{ top: 95, left: 43 }} />
+                      </ImageBackground>
+                      <Text
+                        style={{
+                          color: "#FFF",
+                          fontSize: 16,
+                          marginVertical: 20,
+                        }}
+                      >
+                        Profile Image
+                      </Text>
+                    </>
+                  </TouchableOpacity>
                 </View>
 
                 <View style={styles.forms}>

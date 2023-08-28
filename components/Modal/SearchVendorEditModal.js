@@ -6,7 +6,7 @@ import useGlobalState from "../../stateManagement/hook";
 import apis from "../../apis";
 import SearchBar from "../Input/SearchBar";
 
-const SearchVendorEditModal = ({ modalVisible, setModalVisible }) => {
+const SearchVendorEditModal = ({ navigation }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [searchResult, setSearchResult] = useState([]);
@@ -18,7 +18,7 @@ const SearchVendorEditModal = ({ modalVisible, setModalVisible }) => {
   const setSearch = async (item) => {
     if (item.id) {
       setVendorKeyList((vendorKeyList) => [...vendorKeyList, item]);
-      setModalVisible(false);
+      navigation.pop();
       setSearchTerm("");
       return;
     }
@@ -26,8 +26,8 @@ const SearchVendorEditModal = ({ modalVisible, setModalVisible }) => {
     const res = await apis.key.create(item);
 
     setVendorKeyList((vendorKeyList) => [...vendorKeyList, res.data]);
-    setModalVisible(false);
     setSearchTerm("");
+    navigation.pop();
   };
 
   const handleCancel = () => {
