@@ -84,13 +84,10 @@ const VendorEdit = ({ route, navigation }) => {
   //   setImageFour(imageList ? (imageList[3] ? imageList[3] : "") : "");
   // }, [imageList]);
 
-  // this effect is causing a rerender issue
-  useFocusEffect(
-    React.useCallback(() => {
-      getVendorInfo();
-      grabVendor();
-    }, [user])
-  );
+  useEffect(() => {
+    getVendorInfo();
+    grabVendor();
+  }, [user]);
 
   useEffect(() => {
     setDistance(serviceArea);
@@ -99,7 +96,6 @@ const VendorEdit = ({ route, navigation }) => {
   const getVendorInfo = async () => {
     try {
       const res = await apis.vendor.getById(vendor[0].id);
-      console.log("API CALLIN...");
       setLoading(true);
       if (res && res.data) {
         setServiceName(res.data.name);
@@ -115,7 +111,7 @@ const VendorEdit = ({ route, navigation }) => {
         setImageList(res.data.Documents);
         setServiceInitialType(res.data.listOfType[0].id);
         setService(res.data.listOfType[0].title);
-        // setVendorKeyList(res.data.listOfKeys);
+        setVendorKeyList(res.data.listOfKeys);
         setLoading(false);
       }
       setLoading(false);
@@ -296,7 +292,7 @@ const VendorEdit = ({ route, navigation }) => {
     try {
       setIsLoading(true);
       const res = await apis.vendor.update({
-        id: vendor[0].id,
+        id: vendor[0]?.id,
         name: serviceName,
         description: serviceDescription,
         phoneNumber: phone,
@@ -316,9 +312,9 @@ const VendorEdit = ({ route, navigation }) => {
 
       // console.log("UPDATE", res);
 
-      if (selectedPhoto[0].node.image.uri) {
+      if (selectedPhoto[0]?.node?.image?.uri) {
         const avatarRes = await apis.vendor.UploadAvatar({
-          uri: selectedPhoto[0].node.image.uri,
+          uri: selectedPhoto[0]?.node?.image?.uri,
           id: vendor[0]?.id,
         });
       }
@@ -342,12 +338,12 @@ const VendorEdit = ({ route, navigation }) => {
 
       const key = await apis.joinVendorKey.createEditMulti({
         list: vendorKeyList,
-        VendorId: vendor[0].id,
+        VendorId: vendor[0]?.id,
       });
 
       if (serviceType && serviceInitialType) {
         const joinVendorType = await apis.joinVendorVendorType.update({
-          id: vendor[0].id,
+          id: vendor[0]?.id,
           VendorTypeId: serviceType,
           PrevVendorType: serviceInitialType,
         });
@@ -390,282 +386,271 @@ const VendorEdit = ({ route, navigation }) => {
           style={{ backgroundColor: "#000", width: "100%" }}
           keyboardShouldPersistTaps="handled"
         >
-          <View style={styles.signupscreen}>
-            <Image
-              style={[styles.background, styles.bgIconPosition]}
-              resizeMode="cover"
-              source={require("../../assets/bg16.png")}
-            />
-            {/* <View style={[styles.alertmodalbg, styles.alertmodalbgLayout]} /> */}
-            <View
-              style={{ flex: 1, justifyContent: "space-between", padding: 10 }}
-            >
-              <View>
-                <View style={styles.accessoryPosition}>
-                  <TouchableOpacity
-                    onPress={() => navigation.pop()}
-                    hitSlop={20}
-                  >
-                    <Back />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => navigation.pop()}
-                    hitSlop={20}
-                  >
-                    <X />
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.titlePosition}>
-                  <Text style={styles.title1}>Service Information</Text>
-                  <Text style={[styles.title2, styles.titleLayout]}>
-                    Complete your business profile page to {"\n"}inform people
-                    of the services that you offer.
-                  </Text>
-                </View>
-                <View style={{ width: "100%", alignItems: "center" }}>
-                  <TouchableOpacity
-                    onPress={handleAvatar}
-                    style={styles.avatar}
-                  >
-                    <>
-                      <ImageBackground
-                        style={{
-                          width: 110,
-                          height: 110,
-                        }}
-                        imageStyle={{ borderRadius: 100 }}
-                        source={{
-                          uri: selectedPhoto[0]?.node?.image?.uri
-                            ? selectedPhoto[0]?.node?.image?.uri
-                            : avatar,
-                        }}
-                      >
-                        <Add style={{ top: 95, left: 43 }} />
-                      </ImageBackground>
-                      <Text
-                        style={{
-                          color: "#FFF",
-                          fontSize: 16,
-                          marginVertical: 20,
-                        }}
-                      >
-                        Profile Image
-                      </Text>
-                    </>
-                  </TouchableOpacity>
-                </View>
-
-                <View style={styles.forms}>
-                  <TextInput
-                    style={styles.form}
-                    value={serviceName}
-                    onChangeText={setServiceName}
-                    placeholder="Service Name"
-                    keyboardType="default"
-                    placeholderTextColor="#8a8a8a"
-                  />
-                  <Select
-                    selectedValue={
-                      serviceType ? serviceType : serviceInitialType
-                    }
-                    accessibilityLabel="Choose Service"
-                    placeholderTextColor="#FFF"
-                    dropdownCloseIcon={
-                      <AntDesign
-                        name="down"
-                        size={15}
-                        style={{ right: 20, color: "#FF077E" }}
-                      />
-                    }
-                    dropdownOpenIcon={
-                      <AntDesign
-                        name="down"
-                        size={15}
-                        style={{ right: 20, color: "#FF077E" }}
-                      />
-                    }
-                    _actionSheetContent={{ bg: "rgba(29, 26, 31, 1)" }}
-                    _item={{
-                      bg: "rgba(29, 26, 31, 1)",
-                      _text: { color: "#FFF" },
-                    }}
-                    _selectedItem={{ bg: "rgba(29, 26, 31, 1)" }}
-                    borderColor="rgba(255, 255, 255, 0.2)"
-                    borderWidth={1}
-                    borderRadius={8}
-                    variant="unstyled"
-                    width={327}
-                    fontSize={13}
-                    marginBottom={2}
-                    marginTop={2}
-                    color={"#FFF"}
-                    onValueChange={(itemValue) => setServiceType(itemValue)}
-                  >
-                    {vendorType.map((vendor, i) => {
-                      return (
-                        <Select.Item
-                          label={vendor.title}
-                          value={vendor.id}
-                          key={vendor.id}
-                        />
-                      );
-                    })}
-                  </Select>
-                  <GooglePlacesAutocomplete
-                    ref={ref}
-                    placeholder="Location"
-                    fetchDetails={true}
-                    onPress={(data, details = null) => {
-                      setAddress(details.formatted_address);
-                      setLat(details?.geometry?.location?.lat);
-                      setLong(details?.geometry?.location?.lng);
-                      setCity(
-                        details?.address_components.find((addressComponent) =>
-                          addressComponent.types.includes("locality")
-                        )?.short_name ?? "N/A"
-                      );
-                      setState(
-                        details?.address_components.find((addressComponent) =>
-                          addressComponent.types.includes(
-                            "administrative_area_level_1"
-                          )
-                        )?.short_name ?? "N/A"
-                      );
-                    }}
-                    query={{
-                      key: Config.GOOGLE_MAP_KEY,
-                      language: "en",
-                    }}
-                    textInputProps={{
-                      placeholderTextColor: "#8a8a8a",
-                    }}
-                    styles={{
-                      textInputContainer: {
-                        width: 327,
-                        borderWidth: 1,
-                        borderRadius: 8,
-                        borderColor: "rgba(255, 255, 255, 0.2)",
-                        height: 48,
-                        overflow: "hidden",
-                        fontSize: 14,
-                      },
-                      textInput: {
-                        marginLeft: 0,
-                        marginRight: 0,
-                        height: 46,
-                        backgroundColor: "transparent",
-                        borderRadius: 8,
-                        paddingLeft: 13,
-                        paddingRight: 13,
-                        fontSize: 14,
+          {/* <View style={styles.signupscreen}> */}
+          <Image
+            style={[styles.background, styles.bgIconPosition]}
+            resizeMode="cover"
+            source={require("../../assets/bg16.png")}
+          />
+          {/* <View style={[styles.alertmodalbg, styles.alertmodalbgLayout]} /> */}
+          <View
+            style={{ flex: 1, justifyContent: "space-between", padding: 10 }}
+          >
+            <View>
+              <View style={styles.accessoryPosition}>
+                <TouchableOpacity onPress={() => navigation.pop()} hitSlop={20}>
+                  <Back />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.pop()} hitSlop={20}>
+                  <X />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.titlePosition}>
+                <Text style={styles.title1}>Service Information</Text>
+                <Text style={[styles.title2, styles.titleLayout]}>
+                  Complete your business profile page to {"\n"}inform people of
+                  the services that you offer.
+                </Text>
+              </View>
+              <View style={{ width: "100%", alignItems: "center" }}>
+                <TouchableOpacity onPress={handleAvatar} style={styles.avatar}>
+                  <>
+                    <ImageBackground
+                      style={{
+                        width: 110,
+                        height: 110,
+                      }}
+                      imageStyle={{ borderRadius: 100 }}
+                      source={{
+                        uri: selectedPhoto[0]?.node?.image?.uri
+                          ? selectedPhoto[0]?.node?.image?.uri
+                          : avatar,
+                      }}
+                    >
+                      <Add style={{ top: 95, left: 43 }} />
+                    </ImageBackground>
+                    <Text
+                      style={{
                         color: "#FFF",
-                      },
-                      container: {
-                        width: 327,
-                        fontSize: 14,
-                      },
-                      description: {
-                        fontSize: 14,
-                      },
-                    }}
-                  />
+                        fontSize: 16,
+                        marginVertical: 20,
+                      }}
+                    >
+                      Profile Image
+                    </Text>
+                  </>
+                </TouchableOpacity>
+              </View>
 
-                  <Select
-                    selectedValue={
-                      serviceArea ? serviceArea : distance.toString()
-                    }
-                    accessibilityLabel="Service Area"
-                    // placeholder={serviceAreaLabel}
-                    placeholderTextColor="#FFF"
-                    dropdownCloseIcon={
-                      <AntDesign
-                        name="down"
-                        size={15}
-                        style={{ right: 20, color: "#FF077E" }}
+              <View style={styles.forms}>
+                <TextInput
+                  style={styles.form}
+                  value={serviceName}
+                  onChangeText={setServiceName}
+                  placeholder="Service Name"
+                  keyboardType="default"
+                  placeholderTextColor="#8a8a8a"
+                />
+                <Select
+                  selectedValue={serviceType ? serviceType : serviceInitialType}
+                  accessibilityLabel="Choose Service"
+                  placeholderTextColor="#FFF"
+                  dropdownCloseIcon={
+                    <AntDesign
+                      name="down"
+                      size={15}
+                      style={{ right: 20, color: "#FF077E" }}
+                    />
+                  }
+                  dropdownOpenIcon={
+                    <AntDesign
+                      name="down"
+                      size={15}
+                      style={{ right: 20, color: "#FF077E" }}
+                    />
+                  }
+                  _actionSheetContent={{ bg: "rgba(29, 26, 31, 1)" }}
+                  _item={{
+                    bg: "rgba(29, 26, 31, 1)",
+                    _text: { color: "#FFF" },
+                  }}
+                  _selectedItem={{ bg: "rgba(29, 26, 31, 1)" }}
+                  borderColor="rgba(255, 255, 255, 0.2)"
+                  borderWidth={1}
+                  borderRadius={8}
+                  variant="unstyled"
+                  width={327}
+                  fontSize={13}
+                  marginBottom={2}
+                  marginTop={2}
+                  color={"#FFF"}
+                  onValueChange={(itemValue) => setServiceType(itemValue)}
+                >
+                  {vendorType.map((vendor, i) => {
+                    return (
+                      <Select.Item
+                        label={vendor.title}
+                        value={vendor.id}
+                        key={vendor.id}
                       />
-                    }
-                    dropdownOpenIcon={
-                      <AntDesign
-                        name="down"
-                        size={15}
-                        style={{ right: 20, color: "#FF077E" }}
-                      />
-                    }
-                    _actionSheetContent={{ bg: "rgba(29, 26, 31, 1)" }}
-                    _item={{
-                      bg: "rgba(29, 26, 31, 1)",
-                      _text: { color: "#FFF" },
-                    }}
-                    _selectedItem={{ bg: "rgba(29, 26, 31, 1)" }}
-                    borderColor="rgba(255, 255, 255, 0.2)"
-                    borderWidth={1}
-                    borderRadius={8}
-                    variant="unstyled"
-                    width={327}
-                    marginBottom={2}
-                    marginTop={2}
-                    fontSize={13}
-                    color={"#FFF"}
-                    onValueChange={(itemValue) => setServiceArea(itemValue)}
-                  >
-                    <Select.Item
-                      label={`20 miles from ${city || vendor[0].city}, ${
-                        state || vendor[0].state
-                      }`}
-                      value="20"
-                    />
-                    <Select.Item
-                      label={`30 miles from ${city || vendor[0].city}, ${
-                        state || vendor[0].state
-                      }`}
-                      value="30"
-                    />
-                    <Select.Item
-                      label={`50 miles from ${city || vendor[0].city}, ${
-                        state || vendor[0].state
-                      }`}
-                      value="50"
-                    />
-                  </Select>
-                  <TextInput
-                    style={styles.textarea}
-                    placeholder={"Service Description"}
-                    placeholderTextColor="#8a8a8a"
-                    keyboardType="default"
-                    multiline={true}
-                    maxLength={440}
-                    value={serviceDescription}
-                    onChangeText={(text) => setServiceDescription(text)}
-                  />
-                  <Pressable onPress={() => navigation.navigate("SearchModal")}>
-                    {vendorKeyList && vendorKeyList.length > 0 ? (
-                      <View style={styles.form}>
-                        <View
-                          style={{
-                            width: "100%",
-                            flexDirection: "row",
-                            flexWrap: "wrap",
-                            alignItems: "center",
-                          }}
-                        >
-                          <FlatList
-                            data={vendorKeyList}
-                            renderItem={renderItem}
-                            horizontal={true}
-                            showsHorizontalScrollIndicator={false}
-                          />
-                        </View>
-                      </View>
-                    ) : (
-                      <View style={styles.form}>
-                        <Text color={"#8a8a8a"}>
-                          Please enter 5 of your specialty keywords
-                        </Text>
-                      </View>
-                    )}
-                  </Pressable>
+                    );
+                  })}
+                </Select>
+                <GooglePlacesAutocomplete
+                  ref={ref}
+                  placeholder="Location"
+                  fetchDetails={true}
+                  onPress={(data, details = null) => {
+                    setAddress(details.formatted_address);
+                    setLat(details?.geometry?.location?.lat);
+                    setLong(details?.geometry?.location?.lng);
+                    setCity(
+                      details?.address_components.find((addressComponent) =>
+                        addressComponent.types.includes("locality")
+                      )?.short_name ?? "N/A"
+                    );
+                    setState(
+                      details?.address_components.find((addressComponent) =>
+                        addressComponent.types.includes(
+                          "administrative_area_level_1"
+                        )
+                      )?.short_name ?? "N/A"
+                    );
+                  }}
+                  query={{
+                    key: Config.GOOGLE_MAP_KEY,
+                    language: "en",
+                  }}
+                  textInputProps={{
+                    placeholderTextColor: "#8a8a8a",
+                  }}
+                  styles={{
+                    textInputContainer: {
+                      width: 327,
+                      borderWidth: 1,
+                      borderRadius: 8,
+                      borderColor: "rgba(255, 255, 255, 0.2)",
+                      height: 48,
+                      overflow: "hidden",
+                      fontSize: 14,
+                    },
+                    textInput: {
+                      marginLeft: 0,
+                      marginRight: 0,
+                      height: 46,
+                      backgroundColor: "transparent",
+                      borderRadius: 8,
+                      paddingLeft: 13,
+                      paddingRight: 13,
+                      fontSize: 14,
+                      color: "#FFF",
+                    },
+                    container: {
+                      width: 327,
+                      fontSize: 14,
+                    },
+                    description: {
+                      fontSize: 14,
+                    },
+                  }}
+                />
 
-                  {/* <Box alignItems="center" mt={3}>
+                <Select
+                  selectedValue={
+                    serviceArea ? serviceArea : distance.toString()
+                  }
+                  accessibilityLabel="Service Area"
+                  // placeholder={serviceAreaLabel}
+                  placeholderTextColor="#FFF"
+                  dropdownCloseIcon={
+                    <AntDesign
+                      name="down"
+                      size={15}
+                      style={{ right: 20, color: "#FF077E" }}
+                    />
+                  }
+                  dropdownOpenIcon={
+                    <AntDesign
+                      name="down"
+                      size={15}
+                      style={{ right: 20, color: "#FF077E" }}
+                    />
+                  }
+                  _actionSheetContent={{ bg: "rgba(29, 26, 31, 1)" }}
+                  _item={{
+                    bg: "rgba(29, 26, 31, 1)",
+                    _text: { color: "#FFF" },
+                  }}
+                  _selectedItem={{ bg: "rgba(29, 26, 31, 1)" }}
+                  borderColor="rgba(255, 255, 255, 0.2)"
+                  borderWidth={1}
+                  borderRadius={8}
+                  variant="unstyled"
+                  width={327}
+                  marginBottom={2}
+                  marginTop={2}
+                  fontSize={13}
+                  color={"#FFF"}
+                  onValueChange={(itemValue) => setServiceArea(itemValue)}
+                >
+                  <Select.Item
+                    label={`20 miles from ${city || vendor[0].city}, ${
+                      state || vendor[0].state
+                    }`}
+                    value="20"
+                  />
+                  <Select.Item
+                    label={`30 miles from ${city || vendor[0].city}, ${
+                      state || vendor[0].state
+                    }`}
+                    value="30"
+                  />
+                  <Select.Item
+                    label={`50 miles from ${city || vendor[0].city}, ${
+                      state || vendor[0].state
+                    }`}
+                    value="50"
+                  />
+                </Select>
+                <TextInput
+                  style={styles.textarea}
+                  placeholder={"Service Description"}
+                  placeholderTextColor="#8a8a8a"
+                  keyboardType="default"
+                  multiline={true}
+                  maxLength={440}
+                  value={serviceDescription}
+                  onChangeText={(text) => setServiceDescription(text)}
+                />
+                <Pressable onPress={() => navigation.navigate("SearchModal")}>
+                  {vendorKeyList && vendorKeyList.length > 0 ? (
+                    <View style={styles.form}>
+                      <View
+                        style={{
+                          width: "100%",
+                          flexDirection: "row",
+                          flexWrap: "wrap",
+                          alignItems: "center",
+                        }}
+                      >
+                        <FlatList
+                          data={vendorKeyList}
+                          renderItem={renderItem}
+                          horizontal={true}
+                          showsHorizontalScrollIndicator={false}
+                        />
+                      </View>
+                    </View>
+                  ) : (
+                    <View style={styles.form}>
+                      <Text color={"#8a8a8a"}>
+                        Please enter 5 of your specialty keywords
+                      </Text>
+                    </View>
+                  )}
+                </Pressable>
+
+                {/* <Box alignItems="center" mt={3}>
                     <Input
                       w={327}
                       py="0"
@@ -683,7 +668,7 @@ const VendorEdit = ({ route, navigation }) => {
                       fontSize={14}
                     />
                   </Box> */}
-                  {/* <HStack style={{ width: "100%", marginLeft: 45 }}>
+                {/* <HStack style={{ width: "100%", marginLeft: 45 }}>
                     <ScrollView
                       horizontal={true}
                       showsHorizontalScrollIndicator={false}
@@ -705,66 +690,66 @@ const VendorEdit = ({ route, navigation }) => {
                       )}
                     </ScrollView>
                   </HStack> */}
-                  <TextInput
-                    style={styles.form}
-                    value={ein}
-                    placeholder={"TAX ID/EIN"}
-                    placeholderTextColor="#8a8a8a"
-                    onChangeText={setEin}
-                    maxLength={9}
-                    returnKeyType={"next"}
-                    keyboardType={"phone-pad"}
-                    marginTop={20}
-                  />
+                <TextInput
+                  style={styles.form}
+                  value={ein}
+                  placeholder={"TAX ID/EIN"}
+                  placeholderTextColor="#8a8a8a"
+                  onChangeText={setEin}
+                  maxLength={9}
+                  returnKeyType={"next"}
+                  keyboardType={"phone-pad"}
+                  marginTop={20}
+                />
 
-                  <PhoneMask
-                    value={phone}
-                    onChangeText={(masked) => {
-                      setPhone(masked);
-                    }}
-                    returnKeyType={"next"}
-                    keyboardType={"phone-pad"}
-                    blurOnSubmit={true}
-                    style={styles.form}
-                    placeholder={"Business Phone"}
-                    placeholderTextColor="#8a8a8a"
-                    paddingLeft={13}
-                    fontSize={14}
-                  />
-                </View>
+                <PhoneMask
+                  value={phone}
+                  onChangeText={(masked) => {
+                    setPhone(masked);
+                  }}
+                  returnKeyType={"next"}
+                  keyboardType={"phone-pad"}
+                  blurOnSubmit={true}
+                  style={styles.form}
+                  placeholder={"Business Phone"}
+                  placeholderTextColor="#8a8a8a"
+                  paddingLeft={13}
+                  fontSize={14}
+                />
               </View>
             </View>
-            <View
-              style={{
-                width: "100%",
-                alignItems: "center",
-                marginVertical: 20,
-              }}
-            >
-              <MidGradientButton
-                onPress={handleNext}
-                isLoading={isLoading}
-                label="Create your profile page"
-                formPosition="unset"
-                disabled={
-                  !avatar ||
-                  !serviceName ||
-                  !add ||
-                  !distance ||
-                  !serviceDescription ||
-                  // !serviceInitialType ||
-                  !ein ||
-                  !phone ||
-                  phone.length < 10
-                }
-                formTop="unset"
-                formLeft="unset"
-                formBackgroundColor="rgba(255, 255, 255, 0.1)"
-                formMarginTop="unset"
-                labelColor="#FFF"
-              />
-            </View>
           </View>
+          <View
+            style={{
+              width: "100%",
+              alignItems: "center",
+              marginVertical: 20,
+            }}
+          >
+            <MidGradientButton
+              onPress={handleNext}
+              isLoading={isLoading}
+              label="Create your profile page"
+              formPosition="unset"
+              disabled={
+                !avatar ||
+                !serviceName ||
+                !add ||
+                !distance ||
+                !serviceDescription ||
+                // !serviceInitialType ||
+                !ein ||
+                !phone ||
+                phone.length < 10
+              }
+              formTop="unset"
+              formLeft="unset"
+              formBackgroundColor="rgba(255, 255, 255, 0.1)"
+              formMarginTop="unset"
+              labelColor="#FFF"
+            />
+          </View>
+          {/* </View> */}
         </ScrollView>
       </KeyboardAvoidingView>
     </>

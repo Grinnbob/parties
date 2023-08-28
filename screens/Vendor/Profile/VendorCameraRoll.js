@@ -90,10 +90,6 @@ const VendorCameraRoll = ({ route, navigation }) => {
     );
   };
 
-  const handleUpload = () => {
-    setModalVisible(true);
-  };
-
   return (
     <>
       <UploadModal
