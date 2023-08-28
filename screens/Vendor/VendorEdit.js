@@ -11,10 +11,8 @@ import {
   FlatList,
   KeyboardAvoidingView,
 } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
 import MidGradientButton from "../../components/MidGradientButton";
 import { Padding, FontFamily, Color } from "../../GlobalStyles";
-import ProfileImage from "../../assets/onboard/add.svg";
 import apis from "../../apis";
 import { AntDesign } from "@expo/vector-icons";
 import { HStack, Select, VStack, Text, useToast } from "native-base";
@@ -27,6 +25,7 @@ import Back from "../../assets/back.svg";
 import Cancel from "../../assets/cancel.svg";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Config from "react-native-config";
+import Skeleton from "./components/Skeleton";
 
 const VendorEdit = ({ route, navigation }) => {
   const [imageList, setImageList] = useGlobalState(
@@ -75,7 +74,7 @@ const VendorEdit = ({ route, navigation }) => {
   const [long, setLong] = useState(0);
   const [distance, setDistance] = useState(vendor[0].distance || "");
   const [vendorType, setVendorType] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   // useEffect(() => {
   //   setImageOne(imageList ? (imageList[0] ? imageList[0] : "") : "");
@@ -96,7 +95,6 @@ const VendorEdit = ({ route, navigation }) => {
   const getVendorInfo = async () => {
     try {
       const res = await apis.vendor.getById(vendor[0].id);
-      setLoading(true);
       if (res && res.data) {
         setServiceName(res.data.name);
         setServiceDescription(res.data.description);
@@ -112,7 +110,6 @@ const VendorEdit = ({ route, navigation }) => {
         setServiceInitialType(res.data.listOfType[0].id);
         setService(res.data.listOfType[0].title);
         setVendorKeyList(res.data.listOfKeys);
-        setLoading(false);
       }
       setLoading(false);
     } catch (error) {
@@ -386,16 +383,15 @@ const VendorEdit = ({ route, navigation }) => {
           style={{ backgroundColor: "#000", width: "100%" }}
           keyboardShouldPersistTaps="handled"
         >
-          {/* <View style={styles.signupscreen}> */}
           <Image
             style={[styles.background, styles.bgIconPosition]}
             resizeMode="cover"
             source={require("../../assets/bg16.png")}
           />
-          {/* <View style={[styles.alertmodalbg, styles.alertmodalbgLayout]} /> */}
           <View
             style={{ flex: 1, justifyContent: "space-between", padding: 10 }}
           >
+            {loading && <Skeleton />}
             <View>
               <View style={styles.accessoryPosition}>
                 <TouchableOpacity onPress={() => navigation.pop()} hitSlop={20}>
@@ -560,7 +556,6 @@ const VendorEdit = ({ route, navigation }) => {
                     serviceArea ? serviceArea : distance.toString()
                   }
                   accessibilityLabel="Service Area"
-                  // placeholder={serviceAreaLabel}
                   placeholderTextColor="#FFF"
                   dropdownCloseIcon={
                     <AntDesign
@@ -749,7 +744,6 @@ const VendorEdit = ({ route, navigation }) => {
               labelColor="#FFF"
             />
           </View>
-          {/* </View> */}
         </ScrollView>
       </KeyboardAvoidingView>
     </>
@@ -757,10 +751,6 @@ const VendorEdit = ({ route, navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  alertmodalbgLayout: {
-    width: "100%",
-    position: "absolute",
-  },
   titlePosition: {
     width: "100%",
     marginLeft: 15,
@@ -861,18 +851,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 20,
     fontWeight: "300",
-  },
-  subtext: {
-    fontSize: 12,
-    color: "#8A8A8A",
-    fontWeight: "300",
-    marginLeft: 20,
-  },
-  signupscreen: {
-    // backgroundColor: Color.labelColorDarkPrimary,
-    width: "100%",
-    overflow: "hidden",
-    flex: 1,
   },
 });
 
