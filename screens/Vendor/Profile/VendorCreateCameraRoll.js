@@ -64,7 +64,7 @@ const VendorCreateCameraRoll = ({ route, navigation }) => {
 
   const handleDone = () => {
     setSelectedCreatePhoto(selection);
-    navigation.navigate("VendorCreateCamera");
+    navigation.pop();
   };
 
   const renderItem = (item, index) => {

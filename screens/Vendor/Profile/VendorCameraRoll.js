@@ -20,9 +20,9 @@ const VendorCameraRoll = ({ route, navigation }) => {
     StateTypes.photoalbum.key,
     StateTypes.photoalbum.default
   );
-  const [selectedCreatePhoto, setSelectedCreatePhoto] = useGlobalState(
-    StateTypes.selectedCreatePhoto.key,
-    StateTypes.selectedCreatePhoto.default
+  const [selectedVerifyPhoto, setSelectedVerifyPhoto] = useGlobalState(
+    StateTypes.selectedVerifyPhoto.key,
+    StateTypes.selectedVerifyPhoto.default
   );
   const [photos, getPhotos, save] = useCameraRoll();
 
@@ -62,7 +62,7 @@ const VendorCameraRoll = ({ route, navigation }) => {
   };
 
   const handleDone = () => {
-    setSelectedCreatePhoto(selection);
+    setSelectedVerifyPhoto(selection);
     navigation.pop();
   };
 

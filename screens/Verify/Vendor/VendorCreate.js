@@ -55,9 +55,9 @@ const VendorCreate = () => {
     StateTypes.user.key,
     StateTypes.user.default
   );
-  const [verifyKeyList, setVendorKeyList] = useGlobalState(
-    StateTypes.verifyKeyList.key,
-    StateTypes.verifyKeyList.default
+  const [vendorCreateList, setVendorCreateList] = useGlobalState(
+    StateTypes.vendorCreateList.key,
+    StateTypes.vendorCreateList.default
   );
 
   const [selectedCreatePhoto, setSelectedCreatePhoto] = useGlobalState(
@@ -114,7 +114,7 @@ const VendorCreate = () => {
   // };
 
   const handleAvatar = () => {
-    navigation.navigate("VendorCamera");
+    navigation.navigate("VendorCreateCamera");
   };
 
   const grabVendor = async () => {
@@ -129,8 +129,8 @@ const VendorCreate = () => {
 
   const handleRemoveTag = async (tag) => {
     try {
-      const removed = verifyKeyList.filter((item, i) => item.id !== tag.id);
-      setVendorKeyList(removed);
+      const removed = vendorCreateList.filter((item, i) => item.id !== tag.id);
+      setVendorCreateList(removed);
     } catch (error) {
       console.log(error);
     }
@@ -254,7 +254,7 @@ const VendorCreate = () => {
       });
 
       const key = await apis.joinVendorKey.createMulti({
-        list: verifyKeyList,
+        list: vendorCreateList,
         VendorId: res?.data?.id,
       });
       console.log("KEY", key);
@@ -294,7 +294,7 @@ const VendorCreate = () => {
       }
       setIsLoading(false);
       if (res && res.success) {
-        setVendorKeyList(StateTypes.verifyKeyList.default);
+        setVendorCreateList(StateTypes.vendorCreateList.default);
         setSelectedCreatePhoto(StateTypes.selectedCreatePhoto.default);
         navigation.navigate("VendorReadySell", { vendorId: res?.data?.id });
       }
@@ -304,10 +304,6 @@ const VendorCreate = () => {
         description: error,
       });
     }
-  };
-
-  const handleModal = () => {
-    setModalVisible(true);
   };
 
   return (
@@ -570,8 +566,10 @@ const VendorCreate = () => {
                     maxLength={440}
                     onChangeText={(text) => setServiceDescriprion(text)}
                   />
-                  <Pressable onPress={() => navigation.navigate("SearchModal")}>
-                    {verifyKeyList && verifyKeyList.length > 0 ? (
+                  <Pressable
+                    onPress={() => navigation.navigate("SearchOnboardModal")}
+                  >
+                    {vendorCreateList && vendorCreateList.length > 0 ? (
                       <View style={styles.form}>
                         <View
                           style={{
@@ -582,7 +580,7 @@ const VendorCreate = () => {
                           }}
                         >
                           <FlatList
-                            data={verifyKeyList}
+                            data={vendorCreateList}
                             renderItem={renderItem}
                             horizontal={true}
                             showsHorizontalScrollIndicator={false}

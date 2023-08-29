@@ -28,7 +28,6 @@ import Back from "../../assets/back.svg";
 import Cancel from "../../assets/cancel.svg";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Config from "react-native-config";
-import SearchModal from "../../components/Modal/SearchModal";
 import loadApp from "../../navigation/loadApp";
 
 const VendorCreate = () => {
@@ -54,10 +53,7 @@ const VendorCreate = () => {
   const [distance, setDistance] = useState(0);
   const [long, setLong] = useState(0);
   const [vendorType, setVendorType] = useState([]);
-  // const [imageList, setImageList] = useGlobalState(
-  //   StateTypes.vendorImageList.key,
-  //   StateTypes.vendorImageList.default
-  // );
+
   const [user, setUser] = useGlobalState(
     StateTypes.user.key,
     StateTypes.user.default
@@ -70,9 +66,9 @@ const VendorCreate = () => {
     StateTypes.verifyKeyList.key,
     StateTypes.verifyKeyList.default
   );
-  const [selectedCreatePhoto, setSelectedCreatePhoto] = useGlobalState(
-    StateTypes.selectedCreatePhoto.key,
-    StateTypes.selectedCreatePhoto.default
+  const [selectedVerifyPhoto, setSelectedVerifyPhoto] = useGlobalState(
+    StateTypes.selectedVerifyPhoto.key,
+    StateTypes.selectedVerifyPhoto.default
   );
 
   useEffect(() => {
@@ -261,9 +257,9 @@ const VendorCreate = () => {
         point: { type: "Point", coordinates: [long, lat] },
       });
 
-      if (selectedCreatePhoto[0]?.node?.image?.uri) {
+      if (selectedVerifyPhoto[0]?.node?.image?.uri) {
         const avatarRes = await apis.vendor.UploadAvatar({
-          uri: selectedCreatePhoto[0]?.node?.image?.uri,
+          uri: selectedVerifyPhoto[0]?.node?.image?.uri,
           id: res?.data?.id,
         });
         console.log("AVATAR RES", avatarRes);
@@ -302,7 +298,7 @@ const VendorCreate = () => {
       setIsLoading(false);
       if (res && res.success) {
         setVendorKeyList(StateTypes.vendorKeyList.default);
-        setSelectedCreatePhoto(StateTypes.selectedCreatePhoto.default);
+        setSelectedVerifyPhoto(StateTypes.selectedVerifyPhoto.default);
         await loadApp(setToken, setUser);
       }
     } catch (error) {
@@ -359,7 +355,7 @@ const VendorCreate = () => {
                     onPress={handleAvatar}
                     style={styles.avatar}
                   >
-                    {selectedCreatePhoto.length === 0 ? (
+                    {selectedVerifyPhoto.length === 0 ? (
                       <>
                         <ProfileImage />
                         <Text
@@ -381,7 +377,7 @@ const VendorCreate = () => {
                           }}
                           imageStyle={{ borderRadius: 100 }}
                           source={{
-                            uri: selectedCreatePhoto[0]?.node?.image?.uri,
+                            uri: selectedVerifyPhoto[0]?.node?.image?.uri,
                           }}
                         >
                           <Add style={{ top: 95, left: 43 }} />
@@ -677,7 +673,7 @@ const VendorCreate = () => {
                 label="Create your profile page"
                 formPosition="unset"
                 disabled={
-                  !selectedCreatePhoto[0]?.node?.image?.uri ||
+                  !selectedVerifyPhoto[0]?.node?.image?.uri ||
                   !serviceName ||
                   !serviceArea ||
                   !serviceDescription ||

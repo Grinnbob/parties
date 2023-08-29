@@ -13,4 +13,5 @@ export default {
   photoalbum: { key: "photoalbum", default: [] },
   selectedphoto: { key: "selectedphoto", default: [] },
   selectedCreatePhoto: { key: "selectedCreatePhoto", default: [] },
+  selectedVerifyPhoto: { key: "selectedVerifyPhoto", default: [] },
 };

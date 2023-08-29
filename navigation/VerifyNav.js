@@ -12,7 +12,7 @@ import VendorCameraRoll from "../screens/Vendor/Profile/VendorCameraRoll";
 import VendorReadySell from "../screens/Verify/Vendor/VendorReadySell";
 import ServicePackageScreen from "../screens/Verify/Vendor/ServicePackage";
 import VendorCreateCameraRoll from "../screens/Vendor/Profile/VendorCreateCameraRoll";
-import SearchModal from "../components/Modal/SearchModal";
+import SearchOnboardModal from "../components/Modal/SearchOnboardModal";
 import WelcomeScreen from "../screens/Auth/WelcomeScreen";
 import LoginScreen from "../screens/Auth/LoginScreen";
 import ForgotPasswordScreen from "../screens/Auth/ForgotPasswordScreen";
@@ -111,8 +111,8 @@ export default (props) => {
         options={{ headerShown: false, gestureEnabled: false }}
       />
       <Stack.Screen
-        name="SearchModal"
-        component={SearchModal}
+        name="SearchOnboardModal"
+        component={SearchOnboardModal}
         options={{ headerShown: false, presentation: "modal" }}
       />
     </Stack.Navigator>

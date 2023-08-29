@@ -13,17 +13,17 @@ export default ({}) => {
       alignItems="center"
       justifyContent={"center"}
       _dark={{
-        borderColor: "coolGray.500",
+        borderColor: "#8A8A8A",
       }}
       _light={{
-        borderColor: "coolGray.200",
+        borderColor: "#8A8A8A",
       }}
     >
       <Skeleton.Text lines={3} alignItems="start" px="5" />
       <Skeleton
         borderWidth={1}
-        borderColor="coolGray.200"
-        endColor="warmGray.50"
+        borderColor="#8A8A8A"
+        endColor="#8A8A8A"
         size="100px"
         mt={20}
         rounded="full"
