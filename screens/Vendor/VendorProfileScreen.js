@@ -9,8 +9,9 @@ import {
   FlatList,
   TouchableOpacity,
   Share,
+  ActivityIndicator,
 } from "react-native";
-import { Pressable, Box } from "native-base";
+import { Pressable, Box, Skeleton } from "native-base";
 import LinearGradient from "react-native-linear-gradient";
 import { useFocusEffect } from "@react-navigation/native";
 import {
@@ -50,6 +51,7 @@ const VendorProfileScreen = ({ route }) => {
   const [key, setKey] = useState([]);
   const [serviceName, setServiceName] = useState("");
   const [serviceDescription, setServiceDescription] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const onShare = async () => {
     try {
@@ -99,9 +101,7 @@ const VendorProfileScreen = ({ route }) => {
       console.log(error);
     }
   };
-  useEffect(() => {
-    console.log("VENDOR", vendor);
-  }, [vendor]);
+
   const getVendorInfo = async () => {
     try {
       const res = await apis.vendor.getById(vendor[0].id);
@@ -111,6 +111,7 @@ const VendorProfileScreen = ({ route }) => {
         setBackgroundLink(res.data.avatar);
         setServiceName(res.data.name);
         setServiceDescription(res.data.description);
+        setIsLoading(false);
       }
     } catch (error) {
       console.log(error);
@@ -212,9 +213,13 @@ const VendorProfileScreen = ({ route }) => {
           </View>
 
           <View style={{ alignItems: "center" }}>
-            <Text style={[styles.titlemain, styles.descriptionTypo]}>
-              {serviceName}
-            </Text>
+            {isLoading ? (
+              <ActivityIndicator color={"#FFF"} />
+            ) : (
+              <Text style={[styles.titlemain, styles.descriptionTypo]}>
+                {serviceName}
+              </Text>
+            )}
           </View>
         </ImageBackground>
         <LinearGradient
@@ -228,12 +233,18 @@ const VendorProfileScreen = ({ route }) => {
             <Text style={[styles.title1, styles.titleTypo]}>
               Welcome to your new Party Favor Business Service Page
             </Text>
-            <View style={styles.title2}>
-              <Text style={[styles.title3, styles.labelLayout]}>
-                Your page is {percent}% complete
-              </Text>
-              {percent > 0 && <GradientBar value={`${percent}%`} />}
-            </View>
+            {isLoading ? (
+              <>
+                <Skeleton.Text paddingTop={10} />
+              </>
+            ) : (
+              <View style={styles.title2}>
+                <Text style={[styles.title3, styles.labelLayout]}>
+                  Your page is {percent}% complete
+                </Text>
+                {percent > 0 && <GradientBar value={`${percent}%`} />}
+              </View>
+            )}
           </View>
           <View style={styles.createProfile}>
             <View>
@@ -250,77 +261,83 @@ const VendorProfileScreen = ({ route }) => {
                   Create Your Profile
                 </Text>
               </View>
-              <View style={styles.list}>
-                {busDescription ? (
-                  <View style={styles.title4}>
-                    <Image
-                      style={[styles.checkIcon, styles.iconLayout]}
-                      resizeMode="cover"
-                      source={require("../../assets/check3.png")}
-                    />
-                    <Text style={styles.iProvideFoodTypo}>
-                      Edit Your Business Description
-                    </Text>
-                  </View>
-                ) : (
-                  <View style={styles.title4}>
-                    <Image
-                      style={[styles.checkIcon, styles.iconLayout]}
-                      resizeMode="cover"
-                      source={require("../../assets/check4.png")}
-                    />
-                    <Text style={styles.iProvideFoodTypo}>
-                      Edit Your Business Description
-                    </Text>
-                  </View>
-                )}
-                {media ? (
-                  <View style={styles.view1}>
-                    <Image
-                      style={[styles.checkIcon, styles.iconLayout]}
-                      resizeMode="cover"
-                      source={require("../../assets/check3.png")}
-                    />
-                    <Text style={styles.iProvideFoodTypo}>
-                      Add Media of your past work
-                    </Text>
-                  </View>
-                ) : (
-                  <View style={styles.view1}>
-                    <Image
-                      style={[styles.checkIcon, styles.iconLayout]}
-                      resizeMode="cover"
-                      source={require("../../assets/check4.png")}
-                    />
-                    <Text style={styles.iProvideFoodTypo}>
-                      Add Media of your past work
-                    </Text>
-                  </View>
-                )}
-                {addService ? (
-                  <View style={styles.view1}>
-                    <Image
-                      style={[styles.checkIcon, styles.iconLayout]}
-                      resizeMode="cover"
-                      source={require("../../assets/check3.png")}
-                    />
-                    <Text style={styles.iProvideFoodTypo}>
-                      Add + Price your service
-                    </Text>
-                  </View>
-                ) : (
-                  <View style={styles.view1}>
-                    <Image
-                      style={[styles.checkIcon, styles.iconLayout]}
-                      resizeMode="cover"
-                      source={require("../../assets/check4.png")}
-                    />
-                    <Text style={styles.iProvideFoodTypo}>
-                      Add + Price your service
-                    </Text>
-                  </View>
-                )}
-              </View>
+              {isLoading ? (
+                <>
+                  <Skeleton.Text paddingTop={10} />
+                </>
+              ) : (
+                <View style={styles.list}>
+                  {busDescription ? (
+                    <View style={styles.title4}>
+                      <Image
+                        style={[styles.checkIcon, styles.iconLayout]}
+                        resizeMode="cover"
+                        source={require("../../assets/check3.png")}
+                      />
+                      <Text style={styles.iProvideFoodTypo}>
+                        Edit Your Business Description
+                      </Text>
+                    </View>
+                  ) : (
+                    <View style={styles.title4}>
+                      <Image
+                        style={[styles.checkIcon, styles.iconLayout]}
+                        resizeMode="cover"
+                        source={require("../../assets/check4.png")}
+                      />
+                      <Text style={styles.iProvideFoodTypo}>
+                        Edit Your Business Description
+                      </Text>
+                    </View>
+                  )}
+                  {media ? (
+                    <View style={styles.view1}>
+                      <Image
+                        style={[styles.checkIcon, styles.iconLayout]}
+                        resizeMode="cover"
+                        source={require("../../assets/check3.png")}
+                      />
+                      <Text style={styles.iProvideFoodTypo}>
+                        Add Media of your past work
+                      </Text>
+                    </View>
+                  ) : (
+                    <View style={styles.view1}>
+                      <Image
+                        style={[styles.checkIcon, styles.iconLayout]}
+                        resizeMode="cover"
+                        source={require("../../assets/check4.png")}
+                      />
+                      <Text style={styles.iProvideFoodTypo}>
+                        Add Media of your past work
+                      </Text>
+                    </View>
+                  )}
+                  {addService ? (
+                    <View style={styles.view1}>
+                      <Image
+                        style={[styles.checkIcon, styles.iconLayout]}
+                        resizeMode="cover"
+                        source={require("../../assets/check3.png")}
+                      />
+                      <Text style={styles.iProvideFoodTypo}>
+                        Add + Price your service
+                      </Text>
+                    </View>
+                  ) : (
+                    <View style={styles.view1}>
+                      <Image
+                        style={[styles.checkIcon, styles.iconLayout]}
+                        resizeMode="cover"
+                        source={require("../../assets/check4.png")}
+                      />
+                      <Text style={styles.iProvideFoodTypo}>
+                        Add + Price your service
+                      </Text>
+                    </View>
+                  )}
+                </View>
+              )}
             </View>
             {/* <View style={styles.buttons}>
               <LinearGradient
@@ -345,9 +362,13 @@ const VendorProfileScreen = ({ route }) => {
             <Text style={[styles.description, styles.descriptionTypo]}>
               Description
             </Text>
-            <Text style={[styles.iProvideFood, styles.iProvideFoodTypo]}>
-              {serviceDescription}
-            </Text>
+            {isLoading ? (
+              <Skeleton h="10" rounded={10} pt={5} />
+            ) : (
+              <Text style={[styles.iProvideFood, styles.iProvideFoodTypo]}>
+                {serviceDescription}
+              </Text>
+            )}
           </View>
           <View style={styles.vendorSpecialties}>
             <View style={styles.title5}>
