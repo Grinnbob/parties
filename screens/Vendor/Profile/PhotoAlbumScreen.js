@@ -22,7 +22,6 @@ import MidGradientButton from "../../../components/MidGradientButton";
 import Close from "../../../assets/x.svg";
 import CloseCircle from "../../../assets/closecircle.svg";
 import Cancel from "../../../assets/cancel.svg";
-import SearchAlbumModal from "../../../components/Modal/SearchAlbumModal";
 import apis from "../../../apis";
 import useGlobalState from "../../../stateManagement/hook";
 import StateTypes from "../../../stateManagement/StateTypes";
@@ -33,7 +32,6 @@ import PlusWhite from "../../../assets/plus.svg";
 const PhotoAlbumScreen = ({ route, navigation }) => {
   const toast = useToast();
   const [albumName, setAlbumName] = useState("");
-  const [modalVisible, setModalVisible] = useState(false);
   const [vendorInfo, setVendorInfo] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -125,7 +123,7 @@ const PhotoAlbumScreen = ({ route, navigation }) => {
   };
 
   const handleModal = () => {
-    setModalVisible(true);
+    navigation.navigate("SearchAlbumModal");
   };
 
   const handleAlbumPublish = async () => {
@@ -175,10 +173,6 @@ const PhotoAlbumScreen = ({ route, navigation }) => {
 
   return (
     <>
-      <SearchAlbumModal
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-      />
       <ScrollView>
         <View style={styles.photoalbumscreen}>
           <Image

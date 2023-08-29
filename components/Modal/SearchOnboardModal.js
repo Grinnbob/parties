@@ -54,7 +54,7 @@ const SearchOnboardModal = ({ navigation }) => {
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <View
         style={{
-          height: "70%",
+          height: "100%",
           marginTop: "auto",
           backgroundColor: "rgba(29, 26, 31, 1)",
           borderRadius: 20,

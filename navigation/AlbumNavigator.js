@@ -4,6 +4,7 @@ import HolidayThemeScreen from "../screens/Vendor/Profile/HolidayThemeScreen";
 import PhotoAlbumScreen from "../screens/Vendor/Profile/PhotoAlbumScreen";
 import CameraRollScreen from "../screens/Vendor/Profile/CameraRollScreen";
 import ServicePackageScreen from "../screens/ServicePackageScreen";
+import SearchAlbumModal from "../components/Modal/SearchAlbumModal";
 
 const AlbumStack = createStackNavigator();
 
@@ -29,6 +30,14 @@ export default function AlbumNavigator() {
         name="Service"
         component={ServicePackageScreen}
         options={{ headerShown: false, gestureEnabled: false }}
+      />
+      <AlbumStack.Screen
+        name="SearchAlbumModal"
+        component={SearchAlbumModal}
+        options={{
+          headerShown: false,
+          presentation: "modal",
+        }}
       />
     </AlbumStack.Navigator>
   );
