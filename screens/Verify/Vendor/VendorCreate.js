@@ -18,21 +18,15 @@ import ProfileImage from "../../../assets/onboard/add.svg";
 import apis from "../../../apis";
 import { AntDesign } from "@expo/vector-icons";
 import { HStack, Select, VStack, Text, useToast } from "native-base";
-import types from "../../../stateManagement/types";
 import { PhoneMask } from "../../../components/Input/BasicMasks";
-import * as ImagePicker from "expo-image-picker";
-import { Input, Button, Box } from "native-base";
 import useGlobalState from "../../../stateManagement/hook";
 import StateTypes from "../../../stateManagement/StateTypes";
-import Plus from "../../../assets/uniongrey.svg";
-import Close from "../../../assets/close.svg";
 import Add from "../../../assets/addpencil.svg";
 import X from "../../../assets/x.svg";
 import Back from "../../../assets/back.svg";
 import Cancel from "../../../assets/cancel.svg";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Config from "react-native-config";
-import SearchModal from "../../../components/Modal/SearchModal";
 
 const VendorCreate = () => {
   const toast = useToast();
@@ -61,14 +55,14 @@ const VendorCreate = () => {
     StateTypes.user.key,
     StateTypes.user.default
   );
-  const [vendorCreateList, setVendorCreateList] = useGlobalState(
-    StateTypes.vendorCreateList.key,
-    StateTypes.vendorCreateList.default
+  const [verifyKeyList, setVendorKeyList] = useGlobalState(
+    StateTypes.verifyKeyList.key,
+    StateTypes.verifyKeyList.default
   );
 
-  const [selectedPhoto, setSelectedPhoto] = useGlobalState(
-    StateTypes.selectedphoto.key,
-    StateTypes.selectedphoto.default
+  const [selectedCreatePhoto, setSelectedCreatePhoto] = useGlobalState(
+    StateTypes.selectedCreatePhoto.key,
+    StateTypes.selectedCreatePhoto.default
   );
 
   useEffect(() => {
@@ -120,54 +114,7 @@ const VendorCreate = () => {
   // };
 
   const handleAvatar = () => {
-    navigation.navigate("VendorCamera", {
-      params: "create",
-    });
-  };
-
-  const AvatarImage = () => {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          handleAvatar();
-        }}
-        style={styles.avatar}
-      >
-        {selectedPhoto.length === 0 ? (
-          <>
-            <ProfileImage />
-            <Text style={{ color: "#FFF", fontSize: 16, marginVertical: 20 }}>
-              Profile Image
-            </Text>
-          </>
-        ) : (
-          <>
-            <ImageBackground
-              style={{
-                width: 110,
-                height: 110,
-              }}
-              imageStyle={{ borderRadius: 100 }}
-              source={{
-                uri: selectedPhoto[0]?.node?.image?.uri,
-              }}
-            >
-              <Pressable
-                onPress={() => {
-                  handleAvatar();
-                }}
-                style={{ position: "absolute" }}
-              >
-                <Add style={{ top: 95, left: 43 }} />
-              </Pressable>
-            </ImageBackground>
-            <Text style={{ color: "#FFF", fontSize: 16, marginVertical: 20 }}>
-              Profile Image
-            </Text>
-          </>
-        )}
-      </TouchableOpacity>
-    );
+    navigation.navigate("VendorCamera");
   };
 
   const grabVendor = async () => {
@@ -182,8 +129,8 @@ const VendorCreate = () => {
 
   const handleRemoveTag = async (tag) => {
     try {
-      const removed = vendorCreateList.filter((item, i) => item.id !== tag.id);
-      setVendorCreateList(removed);
+      const removed = verifyKeyList.filter((item, i) => item.id !== tag.id);
+      setVendorKeyList(removed);
     } catch (error) {
       console.log(error);
     }
@@ -307,14 +254,14 @@ const VendorCreate = () => {
       });
 
       const key = await apis.joinVendorKey.createMulti({
-        list: vendorCreateList,
+        list: verifyKeyList,
         VendorId: res?.data?.id,
       });
       console.log("KEY", key);
 
-      if (selectedPhoto[0]?.node?.image?.uri) {
+      if (selectedCreatePhoto[0]?.node?.image?.uri) {
         const avatarRes = await apis.vendor.UploadAvatar({
-          uri: selectedPhoto[0]?.node?.image?.uri,
+          uri: selectedCreatePhoto[0]?.node?.image?.uri,
           id: res?.data?.id,
         });
       }
@@ -347,8 +294,8 @@ const VendorCreate = () => {
       }
       setIsLoading(false);
       if (res && res.success) {
-        setVendorCreateList(StateTypes.vendorCreateList.default);
-        setSelectedPhoto(StateTypes.selectedphoto.default);
+        setVendorKeyList(StateTypes.verifyKeyList.default);
+        setSelectedCreatePhoto(StateTypes.selectedCreatePhoto.default);
         navigation.navigate("VendorReadySell", { vendorId: res?.data?.id });
       }
     } catch (error) {
@@ -365,10 +312,6 @@ const VendorCreate = () => {
 
   return (
     <>
-      <SearchModal
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-      />
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : null}
@@ -411,7 +354,49 @@ const VendorCreate = () => {
                   </Text>
                 </View>
                 <View style={{ width: "100%", alignItems: "center" }}>
-                  <AvatarImage image={avatar} setImage={setAvatar} />
+                  <TouchableOpacity
+                    onPress={handleAvatar}
+                    style={styles.avatar}
+                  >
+                    {selectedCreatePhoto.length === 0 ? (
+                      <>
+                        <ProfileImage />
+                        <Text
+                          style={{
+                            color: "#FFF",
+                            fontSize: 16,
+                            marginVertical: 20,
+                          }}
+                        >
+                          Profile Image
+                        </Text>
+                      </>
+                    ) : (
+                      <>
+                        <ImageBackground
+                          style={{
+                            width: 110,
+                            height: 110,
+                          }}
+                          imageStyle={{ borderRadius: 100 }}
+                          source={{
+                            uri: selectedCreatePhoto[0]?.node?.image?.uri,
+                          }}
+                        >
+                          <Add style={{ top: 95, left: 43 }} />
+                        </ImageBackground>
+                        <Text
+                          style={{
+                            color: "#FFF",
+                            fontSize: 16,
+                            marginVertical: 20,
+                          }}
+                        >
+                          Profile Image
+                        </Text>
+                      </>
+                    )}
+                  </TouchableOpacity>
                 </View>
 
                 <View style={styles.forms}>
@@ -585,8 +570,8 @@ const VendorCreate = () => {
                     maxLength={440}
                     onChangeText={(text) => setServiceDescriprion(text)}
                   />
-                  <Pressable onPress={handleModal}>
-                    {vendorCreateList && vendorCreateList.length > 0 ? (
+                  <Pressable onPress={() => navigation.navigate("SearchModal")}>
+                    {verifyKeyList && verifyKeyList.length > 0 ? (
                       <View style={styles.form}>
                         <View
                           style={{
@@ -597,7 +582,7 @@ const VendorCreate = () => {
                           }}
                         >
                           <FlatList
-                            data={vendorCreateList}
+                            data={verifyKeyList}
                             renderItem={renderItem}
                             horizontal={true}
                             showsHorizontalScrollIndicator={false}
@@ -691,7 +676,7 @@ const VendorCreate = () => {
                 label="Create your profile page"
                 formPosition="unset"
                 disabled={
-                  !selectedPhoto[0]?.node?.image?.uri ||
+                  !selectedCreatePhoto[0]?.node?.image?.uri ||
                   !serviceName ||
                   !serviceArea ||
                   !serviceDescription ||

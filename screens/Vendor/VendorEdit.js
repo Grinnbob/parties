@@ -95,6 +95,7 @@ const VendorEdit = ({ route, navigation }) => {
   const getVendorInfo = async () => {
     try {
       const res = await apis.vendor.getById(vendor[0].id);
+      console.log("RES", res);
       if (res && res.data) {
         setServiceName(res.data.name);
         setServiceDescription(res.data.description);

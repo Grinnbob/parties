@@ -4,6 +4,7 @@ import TopNavigationContent from "../../../components/TopNavigationContent";
 import { Color } from "../../../GlobalStyles";
 import UploadModal from "../../../components/Modal/UploadModal";
 import useGlobalState from "../../../stateManagement/hook";
+// import types from "../../../stateManagement/types";
 import StateTypes from "../../../stateManagement/StateTypes";
 import { Text, Pressable } from "native-base";
 import CustomCameraSelect from "./component/CustomCameraSelect";
@@ -12,7 +13,7 @@ import { useCameraRoll } from "@react-native-camera-roll/camera-roll";
 
 const width = Dimensions.get("screen").width;
 
-const VendorCameraRoll = ({ route, navigation }) => {
+const VendorCreateCameraRoll = ({ route, navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [imageStyles, setImageStyles] = useState([]);
   const [selection, setSelection] = useState([]);
@@ -63,7 +64,7 @@ const VendorCameraRoll = ({ route, navigation }) => {
 
   const handleDone = () => {
     setSelectedCreatePhoto(selection);
-    navigation.pop();
+    navigation.navigate("VendorCreateCamera");
   };
 
   const renderItem = (item, index) => {
@@ -164,4 +165,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VendorCameraRoll;
+export default VendorCreateCameraRoll;

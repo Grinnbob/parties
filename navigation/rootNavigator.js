@@ -14,6 +14,7 @@ import apis from "../apis";
 import layout from "../utils/layout";
 import { ImageBackground } from "react-native";
 import VendorCameraRoll from "../screens/Vendor/Profile/VendorCameraRoll";
+import SearchModal from "../components/Modal/SearchModal";
 
 const Stack = createStackNavigator();
 
@@ -51,10 +52,6 @@ export default (props) => {
     }
   };
 
-  useEffect(() => {
-    console.log("TOKEN", token);
-  }, [token]);
-
   const vendorCreate = () => {
     return (
       <Stack.Navigator>
@@ -67,6 +64,11 @@ export default (props) => {
           name="VerifyCameraRoll"
           component={VendorCameraRoll}
           options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SearchModal"
+          component={SearchModal}
+          options={{ headerShown: false, presentation: "modal" }}
         />
       </Stack.Navigator>
     );

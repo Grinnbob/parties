@@ -9,6 +9,8 @@ export default {
   searchlist: { key: "searchlist", default: [] },
   vendorKeyList: { key: "vendorKeyList", default: [] },
   vendorCreateList: { key: "vendorCreateList", default: [] },
+  verifyKeyList: { key: "verifyKeyList", default: [] },
   photoalbum: { key: "photoalbum", default: [] },
   selectedphoto: { key: "selectedphoto", default: [] },
+  selectedCreatePhoto: { key: "selectedCreatePhoto", default: [] },
 };
