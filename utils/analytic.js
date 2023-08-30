@@ -7,7 +7,7 @@ appsFlyer.initSdk(
     isDebug: true,
     appId: "41*****44",
     onInstallConversionDataListener: true,
-    onDeepLinkListener: true, //Optional
+    onDeepLinkListener: true,
     timeToWaitForATTUserAuthorization: 10, //for iOS 14.5
   },
   (result) => {
