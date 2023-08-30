@@ -17,6 +17,16 @@ buildscript {
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("com.bugsnag:bugsnag-android-gradle-plugin:7.+")
     }
+        subprojects { subproject ->
+        afterEvaluate{
+            if((subproject.plugins.hasPlugin('android') || subproject.plugins.hasPlugin('android-library'))) {
+                android {
+                    compileSdkVersion rootProject.ext.compileSdkVersion
+                    buildToolsVersion rootProject.ext.buildToolsVersion
+                }
+            }
+        }
+    }
 }
 allprojects {
     repositories {

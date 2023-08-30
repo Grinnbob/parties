@@ -8,13 +8,18 @@
  * @format
  */
 
-import React from "react";
+import React, { useEffect } from "react";
 import { View } from "react-native";
 import { RecoilRoot } from "recoil";
 import Wrapper from "./theme/Wrapper";
 import RootNavigator from "./navigation/rootNavigator";
+import TestFairy from "react-native-testfairy";
+import Config from "react-native-config";
 
 const App = () => {
+  useEffect(() => {
+    TestFairy.begin(Config.TEST_FAIRY_KEY);
+  }, []);
   return (
     <View
       style={{

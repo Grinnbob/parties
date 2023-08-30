@@ -573,6 +573,9 @@ PODS:
     - React-debug
     - React-jsi
     - React-runtimeexecutor
+  - React-TestFairy (2.62.0):
+    - React
+    - TestFairy (= 1.30.2)
   - React-utils (0.72.4):
     - glog
     - RCT-Folly (= 2021.07.22.00)
@@ -638,6 +641,7 @@ PODS:
   - RNSVG (13.12.0):
     - React-Core
   - SocketRocket (0.6.1)
+  - TestFairy (1.30.2)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -733,6 +737,7 @@ DEPENDENCIES:
   - React-rncore (from `../node_modules/react-native/ReactCommon`)
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - React-runtimescheduler (from `../node_modules/react-native/ReactCommon/react/renderer/runtimescheduler`)
+  - React-TestFairy (from `../node_modules/react-native-testfairy`)
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - rn-fetch-blob (from `../node_modules/rn-fetch-blob`)
@@ -760,6 +765,7 @@ SPEC REPOS:
     - OneSignalXCFramework
     - OpenSSL-Universal
     - SocketRocket
+    - TestFairy
     - YogaKit
 
 EXTERNAL SOURCES:
@@ -894,6 +900,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/runtimeexecutor"
   React-runtimescheduler:
     :path: "../node_modules/react-native/ReactCommon/react/renderer/runtimescheduler"
+  React-TestFairy:
+    :path: "../node_modules/react-native-testfairy"
   React-utils:
     :path: "../node_modules/react-native/ReactCommon/react/utils"
   ReactCommon:
@@ -993,6 +1001,7 @@ SPEC CHECKSUMS:
   React-rncore: 142268f6c92e296dc079aadda3fade778562f9e4
   React-runtimeexecutor: d465ba0c47ef3ed8281143f59605cacc2244d5c7
   React-runtimescheduler: 4941cc1b3cf08b792fbf666342c9fc95f1969035
+  React-TestFairy: 726b0b566600691be14811bd41a50cf16899c02b
   React-utils: b79f2411931f9d3ea5781404dcbb2fa8a837e13a
   ReactCommon: 4b2bdcb50a3543e1c2b2849ad44533686610826d
   rn-fetch-blob: f065bb7ab7fb48dd002629f8bdcb0336602d3cba
@@ -1002,9 +1011,10 @@ SPEC CHECKSUMS:
   RNScreens: b21dc57dfa2b710c30ec600786a3fc223b1b92e7
   RNSVG: 6d07f8f8f246c85e3e16e0bcfc0d047db0c48496
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
+  TestFairy: fb65170284ce51c46fe53d1b148f9ebcea70979f
   Yoga: 3efc43e0d48686ce2e8c60f99d4e6bd349aff981
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
 PODFILE CHECKSUM: 0ac61859513c7f67d2fafc31a7445db80b752add
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.1
