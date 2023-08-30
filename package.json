@@ -77,6 +77,8 @@
     "@babel/runtime": "^7.12.5",
     "@expo/webpack-config": "^18.0.1",
     "@react-native-community/eslint-config": "^2.0.0",
+    "@react-native/metro-config": "^0.72.9",
+
     "@svgr/webpack": "^6.5.1",
     "@tsconfig/react-native": "^2.0.2",
     "@types/jest": "^26.0.23",
