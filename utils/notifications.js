@@ -1,6 +1,7 @@
 import { OneSignal } from "react-native-onesignal";
 import Config from "react-native-config";
 // OneSignal Initialization
+console.log("ONESIGNAL CHECK:", Config.ONESIGNAL_APP_ID);
 OneSignal.initialize(Config.ONESIGNAL_APP_ID);
 
 // OneSignal.Notifications.requestPermission();
