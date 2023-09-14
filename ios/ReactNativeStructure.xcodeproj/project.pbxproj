@@ -485,7 +485,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ReactNativeStructure/ReactNativeStructure.entitlements;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = "$(APP_VERSION)";
 				DEVELOPMENT_TEAM = J8JNY2AFW3;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = ReactNativeStructure/Info.plist;
@@ -507,7 +507,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
-				VERSIONING_SYSTEM = "apple-generic";
+				VERSIONING_SYSTEM = "";
 			};
 			name = Debug;
 		};
@@ -518,7 +518,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ReactNativeStructure/ReactNativeStructure.entitlements;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = "$(APP_VERSION)";
 				DEVELOPMENT_TEAM = J8JNY2AFW3;
 				INFOPLIST_FILE = ReactNativeStructure/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -538,7 +538,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
-				VERSIONING_SYSTEM = "apple-generic";
+				VERSIONING_SYSTEM = "";
 			};
 			name = Release;
 		};
@@ -689,6 +689,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3A41138DC492B2FF98D314B5 /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */;
 			buildSettings = {
+				APP_VERSION = "$(APP_VERSION)";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -696,7 +697,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = "$(APP_VERSION)";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = J8JNY2AFW3;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -710,7 +711,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = "$(APP_BUILD_NUMBER)";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
@@ -726,6 +727,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 69FD4F5610FDDED0A1907139 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */;
 			buildSettings = {
+				APP_VERSION = "$(APP_VERSION)";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -734,7 +736,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = "$(APP_VERSION)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = J8JNY2AFW3;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -748,7 +750,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = "$(APP_BUILD_NUMBER)";
 				MTL_FAST_MATH = YES;
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(APP_BUNDLE_ID).OneSignalNotificationServiceExtension";
