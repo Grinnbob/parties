@@ -6,3 +6,4 @@ export const numerical = new RegExp("^(?=.*[0-9])");
 export const email = new RegExp(
   "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$"
 );
+//hi
