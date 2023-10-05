@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Image,
-  StyleSheet,
-  View,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, View, ScrollView, Text } from "react-native";
 
 import MidGradientButton from "../../../components/MidGradientButton";
 import {
@@ -25,6 +18,7 @@ import loadApp from "../../../navigation/loadApp";
 import useGlobalState from "../../../stateManagement/hook";
 import StateTypes from "../../../stateManagement/StateTypes";
 import apis from "../../../apis";
+import { GhostButton } from "../../../components/GhostButton";
 
 const selections = [
   {
@@ -48,6 +42,15 @@ const OnboardHolidaySelect = () => {
   const toast = useToast();
   const [tags, setTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAppLoading, setIsAppLoading] = useState(false);
+
+  const loadMainApp = async () => {
+    setIsAppLoading(true);
+    await loadApp(setToken, setUser);
+    setIsAppLoading(false);
+    setSelectedTiles(StateTypes.selectedTiles.default);
+  };
+
   const [token, setToken] = useGlobalState(
     StateTypes.token.key,
     StateTypes.token.default
@@ -56,6 +59,7 @@ const OnboardHolidaySelect = () => {
     StateTypes.user.key,
     StateTypes.user.default
   );
+
   const [selectedTiles, setSelectedTiles] = useGlobalState(
     StateTypes.selectedTiles.key,
     StateTypes.selectedTiles.default
@@ -65,8 +69,13 @@ const OnboardHolidaySelect = () => {
     try {
       setIsLoading(true);
       const res = await apis.joinUserCategory.createMulti({
-        tags,
         UserId: user.id,
+        tags: tags.map((item) => {
+          return {
+            id: item.id,
+            title: item.title,
+          };
+        }),
       });
 
       if (res && res.success === false) {
@@ -77,8 +86,9 @@ const OnboardHolidaySelect = () => {
         setIsLoading(false);
       }
       if (res && res.success) {
-        setIsLoading(false);
         await loadApp(setToken, setUser);
+        setIsLoading(false);
+        setSelectedTiles(StateTypes.selectedTiles.default);
       }
     } catch (error) {
       console.log(error);
@@ -131,9 +141,9 @@ const OnboardHolidaySelect = () => {
             labelColor="#fff"
           />
           <View style={styles.form}>
-            <TouchableOpacity activeOpacity={0.2} onPress={handleNext}>
+            <GhostButton onPress={loadMainApp} isLoading={isAppLoading}>
               <Text style={[styles.skip, styles.skipTypo]}>Skip</Text>
-            </TouchableOpacity>
+            </GhostButton>
           </View>
         </View>
       </View>

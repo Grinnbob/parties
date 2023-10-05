@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { View, FlatList } from "react-native";
 import PartyCard from "../PartyCard";
 import useGlobalState from "../../stateManagement/hook";
 import StateTypes from "../../stateManagement/StateTypes";
-import Cinema from "../../assets/onboard/cinema.svg";
 
 export default ({ data = [] }) => {
   const [selectedTiles, setSelectedTiles] = useGlobalState(
@@ -12,9 +11,9 @@ export default ({ data = [] }) => {
   );
 
   const handlePress = (id) => {
-    const select = selectedTiles.find((item, i) => item.id === id);
+    const select = selectedTiles.find((item) => item.id === id);
     if (select) {
-      const answers = selectedTiles.filter((item, i) => item.id !== id);
+      const answers = selectedTiles.filter((item) => item.id !== id);
       setSelectedTiles(answers);
     } else {
       const selections = data.find((item, i) => item.id === id);
