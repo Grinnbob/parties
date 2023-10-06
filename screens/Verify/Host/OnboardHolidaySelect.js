@@ -19,6 +19,7 @@ import useGlobalState from "../../../stateManagement/hook";
 import StateTypes from "../../../stateManagement/StateTypes";
 import apis from "../../../apis";
 import { GhostButton } from "../../../components/GhostButton";
+import BackButton from "../../../components/navigation/BackButton";
 
 const selections = [
   {
@@ -110,11 +111,13 @@ const OnboardHolidaySelect = () => {
       <View style={{ flex: 1, justifyContent: "space-around" }}>
         <View>
           <View style={styles.title2}>
+            <BackButton />
             <Text style={[styles.title3, styles.titleClr]}>
               <Text style={styles.party}>PARTY</Text>
               <Text style={styles.text}>{` `}</Text>
               <Text style={styles.favor}>FAVOR</Text>
             </Text>
+            <View style={styles.hidden} />
           </View>
           <View style={styles.divider}></View>
           <View style={styles.title}>
@@ -292,9 +295,10 @@ const styles = StyleSheet.create({
   title2: {
     marginTop: 30,
     padding: Padding.p_4xs,
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
     flexDirection: "row",
+    width: "100%",
   },
   divider: {
     borderStyle: "solid",
@@ -305,6 +309,9 @@ const styles = StyleSheet.create({
     backgroundColor: Color.labelColorDarkPrimary,
     width: "100%",
     flex: 1,
+  },
+  hidden: {
+    width: 19,
   },
 });
 
