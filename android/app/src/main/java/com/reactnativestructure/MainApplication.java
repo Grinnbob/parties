@@ -17,6 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import com.bugsnag.android.Bugsnag;
 import com.appsflyer.reactnative.RNAppsFlyerPackage;
+import com.lugg.RNCConfig.RNCConfigPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 

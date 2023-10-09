@@ -1,15 +1,18 @@
+apply plugin: "com.android.application"
+project.ext.envConfigFiles = [
+        dev: ".env.dev",
+        local: ".env.local",
+        prod: ".env.prod",
+//        staging: ".env.staging",
+]
+
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 buildscript {
     repositories {
         gradlePluginPortal()
     }
-    dependencies {
-        classpath 'gradle.plugin.com.onesignal:onesignal-gradle-plugin:[0.12.10, 0.99.99]'
-    }
 }
-apply plugin: 'com.onesignal.androidsdk.onesignal-gradle-plugin'
 
-apply plugin: "com.android.application"
-apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 apply plugin: "com.facebook.react"
 apply plugin: "com.bugsnag.android.gradle"
 
@@ -95,18 +98,6 @@ def enableProguardInReleaseBuilds = false
 def jscFlavor = 'org.webkit:android-jsc:+'
 
 
-
-project.ext.envConfigFiles = [
-        dev: ".env.dev",
-        local: ".env.local",
-        prod: ".env.prod",
-        staging: ".env.staging",
-
-]
-
-apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
-
-
 android {
     ndkVersion rootProject.ext.ndkVersion
 
@@ -119,7 +110,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode project.env.get("APP_BUILD_NUMBER").toInteger()
         versionName project.env.get("APP_VERSION")
-
+        resValue "string", "build_config_package", "com.reactnativestructure"
     }
     flavorDimensions "default"  // <-- !!! add this line !!!
     productFlavors {
@@ -183,6 +174,8 @@ dependencies {
 //    compile project(':react-native-appsflyer')
    // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
+    implementation project(':react-native-config')
+    implementation 'com.onesignal:OneSignal:[5.0.0, 5.99.99]'
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
