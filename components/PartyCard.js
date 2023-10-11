@@ -1,8 +1,16 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { FontSize, FontFamily, Color, Border, Padding } from "../GlobalStyles";
+import { FontFamily, Color, Border, Padding } from "../GlobalStyles";
+import LinearGradient from "react-native-linear-gradient";
 
 const PartyCard = ({ asset, title, enable, onPress }) => {
+  const content = (
+    <>
+      {asset}
+      <Text style={styles.fourthOfJuly}>{title}</Text>
+    </>
+  );
+
   return (
     <TouchableOpacity onPress={onPress}>
       {enable && (
@@ -12,18 +20,34 @@ const PartyCard = ({ asset, title, enable, onPress }) => {
           source={require("../assets/thumb.png")}
         />
       )}
-      <View
-        style={[
-          styles.view,
-          {
-            backgroundColor: enable ? "#FF077E" : "transparent",
-            borderWidth: enable ? 0 : 3,
-          },
-        ]}
-      >
-        {asset}
-        <Text style={styles.fourthOfJuly}>{title}</Text>
-      </View>
+      {enable ? (
+        <LinearGradient
+          colors={["#6C1B9E", "#FF077E"]}
+          style={[
+            styles.view,
+            {
+              borderWidth: 0,
+            },
+          ]}
+          locations={[0, 1]}
+          useAngle={true}
+          angle={-360}
+        >
+          {content}
+        </LinearGradient>
+      ) : (
+        <View
+          style={[
+            styles.view,
+            {
+              backgroundColor: "transparent",
+              borderWidth: 3,
+            },
+          ]}
+        >
+          {content}
+        </View>
+      )}
     </TouchableOpacity>
   );
 };

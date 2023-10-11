@@ -6,10 +6,10 @@ import Back from "../../assets/back.svg";
 
 const VendorBackButton = ({ path, navigation }) => {
   const { toggleDrawer, navigate } = useNavigation();
-  console.log("PATH", navigation.goBack);
+  // console.log("PATH", navigation.goBack);
   return (
     <TouchableOpacity
-      onPress={path ? navigation.goBack() : toggleDrawer}
+      onPress={path && navigation ? navigation.goBack() : toggleDrawer}
       hitSlop={20}
       // onPress={toggleDrawer}
       style={{ padding: 5 }}
