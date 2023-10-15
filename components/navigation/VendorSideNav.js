@@ -46,7 +46,7 @@ const VendorSideNav = () => {
         style={styles.bgIcon}
         resizeMode="cover"
         source={require("../../assets/bg11.png")}
-      ></ImageBackground>
+      />
       <View
         style={{
           flexDirection: "row",
@@ -180,6 +180,13 @@ const VendorSideNav = () => {
               propWidth={327}
               propAlignSelf="unset"
             />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.touchableopacity}
+            activeOpacity={0.2}
+            onPress={() => navigate("Event")}
+          >
+            <MenuCard title="Event" propWidth={327} propAlignSelf="unset" />
           </TouchableOpacity>
         </View>
         <TouchableOpacity

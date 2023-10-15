@@ -70,7 +70,8 @@
     "react-web-config": "tanhauhau/react-web-config#pull/3/head",
     "recoil": "^0.7.6",
     "resize-observer-polyfill": "^1.5.1",
-    "rn-fetch-blob": "^0.12.0"
+    "rn-fetch-blob": "^0.12.0",
+    "socket.io-client": "^4.7.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
@@ -78,7 +79,6 @@
     "@expo/webpack-config": "^18.0.1",
     "@react-native-community/eslint-config": "^2.0.0",
     "@react-native/metro-config": "^0.72.9",
-
     "@svgr/webpack": "^6.5.1",
     "@tsconfig/react-native": "^2.0.2",
     "@types/jest": "^26.0.23",

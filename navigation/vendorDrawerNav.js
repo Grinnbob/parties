@@ -18,6 +18,7 @@ import VerifyPhone from "../screens/Vendor/Setting/Verify/VerifyPhone";
 import { Text } from "native-base";
 import VendorBackButton from "../components/navigation/VendorBackButton";
 import VendorCameraRoll from "../screens/Vendor/Profile/VendorCameraRoll";
+import { EventMessageScreen, EventScreen } from "../screens/Event";
 
 const Drawer = createDrawerNavigator();
 export default (props) => {
@@ -131,6 +132,20 @@ export default (props) => {
             </Text>
           ),
           headerLeft: VendorBackButton,
+        }}
+      />
+      <Drawer.Screen
+        name="Event"
+        component={EventScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Drawer.Screen
+        name="EventMessages"
+        component={EventMessageScreen}
+        options={{
+          headerShown: false,
         }}
       />
     </Drawer.Navigator>
