@@ -25,7 +25,7 @@ export const MyMessage: React.FC<ChatMessageProps> = ({
       {userImage ? (
         <Image style={styles.image} resizeMode="cover" source={userImage} />
       ) : (
-        <PersonIcon style={styles.personIcon} />
+        <PersonIcon width={32} height={32} style={styles.personIcon} />
       )}
     </View>
   );

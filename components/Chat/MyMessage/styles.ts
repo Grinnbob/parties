@@ -12,12 +12,11 @@ export const styles = StyleSheet.create({
     borderRadius: 100,
     width: 32,
     height: 32,
+    marginBottom: 32,
     marginLeft: 16,
-    marginBottom: 24,
   },
   personIcon: {
-    transform: [{ scale: 1.5 }],
-    marginBottom: 32,
+    marginBottom: 24,
     marginLeft: 16,
   },
   infoContainer: {
