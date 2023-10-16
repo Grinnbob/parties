@@ -11713,7 +11713,7 @@ react-native-biometrics@^3.0.1:
   resolved "https://registry.yarnpkg.com/react-native-biometrics/-/react-native-biometrics-3.0.1.tgz#23c5a0bdbae1fcb1e08b22936223fe0fc4af846e"
   integrity sha512-Ru80gXRa9KG04sl5AB9HyjLjVbduhqZVjA+AiOSGqr+fNqCDmCu9y5WEksnjbnniNLmq1yGcw+qcLXmR1ddLDQ==
 
-react-native-config@^1.4.11:
+react-native-config@^1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/react-native-config/-/react-native-config-1.5.1.tgz#73c94f511493e9b7ff9350cdf351d203a1b05acc"
   integrity sha512-g1xNgt1tV95FCX+iWz6YJonxXkQX0GdD3fB8xQtR1GUBEqweB9zMROW77gi2TygmYmUkBI7LU4pES+zcTyK4HA==
@@ -11795,10 +11795,10 @@ react-native-mime-types@^2.4.0:
   dependencies:
     mime-db "~1.37.0"
 
-react-native-onesignal@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/react-native-onesignal/-/react-native-onesignal-5.0.0.tgz#c51b950dc8997b0dedfa6083efde9a1e4470b5b3"
-  integrity sha512-kIouwQoeMXmJeVg8mdvbtTisNejtlMlKW8sU7KdzAge9ZRezTr6ryVPHroiMdjnYBvmZ4UzCtZZrS+Aqarepbw==
+react-native-onesignal@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-onesignal/-/react-native-onesignal-5.0.2.tgz#ca6248c2b5faef4e85d42853a0bfd68a76a4d25e"
+  integrity sha512-8CsEQRRwoiNX6JhW0FWbCgkKz5OrsgtmW2BLmOkg7TwNA9Fge2obMda3DSeZniZVDFs6viz6DXkgtZnJjdgNvg==
   dependencies:
     invariant "^2.2.2"
 

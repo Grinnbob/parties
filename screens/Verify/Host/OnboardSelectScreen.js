@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  Image,
   StyleSheet,
   View,
   ScrollView,
@@ -30,13 +29,17 @@ import Wellness from "../../../assets/onboard/wellness.svg";
 import apis from "../../../apis";
 import useGlobalState from "../../../stateManagement/hook";
 import StateTypes from "../../../stateManagement/StateTypes";
+import loadApp from "../../../navigation/loadApp";
+import { GhostButton } from "../../../components/GhostButton";
+
+const HOLIDAY_SELECTION = {
+  id: 1,
+  title: "Holidays",
+  asset: <Holiday />,
+};
 
 const selections = [
-  {
-    id: 1,
-    title: "Holidays",
-    asset: <Holiday />,
-  },
+  HOLIDAY_SELECTION,
   {
     id: 2,
     title: "Birthday",
@@ -84,7 +87,9 @@ const OnboardSelectScreen = () => {
   const navigation = useNavigation();
   const [tags, setTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAppLoading, setIsAppLoading] = useState(false);
   const [partyType, setPartyType] = useState([]);
+
   const [token, setToken] = useGlobalState(
     StateTypes.token.key,
     StateTypes.token.default
@@ -93,17 +98,30 @@ const OnboardSelectScreen = () => {
     StateTypes.user.key,
     StateTypes.user.default
   );
+
   const [selectedTiles, setSelectedTiles] = useGlobalState(
     StateTypes.selectedTiles.key,
     StateTypes.selectedTiles.default
   );
+
+  const loadMainApp = async () => {
+    setIsAppLoading(true);
+    await loadApp(setToken, setUser);
+    setIsLoading(false);
+    setSelectedTiles(StateTypes.selectedTiles.default);
+  };
 
   const handleSelectionNext = async () => {
     try {
       setIsLoading(true);
       const res = await apis.joinUserCategory.createMulti({
         UserId: user.id,
-        tags,
+        tags: tags.map((item) => {
+          return {
+            id: item.id,
+            title: item.title,
+          };
+        }),
       });
       if (res && res.success === false) {
         toast.show({
@@ -113,9 +131,12 @@ const OnboardSelectScreen = () => {
         setIsLoading(false);
       }
       if (res && res.success) {
+        if (selectedTiles.find((item) => item.id === HOLIDAY_SELECTION.id)) {
+          navigation.navigate("OnboardHolidaySelect");
+        } else {
+          await loadApp(setToken, setUser);
+        }
         setIsLoading(false);
-        setSelectedTiles(StateTypes.selectedTiles.default);
-        navigation.navigate("OnboardHolidaySelect");
       }
     } catch (error) {
       toast.show({
@@ -179,15 +200,18 @@ const OnboardSelectScreen = () => {
             formBackgroundColor="unset"
             formMarginTop="unset"
             labelColor="#fff"
+            disabled={!selectedTiles.length}
           />
-          <View style={styles.form}>
-            <TouchableOpacity
-              activeOpacity={0.2}
-              onPress={() => navigation.navigate("OnboardHolidaySelect")}
-            >
-              <Text style={[styles.skip, styles.skipTypo]}>Skip</Text>
-            </TouchableOpacity>
-          </View>
+          {/*<View style={styles.form}>*/}
+          {/*  <GhostButton*/}
+          {/*    isLoading={isAppLoading}*/}
+          {/*    onPress={async () => {*/}
+          {/*      await loadMainApp();*/}
+          {/*    }}*/}
+          {/*  >*/}
+          {/*    <Text style={[styles.skip, styles.skipTypo]}>Skip</Text>*/}
+          {/*  </GhostButton>*/}
+          {/*</View>*/}
         </View>
       </View>
     </View>
