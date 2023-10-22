@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -15,6 +15,7 @@ type ChatMessageProps = ChatMessageModel & {
   userImage?: string;
   isLoading?: boolean;
   onErrorPress?: (id: string) => void;
+  onImagePress?: (imageUrl: string) => void;
 };
 
 export const MyMessage: React.FC<ChatMessageProps> = ({
@@ -26,8 +27,16 @@ export const MyMessage: React.FC<ChatMessageProps> = ({
   isLoading,
   error,
   onErrorPress,
+  onImagePress,
 }) => {
   const isDisabled = isLoading || !!error;
+  const [isImageLoadError, setIsImageLoadError] = useState(false);
+
+  const handleImagePress = () => {
+    if (imageUrl) {
+      onImagePress?.(imageUrl);
+    }
+  };
 
   return (
     <View style={styles.root}>
@@ -40,7 +49,26 @@ export const MyMessage: React.FC<ChatMessageProps> = ({
         >
           {!!text && <Text style={styles.messageText}>{text}</Text>}
           {!!imageUrl && (
-            <Image source={{ uri: imageUrl }} resizeMode="contain" />
+            <>
+              {isImageLoadError ? (
+                <Image
+                  source={require("../../../assets/image-not-found-icon.svg")}
+                  style={styles.messageImage}
+                />
+              ) : (
+                <TouchableOpacity onPress={handleImagePress}>
+                  <Image
+                    source={{
+                      uri: imageUrl,
+                    }}
+                    style={styles.messageImage}
+                    onError={() => {
+                      setIsImageLoadError(true);
+                    }}
+                  />
+                </TouchableOpacity>
+              )}
+            </>
           )}
         </View>
         <View style={styles.footer}>

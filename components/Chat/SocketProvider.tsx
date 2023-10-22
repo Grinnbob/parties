@@ -22,7 +22,11 @@ export type SocketContextProps = {
     userId: string;
     message: string;
   }) => Promise<unknown>;
-  sendImage: (data: string) => Promise<unknown>;
+  sendImage: (data: {
+    conversationId: string;
+    userId: string;
+    image: string;
+  }) => Promise<unknown>;
   findMuted: (data: unknown) => Promise<void>;
 };
 
@@ -183,7 +187,11 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     });
   };
 
-  const sendImage = async (data: string) => {
+  const sendImage = async (data: {
+    conversationId: string;
+    userId: string;
+    image: string;
+  }) => {
     if (!chatSocket.current) {
       return;
     }

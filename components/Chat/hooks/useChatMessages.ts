@@ -3,6 +3,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { ImagePickerResponse } from "react-native-image-picker";
@@ -14,7 +15,7 @@ import dayjs from "dayjs";
 import { useChat } from "./useChat";
 import { ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { uploadChatImage } from "../../../apis/routes/chat";
 // {
 //   id: uuid.v4() as string,
 //   text: "How early can you arrive?",
@@ -62,7 +63,7 @@ export const useChatMessages = ({
     useChat();
 
   const [messages, setMessages] = useState<ChatMessageModel[]>([]);
-
+  const messagesRef = useRef(messages);
   const groupedMessages = useMemo(() => {
     return groupBy(messages, (record) =>
       dayjs(record.date).format("YYYY MMM DD")
@@ -104,10 +105,35 @@ export const useChatMessages = ({
     message?: string;
     image?: ImagePickerResponse;
   }) => {
+    const id = uuid.v4() as string;
+    console.log("params", params);
     if (params.image) {
-      // imageApi.sendImage(params.image);
+      console.log("params.image", params.image);
+      try {
+        const imageUrl = params.image?.assets?.[0].uri || "";
+        setMessages([
+          ...messages,
+          {
+            id,
+            imageUrl,
+            date: new Date(),
+            isLoading: true,
+          },
+        ]);
+        setTimeout(() => {
+          scrollViewRef?.current?.scrollToEnd();
+        });
+        const message = await sendImage({
+          userId,
+          conversationId,
+          image: imageUrl,
+        });
+        // setMessageLoading(id, false);
+        // uploadChatImage({conversationId, userId});
+      } catch (e) {
+        setMessageError(id);
+      }
     } else if (params.message) {
-      const id = uuid.v4() as string;
       setMessages([
         ...messages,
         {
@@ -201,9 +227,20 @@ export const useChatMessages = ({
 
   useEffect(() => {
     return () => {
-      AsyncStorage.setItem(`chat-${conversationId}`, JSON.stringify(messages));
+      AsyncStorage.setItem(
+        `chat-${conversationId}`,
+        JSON.stringify(
+          messagesRef.current.map((item) => {
+            if (item.isLoading) {
+              item.isLoading = false;
+              item.error = "timeout";
+            }
+            return item;
+          })
+        )
+      );
     };
-  }, [conversationId, messages]);
+  }, []);
 
   useEffect(() => {
     if (!isLoading) {
@@ -212,6 +249,8 @@ export const useChatMessages = ({
       });
     }
   }, [isLoading]);
+
+  messagesRef.current = messages;
 
   return {
     isLoading,

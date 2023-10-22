@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -11,6 +11,7 @@ import { MessageInput } from "./MessageInput";
 import { styles } from "./styles";
 import dayjs from "dayjs";
 import { useChatMessages } from "./hooks/useChatMessages";
+import { ImageModal } from "./ImageModal";
 
 const currentYear = dayjs().format("YYYY");
 
@@ -33,6 +34,18 @@ export const Chat: React.FC<ChatProps> = ({ conversationId, userId }) => {
     userId,
     scrollViewRef,
   });
+
+  const [imagePreviewUrl, setImagePreviewUrl] = useState("");
+
+  const handleImagePress = (url: string) => {
+    setImagePreviewUrl(url);
+  };
+
+  const handleCloseModal = () => {
+    setImagePreviewUrl("");
+  };
+
+  console.log("imagePreviewUrl", imagePreviewUrl);
 
   return (
     <>
@@ -70,9 +83,11 @@ export const Chat: React.FC<ChatProps> = ({ conversationId, userId }) => {
                     id={message.id}
                     text={message.text}
                     date={message.date}
+                    imageUrl={message.imageUrl}
                     isLoading={message.isLoading}
                     error={message.error}
                     onErrorPress={onErrorPress}
+                    onImagePress={handleImagePress}
                   />
                 );
               })}
@@ -92,6 +107,11 @@ export const Chat: React.FC<ChatProps> = ({ conversationId, userId }) => {
           scrollViewRef={scrollViewRef}
         />
       </KeyboardAvoidingView>
+      <ImageModal
+        isVisible={!!imagePreviewUrl}
+        onClose={handleCloseModal}
+        imageUrl={imagePreviewUrl}
+      />
     </>
   );
 };

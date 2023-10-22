@@ -56,4 +56,13 @@ export const styles = StyleSheet.create({
     marginBottom: 0,
     color: Color.textMainWhite,
   },
+  messageImage: {
+    flex: 1,
+    width: 150,
+    height: 150,
+    maxHeight: 150,
+    resizeMode: "cover",
+    borderRadius: Border.br_5xs,
+    overflow: "hidden",
+  },
 });
