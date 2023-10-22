@@ -17,8 +17,12 @@ export type SocketContextProps = {
   startChatSocket: (data?: Record<string, unknown>) => Promise<void>;
   chatSocketDisconnect: () => void;
   socketDisconnect: () => void;
-  sendMessage: (data: unknown) => void;
-  sendImage: (data: unknown) => void;
+  sendMessage: (data: {
+    conversationId: string;
+    userId: string;
+    message: string;
+  }) => Promise<unknown>;
+  sendImage: (data: string) => Promise<unknown>;
   findMuted: (data: unknown) => Promise<void>;
 };
 
@@ -29,14 +33,37 @@ export const SocketContext = createContext<SocketContextProps>({
   startChatSocket: async (data?: Record<string, unknown>) => {},
   chatSocketDisconnect: () => {},
   socketDisconnect: () => {},
-  sendMessage: () => {},
-  sendImage: (data: unknown) => {},
+  sendMessage: async () => {},
+  sendImage: async (data: unknown) => {},
   findMuted: async (data: unknown) => {},
 });
 
 type SocketProviderProps = {
   children?: React.ReactNode;
 };
+
+const withTimeout = (
+  onSuccess: (...params: any[]) => void,
+  onTimeout: (...params: any[]) => void,
+  timeout: number
+) => {
+  let called = false;
+
+  const timer = setTimeout(() => {
+    if (called) return;
+    called = true;
+    onTimeout();
+  }, timeout);
+
+  return (...args: any[]) => {
+    if (called) return;
+    called = true;
+    clearTimeout(timer);
+    onSuccess.apply(this, args);
+  };
+};
+
+const MESSAGE_TIMEOUT = 5000;
 
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const socket = useRef<Socket | null>(null);
@@ -62,7 +89,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   }, [chatSocket.current]);
 
   const startChatSocket = async (data: Record<string, unknown> = {}) => {
-    chatSocket.current = io(`${Config.API_URL_BASE}/chat`, {
+    chatSocket.current = io(`${Config.API_URL_BASE}`, {
       autoConnect: false,
     });
     chatSocket.current.auth = {
@@ -91,27 +118,57 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       setIsMuted(message.muted);
     });
 
+    chatSocket.current.on("connect", () => {
+      console.warn("Chat connected!");
+    });
+
     // chatSocket.current.on("isTyping", (data) => {
     //   setIsTyping(data.typing);
     // });
 
-    chatSocket.current.on("disconnect", (err) => {});
+    chatSocket.current.on("disconnect", (err) => {
+      console.warn("Chat disconnected!");
+    });
   };
 
-  const sendMessage = (data: unknown) => {
+  const sendMessage = async (data: {
+    conversationId: string;
+    userId: string;
+    message: string;
+  }) => {
     if (!chatSocket.current) {
+      console.log("no socket");
       return;
     }
-    chatSocket.current.emit(
-      "send_message",
-      data,
-      (response: SocketResponse) => {
-        if (response && response.success) {
-          setMessage(response.message);
-          return response.message;
-        }
+
+    return new Promise((resolve, reject) => {
+      if (!chatSocket.current) {
+        console.log("error");
+        reject(null);
+        return;
       }
-    );
+      console.log("emit", data);
+      chatSocket.current?.connect();
+      console.log("connected", chatSocket.current?.connected);
+      chatSocket.current.emit(
+        "send_message",
+        data,
+        withTimeout(
+          (response: SocketResponse) => {
+            console.log("socket response", response);
+            if (response && response.success) {
+              setMessage(response.message);
+              resolve(response.message);
+            }
+            reject(null);
+          },
+          () => {
+            reject("timeout");
+          },
+          MESSAGE_TIMEOUT
+        )
+      );
+    });
   };
 
   const findMuted = async (data: unknown) => {
@@ -126,20 +183,34 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     });
   };
 
-  const sendImage = (data: unknown) => {
+  const sendImage = async (data: string) => {
     if (!chatSocket.current) {
       return;
     }
-    chatSocket.current.emit(
-      "image_message",
-      data,
-      (response: SocketResponse) => {
-        if (response && response.success) {
-          setMessage(response.message);
-          return response.message;
-        }
+    return new Promise((resolve, reject) => {
+      if (!chatSocket.current) {
+        reject(null);
+        return;
       }
-    );
+      chatSocket.current.emit(
+        "image_message",
+        data,
+        withTimeout(
+          (response: SocketResponse) => {
+            console.log("socket response", response);
+            if (response && response.success) {
+              setMessage(response.message);
+              resolve(response.message);
+            }
+            reject(null);
+          },
+          () => {
+            reject("timeout");
+          },
+          MESSAGE_TIMEOUT
+        )
+      );
+    });
   };
 
   const socketDisconnect = () => {

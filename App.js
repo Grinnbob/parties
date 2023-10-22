@@ -15,6 +15,8 @@ import Wrapper from "./theme/Wrapper";
 import RootNavigator from "./navigation/rootNavigator";
 import TestFairy from "react-native-testfairy";
 import Config from "react-native-config";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
+import { SocketProvider } from "./components/Chat";
 
 const App = () => {
   useEffect(() => {
@@ -28,7 +30,11 @@ const App = () => {
     >
       <Wrapper>
         <RecoilRoot>
-          <RootNavigator />
+          <ActionSheetProvider>
+            <SocketProvider>
+              <RootNavigator />
+            </SocketProvider>
+          </ActionSheetProvider>
         </RecoilRoot>
       </Wrapper>
     </View>

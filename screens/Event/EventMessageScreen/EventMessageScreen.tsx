@@ -5,12 +5,16 @@ import VendorBackButton from "../../../components/navigation/VendorBackButton";
 import { useNavigation } from "@react-navigation/native";
 import { Divider } from "../../../components/Atoms";
 import { Chat } from "../../../components/Chat";
+import useGlobalState from "../../../stateManagement/hook";
+import StateTypes from "../../../stateManagement/StateTypes";
 
 export const EventMessageScreen: React.FC = () => {
   const { navigate } = useNavigation();
   const handleBackPress = () => {
     navigate("Event");
   };
+
+  const [user] = useGlobalState(StateTypes.user.key, StateTypes.user.default);
 
   return (
     <View style={styles.screen}>
@@ -28,7 +32,7 @@ export const EventMessageScreen: React.FC = () => {
         <View style={styles.hidden} />
       </View>
       <Divider />
-      <Chat />
+      <Chat conversationId={"1"} userId={user.id} />
     </View>
   );
 };

@@ -1,41 +1,38 @@
-import React, { useEffect, useRef, useState } from "react";
-import { KeyboardAvoidingView, ScrollView, View } from "react-native";
-import { useChat } from "./hooks/use-chat";
+import React, { useRef } from "react";
+import {
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  ScrollView,
+} from "react-native";
 import { Tag } from "../Atoms";
 import { MyMessage } from "./MyMessage/MyMessage";
 import { VendorMessage } from "./VendorMessage/VendorMessage";
 import { MessageInput } from "./MessageInput";
 import { styles } from "./styles";
+import dayjs from "dayjs";
+import { useChatMessages } from "./hooks/useChatMessages";
 
-export const Chat: React.FC = () => {
-  const { startChatSocket, chatSocketDisconnect, sendImage, sendMessage } =
-    useChat();
+const currentYear = dayjs().format("YYYY");
+
+type ChatProps = {
+  conversationId: string;
+  userId: string;
+};
+
+export const Chat: React.FC<ChatProps> = ({ conversationId, userId }) => {
   const scrollViewRef = useRef<ScrollView | null>(null);
-
-  useEffect(() => {
-    startChatSocket();
-
-    return () => {
-      chatSocketDisconnect();
-    };
-  }, [startChatSocket]);
-
-  const [message, setMessage] = useState("");
-  const handleTextChange = (val: string) => {
-    setMessage(val);
-  };
-
-  const handleSubmitText = (params: {
-    message?: string;
-    imageUrl?: string;
-  }) => {
-    if (params.imageUrl) {
-      sendImage(params.imageUrl);
-    } else if (params.imageUrl) {
-      sendMessage(params.imageUrl);
-      setMessage("");
-    }
-  };
+  const {
+    isLoading,
+    message,
+    onMessageChange,
+    onSubmitMessage,
+    groupedMessages,
+    onErrorPress,
+  } = useChatMessages({
+    conversationId,
+    userId,
+    scrollViewRef,
+  });
 
   return (
     <>
@@ -43,30 +40,46 @@ export const Chat: React.FC = () => {
         ref={scrollViewRef}
         automaticallyAdjustKeyboardInsets={true}
         keyboardShouldPersistTaps="always"
+        contentContainerStyle={styles.messagesContainer}
       >
-        <View style={styles.messagesContainer}>
-          <Tag text="Feb 21" style={{ alignSelf: "center" }} />
-          <MyMessage text="How early can you arrive?" time="2:31 PM" />
-          <VendorMessage
-            name="All American Vendor Truck"
-            text="I can arrive 1 hour before the party, to set up my Taco Truck. I’ll even throw in free Horchata!"
-            time="2:35 PM"
-          />
-          <MyMessage
-            text="OMG! We love Horchata! That is si kind. Please send an invoice over, and i will pay it on Friday, when i get paid!"
-            time="2:31 PM"
-          />
-          <MyMessage text="How early can you arrive?" time="2:31 PM" />
-          <VendorMessage
-            name="All American Vendor Truck"
-            text="I can arrive 1 hour before the party, to set up my Taco Truck. I’ll even throw in free Horchata!"
-            time="2:35 PM"
-          />
-          <MyMessage
-            text="OMG! We love Horchata! That is si kind. Please send an invoice over, and i will pay it on Friday, when i get paid!"
-            time="2:31 PM"
-          />
-        </View>
+        {Object.keys(groupedMessages).map((key) => {
+          const split = key.split(" ");
+          const tag =
+            split[0] === currentYear ? split.slice(1, 3).join(" ") : key;
+
+          return (
+            <React.Fragment key={key}>
+              <Tag text={tag} style={styles.tag} />
+              {groupedMessages[key].map((message) => {
+                if (message.name) {
+                  return (
+                    <VendorMessage
+                      key={message.id}
+                      id={message.id}
+                      name={message.name}
+                      date={message.date}
+                      text={message.text}
+                      imageUrl={message.imageUrl}
+                    />
+                  );
+                }
+
+                return (
+                  <MyMessage
+                    key={message.id}
+                    id={message.id}
+                    text={message.text}
+                    date={message.date}
+                    isLoading={message.isLoading}
+                    error={message.error}
+                    onErrorPress={onErrorPress}
+                  />
+                );
+              })}
+            </React.Fragment>
+          );
+        })}
+        {isLoading && <ActivityIndicator size={24} />}
       </ScrollView>
       <KeyboardAvoidingView
         style={styles.keyboardAvoidingView}
@@ -74,8 +87,8 @@ export const Chat: React.FC = () => {
       >
         <MessageInput
           value={message}
-          onChangeText={handleTextChange}
-          onSubmit={handleSubmitText}
+          onChangeText={onMessageChange}
+          onSubmit={onSubmitMessage}
           scrollViewRef={scrollViewRef}
         />
       </KeyboardAvoidingView>

@@ -24,6 +24,9 @@ export const styles = StyleSheet.create({
     alignItems: "flex-end",
     flex: 1,
   },
+  disabled: {
+    opacity: 0.5,
+  },
   messageContainer: {
     borderColor: "#6C1B9E",
     borderWidth: 1,
@@ -37,7 +40,20 @@ export const styles = StyleSheet.create({
   },
   time: {
     fontSize: FontSize.textBody12Medium_size,
-    marginTop: 8,
     color: "#FFFFFF",
+  },
+  footer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    marginTop: 6,
+    minHeight: 16,
+  },
+  activityIndicator: { marginRight: 14 },
+  errorIcon: {
+    marginRight: 8,
+    marginBottom: 0,
+    color: Color.textMainWhite,
   },
 });
