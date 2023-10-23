@@ -6,7 +6,7 @@ OneSignal.initialize(Config.ONESIGNAL_APP_ID);
 
 // OneSignal.Notifications.requestPermission();
 const initializePushNotifications = async () => {
-  const [hasPermission] = await OneSignal.Notifications.requestPermission();
+  const [hasPermission] = await OneSignal.Notifications.requestPermission(true);
   console.log("oneSignalPermission", hasPermission);
   if (hasPermission) {
     OneSignal.InAppMessages.addEventListener("willDisplay", (event) => {
