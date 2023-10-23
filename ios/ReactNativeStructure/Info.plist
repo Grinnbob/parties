@@ -42,7 +42,9 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Allow $(APP_NAME) to access camera roll</string>
+	<string>Allow $(APP_NAME) to access photo library</string>
+	<key>NSCameraUsageDescription</key>
+    <string>Allow $(APP_NAME) to access camera roll</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Text, Divider, Pressable, VStack, HStack } from "native-base";
-import { View, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image } from "react-native";
 import StateTypes from "../../stateManagement/StateTypes";
 import useGlobalState from "../../stateManagement/hook";
 import MidGradientButton from "../../components/MidGradientButton";
@@ -10,7 +10,6 @@ import Person from "../../assets/onboard/profilecircle.svg";
 import Mobile from "../../assets/mobile.svg";
 import LabelInput from "../../components/Input/LabelInput";
 import apis from "../../apis";
-import types from "../../stateManagement/types";
 
 function formatPhoneNumber(value) {
   var cleaned = ("" + value).replace(/\D/g, "");
