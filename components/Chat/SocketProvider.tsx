@@ -67,7 +67,7 @@ const withTimeout = (
   };
 };
 
-const MESSAGE_TIMEOUT = 5000;
+const MESSAGE_TIMEOUT = 15000;
 
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const socket = useRef<Socket | null>(null);
@@ -93,7 +93,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   }, [chatSocket.current]);
 
   const startChatSocket = async (data: Record<string, unknown> = {}) => {
-    chatSocket.current = io(`${Config.API_URL_BASE}`, {
+    chatSocket.current = io(`https://devbackend.partyfavor.social`, {
       autoConnect: false,
     });
     chatSocket.current.auth = {
@@ -115,6 +115,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     });
 
     chatSocket.current.on("receive_image", (message: string) => {
+      console.log("receive_image", message);
       setMessage((prev) => message);
     });
 
@@ -155,7 +156,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       chatSocket.current?.connect();
       console.log("connected", chatSocket.current?.connected);
       chatSocket.current.emit(
-        "send_message",
+        "text_message",
         data,
         withTimeout(
           (response: SocketResponse) => {
