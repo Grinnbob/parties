@@ -204,7 +204,7 @@ export const useChatMessages = ({
   const { showActionSheetWithOptions } = useActionSheet();
 
   useEffect(() => {
-    startChatSocket();
+    startChatSocket({ conversationId });
 
     return () => {
       chatSocketDisconnect();

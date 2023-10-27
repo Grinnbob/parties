@@ -3,7 +3,7 @@ import io, { Socket } from "socket.io-client";
 import useGlobalState from "../../stateManagement/hook";
 import StateTypes from "../../stateManagement/StateTypes";
 import Config from "react-native-config";
-
+import { getAUTH_TOKEN } from "../../apis/base";
 type SocketResponse = {
   success: boolean;
   message: string;
@@ -93,13 +93,16 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   }, [chatSocket.current]);
 
   const startChatSocket = async (data: Record<string, unknown> = {}) => {
-    chatSocket.current = io(`https://devbackend.partyfavor.social`, {
+    console.log("SOCKET URL", Config.BE_URL_BASE);
+    console.log("auth", getAUTH_TOKEN());
+    chatSocket.current = io(`${Config.BE_URL_BASE}/chat`, {
       autoConnect: false,
+
+      auth: { token: getAUTH_TOKEN() },
     });
-    chatSocket.current.auth = {
-      ...data,
-      token: token,
-    };
+    // chatSocket.current.auth = {
+    //   ...data,
+    // };
     addChatSocketListeners();
     chatSocket.current.connect();
     chatSocket.current.emit("create", data);
@@ -152,14 +155,10 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         return;
       }
       console.log("emit", data);
-      chatSocket.current?.connect();
+      // chatSocket.current?.connect();
       console.log("connected", chatSocket.current?.connected);
       chatSocket.current.emit(
-<<<<<<< HEAD
-        "send_message",
-=======
         "text_message",
->>>>>>> a77ec8ceeec539c2e4f42dec8b0698288e3c439f
         data,
         withTimeout(
           (response: SocketResponse) => {

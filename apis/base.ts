@@ -11,6 +11,7 @@ interface EncryptedReturn {
   success?: boolean;
   data: string;
 }
+export const getAUTH_TOKEN = () => AUTH_TOKEN;
 export const setAUTH_TOKEN = async (key: string) => {
   try {
     if (key) {
