@@ -50,7 +50,6 @@ export const MessageInput = React.forwardRef<TextInput, MessageInputProps>(
 
       const photoOptions: CameraOptions = { mediaType: "photo" };
       const handleSelectImage = (image: ImagePickerResponse) => {
-        console.log("image", image);
         onSubmit({ image });
       };
 

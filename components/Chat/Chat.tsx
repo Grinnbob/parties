@@ -45,8 +45,6 @@ export const Chat: React.FC<ChatProps> = ({ conversationId, userId }) => {
     setImagePreviewUrl("");
   };
 
-  console.log("imagePreviewUrl", imagePreviewUrl);
-
   return (
     <>
       <ScrollView
