@@ -1,9 +1,8 @@
 import React, { useState, createContext, useRef, useEffect } from "react";
 import io, { Socket } from "socket.io-client";
-import useGlobalState from "../../stateManagement/hook";
-import StateTypes from "../../stateManagement/StateTypes";
 import Config from "react-native-config";
 import { getAUTH_TOKEN } from "../../apis/base";
+import { ChatMessageModel } from "../../models/ChatMessageModel";
 type SocketResponse = {
   success: boolean;
   message: string;
@@ -11,7 +10,7 @@ type SocketResponse = {
 };
 
 export type SocketContextProps = {
-  message: string;
+  receivedMessage: ChatMessageModel | null;
   isTyping: boolean;
   isMuted: boolean;
   startChatSocket: (data?: Record<string, unknown>) => Promise<void>;
@@ -21,17 +20,17 @@ export type SocketContextProps = {
     conversationId: string;
     userId: string;
     message: string;
-  }) => Promise<unknown>;
+  }) => Promise<ChatMessageModel>;
   sendImage: (data: {
     conversationId: string;
     userId: string;
     image: string;
-  }) => Promise<unknown>;
+  }) => Promise<ChatMessageModel>;
   findMuted: (data: unknown) => Promise<void>;
 };
 
 export const SocketContext = createContext<SocketContextProps>({
-  message: "",
+  receivedMessage: null,
   isTyping: false,
   isMuted: false,
   startChatSocket: async (data?: Record<string, unknown>) => {},
@@ -72,15 +71,10 @@ const MESSAGE_TIMEOUT = 15000;
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const socket = useRef<Socket | null>(null);
   const chatSocket = useRef<Socket | null>(null);
-  const [message, setMessage] = useState("");
+  const [receivedMessage, setReceivedMessage] =
+    useState<ChatMessageModel | null>(null);
   const [isMuted, setIsMuted] = useState(false);
-  // const [users, setUsers] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
-
-  const [token] = useGlobalState(
-    StateTypes.token.key,
-    StateTypes.token.default
-  );
 
   useEffect(() => {
     if (chatSocket.current) {
@@ -93,16 +87,12 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   }, [chatSocket.current]);
 
   const startChatSocket = async (data: Record<string, unknown> = {}) => {
-    console.log("SOCKET URL", Config.BE_URL_BASE);
-    console.log("auth", getAUTH_TOKEN());
     chatSocket.current = io(`${Config.BE_URL_BASE}/chat`, {
       autoConnect: false,
 
       auth: { token: getAUTH_TOKEN() },
     });
-    // chatSocket.current.auth = {
-    //   ...data,
-    // };
+
     addChatSocketListeners();
     chatSocket.current.connect();
     chatSocket.current.emit("create", data);
@@ -113,12 +103,12 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     if (!chatSocket.current) {
       return;
     }
-    chatSocket.current.on("receive_message", (message: string) => {
-      setMessage((prev) => message);
+    chatSocket.current.on("receive_message", (message: ChatMessageModel) => {
+      setReceivedMessage((prev) => message);
     });
 
-    chatSocket.current.on("receive_image", (message: string) => {
-      setMessage((prev) => message);
+    chatSocket.current.on("receive_image", (message: ChatMessageModel) => {
+      setReceivedMessage((prev) => message);
     });
 
     chatSocket.current.on("enter", (message) => {
@@ -126,7 +116,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     });
 
     chatSocket.current.on("connect", () => {
-      console.warn("Chat connected!");
+      console.log("Chat connected!");
     });
 
     // chatSocket.current.on("isTyping", (data) => {
@@ -134,7 +124,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     // });
 
     chatSocket.current.on("disconnect", (err) => {
-      console.warn("Chat disconnected!");
+      console.log("Chat disconnected!");
     });
   };
 
@@ -161,11 +151,11 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         "text_message",
         data,
         withTimeout(
-          (response: SocketResponse) => {
+          (response: ChatMessageModel) => {
             console.log("socket response", response);
             if (response && response.success) {
-              setMessage(response.message);
-              resolve(response.message);
+              setReceivedMessage(response);
+              resolve(response);
             }
             reject(null);
           },
@@ -207,10 +197,10 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         "image_message",
         data,
         withTimeout(
-          (response: SocketResponse) => {
+          (response: ChatMessageModel) => {
             console.log("socket response", response);
             if (response && response.success) {
-              setMessage(response.message);
+              setReceivedMessage(response);
               resolve(response.message);
             }
             reject(null);
@@ -245,12 +235,12 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 
   const resetChatSocket = () => {
     chatSocket.current = null;
-    setMessage("");
+    setReceivedMessage(null);
     setIsTyping(false);
   };
 
   const socketContext = {
-    message,
+    receivedMessage,
     isTyping,
     startChatSocket,
     chatSocketDisconnect,

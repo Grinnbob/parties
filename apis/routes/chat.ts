@@ -1,20 +1,20 @@
 import * as API from "../base";
 const Base = "chat";
 export const getAllMessages = async (conversationId: string) => {
-  let url = `${Base}/conversation/${conversationId}`;
+  let url = `/message/?ConversationId=${conversationId}`;
   const response = await API.getApi(url);
   return response;
 };
 
 export const uploadChatImage = async (data: {
-  id: number;
+  id: string | number;
   uri: string;
   conversationId: string;
   userId: string;
 }) => {
   const { uri, id, conversationId, userId } = data;
   const uploadRes = await API.imageApi(
-    `chat-${conversationId}-${userId}`,
+    `chat-${conversationId}-userId-${userId}`,
     id,
     uri
   );

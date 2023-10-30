@@ -156,7 +156,7 @@ export const putApiEncrypted = async (path: string, data: object) => {
 
 export const imageApi = async (
   type: string,
-  id: number,
+  id: number | string,
   uri: string,
   compression = {
     compress: 0.5,

@@ -11,30 +11,23 @@ import { ExclamationWarningIcon, PersonIcon } from "../../Icons";
 import dayjs from "dayjs";
 import { ChatMessageModel } from "../../../models";
 
-type ChatMessageProps = ChatMessageModel & {
-  userImage?: string;
-  isLoading?: boolean;
-  onErrorPress?: (id: string) => void;
+type ChatMessageProps = {
+  chatMessage: ChatMessageModel;
+  onErrorPress?: (id: string | number) => void;
   onImagePress?: (imageUrl: string) => void;
 };
 
 export const MyMessage: React.FC<ChatMessageProps> = ({
-  id,
-  text,
-  imageUrl,
-  date,
-  userImage,
-  isLoading,
-  error,
+  chatMessage,
   onErrorPress,
   onImagePress,
 }) => {
-  const isDisabled = isLoading || !!error;
+  const isDisabled = chatMessage.isLoading || !!chatMessage.error;
   const [isImageLoadError, setIsImageLoadError] = useState(false);
 
   const handleImagePress = () => {
-    if (imageUrl) {
-      onImagePress?.(imageUrl);
+    if (chatMessage.message.image) {
+      onImagePress?.(chatMessage.message.image);
     }
   };
 
@@ -47,8 +40,10 @@ export const MyMessage: React.FC<ChatMessageProps> = ({
             isDisabled ? styles.disabled : undefined,
           ]}
         >
-          {!!text && <Text style={styles.messageText}>{text}</Text>}
-          {!!imageUrl && (
+          {!!chatMessage.message.text && (
+            <Text style={styles.messageText}>{chatMessage.message.text}</Text>
+          )}
+          {!!chatMessage.message.image && (
             <>
               {isImageLoadError ? (
                 <Image
@@ -59,7 +54,7 @@ export const MyMessage: React.FC<ChatMessageProps> = ({
                 <TouchableOpacity onPress={handleImagePress}>
                   <Image
                     source={{
-                      uri: imageUrl,
+                      uri: chatMessage.message.image,
                     }}
                     style={styles.messageImage}
                     onError={() => {
@@ -72,13 +67,13 @@ export const MyMessage: React.FC<ChatMessageProps> = ({
           )}
         </View>
         <View style={styles.footer}>
-          {isLoading && (
+          {chatMessage.isLoading && (
             <ActivityIndicator size={6} style={styles.activityIndicator} />
           )}
-          {!!error && (
+          {!!chatMessage.error && (
             <TouchableOpacity
               onPress={() => {
-                onErrorPress?.(id);
+                onErrorPress?.(chatMessage.message._id);
               }}
             >
               <ExclamationWarningIcon
@@ -89,15 +84,15 @@ export const MyMessage: React.FC<ChatMessageProps> = ({
             </TouchableOpacity>
           )}
           <Text style={[styles.time, isDisabled ? styles.disabled : undefined]}>
-            {dayjs(date).format("hh:mm A")}
+            {dayjs(chatMessage.message.createdAt).format("hh:mm A")}
           </Text>
         </View>
       </View>
-      {userImage ? (
+      {chatMessage.message.user?.avatar ? (
         <Image
           style={styles.image}
           resizeMode="cover"
-          source={{ uri: userImage }}
+          source={{ uri: chatMessage.message.user?.avatar }}
         />
       ) : (
         <PersonIcon width={32} height={32} style={styles.personIcon} />

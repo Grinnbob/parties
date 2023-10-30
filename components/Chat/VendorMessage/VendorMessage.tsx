@@ -5,25 +5,21 @@ import { PersonIcon } from "../../Icons";
 import dayjs from "dayjs";
 import { ChatMessageModel } from "../../../models";
 
-type VendorMessageProps = ChatMessageModel & {
-  vendorImage?: string;
+type VendorMessageProps = {
+  chatMessage: ChatMessageModel;
 };
 
 export const VendorMessage: React.FC<VendorMessageProps> = ({
-  text,
-  imageUrl,
-  date,
-  name,
-  vendorImage,
+  chatMessage,
 }) => {
   return (
     <View style={styles.root}>
-      {vendorImage ? (
+      {chatMessage.message.user?.avatar ? (
         <Image
           style={styles.person}
           resizeMode="cover"
           source={{
-            uri: vendorImage,
+            uri: chatMessage.message.user?.avatar,
           }}
         />
       ) : (
@@ -35,14 +31,21 @@ export const VendorMessage: React.FC<VendorMessageProps> = ({
         />
       )}
       <View style={styles.infoContainer}>
-        <Text style={styles.name}>{name}</Text>
+        <Text style={styles.name}>{chatMessage.message.user?.name}</Text>
         <View style={styles.messageContainer}>
-          {!!text && <Text style={styles.messageText}>{text}</Text>}
-          {!!imageUrl && (
-            <Image source={{ uri: imageUrl }} resizeMode="contain" />
+          {!!chatMessage.message.text && (
+            <Text style={styles.messageText}>{chatMessage.message.text}</Text>
+          )}
+          {!!chatMessage.message.image && (
+            <Image
+              source={{ uri: chatMessage.message.image }}
+              resizeMode="contain"
+            />
           )}
         </View>
-        <Text style={styles.time}>{dayjs(date).format("hh:mm A")}</Text>
+        <Text style={styles.time}>
+          {dayjs(chatMessage.message.createdAt).format("hh:mm A")}
+        </Text>
       </View>
     </View>
   );

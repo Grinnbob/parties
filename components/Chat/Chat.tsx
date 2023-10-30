@@ -61,31 +61,24 @@ export const Chat: React.FC<ChatProps> = ({ conversationId, userId }) => {
           return (
             <React.Fragment key={key}>
               <Tag text={tag} style={styles.tag} />
-              {groupedMessages[key].map((message) => {
-                if (message.name) {
+              {groupedMessages[key].map((chatMessage) => {
+                if (
+                  String(chatMessage?.message?.user?._id) === String(userId)
+                ) {
                   return (
-                    <VendorMessage
-                      key={message.id}
-                      id={message.id}
-                      name={message.name}
-                      date={message.date}
-                      text={message.text}
-                      imageUrl={message.imageUrl}
+                    <MyMessage
+                      key={chatMessage.message._id}
+                      chatMessage={chatMessage}
+                      onErrorPress={onErrorPress}
+                      onImagePress={handleImagePress}
                     />
                   );
                 }
 
                 return (
-                  <MyMessage
-                    key={message.id}
-                    id={message.id}
-                    text={message.text}
-                    date={message.date}
-                    imageUrl={message.imageUrl}
-                    isLoading={message.isLoading}
-                    error={message.error}
-                    onErrorPress={onErrorPress}
-                    onImagePress={handleImagePress}
+                  <VendorMessage
+                    key={chatMessage.message._id}
+                    chatMessage={chatMessage}
                   />
                 );
               })}
