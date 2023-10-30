@@ -14,16 +14,12 @@ export const uploadChatImage = async (data: {
 }) => {
   const { uri, id, conversationId, userId } = data;
   const uploadRes = await API.imageApi(
-    `chat-${conversationId}-userId-${userId}`,
+    `conversationId-${conversationId}-userId-${userId}`,
     id,
     uri
   );
   if (uploadRes.success) {
-    const imageBody = {
-      avatar: uploadRes?.data?.key,
-    };
-
-    const response = await API.putApi(`${Base}/${id}`, imageBody);
-    return response;
+    console.log("uploadRes", uploadRes);
+    return uploadRes;
   }
 };

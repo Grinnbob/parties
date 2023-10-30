@@ -201,7 +201,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
             console.log("socket response", response);
             if (response && response.success) {
               setReceivedMessage(response);
-              resolve(response.message);
+              resolve(response);
             }
             reject(null);
           },

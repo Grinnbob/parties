@@ -135,8 +135,9 @@ export const useChatMessages = ({
           const response = await sendImage({
             userId,
             conversationId,
-            image: imageUrl,
+            image: uploadedImage.data.key,
           });
+          console.log("response", response);
           setMessageData(id, {
             isLoading: false,
             id: response.message._id,
