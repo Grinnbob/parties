@@ -26,6 +26,15 @@ const initializePushNotifications = async () => {
     });
   }
 };
+/**
+ * The function `loginNotifications` logs in a user, adds their email and phone number to OneSignal if
+ * provided.
+ * @param userId - The userId parameter is the unique identifier for the user. It is typically a string
+ * or a number that uniquely identifies the user in your system.
+ * @param email - The `email` parameter is the email address of the user.
+ * @param phoneNumber - The `phoneNumber` parameter is a string that represents the user's phone
+ * number.
+ */
 export const loginNotifications = async (userId, email, phoneNumber) => {
   console.log("noti login", userId, email, phoneNumber);
   const res = await OneSignal.User.login(userId + "");
