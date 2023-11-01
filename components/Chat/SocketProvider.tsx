@@ -39,7 +39,7 @@ export const SocketContext = createContext<SocketContextProps>({
   sendMessage: async () => {},
   sendImage: async (data: unknown) => {},
   findMuted: async (data: unknown) => {},
-});
+} as unknown as SocketContextProps);
 
 type SocketProviderProps = {
   children?: React.ReactNode;

@@ -3,7 +3,7 @@ export type ChatMessageModel = {
     _id: number | string;
     createdAt: string | Date;
     text?: string;
-    image?: string;
+    messageImage?: string;
     type: "text" | "image";
     user?: { _id: number | string; avatar: string; name: string };
   };

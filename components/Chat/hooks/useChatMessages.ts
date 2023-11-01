@@ -55,6 +55,7 @@ export const useChatMessages = ({
         id: ChatMessageModel["message"]["_id"];
         createdAt: ChatMessageModel["message"]["createdAt"];
         user: ChatMessageModel["message"]["user"];
+        messageImage: ChatMessageModel["message"]["messageImage"];
       }>
     ) => {
       setMessages((prevState) => {
@@ -75,6 +76,9 @@ export const useChatMessages = ({
           }
           if (values.user) {
             item.message.user = values.user;
+          }
+          if (values.messageImage) {
+            item.message.messageImage = values.messageImage;
           }
         }
         return newState;
@@ -111,7 +115,7 @@ export const useChatMessages = ({
               _id: id,
               createdAt: new Date(),
               type: "image",
-              image: imageUrl,
+              messageImage: imageUrl,
               user: {
                 _id: userId,
                 avatar: "",
@@ -130,11 +134,12 @@ export const useChatMessages = ({
           id,
           uri: imageUrl,
         });
-        console.log("uploadedImage", uploadedImage);
-        if (uploadedImage.success) {
+        if (uploadedImage?.success) {
           const response = await sendImage({
-            userId,
+            UserId: userId, // ToDO remove after BE fix
+            ConversationId: conversationId, // ToDO remove after BE fix
             conversationId,
+            userId,
             image: uploadedImage.data.key,
           });
           console.log("response", response);
@@ -143,6 +148,7 @@ export const useChatMessages = ({
             id: response.message._id,
             createdAt: response.message.createdAt,
             user: response.message.user,
+            messageImage: response.message.messageImage,
           });
         } else {
           setMessageError(id);

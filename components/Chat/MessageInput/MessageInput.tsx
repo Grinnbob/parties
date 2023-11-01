@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   StyleProp,
   ViewStyle,
+  Alert,
+  Linking,
 } from "react-native";
 import { styles } from "./styles";
 import CameraImage from "../../../assets/camera.svg";
@@ -49,7 +51,23 @@ export const MessageInput = React.forwardRef<TextInput, MessageInputProps>(
       ];
 
       const photoOptions: CameraOptions = { mediaType: "photo" };
-      const handleSelectImage = (image: ImagePickerResponse) => {
+      const handleSelectImage = async (image: ImagePickerResponse) => {
+        if (image.errorCode === "camera_unavailable") {
+          Alert.alert("Camera unavailable");
+          return;
+        }
+
+        if (image.errorCode === "permission") {
+          Alert.alert("Please grant permission to camera");
+          await Linking.openSettings();
+          return;
+        }
+
+        if (image.errorCode === "others") {
+          Alert.alert("Oops!. Please try again later");
+          return;
+        }
+
         onSubmit({ image });
       };
 
