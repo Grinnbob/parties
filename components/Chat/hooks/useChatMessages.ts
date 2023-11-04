@@ -187,9 +187,9 @@ export const useChatMessages = ({
         console.log("response", response);
         setMessageData(id, {
           isLoading: false,
-          id: response.message._id,
-          createdAt: response.message.createdAt,
-          user: response.message.user,
+          id: response?.message?._id,
+          createdAt: response?.message?.createdAt,
+          user: response?.message?.user,
         });
       } catch (e) {
         console.log("error", e);

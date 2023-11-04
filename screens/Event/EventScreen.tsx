@@ -34,9 +34,7 @@ export const EventScreen: React.FC = (props) => {
         resizeMode="cover"
         source={require("../../assets/bg11.png")}
       />
-      <View style={styles.header}>
-        <VendorBackButton navigation={navigation} style={styles.backButton} />
-      </View>
+      <View style={styles.header} />
       {/*<Divider />*/}
       <Tabs value={selectedTab} tabs={tabs} onChange={handleTabChange} />
       <View style={styles.content}></View>

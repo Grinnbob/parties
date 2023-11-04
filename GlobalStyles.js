@@ -60,6 +60,7 @@ export const Color = {
   primary: "#25282b",
   gray_100: "#14181c",
   gray_200: "rgba(255, 255, 255, 0.05)",
+  gray300: "#8A8A8A",
   firebrick: "#cf2a2a",
   primaryPink: "#FF077E",
 };
