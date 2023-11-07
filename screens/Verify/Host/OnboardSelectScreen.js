@@ -113,6 +113,10 @@ const OnboardSelectScreen = () => {
 
   const handleSelectionNext = async () => {
     try {
+      if (tags.find((item) => item.id === HOLIDAY_SELECTION.id)) {
+        navigation.navigate("OnboardHolidaySelect");
+        return;
+      }
       setIsLoading(true);
       const res = await apis.joinUserCategory.createMulti({
         UserId: user.id,
@@ -131,11 +135,8 @@ const OnboardSelectScreen = () => {
         setIsLoading(false);
       }
       if (res && res.success) {
-        if (selectedTiles.find((item) => item.id === HOLIDAY_SELECTION.id)) {
-          navigation.navigate("OnboardHolidaySelect");
-        } else {
-          await loadApp(setToken, setUser);
-        }
+        await loadApp(setToken, setUser);
+        setSelectedTiles(StateTypes.selectedTiles.default);
         setIsLoading(false);
       }
     } catch (error) {

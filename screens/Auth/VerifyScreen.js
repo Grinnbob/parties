@@ -141,7 +141,7 @@ const VerifyScreen = ({ route, navigation }) => {
         <View>
           <TouchableOpacity
             style={styles.leftAccessory}
-            onPress={() => navigation.navigate("ForgotPasswordScreen")}
+            onPress={() => navigation.goBack("ForgotPasswordScreen")}
           >
             <Image
               style={styles.backIconLayout}
