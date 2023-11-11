@@ -185,12 +185,16 @@ export const useChatMessages = ({
           message: params.message,
         });
         console.log("response", response);
-        setMessageData(id, {
-          isLoading: false,
-          id: response?.message?._id,
-          createdAt: response?.message?.createdAt,
-          user: response?.message?.user,
-        });
+        if (response?.success && response?.message?._id) {
+          setMessageData(id, {
+            isLoading: false,
+            id: response?.message?._id,
+            createdAt: response?.message?.createdAt,
+            user: response?.message?.user,
+          });
+        } else {
+          setMessageError(id);
+        }
       } catch (e) {
         console.log("error", e);
         setMessageError(id);

@@ -2,7 +2,7 @@ import axios from "axios";
 import Config from "react-native-config";
 import { RSAKeychain } from "react-native-rsa-native";
 import DeviceInfo from "react-native-device-info";
-import { manipulateAsync, FlipType, SaveFormat } from "expo-image-manipulator";
+import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
 import * as assets from "./routes/assets";
 let AUTH_TOKEN = "Bearer false";
 const LOGGING = false;
@@ -47,7 +47,7 @@ export const getApi = async (path: string) => {
   try {
     log(path, "GET REQUEST", "none");
     const headers = { crossorigin: true, Authorization: AUTH_TOKEN };
-    const res = await axios.get(`${Config.API_URL_BASE}${path}`, {
+    const res = await axios.get(`${Config.API_URL_BASE}/${path}`, {
       headers,
     });
     log(path, "GET RES", res.data);
@@ -67,7 +67,7 @@ export const postApi = async (path: string, data: object, token?: string) => {
     };
     let obj = data;
 
-    const res = await axios.post(`${Config.API_URL_BASE}${path}`, obj, {
+    const res = await axios.post(`${Config.API_URL_BASE}/${path}`, obj, {
       headers,
     });
     log(path, "POST RES", res.data);
@@ -82,7 +82,7 @@ export const putApi = async (path: string, data: object) => {
   try {
     log(path, "PUT REQUEST", data);
     const headers = { crossorigin: true, Authorization: AUTH_TOKEN };
-    const res = await axios.put(`${Config.API_URL_BASE}${path}`, data, {
+    const res = await axios.put(`${Config.API_URL_BASE}/${path}`, data, {
       headers,
     });
     setAUTH_TOKEN(res.headers.authorization);
@@ -109,7 +109,7 @@ export const deleteApiEncrypted = async (path: string) => {
 export const getApiEncrypted = async (path: string) => {
   try {
     const headers = { crossorigin: true, Authorization: AUTH_TOKEN };
-    const res = await axios.get(`${Config.API_URL_BASE}${path}`, {
+    const res = await axios.get(`${Config.API_URL_BASE}/${path}`, {
       headers,
     });
     setAUTH_TOKEN(res.headers.authorization);
@@ -130,7 +130,7 @@ export const postApiEncrypted = async (
       Authorization: token ? token : AUTH_TOKEN,
     };
     let obj = data;
-    const res = await axios.post(`${Config.API_URL_BASE}${path}`, obj, {
+    const res = await axios.post(`${Config.API_URL_BASE}/${path}`, obj, {
       headers,
     });
     setAUTH_TOKEN(res.headers.authorization);
@@ -143,7 +143,7 @@ export const postApiEncrypted = async (
 export const putApiEncrypted = async (path: string, data: object) => {
   try {
     const headers = { crossorigin: true, Authorization: AUTH_TOKEN };
-    const res = await axios.put(`${Config.API_URL_BASE}${path}`, data, {
+    const res = await axios.put(`${Config.API_URL_BASE}/${path}`, data, {
       headers,
     });
     setAUTH_TOKEN(res.headers.authorization);
@@ -244,6 +244,6 @@ const errorHandling = (error: any) => {
 
 const log = (path = "", type = "", body: any, shouldLog = false) => {
   if (LOGGING || shouldLog) {
-    console.log(`${Config.API_URL_BASE}${path}`, type, body);
+    console.log(`${Config.API_URL_BASE}/${path}`, type, body);
   }
 };

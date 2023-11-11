@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Padding } from "../../GlobalStyles";
 import { useToast } from "native-base";
@@ -6,7 +7,6 @@ import Warning from "../../assets/warning.svg";
 import MidGradientButton from "../../components/MidGradientButton";
 import { BlurView } from "@react-native-community/blur";
 import apis from "../../apis";
-import loadApp from "../../navigation/loadApp";
 import StateTypes from "../../stateManagement/StateTypes";
 import useGlobalState from "../../stateManagement/hook";
 import Delete from "../../assets/deletecircle.svg";
@@ -17,10 +17,14 @@ export default ({ navigation }) => {
     StateTypes.token.key,
     StateTypes.token.default
   );
-  const [user, setUser] = useGlobalState(
+
+  const userState = useGlobalState(
     StateTypes.user.key,
     StateTypes.user.default
   );
+
+  const user = userState[0];
+
   const [isLoading, setIsLoading] = useState(false);
 
   const handleNavigation = () => {
@@ -30,7 +34,7 @@ export default ({ navigation }) => {
   const handleDeleteAccount = async () => {
     try {
       setIsLoading(true);
-      const res = await apis.user.deleteById(user.id);
+      const res = await apis.user.deleteById(user?.id);
       setIsLoading(false);
       if (res && res.success === false) {
         toast.show({
