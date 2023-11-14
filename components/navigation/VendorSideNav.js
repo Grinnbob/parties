@@ -181,13 +181,6 @@ const VendorSideNav = () => {
               propAlignSelf="unset"
             />
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.touchableopacity}
-            activeOpacity={0.2}
-            onPress={() => navigate("Event")}
-          >
-            <MenuCard title="Event" propWidth={327} propAlignSelf="unset" />
-          </TouchableOpacity>
         </View>
         <TouchableOpacity
           style={styles.touchableopacity}

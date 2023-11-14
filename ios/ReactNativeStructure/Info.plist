@@ -40,7 +40,11 @@
 	<key>NSFaceIDUsageDescription</key>
 	<string>Allow $(APP_NAME) to use FaceID</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Allow $(APP_NAME) to use your geolocation</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Allow $(APP_NAME) to use your geolocation</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Allow $(APP_NAME) to use your geolocation</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Allow $(APP_NAME) to access photo library</string>
 	<key>NSCameraUsageDescription</key>

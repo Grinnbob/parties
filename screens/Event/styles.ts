@@ -33,4 +33,31 @@ export const styles = StyleSheet.create({
   hidden: {
     width: 19,
   },
+  divider: {
+    marginVertical: 24,
+  },
+  actionsContainer: {
+    flex: 1,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignContent: "flex-start",
+    marginTop: 24,
+  },
+  actionButtonContainer: {
+    width: "50%",
+  },
+  leftButton: {
+    borderRadius: 8,
+    marginRight: 8,
+    // height: 40,
+  },
+  rightButton: {
+    borderRadius: 8,
+    marginLeft: 8,
+    height: 40,
+  },
+  actionButtonText: {
+    fontSize: 16,
+    lineHeight: 24,
+  },
 });

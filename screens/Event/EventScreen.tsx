@@ -1,30 +1,35 @@
 import React, { useState } from "react";
 import { ImageBackground, View } from "react-native";
-import VendorBackButton from "../../components/navigation/VendorBackButton";
 import { styles } from "./styles";
-import { Tabs } from "../../components/Atoms/Tabs";
 import { useNavigation } from "@react-navigation/native";
+import { Divider, GradientButton, Tabs } from "../../components/Atoms";
+import { CreateQuoteModal } from "./CreateQuoteModal/CreateQuoteModal";
 
 const tabs = [
   {
-    id: "messages",
-    label: "Messages",
-  },
-  {
     id: "eventDetails",
     label: "Event Details",
+  },
+  {
+    id: "messages",
+    label: "Messages",
   },
 ];
 export const EventScreen: React.FC = (props) => {
   const navigation = useNavigation();
   const { navigate } = navigation;
-  const [selectedTab, setSelectedTab] = useState(tabs[1].id);
+  const [selectedTab, setSelectedTab] = useState(tabs[0].id);
+  const [isCreatQuoteModalOpen, setIsCreateQuoteModalOpen] = useState(false);
 
   const handleTabChange = (id: string) => {
     if (id === tabs[0].id) {
       navigate("EventMessages");
     }
     setSelectedTab(id);
+  };
+
+  const toggleCreateQuotePress = () => {
+    setIsCreateQuoteModalOpen(!isCreatQuoteModalOpen);
   };
 
   return (
@@ -35,9 +40,37 @@ export const EventScreen: React.FC = (props) => {
         source={require("../../assets/bg11.png")}
       />
       <View style={styles.header} />
-      {/*<Divider />*/}
       <Tabs value={selectedTab} tabs={tabs} onChange={handleTabChange} />
-      <View style={styles.content}></View>
+      <Divider />
+      <View style={styles.content}>
+        {selectedTab === "eventDetails" && (
+          <>
+            <Divider style={styles.divider} />
+            <View style={styles.actionsContainer}>
+              <View style={styles.actionButtonContainer}>
+                <GradientButton
+                  text="Deny Request"
+                  style={styles.leftButton}
+                  textStyle={styles.actionButtonText}
+                  disabled={true}
+                />
+              </View>
+              <View style={styles.actionButtonContainer}>
+                <GradientButton
+                  text="Create a Quote"
+                  style={styles.rightButton}
+                  textStyle={styles.actionButtonText}
+                  onPress={toggleCreateQuotePress}
+                />
+              </View>
+            </View>
+          </>
+        )}
+        <CreateQuoteModal
+          isOpen={isCreatQuoteModalOpen}
+          onClose={toggleCreateQuotePress}
+        />
+      </View>
     </View>
   );
 };

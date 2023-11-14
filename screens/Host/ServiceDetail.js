@@ -20,6 +20,7 @@ import Filter from "../../assets/filterIcon.svg";
 import SearchServiceCard from "../../components/SearchServiceCard";
 import GradientPill from "./component/GradientPill";
 import MagnifyGlass from "../../assets/magnifyGlassSearch.svg";
+import { GradientButton } from "../../components/Atoms";
 
 // filterSelections = [
 //   { id: 1, title: "Latest" },
@@ -97,6 +98,10 @@ const ServiceDetails = ({ route }) => {
   //   );
   // };
 
+  const handleQuoteYourParty = () => {
+    navigation.navigate("RequestQuoteScreen");
+  };
+
   return (
     <View style={styles.helpsearchscreen}>
       <Image
@@ -163,6 +168,7 @@ const ServiceDetails = ({ route }) => {
           </View>
         }
       /> */}
+      <GradientButton text="Quote Your Party" onPress={handleQuoteYourParty} />
       <FlatList
         data={vendorList}
         renderItem={({ item }) => (
