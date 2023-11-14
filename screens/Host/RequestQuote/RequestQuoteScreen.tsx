@@ -16,6 +16,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { PeopleSelectStep } from "./PeopleSelectStep";
 import { Button } from "../../../components/Atoms";
 import { SelectServiceStep } from "./SelectServiceStep";
+import { AdditionalDetailsStep } from "./AdditionalDetailsStep";
 
 export type RequestQuote = {
   party?: Party;
@@ -27,6 +28,7 @@ export type RequestQuote = {
   };
   peopleRange: number[];
   description: string;
+  additionalDetails: string;
 };
 
 enum RequestQuoteStep {
@@ -34,6 +36,7 @@ enum RequestQuoteStep {
   CREATE_PARTY,
   PEOPLE_SELECT,
   SELECT_SERVICE,
+  ADDITIONAL_DETAILS,
 }
 
 export const RequestQuoteScreen: React.FC = () => {
@@ -55,6 +58,9 @@ export const RequestQuoteScreen: React.FC = () => {
     if (currentStep === RequestQuoteStep.CREATE_PARTY) {
       setCurrentStep(RequestQuoteStep.PEOPLE_SELECT);
     }
+    if (currentStep === RequestQuoteStep.PEOPLE_SELECT) {
+      setCurrentStep(RequestQuoteStep.ADDITIONAL_DETAILS);
+    }
   };
 
   const handleBackPress = () => {
@@ -64,17 +70,23 @@ export const RequestQuoteScreen: React.FC = () => {
     if (currentStep === RequestQuoteStep.PEOPLE_SELECT) {
       setCurrentStep(RequestQuoteStep.CREATE_PARTY);
     }
+    if (currentStep === RequestQuoteStep.ADDITIONAL_DETAILS) {
+      setCurrentStep(RequestQuoteStep.PEOPLE_SELECT);
+    }
   };
 
   const progressBarValue = useMemo(() => {
     if (currentStep === RequestQuoteStep.SELECT_PARTY) {
-      return 10;
+      return 15;
     }
     if (currentStep === RequestQuoteStep.CREATE_PARTY) {
-      return 20;
+      return 30;
     }
     if (currentStep === RequestQuoteStep.PEOPLE_SELECT) {
-      return 30;
+      return 45;
+    }
+    if (currentStep === RequestQuoteStep.ADDITIONAL_DETAILS) {
+      return 90;
     }
     return 100;
   }, [currentStep]);
@@ -117,6 +129,9 @@ export const RequestQuoteScreen: React.FC = () => {
           )}
           {currentStep === RequestQuoteStep.SELECT_SERVICE && (
             <SelectServiceStep quote={quote} setQuote={setQuote} />
+          )}
+          {currentStep === RequestQuoteStep.ADDITIONAL_DETAILS && (
+            <AdditionalDetailsStep quote={quote} setQuote={setQuote} />
           )}
         </View>
         <GradientButton
