@@ -31,6 +31,9 @@ export const styles = StyleSheet.create({
     height: 40,
     width: 40,
   },
+  hidden: {
+    opacity: 0,
+  },
   closeIcon: {
     color: Color.textMainWhite,
   },

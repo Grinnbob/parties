@@ -34,6 +34,7 @@ export const AdditionalDetailsStep: React.FC<AdditionalDetailsStepProps> = ({
       <TextArea
         inputProps={{
           ...styles.textArea,
+          value: quote.additionalDetails,
           onChangeText: handleAdditionalDetailsChange,
         }}
       />

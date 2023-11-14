@@ -8,3 +8,4 @@ export * from "./CalendarIcon";
 export * from "./LocationIcon";
 export * from "./SliderLeftThumb";
 export * from "./SliderRightThumb";
+export * from "./RequestSendIcon";

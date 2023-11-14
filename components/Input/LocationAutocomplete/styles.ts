@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
     color: Color.textMainWhite,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: Color.gray300,
+    borderColor: Color.primaryGrey,
     minHeight: 54,
     paddingTop: 2,
   },

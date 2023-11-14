@@ -17,6 +17,8 @@ import { PeopleSelectStep } from "./PeopleSelectStep";
 import { Button } from "../../../components/Atoms";
 import { SelectServiceStep } from "./SelectServiceStep";
 import { AdditionalDetailsStep } from "./AdditionalDetailsStep";
+import { DeliveryServiceStep } from "./DeliveryServiceStep";
+import { FinishStep } from "./FinishStep";
 
 export type RequestQuote = {
   party?: Party;
@@ -29,6 +31,8 @@ export type RequestQuote = {
   peopleRange: number[];
   description: string;
   additionalDetails: string;
+  deliveryService: string;
+  breakDownService: string;
 };
 
 enum RequestQuoteStep {
@@ -37,6 +41,8 @@ enum RequestQuoteStep {
   PEOPLE_SELECT,
   SELECT_SERVICE,
   ADDITIONAL_DETAILS,
+  DELIVERY_SERVICE,
+  FINISH,
 }
 
 export const RequestQuoteScreen: React.FC = () => {
@@ -61,6 +67,12 @@ export const RequestQuoteScreen: React.FC = () => {
     if (currentStep === RequestQuoteStep.PEOPLE_SELECT) {
       setCurrentStep(RequestQuoteStep.ADDITIONAL_DETAILS);
     }
+    if (currentStep === RequestQuoteStep.ADDITIONAL_DETAILS) {
+      setCurrentStep(RequestQuoteStep.DELIVERY_SERVICE);
+    }
+    if (currentStep === RequestQuoteStep.DELIVERY_SERVICE) {
+      setCurrentStep(RequestQuoteStep.FINISH);
+    }
   };
 
   const handleBackPress = () => {
@@ -72,6 +84,12 @@ export const RequestQuoteScreen: React.FC = () => {
     }
     if (currentStep === RequestQuoteStep.ADDITIONAL_DETAILS) {
       setCurrentStep(RequestQuoteStep.PEOPLE_SELECT);
+    }
+    if (currentStep === RequestQuoteStep.DELIVERY_SERVICE) {
+      setCurrentStep(RequestQuoteStep.PEOPLE_SELECT);
+    }
+    if (currentStep === RequestQuoteStep.FINISH) {
+      setCurrentStep(RequestQuoteStep.DELIVERY_SERVICE);
     }
   };
 
@@ -86,10 +104,25 @@ export const RequestQuoteScreen: React.FC = () => {
       return 45;
     }
     if (currentStep === RequestQuoteStep.ADDITIONAL_DETAILS) {
+      return 75;
+    }
+    if (currentStep === RequestQuoteStep.DELIVERY_SERVICE) {
       return 90;
     }
     return 100;
   }, [currentStep]);
+
+  const getSubmitButtonLabel = () => {
+    if (currentStep === RequestQuoteStep.DELIVERY_SERVICE) {
+      return "Submit Request";
+    }
+
+    if (currentStep === RequestQuoteStep.FINISH) {
+      return "Sounds Great!";
+    }
+
+    return "Next";
+  };
 
   return (
     <View style={styles.screen}>
@@ -103,8 +136,17 @@ export const RequestQuoteScreen: React.FC = () => {
         <View style={styles.topContent}>
           <View style={styles.header}>
             <Pressable
-              style={styles.backLayout}
-              onPress={() => navigation.pop()}
+              style={[
+                styles.backLayout,
+                currentStep === RequestQuoteStep.FINISH
+                  ? styles.hidden
+                  : undefined,
+              ]}
+              onPress={() => {
+                if (currentStep !== RequestQuoteStep.FINISH) {
+                  navigation.pop();
+                }
+              }}
             >
               <Image
                 resizeMode="cover"
@@ -117,7 +159,9 @@ export const RequestQuoteScreen: React.FC = () => {
               </TouchableOpacity>
             )}
           </View>
-          <ProgressBar style={styles.progressBar} value={progressBarValue} />
+          {currentStep !== RequestQuoteStep.FINISH && (
+            <ProgressBar style={styles.progressBar} value={progressBarValue} />
+          )}
           {currentStep === RequestQuoteStep.SELECT_PARTY && (
             <SelectPartyStep quote={quote} />
           )}
@@ -133,9 +177,13 @@ export const RequestQuoteScreen: React.FC = () => {
           {currentStep === RequestQuoteStep.ADDITIONAL_DETAILS && (
             <AdditionalDetailsStep quote={quote} setQuote={setQuote} />
           )}
+          {currentStep === RequestQuoteStep.DELIVERY_SERVICE && (
+            <DeliveryServiceStep quote={quote} setQuote={setQuote} />
+          )}
+          {currentStep === RequestQuoteStep.FINISH && <FinishStep />}
         </View>
         <GradientButton
-          text="Next"
+          text={getSubmitButtonLabel()}
           disabled={isNextDisabled}
           onPress={handleNextPress}
           style={styles.nextButton}
