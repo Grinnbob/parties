@@ -10,6 +10,7 @@ import {
   GooglePlaceData,
   GooglePlaceDetail,
 } from "react-native-google-places-autocomplete";
+import { Party } from "../SelectPartyStep";
 
 type CreatePartyStepProps = {
   quote: RequestQuote;
@@ -20,57 +21,17 @@ export const CreatePartyStep: React.FC<CreatePartyStepProps> = ({
   quote,
   setQuote,
 }) => {
-  const handleChangePartyName = (text: string) => {
+  const handleFieldChange = (key: string, val?: unknown) => {
     setQuote((prevState) => {
       return {
         ...prevState,
         newParty: {
-          name: text,
-        },
+          ...prevState.newParty,
+          [key]: val,
+        } as Party,
       };
     });
   };
-
-  const handleDateChange = (date?: Date) => {
-    setQuote((prevState) => {
-      return {
-        ...prevState,
-        newParty: {
-          date,
-        },
-      };
-    });
-  };
-
-  const handleLocationTextChange = useCallback(
-    (text: string) => {
-      setQuote((prevState) => {
-        return {
-          ...prevState,
-          newParty: {
-            ...prevState.newParty,
-            location: text,
-          },
-        };
-      });
-    },
-    [setQuote]
-  );
-
-  const handleLocationPress = useCallback(
-    (data: GooglePlaceData, detail: GooglePlaceDetail | null) => {
-      setQuote((prevState) => {
-        return {
-          ...prevState,
-          newParty: {
-            ...prevState.newParty,
-            location: detail?.formatted_address,
-          },
-        };
-      });
-    },
-    []
-  );
 
   return (
     <View style={styles.root}>
@@ -86,7 +47,9 @@ export const CreatePartyStep: React.FC<CreatePartyStepProps> = ({
         <TextInput
           inputProps={{
             value: quote.newParty?.name,
-            onChangeText: handleChangePartyName,
+            onChangeText: (text: string) => {
+              handleFieldChange("name", text);
+            },
             placeholder: "Party Name",
           }}
           formControlProps={{ style: styles.partyNameInput }}
@@ -94,21 +57,27 @@ export const CreatePartyStep: React.FC<CreatePartyStepProps> = ({
         <DatePicker
           inputProps={{ placeholder: "Date" }}
           date={quote.party?.date}
-          onChange={handleDateChange}
+          onChange={(date) => {
+            handleFieldChange("date", date);
+          }}
         />
         <View style={styles.timePickersContainer}>
           <DatePicker
             inputProps={{ placeholder: "Start time" }}
             datePickerProps={{ mode: "time" }}
             date={quote.party?.date}
-            onChange={handleDateChange}
+            onChange={(date) => {
+              handleFieldChange("startTime", date);
+            }}
             formControlProps={{ style: styles.timePicker }}
           />
           <DatePicker
             inputProps={{ placeholder: "End time" }}
             datePickerProps={{ mode: "time" }}
             date={quote.party?.date}
-            onChange={handleDateChange}
+            onChange={(date) => {
+              handleFieldChange("endTime", date);
+            }}
             formControlProps={{ style: styles.timePicker }}
           />
         </View>
@@ -116,9 +85,16 @@ export const CreatePartyStep: React.FC<CreatePartyStepProps> = ({
           placeholder="Location"
           value={quote.newParty?.location || ""}
           textInputProps={{
-            onChangeText: handleLocationTextChange,
+            onChangeText: (val) => {
+              handleFieldChange("location", val);
+            },
           }}
-          onPress={handleLocationPress}
+          onPress={(
+            data: GooglePlaceData,
+            detail: GooglePlaceDetail | null
+          ) => {
+            handleFieldChange("location", detail?.formatted_address || "");
+          }}
         />
       </ScrollView>
     </View>

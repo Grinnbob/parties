@@ -2,6 +2,10 @@ import { StyleSheet } from "react-native";
 import { Color } from "../../../../GlobalStyles";
 
 export const styles = StyleSheet.create({
+  root: {
+    flexDirection: "column",
+    paddingHorizontal: 24,
+  },
   newPartyText: {
     fontSize: 18,
     lineHeight: 25,
@@ -15,9 +19,11 @@ export const styles = StyleSheet.create({
     color: Color.textMainWhite,
   },
   partiesContainer: {
-    flex: 1,
     width: "100%",
     marginTop: 24,
+  },
+  partyItemContainer: {
+    flexDirection: "column",
   },
   partyItem: {
     flexDirection: "row",
@@ -30,5 +36,6 @@ export const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 18,
     color: Color.textMainWhite,
+    width: "40%",
   },
 });

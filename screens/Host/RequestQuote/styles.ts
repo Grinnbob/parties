@@ -9,8 +9,10 @@ export const styles = StyleSheet.create({
   content: {
     flex: 1,
     marginTop: 50,
-    paddingHorizontal: 24,
     paddingBottom: 40,
+  },
+  noPadding: {
+    paddingHorizontal: 0,
   },
   topContent: {
     flex: 1,
@@ -26,6 +28,9 @@ export const styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "space-between",
     width: "100%",
+  },
+  innerContainer: {
+    paddingHorizontal: 24,
   },
   backLayout: {
     height: 40,

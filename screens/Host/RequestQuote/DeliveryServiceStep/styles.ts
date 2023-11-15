@@ -4,6 +4,7 @@ import { Color } from "../../../../GlobalStyles";
 export const styles = StyleSheet.create({
   root: {
     flexDirection: "column",
+    paddingHorizontal: 24,
   },
   title: {
     fontSize: 16,

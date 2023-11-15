@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import {
   FlatList,
   ListRenderItemInfo,
+  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -16,30 +17,51 @@ import { Divider } from "../../../../components/Atoms";
 import { RequestQuote } from "../RequestQuoteScreen";
 
 export type Party = {
+  id: string;
   name: string;
   date?: Date;
-  startTime?: string;
-  endTime?: string;
+  startTime?: Date;
+  endTime?: Date;
 };
 
 type SelectPartyStepProps = {
   quote: RequestQuote;
+  setQuote: Dispatch<SetStateAction<RequestQuote>>;
 };
 
-export const SelectPartyStep: React.FC<SelectPartyStepProps> = ({ quote }) => {
+export const SelectPartyStep: React.FC<SelectPartyStepProps> = ({
+  quote,
+  setQuote,
+}) => {
   const [parties, setParties] = useState<Party[]>([
-    { name: "Mermaid Party", date: new Date() },
-    { name: "New Party" },
+    {
+      id: "1",
+      name: "Mermaid Party",
+      date: new Date(),
+      startTime: new Date(),
+      endTime: new Date(),
+    },
+    {
+      id: "",
+      name: "New Party",
+      date: new Date(),
+      startTime: new Date(),
+      endTime: new Date(),
+    },
   ]);
-  const [selectedParty, setSelectedParty] = useState(quote.party);
 
   const handleSelectParty = (party: Party) => {
-    setSelectedParty(party);
+    setQuote((prevState) => {
+      return {
+        ...prevState,
+        newParty: party,
+      };
+    });
   };
 
   const renderParty = (element: ListRenderItemInfo<Party>) => {
     return (
-      <>
+      <View style={styles.partyItemContainer}>
         <TouchableOpacity
           onPress={() => {
             handleSelectParty(element.item);
@@ -52,26 +74,26 @@ export const SelectPartyStep: React.FC<SelectPartyStepProps> = ({ quote }) => {
               {dayjs(element.item.date).format("MM dd,YYYY")}
             </Text>
           )}
-          {element.item.name === selectedParty?.name ? (
+          {element.item.name === quote?.newParty?.name ? (
             <CheckCircleIcon />
           ) : (
             <UncheckedCircleIcon />
           )}
         </TouchableOpacity>
         {element.index !== parties.length - 1 && <Divider />}
-      </>
+      </View>
     );
   };
 
   return (
-    <>
-      <View>
-        <Text style={styles.newPartyText}>Is this for a new party?</Text>
-        <Text style={styles.existingPartyText}>OR an existing party?</Text>
-      </View>
-      <View style={styles.partiesContainer}>
-        <FlatList data={parties} renderItem={renderParty} />
-      </View>
-    </>
+    <View style={styles.root}>
+      <Text style={styles.newPartyText}>Is this for a new party?</Text>
+      <Text style={styles.existingPartyText}>OR an existing party?</Text>
+      <FlatList
+        data={parties}
+        renderItem={renderParty}
+        contentContainerStyle={styles.partiesContainer}
+      />
+    </View>
   );
 };

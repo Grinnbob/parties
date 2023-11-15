@@ -15,7 +15,7 @@ import { CreatePartyStep } from "./CreatePartyStep";
 import { AntDesign } from "@expo/vector-icons";
 import { PeopleSelectStep } from "./PeopleSelectStep";
 import { Button } from "../../../components/Atoms";
-import { SelectServiceStep } from "./SelectServiceStep";
+import { ServiceSelectStep } from "./ServiceSelectStep";
 import { AdditionalDetailsStep } from "./AdditionalDetailsStep";
 import { DeliveryServiceStep } from "./DeliveryServiceStep";
 import { FinishStep } from "./FinishStep";
@@ -23,23 +23,26 @@ import { FinishStep } from "./FinishStep";
 export type RequestQuote = {
   party?: Party;
   newParty?: {
+    id: string;
     name?: string;
     date?: Date;
-    time?: string;
+    startTime?: Date;
+    endTime?: Date;
     location?: string;
   };
   peopleRange: number[];
-  description: string;
-  additionalDetails: string;
-  deliveryService: string;
-  breakDownService: string;
+  description?: string;
+  selectedService?: number;
+  additionalDetails?: string;
+  deliveryService?: string;
+  breakDownService?: string;
 };
 
 enum RequestQuoteStep {
-  SELECT_PARTY,
-  CREATE_PARTY,
+  PARTY_SELECT,
+  PARTY_CREATE,
   PEOPLE_SELECT,
-  SELECT_SERVICE,
+  SERVICE_SELECT,
   ADDITIONAL_DETAILS,
   DELIVERY_SERVICE,
   FINISH,
@@ -47,61 +50,82 @@ enum RequestQuoteStep {
 
 export const RequestQuoteScreen: React.FC = () => {
   const navigation = useNavigation();
-  const [currentStep, setCurrentStep] = useState(RequestQuoteStep.SELECT_PARTY);
-  const [quote, setQuote] = useState({
-    newParty: {},
+  const [currentStep, setCurrentStep] = useState(RequestQuoteStep.PARTY_SELECT);
+  const [quote, setQuote] = useState<RequestQuote>({
+    newParty: undefined,
     peopleRange: [30, 50],
   });
 
-  const isNextDisabled = useMemo(() => {
-    return false;
-  }, []);
-
-  const handleNextPress = () => {
-    if (currentStep === RequestQuoteStep.SELECT_PARTY) {
-      setCurrentStep(RequestQuoteStep.CREATE_PARTY);
+  const isNextDisabled = () => {
+    if (currentStep === RequestQuoteStep.PARTY_SELECT) {
+      return quote?.newParty?.id === undefined;
     }
-    if (currentStep === RequestQuoteStep.CREATE_PARTY) {
-      setCurrentStep(RequestQuoteStep.PEOPLE_SELECT);
+    if (currentStep === RequestQuoteStep.PARTY_CREATE) {
+      return (
+        !quote?.newParty?.name ||
+        !quote?.newParty?.date ||
+        !quote?.newParty?.startTime ||
+        !quote?.newParty?.endTime ||
+        !quote?.newParty?.location
+      );
     }
-    if (currentStep === RequestQuoteStep.PEOPLE_SELECT) {
-      setCurrentStep(RequestQuoteStep.ADDITIONAL_DETAILS);
+    if (currentStep === RequestQuoteStep.SERVICE_SELECT) {
+      return !quote.selectedService;
     }
     if (currentStep === RequestQuoteStep.ADDITIONAL_DETAILS) {
-      setCurrentStep(RequestQuoteStep.DELIVERY_SERVICE);
+      console.log("quote", quote);
+      return !quote.additionalDetails;
     }
+
     if (currentStep === RequestQuoteStep.DELIVERY_SERVICE) {
-      setCurrentStep(RequestQuoteStep.FINISH);
+      return !quote.breakDownService && !quote.breakDownService;
     }
+
+    return false;
+  };
+
+  const handleNextPress = () => {
+    if (currentStep === RequestQuoteStep.PARTY_SELECT) {
+      if (quote?.newParty?.id === "") {
+        setCurrentStep(RequestQuoteStep.PARTY_CREATE);
+      } else {
+        setCurrentStep(RequestQuoteStep.PEOPLE_SELECT);
+      }
+      return;
+    }
+    const step = currentStep + 1;
+    setCurrentStep(step);
   };
 
   const handleBackPress = () => {
-    if (currentStep === RequestQuoteStep.SELECT_PARTY) {
-      setCurrentStep(RequestQuoteStep.CREATE_PARTY);
-    }
     if (currentStep === RequestQuoteStep.PEOPLE_SELECT) {
-      setCurrentStep(RequestQuoteStep.CREATE_PARTY);
-    }
-    if (currentStep === RequestQuoteStep.ADDITIONAL_DETAILS) {
-      setCurrentStep(RequestQuoteStep.PEOPLE_SELECT);
-    }
-    if (currentStep === RequestQuoteStep.DELIVERY_SERVICE) {
-      setCurrentStep(RequestQuoteStep.PEOPLE_SELECT);
+      if (quote?.newParty?.id === "") {
+        setCurrentStep(RequestQuoteStep.PARTY_CREATE);
+      } else {
+        setCurrentStep(RequestQuoteStep.PARTY_SELECT);
+      }
+      return;
     }
     if (currentStep === RequestQuoteStep.FINISH) {
-      setCurrentStep(RequestQuoteStep.DELIVERY_SERVICE);
+      navigation.pop();
+      return;
     }
+    const step = currentStep - 1;
+    setCurrentStep(step);
   };
 
   const progressBarValue = useMemo(() => {
-    if (currentStep === RequestQuoteStep.SELECT_PARTY) {
+    if (currentStep === RequestQuoteStep.PARTY_SELECT) {
       return 15;
     }
-    if (currentStep === RequestQuoteStep.CREATE_PARTY) {
+    if (currentStep === RequestQuoteStep.PARTY_CREATE) {
       return 30;
     }
     if (currentStep === RequestQuoteStep.PEOPLE_SELECT) {
       return 45;
+    }
+    if (currentStep === RequestQuoteStep.SERVICE_SELECT) {
+      return 60;
     }
     if (currentStep === RequestQuoteStep.ADDITIONAL_DETAILS) {
       return 75;
@@ -124,6 +148,10 @@ export const RequestQuoteScreen: React.FC = () => {
     return "Next";
   };
 
+  const handleSkipPress = () => {
+    setCurrentStep(RequestQuoteStep.SERVICE_SELECT);
+  };
+
   return (
     <View style={styles.screen}>
       <ImageBackground
@@ -134,45 +162,50 @@ export const RequestQuoteScreen: React.FC = () => {
 
       <View style={styles.content}>
         <View style={styles.topContent}>
-          <View style={styles.header}>
-            <Pressable
-              style={[
-                styles.backLayout,
-                currentStep === RequestQuoteStep.FINISH
-                  ? styles.hidden
-                  : undefined,
-              ]}
-              onPress={() => {
-                if (currentStep !== RequestQuoteStep.FINISH) {
-                  navigation.pop();
-                }
-              }}
-            >
-              <Image
-                resizeMode="cover"
-                source={require("../../../assets/vector14.png")}
+          <View style={styles.innerContainer}>
+            <View style={styles.header}>
+              <Pressable
+                style={[
+                  styles.backLayout,
+                  currentStep === RequestQuoteStep.FINISH
+                    ? styles.hidden
+                    : undefined,
+                ]}
+                onPress={() => {
+                  if (currentStep !== RequestQuoteStep.FINISH) {
+                    navigation.pop();
+                  }
+                }}
+              >
+                <Image
+                  resizeMode="cover"
+                  source={require("../../../assets/vector14.png")}
+                />
+              </Pressable>
+              {currentStep !== RequestQuoteStep.PARTY_SELECT && (
+                <TouchableOpacity onPress={handleBackPress}>
+                  <AntDesign name="close" size={20} style={styles.closeIcon} />
+                </TouchableOpacity>
+              )}
+            </View>
+            {currentStep !== RequestQuoteStep.FINISH && (
+              <ProgressBar
+                style={styles.progressBar}
+                value={progressBarValue}
               />
-            </Pressable>
-            {currentStep !== RequestQuoteStep.SELECT_PARTY && (
-              <TouchableOpacity onPress={handleBackPress}>
-                <AntDesign name="close" size={20} style={styles.closeIcon} />
-              </TouchableOpacity>
             )}
           </View>
-          {currentStep !== RequestQuoteStep.FINISH && (
-            <ProgressBar style={styles.progressBar} value={progressBarValue} />
+          {currentStep === RequestQuoteStep.PARTY_SELECT && (
+            <SelectPartyStep quote={quote} setQuote={setQuote} />
           )}
-          {currentStep === RequestQuoteStep.SELECT_PARTY && (
-            <SelectPartyStep quote={quote} />
-          )}
-          {currentStep === RequestQuoteStep.CREATE_PARTY && (
+          {currentStep === RequestQuoteStep.PARTY_CREATE && (
             <CreatePartyStep quote={quote} setQuote={setQuote} />
           )}
           {currentStep === RequestQuoteStep.PEOPLE_SELECT && (
             <PeopleSelectStep quote={quote} setQuote={setQuote} />
           )}
-          {currentStep === RequestQuoteStep.SELECT_SERVICE && (
-            <SelectServiceStep quote={quote} setQuote={setQuote} />
+          {currentStep === RequestQuoteStep.SERVICE_SELECT && (
+            <ServiceSelectStep quote={quote} setQuote={setQuote} />
           )}
           {currentStep === RequestQuoteStep.ADDITIONAL_DETAILS && (
             <AdditionalDetailsStep quote={quote} setQuote={setQuote} />
@@ -182,16 +215,22 @@ export const RequestQuoteScreen: React.FC = () => {
           )}
           {currentStep === RequestQuoteStep.FINISH && <FinishStep />}
         </View>
-        <GradientButton
-          text={getSubmitButtonLabel()}
-          disabled={isNextDisabled}
-          onPress={handleNextPress}
-          style={styles.nextButton}
-          textStyle={styles.nextButtonText}
-        />
+        <View style={styles.innerContainer}>
+          <GradientButton
+            text={getSubmitButtonLabel()}
+            disabled={isNextDisabled()}
+            onPress={handleNextPress}
+            style={styles.nextButton}
+            textStyle={styles.nextButtonText}
+          />
+        </View>
         {currentStep === RequestQuoteStep.PEOPLE_SELECT && (
-          <View>
-            <Button text="Skip" style={styles.skipButton} />
+          <View style={styles.innerContainer}>
+            <Button
+              text="Skip"
+              style={styles.skipButton}
+              onPress={handleSkipPress}
+            />
             <Text style={styles.skipPartyText}>
               You can always add details later in my party
             </Text>
