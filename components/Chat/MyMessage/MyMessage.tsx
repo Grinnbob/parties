@@ -26,8 +26,8 @@ export const MyMessage: React.FC<ChatMessageProps> = ({
   const [isImageLoadError, setIsImageLoadError] = useState(false);
 
   const handleImagePress = () => {
-    if (chatMessage.message.image) {
-      onImagePress?.(chatMessage.message.image);
+    if (chatMessage.message.messageImage) {
+      onImagePress?.(chatMessage.message.messageImage);
     }
   };
 
@@ -43,7 +43,7 @@ export const MyMessage: React.FC<ChatMessageProps> = ({
           {!!chatMessage.message.text && (
             <Text style={styles.messageText}>{chatMessage.message.text}</Text>
           )}
-          {!!chatMessage.message.image && (
+          {!!chatMessage.message.messageImage && (
             <>
               {isImageLoadError ? (
                 <Image
@@ -54,7 +54,7 @@ export const MyMessage: React.FC<ChatMessageProps> = ({
                 <TouchableOpacity onPress={handleImagePress}>
                   <Image
                     source={{
-                      uri: chatMessage.message.image,
+                      uri: chatMessage.message.messageImage,
                     }}
                     style={styles.messageImage}
                     onError={() => {

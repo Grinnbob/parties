@@ -12,7 +12,7 @@ import React, { useEffect } from "react";
 import { View } from "react-native";
 import { RecoilRoot } from "recoil";
 import Wrapper from "./theme/Wrapper";
-import RootNavigator from "./navigation/rootNavigator";
+import { RootNavigator } from "./navigation/RootNavigator";
 import TestFairy from "react-native-testfairy";
 import Config from "react-native-config";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";

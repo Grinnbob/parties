@@ -101,7 +101,9 @@ const VerifyScreen = ({ route, navigation }) => {
                 fontSize={14}
                 fontWeight={"400"}
                 onPress={() => {
-                  if (!isLoading) onResendPress();
+                  if (!isLoading) {
+                    onResendPress();
+                  }
                 }}
               >
                 Didn’t recieve a text message?

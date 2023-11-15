@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Image,
   StyleSheet,
   View,
-  TextInput,
   Pressable,
   TouchableOpacity,
 } from "react-native";
@@ -44,6 +43,7 @@ const LoginScreen = () => {
   const login = async () => {
     try {
       setIsLoading(true);
+      console.log("email, password", email, password);
       const res = await apis.auth.signIn({ email, password });
       console.log("RES SIGN IN", res);
       if (res && res.success === false) {

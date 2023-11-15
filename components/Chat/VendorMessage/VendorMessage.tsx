@@ -36,9 +36,9 @@ export const VendorMessage: React.FC<VendorMessageProps> = ({
           {!!chatMessage.message.text && (
             <Text style={styles.messageText}>{chatMessage.message.text}</Text>
           )}
-          {!!chatMessage.message.image && (
+          {!!chatMessage.message.messageImage && (
             <Image
-              source={{ uri: chatMessage.message.image }}
+              source={{ uri: chatMessage.message.messageImage }}
               resizeMode="contain"
             />
           )}
