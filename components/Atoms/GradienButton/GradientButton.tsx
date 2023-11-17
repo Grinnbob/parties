@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  ActivityIndicator,
   StyleProp,
   Text,
   TextStyle,
@@ -9,6 +10,8 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { styles } from "./styles";
+import { RecoilLoadable } from "recoil";
+import loading = RecoilLoadable.loading;
 
 type GradientButtonProps = {
   text: string;
@@ -16,6 +19,7 @@ type GradientButtonProps = {
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   disabled?: boolean;
+  loading?: boolean;
 };
 
 export const GradientButton: React.FC<GradientButtonProps> = ({
@@ -24,9 +28,10 @@ export const GradientButton: React.FC<GradientButtonProps> = ({
   onPress,
   style,
   disabled,
+  loading,
 }) => {
   return (
-    <TouchableOpacity onPress={onPress} disabled={disabled}>
+    <TouchableOpacity onPress={onPress} disabled={disabled || loading}>
       {disabled ? (
         <View style={[styles.root, styles.disabledRoot, style]}>
           <Text
@@ -47,7 +52,11 @@ export const GradientButton: React.FC<GradientButtonProps> = ({
           useAngle={true}
           angle={-90}
         >
-          <Text style={[styles.text, textStyle]}>{text}</Text>
+          {loading ? (
+            <ActivityIndicator size={16} style={styles.activityIndicator} />
+          ) : (
+            <Text style={[styles.text, textStyle]}>{text}</Text>
+          )}
         </LinearGradient>
       )}
     </TouchableOpacity>

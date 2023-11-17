@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { GradientButton, ProgressBar } from "../../../components/Atoms";
-import { Party, SelectPartyStep } from "./SelectPartyStep";
+import { SelectPartyStep } from "./SelectPartyStep";
 import { CreatePartyStep } from "./CreatePartyStep";
 import { AntDesign } from "@expo/vector-icons";
 import { PeopleSelectStep } from "./PeopleSelectStep";
@@ -19,26 +19,44 @@ import { ServiceSelectStep } from "./ServiceSelectStep";
 import { AdditionalDetailsStep } from "./AdditionalDetailsStep";
 import { DeliveryServiceStep } from "./DeliveryServiceStep";
 import { FinishStep } from "./FinishStep";
+import { useLoadable } from "../../../hooks";
+import { constantsQuery } from "../../../stateManagement";
+import apis from "../../../apis";
+import dayjs from "dayjs";
+import { ServiceModel, VendorModel } from "../../../models";
+
+type Party = {
+  id?: string;
+  name?: string;
+  description?: string;
+  startDate?: Date;
+  endDate?: Date;
+  startTime?: Date;
+  endTime?: Date;
+  street?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  point?: [number, number];
+  peopleRange?: [number, number];
+};
 
 export type RequestQuote = {
   party?: Party;
-  newParty?: {
-    id: string;
-    name?: string;
-    date?: Date;
-    startTime?: Date;
-    endTime?: Date;
-    location?: string;
+  services: number[];
+  notes?: string;
+  shipment?: string;
+  assembling?: string;
+  selectedSpecialties: ServiceModel["serviceTypes"];
+  steps: {
+    [key in RequestQuoteStepEnum]?: {
+      isValid: boolean;
+      errors: Record<string, string>;
+    };
   };
-  peopleRange: number[];
-  description?: string;
-  selectedService?: number;
-  additionalDetails?: string;
-  deliveryService?: string;
-  breakDownService?: string;
 };
 
-enum RequestQuoteStep {
+export enum RequestQuoteStepEnum {
   PARTY_SELECT,
   PARTY_CREATE,
   PEOPLE_SELECT,
@@ -48,65 +66,79 @@ enum RequestQuoteStep {
   FINISH,
 }
 
-export const RequestQuoteScreen: React.FC = () => {
+type RequestQuoteScreenProps = {
+  route: {
+    params: {
+      vendor: VendorModel;
+      services: Array<ServiceModel>;
+    };
+  };
+};
+
+export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
+  route,
+}) => {
   const navigation = useNavigation();
-  const [currentStep, setCurrentStep] = useState(RequestQuoteStep.PARTY_SELECT);
+  const [currentStep, setCurrentStep] = useState(
+    RequestQuoteStepEnum.PARTY_SELECT
+  );
   const [quote, setQuote] = useState<RequestQuote>({
-    newParty: undefined,
-    peopleRange: [30, 50],
+    party: {
+      id: undefined,
+      name: "",
+      peopleRange: [30, 50],
+    },
+    services: [],
+    selectedSpecialties: [],
+    steps: {},
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const { vendor, services } = route?.params;
   const isNextDisabled = () => {
-    if (currentStep === RequestQuoteStep.PARTY_SELECT) {
-      return quote?.newParty?.id === undefined;
-    }
-    if (currentStep === RequestQuoteStep.PARTY_CREATE) {
-      return (
-        !quote?.newParty?.name ||
-        !quote?.newParty?.date ||
-        !quote?.newParty?.startTime ||
-        !quote?.newParty?.endTime ||
-        !quote?.newParty?.location
-      );
-    }
-    if (currentStep === RequestQuoteStep.SERVICE_SELECT) {
-      return !quote.selectedService;
-    }
-    if (currentStep === RequestQuoteStep.ADDITIONAL_DETAILS) {
-      console.log("quote", quote);
-      return !quote.additionalDetails;
-    }
-
-    if (currentStep === RequestQuoteStep.DELIVERY_SERVICE) {
-      return !quote.breakDownService && !quote.breakDownService;
-    }
-
-    return false;
+    return !quote.steps[currentStep]?.isValid;
   };
 
-  const handleNextPress = () => {
-    if (currentStep === RequestQuoteStep.PARTY_SELECT) {
-      if (quote?.newParty?.id === "") {
-        setCurrentStep(RequestQuoteStep.PARTY_CREATE);
-      } else {
-        setCurrentStep(RequestQuoteStep.PEOPLE_SELECT);
+  const handleNextPress = async () => {
+    if (currentStep === RequestQuoteStepEnum.DELIVERY_SERVICE) {
+      try {
+        setIsSubmitting(true);
+        if (quote.party?.id === "") {
+          await apis.party.create({
+            name: quote.party.name!,
+            startDate: dayjs(quote.party.startDate).format("YYYY-MM-DD"),
+            endDate: dayjs(quote.party.endDate).format("YYYY-MM-DD"),
+            startTime: quote.party.startTime,
+            endTime: quote.party.endTime,
+            description: quote.party.description,
+          });
+        }
+        await apis.quote.create({
+          assembling: quote.assembling!,
+          shipment: quote.shipment!,
+          services: quote.services,
+          VendorId: vendor?.id,
+          PartyId: 1,
+          note: quote.notes!,
+        });
+      } finally {
+        setIsSubmitting(false);
       }
-      return;
     }
     const step = currentStep + 1;
     setCurrentStep(step);
   };
 
   const handleBackPress = () => {
-    if (currentStep === RequestQuoteStep.PEOPLE_SELECT) {
-      if (quote?.newParty?.id === "") {
-        setCurrentStep(RequestQuoteStep.PARTY_CREATE);
+    if (currentStep === RequestQuoteStepEnum.PEOPLE_SELECT) {
+      if (quote?.party?.id === "") {
+        setCurrentStep(RequestQuoteStepEnum.PARTY_CREATE);
       } else {
-        setCurrentStep(RequestQuoteStep.PARTY_SELECT);
+        setCurrentStep(RequestQuoteStepEnum.PARTY_SELECT);
       }
       return;
     }
-    if (currentStep === RequestQuoteStep.FINISH) {
+    if (currentStep === RequestQuoteStepEnum.FINISH) {
       navigation.pop();
       return;
     }
@@ -115,33 +147,33 @@ export const RequestQuoteScreen: React.FC = () => {
   };
 
   const progressBarValue = useMemo(() => {
-    if (currentStep === RequestQuoteStep.PARTY_SELECT) {
+    if (currentStep === RequestQuoteStepEnum.PARTY_SELECT) {
       return 15;
     }
-    if (currentStep === RequestQuoteStep.PARTY_CREATE) {
+    if (currentStep === RequestQuoteStepEnum.PARTY_CREATE) {
       return 30;
     }
-    if (currentStep === RequestQuoteStep.PEOPLE_SELECT) {
+    if (currentStep === RequestQuoteStepEnum.PEOPLE_SELECT) {
       return 45;
     }
-    if (currentStep === RequestQuoteStep.SERVICE_SELECT) {
+    if (currentStep === RequestQuoteStepEnum.SERVICE_SELECT) {
       return 60;
     }
-    if (currentStep === RequestQuoteStep.ADDITIONAL_DETAILS) {
+    if (currentStep === RequestQuoteStepEnum.ADDITIONAL_DETAILS) {
       return 75;
     }
-    if (currentStep === RequestQuoteStep.DELIVERY_SERVICE) {
+    if (currentStep === RequestQuoteStepEnum.DELIVERY_SERVICE) {
       return 90;
     }
     return 100;
   }, [currentStep]);
 
   const getSubmitButtonLabel = () => {
-    if (currentStep === RequestQuoteStep.DELIVERY_SERVICE) {
+    if (currentStep === RequestQuoteStepEnum.DELIVERY_SERVICE) {
       return "Submit Request";
     }
 
-    if (currentStep === RequestQuoteStep.FINISH) {
+    if (currentStep === RequestQuoteStepEnum.FINISH) {
       return "Sounds Great!";
     }
 
@@ -149,7 +181,7 @@ export const RequestQuoteScreen: React.FC = () => {
   };
 
   const handleSkipPress = () => {
-    setCurrentStep(RequestQuoteStep.SERVICE_SELECT);
+    setCurrentStep(RequestQuoteStepEnum.SERVICE_SELECT);
   };
 
   return (
@@ -167,12 +199,12 @@ export const RequestQuoteScreen: React.FC = () => {
               <Pressable
                 style={[
                   styles.backLayout,
-                  currentStep === RequestQuoteStep.FINISH
+                  currentStep === RequestQuoteStepEnum.FINISH
                     ? styles.hidden
                     : undefined,
                 ]}
                 onPress={() => {
-                  if (currentStep !== RequestQuoteStep.FINISH) {
+                  if (currentStep !== RequestQuoteStepEnum.FINISH) {
                     navigation.pop();
                   }
                 }}
@@ -182,38 +214,42 @@ export const RequestQuoteScreen: React.FC = () => {
                   source={require("../../../assets/vector14.png")}
                 />
               </Pressable>
-              {currentStep !== RequestQuoteStep.PARTY_SELECT && (
+              {currentStep !== RequestQuoteStepEnum.PARTY_SELECT && (
                 <TouchableOpacity onPress={handleBackPress}>
                   <AntDesign name="close" size={20} style={styles.closeIcon} />
                 </TouchableOpacity>
               )}
             </View>
-            {currentStep !== RequestQuoteStep.FINISH && (
+            {currentStep !== RequestQuoteStepEnum.FINISH && (
               <ProgressBar
                 style={styles.progressBar}
                 value={progressBarValue}
               />
             )}
           </View>
-          {currentStep === RequestQuoteStep.PARTY_SELECT && (
+          {currentStep === RequestQuoteStepEnum.PARTY_SELECT && (
             <SelectPartyStep quote={quote} setQuote={setQuote} />
           )}
-          {currentStep === RequestQuoteStep.PARTY_CREATE && (
+          {currentStep === RequestQuoteStepEnum.PARTY_CREATE && (
             <CreatePartyStep quote={quote} setQuote={setQuote} />
           )}
-          {currentStep === RequestQuoteStep.PEOPLE_SELECT && (
+          {currentStep === RequestQuoteStepEnum.PEOPLE_SELECT && (
             <PeopleSelectStep quote={quote} setQuote={setQuote} />
           )}
-          {currentStep === RequestQuoteStep.SERVICE_SELECT && (
-            <ServiceSelectStep quote={quote} setQuote={setQuote} />
+          {currentStep === RequestQuoteStepEnum.SERVICE_SELECT && (
+            <ServiceSelectStep
+              quote={quote}
+              setQuote={setQuote}
+              services={services}
+            />
           )}
-          {currentStep === RequestQuoteStep.ADDITIONAL_DETAILS && (
+          {currentStep === RequestQuoteStepEnum.ADDITIONAL_DETAILS && (
             <AdditionalDetailsStep quote={quote} setQuote={setQuote} />
           )}
-          {currentStep === RequestQuoteStep.DELIVERY_SERVICE && (
+          {currentStep === RequestQuoteStepEnum.DELIVERY_SERVICE && (
             <DeliveryServiceStep quote={quote} setQuote={setQuote} />
           )}
-          {currentStep === RequestQuoteStep.FINISH && <FinishStep />}
+          {currentStep === RequestQuoteStepEnum.FINISH && <FinishStep />}
         </View>
         <View style={styles.innerContainer}>
           <GradientButton
@@ -222,9 +258,10 @@ export const RequestQuoteScreen: React.FC = () => {
             onPress={handleNextPress}
             style={styles.nextButton}
             textStyle={styles.nextButtonText}
+            loading={isSubmitting}
           />
         </View>
-        {currentStep === RequestQuoteStep.PEOPLE_SELECT && (
+        {currentStep === RequestQuoteStepEnum.PEOPLE_SELECT && (
           <View style={styles.innerContainer}>
             <Button
               text="Skip"

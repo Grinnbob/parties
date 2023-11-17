@@ -1,8 +1,7 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
   FlatList,
   ListRenderItemInfo,
-  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -14,7 +13,7 @@ import {
   UncheckedCircleIcon,
 } from "../../../../components/Icons";
 import { Divider } from "../../../../components/Atoms";
-import { RequestQuote } from "../RequestQuoteScreen";
+import { RequestQuote, RequestQuoteStepEnum } from "../RequestQuoteScreen";
 
 export type Party = {
   id: string;
@@ -34,19 +33,18 @@ export const SelectPartyStep: React.FC<SelectPartyStepProps> = ({
   setQuote,
 }) => {
   const [parties, setParties] = useState<Party[]>([
-    {
-      id: "1",
-      name: "Mermaid Party",
-      date: new Date(),
-      startTime: new Date(),
-      endTime: new Date(),
-    },
+    // {
+    //   id: "1",
+    //   name: "Mermaid Party",
+    //   date: new Date(),
+    //   startTime: new Date(),
+    //   endTime: new Date(),
+    // },
     {
       id: "",
-      name: "New Party",
-      date: new Date(),
-      startTime: new Date(),
-      endTime: new Date(),
+      name: "",
+      // startTime: new Date(),
+      // endTime: new Date(),
     },
   ]);
 
@@ -54,10 +52,24 @@ export const SelectPartyStep: React.FC<SelectPartyStepProps> = ({
     setQuote((prevState) => {
       return {
         ...prevState,
-        newParty: party,
+        party: party,
       };
     });
   };
+
+  const isValid = quote?.party?.id !== undefined;
+
+  useEffect(() => {
+    setQuote((prevState) => {
+      return {
+        ...prevState,
+        steps: {
+          ...prevState.steps,
+          [RequestQuoteStepEnum.PARTY_SELECT]: { isValid },
+        },
+      } as RequestQuote;
+    });
+  }, [isValid]);
 
   const renderParty = (element: ListRenderItemInfo<Party>) => {
     return (
@@ -68,13 +80,15 @@ export const SelectPartyStep: React.FC<SelectPartyStepProps> = ({
           }}
           style={styles.partyItem}
         >
-          <Text style={styles.partyText}>{element.item.name}</Text>
+          <Text style={styles.partyText}>
+            {element.item.name ? element.item.name : "New Party"}
+          </Text>
           {!!element.item.date && (
             <Text style={styles.partyText}>
               {dayjs(element.item.date).format("MM dd,YYYY")}
             </Text>
           )}
-          {element.item.name === quote?.newParty?.name ? (
+          {element.item.id === quote?.party?.id ? (
             <CheckCircleIcon />
           ) : (
             <UncheckedCircleIcon />

@@ -1,0 +1,26 @@
+export type VendorModel = {
+  UserId: number | null;
+  address: string | null;
+  avatar: string;
+  city: string;
+  completed: number;
+  createdAt: string;
+  description: string;
+  distance: number | null;
+  event: null;
+  favorites: number;
+  id: number;
+  lat: number;
+  lng: number;
+  name: string;
+  phoneNumber: string;
+  point: { coordinates: [number, number]; type: "Point" };
+  request: number;
+  sales: number;
+  state: string;
+  status: string;
+  taxId: number;
+  theme: null;
+  updatedAt: string;
+  views: number;
+};

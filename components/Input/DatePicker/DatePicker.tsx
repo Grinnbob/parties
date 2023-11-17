@@ -17,7 +17,7 @@ type DatePickerProps = Partial<TextInputProps> & {
 };
 
 const formatDate = (date: Date) => {
-  return dayjs(date).format("MMM, DD,YYYY HH:mm");
+  return dayjs(date).format("MMM DD,YYYY");
 };
 
 const formatTime = (date: Date) => {
@@ -30,6 +30,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   inputProps,
   onChange,
   date,
+  error,
 }) => {
   const isTimePicker = datePickerProps?.mode === "time";
   const [isOpen, setIsOpen] = useState(false);
@@ -82,11 +83,13 @@ export const DatePicker: React.FC<DatePickerProps> = ({
               name="down"
               size={15}
               style={{ right: 26, color: Color.primaryPink }}
+              onPress={handleOpen}
             />
           ) : (
             <CalendarIcon style={styles.calendarIcon} />
           ),
         }}
+        error={error}
       />
       <RNDatePicker
         modal={true}

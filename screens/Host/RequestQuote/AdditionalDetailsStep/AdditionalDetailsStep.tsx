@@ -1,7 +1,7 @@
-import React, { Dispatch, SetStateAction, useCallback } from "react";
+import React, { Dispatch, SetStateAction, useCallback, useEffect } from "react";
 import { Text, View } from "react-native";
 import { styles } from "./styles";
-import { RequestQuote } from "../RequestQuoteScreen";
+import { RequestQuote, RequestQuoteStepEnum } from "../RequestQuoteScreen";
 import { TextArea } from "../../../../components/Input/TextArea";
 
 type AdditionalDetailsStepProps = {
@@ -17,10 +17,24 @@ export const AdditionalDetailsStep: React.FC<AdditionalDetailsStepProps> = ({
     setQuote((prevState) => {
       return {
         ...prevState,
-        additionalDetails: text,
+        notes: text,
       };
     });
   }, []);
+
+  const isValid = true;
+
+  useEffect(() => {
+    setQuote((prevState) => {
+      return {
+        ...prevState,
+        steps: {
+          ...prevState.steps,
+          [RequestQuoteStepEnum.ADDITIONAL_DETAILS]: { isValid },
+        },
+      } as RequestQuote;
+    });
+  }, [isValid]);
 
   return (
     <View style={styles.root}>
@@ -34,7 +48,7 @@ export const AdditionalDetailsStep: React.FC<AdditionalDetailsStepProps> = ({
       <TextArea
         inputProps={{
           ...styles.textArea,
-          value: quote.additionalDetails,
+          value: quote.notes,
           onChangeText: handleAdditionalDetailsChange,
         }}
       />

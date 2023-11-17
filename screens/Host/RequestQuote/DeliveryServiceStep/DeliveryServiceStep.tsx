@@ -1,5 +1,6 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useMemo } from "react";
 import {
+  ActivityIndicator,
   FlatList,
   ListRenderItemInfo,
   ScrollView,
@@ -12,7 +13,10 @@ import {
   UncheckedCircleIcon,
 } from "../../../../components/Icons";
 import { Divider } from "../../../../components/Atoms";
-import { RequestQuote } from "../RequestQuoteScreen";
+import { RequestQuote, RequestQuoteStepEnum } from "../RequestQuoteScreen";
+import { ConstantsModel } from "../../../../models";
+import { useLoadable } from "../../../../hooks";
+import { constantsQuery } from "../../../../stateManagement";
 
 const deliveryServiceOptions = [
   {
@@ -53,11 +57,16 @@ export const DeliveryServiceStep: React.FC<DeliveryServiceStepProps> = ({
   quote,
   setQuote,
 }) => {
+  const [constants, isConstantsLoading] = useLoadable(constantsQuery);
+  const options = useMemo(() => {
+    return constants?.QUOTE_OPTIONS.PAY;
+  }, [constants]);
+  console.log("constants", constants);
   const handleDeliveryServiceSelect = (id: string) => {
     setQuote((prevState) => {
       return {
         ...prevState,
-        deliveryService: id,
+        shipment: id,
       };
     });
   };
@@ -66,10 +75,24 @@ export const DeliveryServiceStep: React.FC<DeliveryServiceStepProps> = ({
     setQuote((prevState) => {
       return {
         ...prevState,
-        breakDownService: id,
+        assembling: id,
       };
     });
   };
+
+  const isValid = !!quote.assembling && !!quote.shipment;
+
+  useEffect(() => {
+    setQuote((prevState) => {
+      return {
+        ...prevState,
+        steps: {
+          ...prevState.steps,
+          [RequestQuoteStepEnum.DELIVERY_SERVICE]: { isValid },
+        },
+      } as RequestQuote;
+    });
+  }, [isValid]);
 
   const renderDeliveryListItem = (
     element: ListRenderItemInfo<(typeof deliveryServiceOptions)[number]>
@@ -83,7 +106,7 @@ export const DeliveryServiceStep: React.FC<DeliveryServiceStepProps> = ({
           style={styles.listItem}
         >
           <Text style={styles.listItemText}>{element.item.name}</Text>
-          {element.item.id === quote.deliveryService ? (
+          {element.item.id === quote.shipment ? (
             <CheckCircleIcon />
           ) : (
             <UncheckedCircleIcon />
@@ -106,7 +129,7 @@ export const DeliveryServiceStep: React.FC<DeliveryServiceStepProps> = ({
           style={styles.listItem}
         >
           <Text style={styles.listItemText}>{element.item.name}</Text>
-          {element.item.id === quote.breakDownService ? (
+          {element.item.id === quote.assembling ? (
             <CheckCircleIcon />
           ) : (
             <UncheckedCircleIcon />
@@ -119,20 +142,28 @@ export const DeliveryServiceStep: React.FC<DeliveryServiceStepProps> = ({
 
   return (
     <ScrollView contentContainerStyle={styles.root}>
-      <Text style={styles.title}>Do you need delivery OR pickup service?</Text>
-      <FlatList
-        data={deliveryServiceOptions}
-        renderItem={renderDeliveryListItem}
-        contentContainerStyle={styles.listItemContainer}
-      />
-      <Text style={[styles.title, styles.breakDownText]}>
-        Do you need setup and breakdown service?
-      </Text>
-      <FlatList
-        data={breakDownServiceOptions}
-        renderItem={renderBreakDownServiceListItem}
-        contentContainerStyle={styles.listItemContainer}
-      />
+      {isConstantsLoading ? (
+        <ActivityIndicator size={20} style={styles.activityIndicator} />
+      ) : (
+        <>
+          <Text style={styles.title}>
+            Do you need delivery OR pickup service?
+          </Text>
+          <FlatList
+            data={deliveryServiceOptions}
+            renderItem={renderDeliveryListItem}
+            contentContainerStyle={styles.listItemContainer}
+          />
+          <Text style={[styles.title, styles.breakDownText]}>
+            Do you need setup and breakdown service?
+          </Text>
+          <FlatList
+            data={breakDownServiceOptions}
+            renderItem={renderBreakDownServiceListItem}
+            contentContainerStyle={styles.listItemContainer}
+          />
+        </>
+      )}
     </ScrollView>
   );
 };

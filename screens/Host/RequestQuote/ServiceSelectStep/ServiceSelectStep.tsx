@@ -1,4 +1,10 @@
-import React, { Dispatch, SetStateAction, useCallback } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+} from "react";
 import {
   FlatList,
   ListRenderItemInfo,
@@ -7,85 +13,59 @@ import {
   View,
 } from "react-native";
 import { styles } from "./styles";
-import { RequestQuote } from "../RequestQuoteScreen";
+import { RequestQuote, RequestQuoteStepEnum } from "../RequestQuoteScreen";
 import { ServiceCard } from "./ServiceCard";
-import { Button } from "../../../../components/Atoms";
+import { Button, GradientButton } from "../../../../components/Atoms";
+import { ServiceModel } from "../../../../models";
 
 type SelectServiceStepProps = {
   quote: RequestQuote;
   setQuote: Dispatch<SetStateAction<RequestQuote>>;
+  services: Array<ServiceModel>;
 };
-
-const services = [
-  {
-    name: "Food",
-    data: [
-      {
-        id: 1,
-        name: "BBQ Combo 1 + Sides",
-        price: "20",
-        unit: "person",
-        description:
-          "All combos come with your choice of one of the following per season: Bean paste sew, tofu soup, white kimchi noodles, or steamed egg.",
-      },
-      {
-        id: 2,
-        name: "BBQ Combo 1 + Sides",
-        price: "20",
-        unit: "person",
-        description:
-          "All combos come with your choice of one of the following per season: Bean paste sew, tofu soup, white kimchi noodles, or steamed egg.",
-      },
-    ],
-  },
-  {
-    name: "Party Rental",
-    data: [
-      {
-        id: 3,
-        name: "2 Table + 10 Chairs",
-        price: "20",
-        unit: "person",
-        description:
-          "All combos come with your choice of one of the following per season: Bean paste sew, tofu soup, white kimchi noodles, or steamed egg.",
-      },
-      {
-        id: 4,
-        name: "2 Table + 10 Chairs",
-        price: "20",
-        unit: "person",
-        description:
-          "All combos come with your choice of one of the following per season: Bean paste sew, tofu soup, white kimchi noodles, or steamed egg.",
-      },
-    ],
-  },
-];
 
 export const ServiceSelectStep: React.FC<SelectServiceStepProps> = ({
   quote,
   setQuote,
+  services,
 }) => {
   const handleSelectService = useCallback((id: number) => {
     setQuote((prevState) => {
+      const isIncluded = prevState.services.includes(id);
       return {
         ...prevState,
-        selectedService: id,
+        services: isIncluded
+          ? prevState.services.filter((item) => item !== id)
+          : [...prevState.services, id],
       };
     });
   }, []);
 
-  const renderService = (
-    element: ListRenderItemInfo<(typeof services)[number]["data"][number]>
-  ) => {
+  const isValid = !!quote.services.length;
+
+  useEffect(() => {
+    setQuote((prevState) => {
+      return {
+        ...prevState,
+        steps: {
+          ...prevState.steps,
+          [RequestQuoteStepEnum.SERVICE_SELECT]: { isValid },
+        },
+      } as RequestQuote;
+    });
+  }, [isValid]);
+
+  const renderService = (element: ListRenderItemInfo<ServiceModel>) => {
+    console.log("element", element);
     return (
       <ServiceCard
         name={element.item.name}
         description={element.item.description}
         price={element.item.price}
-        unit={element.item.unit}
-        isSelected={quote.selectedService === element.item.id}
+        unit={element.item.rate}
+        isSelected={quote.services.includes(element.item.id)}
         style={
-          !!quote.selectedService && quote.selectedService !== element.item.id
+          !!quote.services.length && !quote.services.includes(element.item.id)
             ? styles.disabledService
             : undefined
         }
@@ -96,6 +76,60 @@ export const ServiceSelectStep: React.FC<SelectServiceStepProps> = ({
     );
   };
 
+  const specialties = useMemo(() => {
+    let result: ServiceModel["serviceTypes"] = [];
+    services.forEach((item) => {
+      result = [...result, ...item.serviceTypes];
+    });
+    const key = "id";
+    return [...new Map(result.map((item) => [item[key], item])).values()];
+  }, [services]);
+
+  const filteredServices = useMemo(() => {
+    if (quote.selectedSpecialties?.length) {
+      const selectedIds = quote.selectedSpecialties.map((item) => item.id);
+      return services.filter((service) => {
+        return !!service.serviceTypes.find((type) =>
+          selectedIds.includes(type.id)
+        );
+      });
+    }
+    return services;
+  }, [services, quote.selectedSpecialties]);
+
+  const serviceGroups = useMemo(() => {
+    const result: Record<string, Array<ServiceModel>> = {};
+
+    filteredServices.forEach((service) => {
+      service.serviceTypes.forEach((type) => {
+        if (result[type.title]) {
+          result[type.title] = [...result[type.title], service];
+        } else {
+          result[type.title] = [service];
+        }
+      });
+    });
+
+    return result;
+  }, [filteredServices, services]);
+
+  const handleSelectSpecialty = (
+    item: ServiceModel["serviceTypes"][number],
+    isSelected: boolean
+  ) => {
+    setQuote((prevState) => {
+      const newVal = isSelected
+        ? quote.selectedSpecialties.filter(
+            (specialty) => specialty.id !== specialty.id
+          )
+        : [...quote.selectedSpecialties, item];
+      return {
+        ...prevState,
+        selectedSpecialties: newVal,
+      };
+    });
+  };
+
   return (
     <ScrollView style={styles.root} showsVerticalScrollIndicator={false}>
       <Text style={styles.title}>
@@ -104,25 +138,43 @@ export const ServiceSelectStep: React.FC<SelectServiceStepProps> = ({
       <View style={styles.tagsContainer}>
         <Text style={styles.vendorText}>Vendor Specialties</Text>
         <View style={styles.tagsInnerContainer}>
-          <Button text="Food" style={styles.tag} textStyle={styles.tagText} />
-          <Button
-            text="Party Rentals"
-            style={styles.tag}
-            textStyle={styles.tagText}
-          />
-          <Button
-            text="Decorations"
-            style={styles.tag}
-            textStyle={styles.tagText}
-          />
+          {specialties.map((item) => {
+            const isSelected = !!quote.selectedSpecialties.find(
+              (specialty) => specialty.id === item.id
+            );
+            if (isSelected) {
+              return (
+                <GradientButton
+                  key={item.id}
+                  text={item.title}
+                  style={styles.tag}
+                  textStyle={styles.tagTextSelected}
+                  onPress={() => {
+                    handleSelectSpecialty(item, isSelected);
+                  }}
+                />
+              );
+            }
+            return (
+              <Button
+                key={item.id}
+                text={item.title}
+                style={styles.tag}
+                textStyle={styles.tagText}
+                onPress={() => {
+                  handleSelectSpecialty(item, isSelected);
+                }}
+              />
+            );
+          })}
         </View>
       </View>
-      {services.map((service, index) => {
+      {Object.keys(serviceGroups).map((key, index) => {
         return (
-          <View key={service.name} style={styles.serviceContainer}>
-            <Text style={styles.serviceNameText}>{service.name}</Text>
+          <View key={key} style={styles.serviceContainer}>
+            <Text style={styles.serviceNameText}>{key}</Text>
             <FlatList
-              data={service.data}
+              data={serviceGroups[key]}
               renderItem={renderService}
               contentContainerStyle={[
                 styles.serviceItemsContainer,

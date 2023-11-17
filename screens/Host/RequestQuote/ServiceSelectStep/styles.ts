@@ -36,9 +36,16 @@ export const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     height: 34,
+    minHeight: 34,
+    borderRadius: 16,
   },
   tagText: {
-    fontSize: 15,
+    fontSize: 14,
+    lineHeight: 18,
+  },
+  tagTextSelected: {
+    fontSize: 14,
+    lineHeight: 20,
   },
   serviceContainer: {
     flexDirection: "column",

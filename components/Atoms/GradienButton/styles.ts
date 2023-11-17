@@ -9,6 +9,7 @@ export const styles = StyleSheet.create({
     minHeight: 40,
     alignItems: "center",
     justifyContent: "center",
+    position: "relative",
   },
   disabledRoot: {
     backgroundColor: "rgba(255, 255, 255, 0.1)",
@@ -20,5 +21,8 @@ export const styles = StyleSheet.create({
   },
   disabledText: {
     color: "rgba(138, 138, 138, 1)",
+  },
+  activityIndicator: {
+    color: Color.textMainWhite,
   },
 });

@@ -1,7 +1,7 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { Text, View } from "react-native";
 import { styles } from "./styles";
-import { RequestQuote } from "../RequestQuoteScreen";
+import { RequestQuote, RequestQuoteStepEnum } from "../RequestQuoteScreen";
 import { RangeSlider } from "../../../../components/Atoms";
 import { TextInput } from "../../../../components/Input";
 import { Color } from "../../../../GlobalStyles";
@@ -19,16 +19,36 @@ export const PeopleSelectStep: React.FC<PeopleSelectStepProps> = ({
     setQuote((prevState) => {
       return {
         ...prevState,
-        peopleRange: val,
+        party: {
+          ...prevState.party,
+          peopleRange: val,
+        },
       };
     });
   };
+
+  const isValid = true;
+
+  useEffect(() => {
+    setQuote((prevState) => {
+      return {
+        ...prevState,
+        steps: {
+          ...prevState.steps,
+          [RequestQuoteStepEnum.PEOPLE_SELECT]: { isValid },
+        },
+      } as RequestQuote;
+    });
+  }, [isValid]);
 
   const handleDescriptionChange = (text: string) => {
     setQuote((prevState) => {
       return {
         ...prevState,
-        description: text,
+        party: {
+          ...prevState.party,
+          description: text,
+        },
       };
     });
   };
@@ -37,8 +57,8 @@ export const PeopleSelectStep: React.FC<PeopleSelectStepProps> = ({
     <View style={styles.root}>
       <Text style={styles.title}>How many guest are expected to attend?</Text>
       <RangeSlider
-        low={quote.peopleRange[0]}
-        high={quote.peopleRange[1]}
+        low={quote.party?.peopleRange?.[0] || 30}
+        high={quote.party?.peopleRange?.[1] || 50}
         step={10}
         min={5}
         max={200}
@@ -52,7 +72,7 @@ export const PeopleSelectStep: React.FC<PeopleSelectStepProps> = ({
           placeholder: "Type details about your party here...",
           placeholderTextColor: Color.gray300,
           ...styles.textArea,
-          value: quote.description,
+          value: quote.party?.description,
           onChangeText: handleDescriptionChange,
         }}
       />

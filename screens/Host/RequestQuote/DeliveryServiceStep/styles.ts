@@ -6,6 +6,10 @@ export const styles = StyleSheet.create({
     flexDirection: "column",
     paddingHorizontal: 24,
   },
+  activityIndicator: {
+    color: Color.textMainWhite,
+    marginTop: 24,
+  },
   title: {
     fontSize: 16,
     lineHeight: 22,

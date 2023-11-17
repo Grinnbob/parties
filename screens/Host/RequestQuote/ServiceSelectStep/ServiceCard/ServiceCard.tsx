@@ -13,7 +13,7 @@ import { CheckCircleIcon } from "../../../../../components/Icons";
 type ServiceCardProps = {
   name: string;
   description: string;
-  price: string;
+  price: number;
   unit: string;
   style?: StyleProp<ViewStyle>;
   isSelected: boolean;

@@ -1,5 +1,6 @@
-import * as API from '../base';
-const Base = 'vendor';
+import * as API from "../base";
+import { keys } from "lodash";
+const Base = "vendor";
 
 interface VENDOR {
   id: Number;
@@ -75,8 +76,15 @@ export const getAllSearch = async (search: string) => {
   return response;
 };
 
-export const getSearchResults = async (search: string) => {
-  let url = `${Base}/results?search=${search}`;
+export const getSearchResults = async (params: {
+  search: string;
+  serviceTypeId: number;
+}) => {
+  const urlSearchParams = new URLSearchParams();
+  Object.keys(params).forEach((key: string) => {
+    urlSearchParams.append(key, String(params[key as keyof typeof params]));
+  });
+  let url = `${Base}/results?${urlSearchParams.toString()}`;
   const response = await API.getApi(url);
 
   return response;

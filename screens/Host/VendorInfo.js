@@ -6,7 +6,6 @@ import {
   ScrollView,
   ImageBackground,
   FlatList,
-  TouchableOpacity,
   Linking,
 } from "react-native";
 import { Pressable, VStack, Text } from "native-base";
@@ -19,22 +18,27 @@ import {
   Border,
 } from "../../GlobalStyles";
 import apis from "../../apis";
-import MidGradientButton from "../../components/MidGradientButton";
+import { GradientButton } from "../../components/Atoms";
+import { useLoadable } from "../../hooks";
+import { serviceTypesQuery } from "../../stateManagement/atoms";
 
 const VendorProfileScreen = ({ route, navigation }) => {
   const [vendorProfile, setVendorProfile] = useState();
-  const [service, setService] = useState([]);
+  const [services, setServices] = useState([]);
   const [backgroundLink, setBackgroundLink] = useState("");
+  const [serviceTypes, isServiceTypesLoading] = useLoadable(serviceTypesQuery);
 
+  console.log("vendorProfile", vendorProfile);
+  console.log("serviceTypes", serviceTypes);
   const handleCall = () => {
     console.log(vendorProfile.phoneNumber);
     Linking.openURL(`tel:${vendorProfile.phoneNumber.replace(/\D/g, "")}`);
   };
 
-  const getService = async () => {
+  const getServices = async () => {
     const res = await apis.service.getAll({ VendorId: vendorProfile?.id });
     console.log("RES", res);
-    setService(res.data);
+    setServices(res.data);
   };
 
   const getBackground = async () => {
@@ -57,10 +61,17 @@ const VendorProfileScreen = ({ route, navigation }) => {
 
   useEffect(() => {
     if (vendorProfile && vendorProfile?.id) {
-      getService();
+      getServices();
       getBackground();
     }
   }, [vendorProfile]);
+
+  const handleQuoteYourParty = () => {
+    navigation.navigate("RequestQuoteScreen", {
+      vendor: vendorProfile,
+      services,
+    });
+  };
 
   return (
     <ScrollView
@@ -185,20 +196,15 @@ const VendorProfileScreen = ({ route, navigation }) => {
               {vendorProfile?.description}
             </Text>
           </View>
-          <View
-            style={{ width: "100%", alignItems: "center", marginBottom: 20 }}
-          >
-            <MidGradientButton
-              onPress={handleCall}
-              label="Call"
-              formBackgroundColor="rgba(255, 255, 255, 0.1)"
-              formMarginTop="unset"
-              labelColor="#FFF"
-            />
-          </View>
+          <GradientButton
+            text="Quote Your Party"
+            onPress={handleQuoteYourParty}
+            textStyle={styles.quoteYourPartyText}
+            disabled={!vendorProfile}
+          />
           <FlatList
             horizontal={false}
-            data={service}
+            data={services}
             ListHeaderComponent={
               <VStack
                 flexDirection={"row"}
@@ -654,6 +660,10 @@ const styles = StyleSheet.create({
     height: "100%",
     overflow: "hidden",
     flex: 1,
+  },
+  quoteYourPartyText: {
+    fontSize: 16,
+    lineHeight: 22,
   },
 });
 
