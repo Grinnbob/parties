@@ -181,6 +181,8 @@ export const useChatMessages = ({
       });
       try {
         const response = await sendMessage({
+          UserId: userId, // ToDO remove after BE fix
+          ConversationId: conversationId, // ToDO remove after BE fix
           userId,
           conversationId,
           UserId: userId, // ToDO remove after BE fix

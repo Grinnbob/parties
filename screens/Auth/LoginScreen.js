@@ -163,7 +163,7 @@ const LoginScreen = () => {
                   </Text>
                   <Text style={styles.textTypo}>{` `}</Text>
                 </Text>
-                <Text style={styles.signIn}>Sign Up</Text>
+                <Text style={styles.signIn}>Sign In</Text>
               </Text>
             </Pressable>
           </View>

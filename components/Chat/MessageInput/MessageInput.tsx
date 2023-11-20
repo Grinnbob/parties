@@ -52,6 +52,10 @@ export const MessageInput = React.forwardRef<TextInput, MessageInputProps>(
 
       const photoOptions: CameraOptions = { mediaType: "photo" };
       const handleSelectImage = async (image: ImagePickerResponse) => {
+        if (image.didCancel) {
+          return;
+        }
+
         if (image.errorCode === "camera_unavailable") {
           Alert.alert("Camera unavailable");
           return;

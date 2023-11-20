@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
+  Platform,
   ScrollView,
 } from "react-native";
 import { Tag } from "../Atoms";
@@ -88,8 +89,8 @@ export const Chat: React.FC<ChatProps> = ({ conversationId, userId }) => {
         {isLoading && <ActivityIndicator size={24} />}
       </ScrollView>
       <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "position" : null}
         style={styles.keyboardAvoidingView}
-        behavior="position"
       >
         <MessageInput
           value={message}
