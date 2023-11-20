@@ -12,4 +12,6 @@ export type PartyModel = {
   state?: string;
   zip?: string;
   point?: [number, number];
+  attendingMin: number;
+  attendingMax: number;
 };

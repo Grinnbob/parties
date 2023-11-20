@@ -19,14 +19,13 @@ import { ServiceSelectStep } from "./ServiceSelectStep";
 import { AdditionalDetailsStep } from "./AdditionalDetailsStep";
 import { DeliveryServiceStep } from "./DeliveryServiceStep";
 import { FinishStep } from "./FinishStep";
-import { useLoadable } from "../../../hooks";
-import { constantsQuery } from "../../../stateManagement";
 import apis from "../../../apis";
 import dayjs from "dayjs";
 import { PartyModel, ServiceModel, VendorModel } from "../../../models";
 import useGlobalState from "../../../stateManagement/hook";
 import StateTypes from "../../../stateManagement/StateTypes";
 import { useToast } from "native-base";
+import { getMyParties } from "../../../apis/routes/party";
 
 type Party = {
   id?: string;
@@ -104,10 +103,10 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
   useEffect(() => {
     const getParties = async () => {
       try {
-        const parties = await apis.party.getSearchResults({
-          userId: user.id,
+        const parties = await apis.party.getMyParties({
+          minDate: dayjs(new Date()).format("YYYY-MM-DD"),
         });
-        console.log("---parties", parties);
+        console.log("parties", parties);
         if (Array.isArray(parties.data)) {
           setParties(parties.data);
         }
@@ -132,6 +131,7 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
         setIsSubmitting(true);
         let partyId;
         if (quote.party?.id === "") {
+          console.log("quote", quote);
           const party = await apis.party.create({
             name: quote.party.name!,
             startDate: dayjs(quote.party.startDate).format("YYYY-MM-DD"),
@@ -139,7 +139,8 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
             startTime: quote.party.startTime,
             endTime: quote.party.endTime,
             description: quote.party.description,
-            UserId: user.id,
+            attendingMin: quote.party.peopleRange![0],
+            attendingMax: quote.party.peopleRange![1]!,
           });
           if (!party.success) {
             toast.show({
@@ -147,12 +148,11 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
             });
             return;
           }
-          console.log("creaed party", party);
+          console.log("created party", party);
           partyId = party.data.id;
         } else {
           partyId = quote.party?.id;
         }
-        console.log("partyId", partyId);
         const response = await apis.quote.create({
           assembling: quote.assembling!,
           shipment: quote.shipment!,
