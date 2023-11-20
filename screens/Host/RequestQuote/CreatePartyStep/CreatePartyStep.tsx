@@ -38,7 +38,7 @@ export const CreatePartyStep: React.FC<CreatePartyStepProps> = ({
     if (
       !!quote.party?.startDate &&
       !!quote.party?.endDate &&
-      dayjs(quote.party?.startDate).isAfter(quote.party?.endDate)
+      dayjs(quote.party?.startDate).isAfter(quote.party?.endDate, "date")
     ) {
       errors.endDate = "End date can't be after start date";
     }
@@ -102,6 +102,7 @@ export const CreatePartyStep: React.FC<CreatePartyStepProps> = ({
         <DatePicker
           inputProps={{ placeholder: "Start Date" }}
           date={quote.party?.startDate}
+          datePickerProps={{ mode: "date" }}
           onChange={(date) => {
             handleFieldChange("startDate", date);
           }}
@@ -110,6 +111,7 @@ export const CreatePartyStep: React.FC<CreatePartyStepProps> = ({
         <DatePicker
           inputProps={{ placeholder: "End Date" }}
           date={quote.party?.endDate}
+          datePickerProps={{ mode: "date" }}
           onChange={(date) => {
             handleFieldChange("endDate", date);
           }}

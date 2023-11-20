@@ -1,19 +1,21 @@
+type Option = { id: string; text: string };
+
 export type ConstantsModel = {
   QUOTE_OPTIONS: {
     ASSEMBLING: {
-      BOTH: string;
-      BREAKDOWN: string;
-      NONE: string;
-      SETUP: string;
+      BOTH: Option;
+      BREAKDOWN: Option;
+      NONE: Option;
+      SETUP: Option;
     };
-    CANCELLATION: { WITHIN24BACK80: string };
-    PAY: { CARD: string; CASH: string };
-    SHIPMENT: { DELIVERY: string; PICKUP: string };
+    CANCELLATION: { WITHIN24BACK80: Option };
+    PAY: { CARD: Option; CASH: Option };
+    SHIPMENT: { DELIVERY: Option; PICKUP: Option };
     STATUS: {
-      ACCEPTED: string;
-      DENIED: string;
-      NEW: string;
-      PENDING: string;
+      ACCEPTED: Option;
+      DENIED: Option;
+      NEW: Option;
+      PENDING: Option;
     };
   };
 };

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { styles } from "./styles";
 import {
   Image,
@@ -23,7 +23,10 @@ import { useLoadable } from "../../../hooks";
 import { constantsQuery } from "../../../stateManagement";
 import apis from "../../../apis";
 import dayjs from "dayjs";
-import { ServiceModel, VendorModel } from "../../../models";
+import { PartyModel, ServiceModel, VendorModel } from "../../../models";
+import useGlobalState from "../../../stateManagement/hook";
+import StateTypes from "../../../stateManagement/StateTypes";
+import { useToast } from "native-base";
 
 type Party = {
   id?: string;
@@ -79,6 +82,7 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
   route,
 }) => {
   const navigation = useNavigation();
+  const toast = useToast();
   const [currentStep, setCurrentStep] = useState(
     RequestQuoteStepEnum.PARTY_SELECT
   );
@@ -92,10 +96,33 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
     selectedSpecialties: [],
     steps: {},
   });
+  const [user] = useGlobalState(StateTypes.user.key, StateTypes.user.default);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [parties, setParties] = useState<PartyModel[]>([]);
+  const [isPartiesLoading, setIsPartiesLoading] = useState(true);
+
+  useEffect(() => {
+    const getParties = async () => {
+      try {
+        const parties = await apis.party.getSearchResults({
+          userId: user.id,
+        });
+        console.log("---parties", parties);
+        if (Array.isArray(parties.data)) {
+          setParties(parties.data);
+        }
+      } finally {
+        setIsPartiesLoading(false);
+      }
+    };
+    getParties();
+  }, []);
 
   const { vendor, services } = route?.params;
   const isNextDisabled = () => {
+    if (currentStep === RequestQuoteStepEnum.FINISH) {
+      return false;
+    }
     return !quote.steps[currentStep]?.isValid;
   };
 
@@ -103,27 +130,51 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
     if (currentStep === RequestQuoteStepEnum.DELIVERY_SERVICE) {
       try {
         setIsSubmitting(true);
+        let partyId;
         if (quote.party?.id === "") {
-          await apis.party.create({
+          const party = await apis.party.create({
             name: quote.party.name!,
             startDate: dayjs(quote.party.startDate).format("YYYY-MM-DD"),
             endDate: dayjs(quote.party.endDate).format("YYYY-MM-DD"),
             startTime: quote.party.startTime,
             endTime: quote.party.endTime,
             description: quote.party.description,
+            UserId: user.id,
           });
+          if (!party.success) {
+            toast.show({
+              description: "Something went wrong. Please try again.",
+            });
+            return;
+          }
+          console.log("creaed party", party);
+          partyId = party.data.id;
+        } else {
+          partyId = quote.party?.id;
         }
-        await apis.quote.create({
+        console.log("partyId", partyId);
+        const response = await apis.quote.create({
           assembling: quote.assembling!,
           shipment: quote.shipment!,
           services: quote.services,
           VendorId: vendor?.id,
-          PartyId: 1,
-          note: quote.notes!,
+          PartyId: Number(partyId),
+          notes: quote.notes!,
         });
+        if (!response.success) {
+          toast.show({
+            description: "Something went wrong. Please try again.",
+          });
+          return;
+        }
+        console.log("response", response);
       } finally {
         setIsSubmitting(false);
       }
+    }
+    if (currentStep === RequestQuoteStepEnum.FINISH) {
+      navigation.pop();
+      return;
     }
     const step = currentStep + 1;
     setCurrentStep(step);
@@ -138,12 +189,21 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
       }
       return;
     }
-    if (currentStep === RequestQuoteStepEnum.FINISH) {
+    if (
+      currentStep === RequestQuoteStepEnum.FINISH ||
+      currentStep === RequestQuoteStepEnum.PARTY_SELECT
+    ) {
       navigation.pop();
       return;
     }
     const step = currentStep - 1;
     setCurrentStep(step);
+  };
+
+  const handleCancelPress = () => {
+    if (currentStep !== RequestQuoteStepEnum.FINISH) {
+      navigation.pop();
+    }
   };
 
   const progressBarValue = useMemo(() => {
@@ -203,11 +263,7 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
                     ? styles.hidden
                     : undefined,
                 ]}
-                onPress={() => {
-                  if (currentStep !== RequestQuoteStepEnum.FINISH) {
-                    navigation.pop();
-                  }
-                }}
+                onPress={handleBackPress}
               >
                 <Image
                   resizeMode="cover"
@@ -215,7 +271,7 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
                 />
               </Pressable>
               {currentStep !== RequestQuoteStepEnum.PARTY_SELECT && (
-                <TouchableOpacity onPress={handleBackPress}>
+                <TouchableOpacity onPress={handleCancelPress}>
                   <AntDesign name="close" size={20} style={styles.closeIcon} />
                 </TouchableOpacity>
               )}
@@ -228,7 +284,12 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
             )}
           </View>
           {currentStep === RequestQuoteStepEnum.PARTY_SELECT && (
-            <SelectPartyStep quote={quote} setQuote={setQuote} />
+            <SelectPartyStep
+              quote={quote}
+              setQuote={setQuote}
+              parties={parties}
+              isPartiesLoading={isPartiesLoading}
+            />
           )}
           {currentStep === RequestQuoteStepEnum.PARTY_CREATE && (
             <CreatePartyStep quote={quote} setQuote={setQuote} />

@@ -1,5 +1,12 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
+  ActivityIndicator,
   FlatList,
   ListRenderItemInfo,
   Text,
@@ -14,6 +21,7 @@ import {
 } from "../../../../components/Icons";
 import { Divider } from "../../../../components/Atoms";
 import { RequestQuote, RequestQuoteStepEnum } from "../RequestQuoteScreen";
+import { PartyModel } from "../../../../models";
 
 export type Party = {
   id: string;
@@ -26,27 +34,25 @@ export type Party = {
 type SelectPartyStepProps = {
   quote: RequestQuote;
   setQuote: Dispatch<SetStateAction<RequestQuote>>;
+  parties: Array<PartyModel>;
+  isPartiesLoading: boolean;
 };
 
 export const SelectPartyStep: React.FC<SelectPartyStepProps> = ({
   quote,
   setQuote,
+  parties,
+  isPartiesLoading,
 }) => {
-  const [parties, setParties] = useState<Party[]>([
-    // {
-    //   id: "1",
-    //   name: "Mermaid Party",
-    //   date: new Date(),
-    //   startTime: new Date(),
-    //   endTime: new Date(),
-    // },
-    {
-      id: "",
-      name: "",
-      // startTime: new Date(),
-      // endTime: new Date(),
-    },
-  ]);
+  const actualParties = useMemo(() => {
+    return [
+      ...parties,
+      {
+        id: "",
+        name: "",
+      },
+    ];
+  }, [parties]);
 
   const handleSelectParty = (party: Party) => {
     setQuote((prevState) => {
@@ -94,20 +100,26 @@ export const SelectPartyStep: React.FC<SelectPartyStepProps> = ({
             <UncheckedCircleIcon />
           )}
         </TouchableOpacity>
-        {element.index !== parties.length - 1 && <Divider />}
+        {element.index !== actualParties.length - 1 && <Divider />}
       </View>
     );
   };
 
   return (
     <View style={styles.root}>
-      <Text style={styles.newPartyText}>Is this for a new party?</Text>
-      <Text style={styles.existingPartyText}>OR an existing party?</Text>
-      <FlatList
-        data={parties}
-        renderItem={renderParty}
-        contentContainerStyle={styles.partiesContainer}
-      />
+      {isPartiesLoading ? (
+        <ActivityIndicator size={20} style={styles.activityIndicator} />
+      ) : (
+        <>
+          <Text style={styles.newPartyText}>Is this for a new party?</Text>
+          <Text style={styles.existingPartyText}>OR an existing party?</Text>
+          <FlatList
+            data={actualParties}
+            renderItem={renderParty}
+            contentContainerStyle={styles.partiesContainer}
+          />
+        </>
+      )}
     </View>
   );
 };

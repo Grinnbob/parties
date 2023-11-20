@@ -1,5 +1,5 @@
 import * as API from "../base";
-const Base = "vendor";
+const Base = "quote";
 
 export const create = async (data: {
   assembling: string;
@@ -7,7 +7,7 @@ export const create = async (data: {
   services: number[];
   VendorId: number;
   PartyId: number;
-  note: string;
+  notes: string;
 }) => {
   const response = await API.postApi(`${Base}/`, data);
   return response;

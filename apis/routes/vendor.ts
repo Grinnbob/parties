@@ -1,5 +1,4 @@
 import * as API from "../base";
-import { keys } from "lodash";
 const Base = "vendor";
 
 interface VENDOR {

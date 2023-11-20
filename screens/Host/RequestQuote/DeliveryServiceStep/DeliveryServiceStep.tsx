@@ -14,39 +14,8 @@ import {
 } from "../../../../components/Icons";
 import { Divider } from "../../../../components/Atoms";
 import { RequestQuote, RequestQuoteStepEnum } from "../RequestQuoteScreen";
-import { ConstantsModel } from "../../../../models";
 import { useLoadable } from "../../../../hooks";
 import { constantsQuery } from "../../../../stateManagement";
-
-const deliveryServiceOptions = [
-  {
-    id: "delivery",
-    name: "Delivery Only",
-  },
-  {
-    id: "pickup",
-    name: "Pick-up only",
-  },
-];
-
-const breakDownServiceOptions = [
-  {
-    id: "setupOnly",
-    name: "Setup Only",
-  },
-  {
-    id: "breakdownOnly",
-    name: "Breakdown only",
-  },
-  {
-    id: "both",
-    name: "Both",
-  },
-  {
-    id: "none",
-    name: "None needed",
-  },
-];
 
 type DeliveryServiceStepProps = {
   quote: RequestQuote;
@@ -61,7 +30,22 @@ export const DeliveryServiceStep: React.FC<DeliveryServiceStepProps> = ({
   const options = useMemo(() => {
     return constants?.QUOTE_OPTIONS.PAY;
   }, [constants]);
-  console.log("constants", constants);
+
+  const deliveryServiceOptions = useMemo(() => {
+    if (constants) {
+      return Object.values(constants.QUOTE_OPTIONS.SHIPMENT);
+    }
+
+    return [];
+  }, [constants]);
+
+  const breakDownServiceOptions = useMemo(() => {
+    if (constants) {
+      return Object.values(constants.QUOTE_OPTIONS.ASSEMBLING);
+    }
+    return [];
+  }, [constants]);
+
   const handleDeliveryServiceSelect = (id: string) => {
     setQuote((prevState) => {
       return {
@@ -105,7 +89,7 @@ export const DeliveryServiceStep: React.FC<DeliveryServiceStepProps> = ({
           }}
           style={styles.listItem}
         >
-          <Text style={styles.listItemText}>{element.item.name}</Text>
+          <Text style={styles.listItemText}>{element.item.text}</Text>
           {element.item.id === quote.shipment ? (
             <CheckCircleIcon />
           ) : (
@@ -128,7 +112,7 @@ export const DeliveryServiceStep: React.FC<DeliveryServiceStepProps> = ({
           }}
           style={styles.listItem}
         >
-          <Text style={styles.listItemText}>{element.item.name}</Text>
+          <Text style={styles.listItemText}>{element.item.id}</Text>
           {element.item.id === quote.assembling ? (
             <CheckCircleIcon />
           ) : (
