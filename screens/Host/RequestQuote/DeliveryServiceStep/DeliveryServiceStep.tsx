@@ -27,10 +27,8 @@ export const DeliveryServiceStep: React.FC<DeliveryServiceStepProps> = ({
   setQuote,
 }) => {
   const [constants, isConstantsLoading] = useLoadable(constantsQuery);
-  const options = useMemo(() => {
-    return constants?.QUOTE_OPTIONS.PAY;
-  }, [constants]);
 
+  console.log("constants", JSON.stringify(constants));
   const deliveryServiceOptions = useMemo(() => {
     if (constants) {
       return Object.values(constants.QUOTE_OPTIONS.SHIPMENT);

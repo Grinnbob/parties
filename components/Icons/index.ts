@@ -9,3 +9,7 @@ export * from "./LocationIcon";
 export * from "./SliderLeftThumb";
 export * from "./SliderRightThumb";
 export * from "./RequestSendIcon";
+export * from "./ServicesIcon";
+export * from "./PartyIcon";
+export * from "./GuestsIcon";
+export * from "./ClockIcon";

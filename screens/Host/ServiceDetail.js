@@ -50,14 +50,11 @@ const ServiceDetails = ({ route }) => {
   const debounceSearchText = useDebounce(searchText);
 
   const { name, id } = route.params.service;
-  console.log("route.params", route.params);
 
   useEffect(() => {
     const grabAllVendor = async () => {
       try {
         setIsLoading(true);
-        console.log("debounceSearchText", debounceSearchText);
-        console.log("id", id);
         const res = await apis.vendor.getSearchResults({
           search: debounceSearchText,
           serviceTypeId: id,

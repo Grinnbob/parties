@@ -19,7 +19,7 @@ import useGlobalState from "../../../stateManagement/hook";
 import StateTypes from "../../../stateManagement/StateTypes";
 import apis from "../../../apis";
 import { GhostButton } from "../../../components/GhostButton";
-import BackButton from "../../../components/navigation/BackButton";
+import { BackButton } from "../../../components/navigation/BackButton";
 
 const selections = [
   {

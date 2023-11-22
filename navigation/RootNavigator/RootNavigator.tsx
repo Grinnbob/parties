@@ -15,12 +15,18 @@ import layout from "../../utils/layout";
 import { ImageBackground } from "react-native";
 import VendorCameraRoll from "../../screens/Vendor/Profile/VendorCameraRoll";
 import SearchModal from "../../components/Modal/SearchModal";
-import { VendorQuotesStackRoutes } from "../vendorBottomNav";
+import { VendorQuotesStackRoutes } from "../vendorQuotesStackRoutes";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { DashboardIcon } from "../../components/Icons/DashboardIcon";
-import { QuotesInactiveIcon } from "../../components/Icons";
+import {
+  PartyIcon,
+  QuotesInactiveIcon,
+  ServicesIcon,
+} from "../../components/Icons";
 import { Color } from "../../GlobalStyles";
 import { styles } from "./styles";
+import { HostMyPartiesStackRoutes } from "../hostMyPartiesStackRoutes";
+import { HostBottomNav } from "../Host/HostBottomNav";
 
 const Stack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -157,15 +163,7 @@ export const RootNavigator: React.FC = () => {
           </BottomTab.Navigator>
         );
       case "host":
-        return (
-          <Stack.Navigator>
-            <Stack.Screen
-              name="host"
-              component={HostNavigator}
-              options={{ headerShown: false }}
-            />
-          </Stack.Navigator>
-        );
+        return <HostBottomNav />;
       default:
         return (
           <>
