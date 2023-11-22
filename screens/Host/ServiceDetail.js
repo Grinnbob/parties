@@ -161,32 +161,9 @@ const ServiceDetails = ({ route }) => {
           isLoading ? (
             <></>
           ) : (
-            <Text
-              style={{
-                color: "#8A8A8A",
-                marginBottom: 5,
-                fontWeight: "400",
-                fontSize: 14,
-                lineHeight: 21,
-                paddingHorizontal: 12,
-              }}
-            >
-              No results found
-            </Text>
-          )
-        }
-        ListHeaderComponent={
-          isLoading ? (
-            <View
-              justifyContent="center"
-              alignItems="center"
-              flex={1}
-              marginBottom={2}
-            >
-              <ActivityIndicator color={"#FF077E"} />
+            <View style={styles.noResultsContainer}>
+              <Text style={styles.noResultsText}>No results found</Text>
             </View>
-          ) : (
-            <View />
           )
         }
       />
@@ -258,6 +235,17 @@ const styles = StyleSheet.create({
   alertmodalbgLayout: {
     width: "100%",
     position: "absolute",
+  },
+  noResultsContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  noResultsText: {
+    color: Color.gray300,
+    marginBottom: 5,
+    fontWeight: "400",
+    fontSize: 14,
+    lineHeight: 21,
   },
 });
 

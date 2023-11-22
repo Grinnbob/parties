@@ -1,23 +1,22 @@
 import React from "react";
-
-import { createStackNavigator } from "@react-navigation/stack";
-
-import HostDrawerNav from "./hostDrawerNav";
-import EditAccount from "../screens/Host/EditAccount";
-import DeleteAccountModal from "../screens/Host/DeleteAccountModal";
-import UpdateUser from "../screens/Host/UpdateUser";
-import ChangePassword from "../screens/Host/ChangePassword";
-import SuccessPassword from "../screens/Host/SuccessPasswordModal";
-import EnterPhone from "../screens/Host/Verify/EnterPhone";
-import VerifyPhone from "../screens/Host/Verify/VerifyPhone";
-import FAQ from "../screens/Setting/FAQ";
-import Report from "../screens/Setting/Report";
-import Privacy from "../screens/Setting/Privacy";
-import Term from "../screens/Setting/Term";
+import HostDrawerNav from "../hostDrawerNav";
+import EditAccount from "../../screens/Host/EditAccount";
+import DeleteAccountModal from "../../screens/Host/DeleteAccountModal";
+import SuccessPassword from "../../screens/Host/SuccessPasswordModal";
+import UpdateUser from "../../screens/Host/UpdateUser";
+import ChangePassword from "../../screens/Host/ChangePassword";
+import EnterPhone from "../../screens/Host/Verify/EnterPhone";
+import VerifyPhone from "../../screens/Host/Verify/VerifyPhone";
+import FAQ from "../../screens/Setting/FAQ";
 import { Text } from "native-base";
-import BackButton from "../components/navigation/BackButton";
+import Report from "../../screens/Setting/Report";
+import Privacy from "../../screens/Setting/Privacy";
+import Term from "../../screens/Setting/Term";
+import { createStackNavigator } from "@react-navigation/stack";
+import { BackButton } from "../../components/navigation/BackButton";
 const Stack = createStackNavigator();
-const HostNavigator = () => {
+
+export const HostServicesStackNav = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -115,5 +114,3 @@ const HostNavigator = () => {
     </Stack.Navigator>
   );
 };
-
-export default HostNavigator;

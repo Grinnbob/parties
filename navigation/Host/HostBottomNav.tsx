@@ -1,10 +1,10 @@
 import React from "react";
 import { styles } from "../RootNavigator/styles";
 import { Color } from "../../GlobalStyles";
-import HostNavigator from "../HostNavigator";
 import { PartyIcon, ServicesIcon } from "../../components/Icons";
 import { HostMyPartiesStackRoutes } from "../hostMyPartiesStackRoutes";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { HostServicesStackNav } from "./HostServicesStackNav";
 
 const BottomTab = createBottomTabNavigator();
 export const HostBottomNav: React.FC = () => {
@@ -21,7 +21,7 @@ export const HostBottomNav: React.FC = () => {
     >
       <BottomTab.Screen
         name="Services"
-        component={HostNavigator}
+        component={HostServicesStackNav}
         options={{
           tabBarIcon: ({ focused }) => {
             return (

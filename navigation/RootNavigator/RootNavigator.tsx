@@ -3,7 +3,6 @@ import { Text, View } from "native-base";
 import { NavigationContainer, DarkTheme } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import AuthNav from "../AuthNavigator";
-import HostNavigator from "../HostNavigator";
 import loadApp from "../loadApp";
 import useGlobalState from "../../stateManagement/hook";
 import StateTypes from "../../stateManagement/StateTypes";
