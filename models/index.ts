@@ -4,3 +4,4 @@ export * from "./ConstantsModel";
 export * from "./PartyModel";
 export * from "./ServiceModel";
 export * from "./VendorModel";
+export * from "./ConversationModel";

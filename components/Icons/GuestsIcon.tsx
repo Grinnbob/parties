@@ -1,7 +1,8 @@
 import React from "react";
 import Svg, { ClipPath, Defs, G, Path, Rect } from "react-native-svg";
+import { SvgIconProps } from "../../types";
 
-export const GuestsIcon: React.FC = (props) => {
+export const GuestsIcon: React.FC<SvgIconProps> = (props) => {
   return (
     <Svg width="20" height="20" viewBox="0 0 20 20" fill="none" {...props}>
       <G id="Iconsax/Linear/people" clipPath="url(#clip0_209_18207)">

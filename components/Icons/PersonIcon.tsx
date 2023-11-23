@@ -1,15 +1,8 @@
 import React from "react";
 import Svg, { Path } from "react-native-svg";
-import { StyleProp, ViewStyle } from "react-native";
+import { SvgIconProps } from "../../types";
 
-type PersonIconProps = {
-  width?: number;
-  height?: number;
-  style?: StyleProp<ViewStyle>;
-  fill?: string;
-};
-
-export const PersonIcon: React.FC<PersonIconProps> = ({
+export const PersonIcon: React.FC<SvgIconProps> = ({
   width = 21,
   height = 22,
   style,

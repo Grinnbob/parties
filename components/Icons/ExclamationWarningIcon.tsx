@@ -1,14 +1,8 @@
 import React from "react";
 import Svg, { Path } from "react-native-svg";
-import { StyleProp, ViewStyle } from "react-native";
+import { SvgIconProps } from "../../types";
 
-type ExclamationWarningIconProps = {
-  width?: number;
-  height?: number;
-  style?: StyleProp<ViewStyle>;
-};
-
-export const ExclamationWarningIcon: React.FC<ExclamationWarningIconProps> = ({
+export const ExclamationWarningIcon: React.FC<SvgIconProps> = ({
   width,
   height,
   style,

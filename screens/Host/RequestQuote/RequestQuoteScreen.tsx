@@ -22,13 +22,10 @@ import { FinishStep } from "./FinishStep";
 import apis from "../../../apis";
 import dayjs from "dayjs";
 import { PartyModel, ServiceModel, VendorModel } from "../../../models";
-import useGlobalState from "../../../stateManagement/hook";
-import StateTypes from "../../../stateManagement/StateTypes";
 import { useToast } from "native-base";
-import { getMyParties } from "../../../apis/routes/party";
 
-type Party = {
-  id?: string;
+export type NewParty = {
+  id?: number | string;
   name?: string;
   description?: string;
   startDate?: Date;
@@ -44,7 +41,7 @@ type Party = {
 };
 
 export type RequestQuote = {
-  party?: Party;
+  party?: NewParty;
   services: number[];
   notes?: string;
   shipment?: string;
@@ -95,7 +92,6 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
     selectedSpecialties: [],
     steps: {},
   });
-  const [user] = useGlobalState(StateTypes.user.key, StateTypes.user.default);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [parties, setParties] = useState<PartyModel[]>([]);
   const [isPartiesLoading, setIsPartiesLoading] = useState(true);
@@ -104,9 +100,8 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
     const getParties = async () => {
       try {
         const parties = await apis.party.getMyParties({
-          minDate: dayjs(new Date()).format("YYYY-MM-DD"),
+          minDate: new Date(),
         });
-        console.log("parties", parties);
         if (Array.isArray(parties.data)) {
           setParties(parties.data);
         }
@@ -126,12 +121,17 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
   };
 
   const handleNextPress = async () => {
+    if (currentStep === RequestQuoteStepEnum.PARTY_SELECT) {
+      if (quote.party?.id !== "") {
+        setCurrentStep(RequestQuoteStepEnum.SERVICE_SELECT);
+        return;
+      }
+    }
     if (currentStep === RequestQuoteStepEnum.DELIVERY_SERVICE) {
       try {
         setIsSubmitting(true);
         let partyId;
         if (quote.party?.id === "") {
-          console.log("quote", quote);
           const party = await apis.party.create({
             name: quote.party.name!,
             startDate: dayjs(quote.party.startDate).format("YYYY-MM-DD"),
@@ -148,7 +148,6 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
             });
             return;
           }
-          console.log("created party", party);
           partyId = party.data.id;
         } else {
           partyId = quote.party?.id;
@@ -181,9 +180,9 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
   };
 
   const handleBackPress = () => {
-    if (currentStep === RequestQuoteStepEnum.PEOPLE_SELECT) {
+    if (currentStep === RequestQuoteStepEnum.SERVICE_SELECT) {
       if (quote?.party?.id === "") {
-        setCurrentStep(RequestQuoteStepEnum.PARTY_CREATE);
+        setCurrentStep(RequestQuoteStepEnum.PEOPLE_SELECT);
       } else {
         setCurrentStep(RequestQuoteStepEnum.PARTY_SELECT);
       }

@@ -1,7 +1,8 @@
 import React from "react";
-import Svg, { Path, SvgProps } from "react-native-svg";
+import Svg, { Path } from "react-native-svg";
+import { SvgIconProps } from "../../types";
 
-export const LocationIcon: React.FC<SvgProps> = (props) => {
+export const LocationIcon: React.FC<SvgIconProps> = (props) => {
   return (
     <Svg width="21" height="22" viewBox="0 0 21 22" fill="none" {...props}>
       <Path

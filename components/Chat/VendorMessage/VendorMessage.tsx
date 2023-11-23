@@ -14,12 +14,12 @@ export const VendorMessage: React.FC<VendorMessageProps> = ({
 }) => {
   return (
     <View style={styles.root}>
-      {chatMessage.message.user?.avatar ? (
+      {chatMessage.user?.avatar ? (
         <Image
           style={styles.person}
           resizeMode="cover"
           source={{
-            uri: chatMessage.message.user?.avatar,
+            uri: chatMessage.user?.avatar,
           }}
         />
       ) : (
@@ -31,12 +31,12 @@ export const VendorMessage: React.FC<VendorMessageProps> = ({
         />
       )}
       <View style={styles.infoContainer}>
-        <Text style={styles.name}>{chatMessage.message.user?.name}</Text>
+        <Text style={styles.name}>{chatMessage.user?.name}</Text>
         <View style={styles.messageContainer}>
-          {!!chatMessage.message.text && (
+          {!!chatMessage?.message?.text && (
             <Text style={styles.messageText}>{chatMessage.message.text}</Text>
           )}
-          {!!chatMessage.message.messageImage && (
+          {!!chatMessage?.message?.messageImage && (
             <Image
               source={{ uri: chatMessage.message.messageImage }}
               resizeMode="contain"
@@ -44,7 +44,7 @@ export const VendorMessage: React.FC<VendorMessageProps> = ({
           )}
         </View>
         <Text style={styles.time}>
-          {dayjs(chatMessage.message.createdAt).format("hh:mm A")}
+          {dayjs(chatMessage?.message?.createdAt).format("hh:mm A")}
         </Text>
       </View>
     </View>

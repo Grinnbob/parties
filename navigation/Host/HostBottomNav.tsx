@@ -7,7 +7,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { HostServicesStackNav } from "./HostServicesStackNav";
 
 const BottomTab = createBottomTabNavigator();
-export const HostBottomNav: React.FC = () => {
+export const HostBottomNav: React.FC = (props) => {
   return (
     <BottomTab.Navigator
       screenOptions={{ headerShown: false }}

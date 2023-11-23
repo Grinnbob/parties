@@ -28,7 +28,6 @@ export const DeliveryServiceStep: React.FC<DeliveryServiceStepProps> = ({
 }) => {
   const [constants, isConstantsLoading] = useLoadable(constantsQuery);
 
-  console.log("constants", JSON.stringify(constants));
   const deliveryServiceOptions = useMemo(() => {
     if (constants) {
       return Object.values(constants.QUOTE_OPTIONS.SHIPMENT);
@@ -110,7 +109,7 @@ export const DeliveryServiceStep: React.FC<DeliveryServiceStepProps> = ({
           }}
           style={styles.listItem}
         >
-          <Text style={styles.listItemText}>{element.item.id}</Text>
+          <Text style={styles.listItemText}>{element.item.text}</Text>
           {element.item.id === quote.assembling ? (
             <CheckCircleIcon />
           ) : (

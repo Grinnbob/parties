@@ -1,7 +1,8 @@
 import React from "react";
-import Svg, { G, Path, SvgProps } from "react-native-svg";
+import Svg, { G, Path } from "react-native-svg";
+import { SvgIconProps } from "../../types";
 
-export const PartyIcon: React.FC<SvgProps> = (props) => {
+export const PartyIcon: React.FC<SvgIconProps> = (props) => {
   return (
     <Svg width="25" height="24" viewBox="0 0 25 24" fill="none" {...props}>
       <G id="Iconsax/Linear/party">

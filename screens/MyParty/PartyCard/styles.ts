@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { Color } from "../../../GlobalStyles";
+import { Border, Color } from "../../../GlobalStyles";
 
 export const styles = StyleSheet.create({
   root: {
@@ -24,6 +24,21 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
   },
   partyImage: { width: "100%", resizeMode: "cover", borderRadius: 18 },
+  partyImageNotFound: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    height: 128,
+    maxHeight: 128,
+    width: "100%",
+    resizeMode: "cover",
+    borderRadius: Border.br_5xs,
+    overflow: "hidden",
+    backgroundColor: Color.gray300,
+  },
+  notFoundIcon: {
+    color: Color.textMainWhite,
+  },
   startDateText: {
     fontSize: 12,
     lineHeight: 16,

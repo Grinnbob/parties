@@ -1,7 +1,8 @@
 import React from "react";
-import Svg, { ClipPath, Defs, G, Path, Rect, SvgProps } from "react-native-svg";
+import Svg, { ClipPath, Defs, G, Path, Rect } from "react-native-svg";
+import { SvgIconProps } from "../../types";
 
-export const ClockIcon: React.FC<SvgProps> = (props) => {
+export const ClockIcon: React.FC<SvgIconProps> = (props) => {
   return (
     <Svg width="20" height="20" viewBox="0 0 20 20" fill="none" {...props}>
       <G id="Iconsax/Linear/clock" clip-path="url(#clip0_209_18197)">

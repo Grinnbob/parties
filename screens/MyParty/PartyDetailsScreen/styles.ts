@@ -12,6 +12,17 @@ export const styles = StyleSheet.create({
     width: "100%",
     position: "absolute",
   },
+  partyImageNotFound: {
+    height: 300,
+    width: "100%",
+    position: "absolute",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Color.gray300,
+  },
+  notFoundImageIcon: {
+    color: Color.textMainWhite,
+  },
   header: {
     height: 300,
     position: "relative",
@@ -84,5 +95,17 @@ export const styles = StyleSheet.create({
   descriptionContainer: {
     flexDirection: "column",
     gap: 16,
+  },
+  tabContainer: {
+    display: "none",
+    flexDirection: "column",
+    flex: 1,
+  },
+  visibleTab: {
+    display: "flex",
+  },
+  activityIndicator: {
+    marginTop: 24,
+    color: Color.primaryPink,
   },
 });

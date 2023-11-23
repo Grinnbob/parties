@@ -17,12 +17,12 @@ export type SocketContextProps = {
   chatSocketDisconnect: () => void;
   socketDisconnect: () => void;
   sendMessage: (data: {
-    conversationId: string;
+    conversationId: number;
     userId: string;
     message: string;
   }) => Promise<ChatMessageModel>;
   sendImage: (data: {
-    conversationId: string;
+    conversationId: number;
     userId: string;
     image: string;
   }) => Promise<ChatMessageModel>;

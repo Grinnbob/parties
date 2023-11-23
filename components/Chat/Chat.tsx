@@ -13,11 +13,12 @@ import { styles } from "./styles";
 import dayjs from "dayjs";
 import { useChatMessages } from "./hooks/useChatMessages";
 import { ImageModal } from "./ImageModal";
+import { MyQuoteMessage } from "./MyQuoteMessage";
 
 const currentYear = dayjs().format("YYYY");
 
 type ChatProps = {
-  conversationId: string;
+  conversationId: number;
   userId: string;
 };
 
@@ -46,6 +47,8 @@ export const Chat: React.FC<ChatProps> = ({ conversationId, userId }) => {
     setImagePreviewUrl("");
   };
 
+  console.log("groupedMessages", JSON.stringify(groupedMessages));
+
   return (
     <>
       <ScrollView
@@ -63,12 +66,18 @@ export const Chat: React.FC<ChatProps> = ({ conversationId, userId }) => {
             <React.Fragment key={key}>
               <Tag text={tag} style={styles.tag} />
               {groupedMessages[key].map((chatMessage) => {
-                if (
-                  String(chatMessage?.message?.user?._id) === String(userId)
-                ) {
+                if (String(chatMessage?.user?._id) === String(userId)) {
+                  if (chatMessage.QuoteId) {
+                    return (
+                      <MyQuoteMessage
+                        key={chatMessage.id}
+                        chatMessage={chatMessage}
+                      />
+                    );
+                  }
                   return (
                     <MyMessage
-                      key={chatMessage.message._id}
+                      key={chatMessage.id}
                       chatMessage={chatMessage}
                       onErrorPress={onErrorPress}
                       onImagePress={handleImagePress}
@@ -78,7 +87,7 @@ export const Chat: React.FC<ChatProps> = ({ conversationId, userId }) => {
 
                 return (
                   <VendorMessage
-                    key={chatMessage.message._id}
+                    key={chatMessage.id}
                     chatMessage={chatMessage}
                   />
                 );

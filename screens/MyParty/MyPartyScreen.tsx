@@ -34,8 +34,7 @@ export const MyPartyScreen: React.FC = () => {
           search: debounceSearchText,
           minDate: new Date(),
         });
-        console.log("res", res.data);
-        setPartyList([res.data]);
+        setPartyList(res.data);
         setIsLoading(false);
       } catch (error) {
         console.log(error);

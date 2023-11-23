@@ -26,7 +26,7 @@ export const MyMessage: React.FC<ChatMessageProps> = ({
   const [isImageLoadError, setIsImageLoadError] = useState(false);
 
   const handleImagePress = () => {
-    if (chatMessage.message.messageImage) {
+    if (chatMessage?.message?.messageImage) {
       onImagePress?.(chatMessage.message.messageImage);
     }
   };
@@ -40,10 +40,10 @@ export const MyMessage: React.FC<ChatMessageProps> = ({
             isDisabled ? styles.disabled : undefined,
           ]}
         >
-          {!!chatMessage.message.text && (
-            <Text style={styles.messageText}>{chatMessage.message.text}</Text>
+          {!!chatMessage?.message && (
+            <Text style={styles.messageText}>{chatMessage.message}</Text>
           )}
-          {!!chatMessage.message.messageImage && (
+          {!!chatMessage?.message?.messageImage && (
             <>
               {isImageLoadError ? (
                 <Image
@@ -73,7 +73,7 @@ export const MyMessage: React.FC<ChatMessageProps> = ({
           {!!chatMessage.error && (
             <TouchableOpacity
               onPress={() => {
-                onErrorPress?.(chatMessage.message._id);
+                onErrorPress?.(chatMessage?.id);
               }}
             >
               <ExclamationWarningIcon
@@ -84,15 +84,15 @@ export const MyMessage: React.FC<ChatMessageProps> = ({
             </TouchableOpacity>
           )}
           <Text style={[styles.time, isDisabled ? styles.disabled : undefined]}>
-            {dayjs(chatMessage.message.createdAt).format("hh:mm A")}
+            {dayjs(chatMessage.createdAt).format("hh:mm A")}
           </Text>
         </View>
       </View>
-      {chatMessage.message.user?.avatar ? (
+      {chatMessage.user?.avatar ? (
         <Image
           style={styles.image}
           resizeMode="cover"
-          source={{ uri: chatMessage.message.user?.avatar }}
+          source={{ uri: chatMessage.user?.avatar }}
         />
       ) : (
         <PersonIcon width={32} height={32} style={styles.personIcon} />

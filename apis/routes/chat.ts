@@ -1,6 +1,6 @@
 import * as API from "../base";
 const Base = "chat";
-export const getAllMessages = async (conversationId: string) => {
+export const getAllMessages = async (conversationId: number) => {
   let url = `/message/?ConversationId=${conversationId}`;
   const response = await API.getApi(url);
   return response;
@@ -9,7 +9,7 @@ export const getAllMessages = async (conversationId: string) => {
 export const uploadChatImage = async (data: {
   id: string | number;
   uri: string;
-  conversationId: string;
+  conversationId: number;
   userId: string;
 }) => {
   const { uri, id, conversationId, userId } = data;

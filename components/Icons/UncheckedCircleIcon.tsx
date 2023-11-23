@@ -1,7 +1,8 @@
 import React from "react";
-import { SvgProps, Svg, Path } from "react-native-svg";
+import { Svg, Path } from "react-native-svg";
+import { SvgIconProps } from "../../types";
 
-export const UncheckedCircleIcon: React.FC<SvgProps> = (props) => {
+export const UncheckedCircleIcon: React.FC<SvgIconProps> = (props) => {
   return (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" {...props}>
       <Path

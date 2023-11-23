@@ -13,3 +13,4 @@ export * from "./ServicesIcon";
 export * from "./PartyIcon";
 export * from "./GuestsIcon";
 export * from "./ClockIcon";
+export * from "./NotFoundImageIcon";

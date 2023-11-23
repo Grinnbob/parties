@@ -22,11 +22,12 @@ export const useChatMessages = ({
   userId,
   scrollViewRef,
 }: {
-  conversationId: string;
+  conversationId: number;
   userId: string;
   scrollViewRef: MutableRefObject<ScrollView | null>;
 }) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [isStorageInitialized, setIsStorageInitialized] = useState(false);
   const {
     receivedMessage,
     startChatSocket,
@@ -38,7 +39,7 @@ export const useChatMessages = ({
   const messagesRef = useRef(messages);
   const groupedMessages = useMemo(() => {
     return groupBy(messages, (record) =>
-      dayjs(record.message.createdAt).format("YYYY MMM DD")
+      dayjs(record.createdAt).format("YYYY MMM DD")
     );
   }, [messages]);
 
@@ -52,15 +53,15 @@ export const useChatMessages = ({
       id: string | number,
       values: Partial<{
         isLoading: boolean;
-        id: ChatMessageModel["message"]["_id"];
-        createdAt: ChatMessageModel["message"]["createdAt"];
-        user: ChatMessageModel["message"]["user"];
+        id: ChatMessageModel["id"];
+        createdAt: ChatMessageModel["createdAt"];
+        user: ChatMessageModel["user"];
         messageImage: ChatMessageModel["message"]["messageImage"];
       }>
     ) => {
       setMessages((prevState) => {
         const newState = prevState.slice();
-        const item = newState.find((item) => item.message._id === id);
+        const item = newState.find((item) => item.id === id);
         if (item) {
           if (values?.isLoading !== undefined) {
             item.isLoading = values?.isLoading;
@@ -69,17 +70,17 @@ export const useChatMessages = ({
             }
           }
           if (values.id) {
-            item.message._id = values.id;
+            item.id = values.id;
           }
           if (values.createdAt) {
-            item.message.createdAt = new Date(values.createdAt);
+            item.createdAt = new Date(values.createdAt);
           }
           if (values.user) {
-            item.message.user = values.user;
+            item.user = values.user;
           }
-          if (values.messageImage) {
-            item.message.messageImage = values.messageImage;
-          }
+          // if (values.messageImage) {
+          //   item.message?.messageImage = values.messageImage;
+          // }
         }
         return newState;
       });
@@ -90,7 +91,7 @@ export const useChatMessages = ({
   const setMessageError = useCallback((id: string | number) => {
     setMessages((prevState) => {
       const newState = prevState.slice();
-      const message = newState.find((item) => item.message._id === id);
+      const message = newState.find((item) => item.id === id);
       if (message) {
         message.isLoading = false;
         message.error = "timeout";
@@ -105,14 +106,13 @@ export const useChatMessages = ({
   }) => {
     const id = uuid.v4() as string;
     if (params.image) {
-      console.log("params.image", params.image);
       try {
         const imageUrl = params.image?.assets?.[0].uri || "";
         setMessages([
           ...messages,
           {
             message: {
-              _id: id,
+              id: id,
               createdAt: new Date(),
               type: "image",
               messageImage: imageUrl,
@@ -146,10 +146,10 @@ export const useChatMessages = ({
           console.log("response", response);
           setMessageData(id, {
             isLoading: false,
-            id: response.message._id,
-            createdAt: response.message.createdAt,
-            user: response.message.user,
-            messageImage: response.message.messageImage,
+            id: response.id,
+            createdAt: response.createdAt,
+            user: response.user,
+            messageImage: response.message?.messageImage,
           });
         } else {
           setMessageError(id);
@@ -162,7 +162,7 @@ export const useChatMessages = ({
         ...messages,
         {
           message: {
-            _id: id,
+            id: id,
             createdAt: new Date(),
             type: "text",
             text: params.message,
@@ -220,7 +220,7 @@ export const useChatMessages = ({
         switch (selectedIndex) {
           case retryButtonIndex:
             const item = messages.find((item) => item.message._id === id);
-            if (!item?.message.text) {
+            if (!item?.message?.text) {
               return;
             }
             try {
@@ -233,9 +233,9 @@ export const useChatMessages = ({
               console.log("response", response);
               setMessageData(id, {
                 isLoading: false,
-                id: response.message._id,
-                createdAt: response.message.createdAt,
-                user: response.message.user,
+                id: response.id,
+                createdAt: response.createdAt,
+                user: response.user,
               });
             } catch (e) {
               setMessageError(id);
@@ -243,9 +243,7 @@ export const useChatMessages = ({
             return;
           case deleteButtonIndex:
             setMessages((prevState) => {
-              return prevState
-                .slice()
-                .filter((item) => item.message._id !== id);
+              return prevState.slice().filter((item) => item.id);
             });
             return;
         }
@@ -273,7 +271,7 @@ export const useChatMessages = ({
         }
       })
       .finally(() => {
-        setIsLoading(false);
+        setIsStorageInitialized(true);
       });
   }, [conversationId]);
 
@@ -297,6 +295,7 @@ export const useChatMessages = ({
   useEffect(() => {
     if (!isLoading) {
       setTimeout(() => {
+        console.log("scrollToEnd");
         scrollViewRef?.current?.scrollToEnd();
       });
     }
@@ -306,11 +305,7 @@ export const useChatMessages = ({
     if (receivedMessage) {
       setTimeout(() => {
         setMessages((prevState) => {
-          if (
-            prevState.find(
-              (item) => item.message._id === receivedMessage.message._id
-            )
-          ) {
+          if (prevState.find((item) => item.id === receivedMessage.id)) {
             return prevState;
           } else {
             setTimeout(() => {
@@ -324,10 +319,14 @@ export const useChatMessages = ({
   }, [receivedMessage]);
 
   useEffect(() => {
-    getAllMessages(conversationId).then((response) => {
-      console.log("getAllMessages", response);
-    });
-  }, [conversationId]);
+    if (isStorageInitialized) {
+      getAllMessages(conversationId).then((response) => {
+        console.log("getAllMessages", JSON.stringify(response));
+        setMessages(response.data);
+        setIsLoading(false);
+      });
+    }
+  }, [conversationId, isStorageInitialized]);
 
   messagesRef.current = messages;
 

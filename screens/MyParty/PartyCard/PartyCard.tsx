@@ -1,8 +1,9 @@
 import React from "react";
-import { Image, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { PartyModel } from "../../../models";
 import { styles } from "./styles";
 import dayjs from "dayjs";
+import { NotFoundImageIcon } from "../../../components/Icons";
 
 type PartyCardProps = {
   party: PartyModel;
@@ -17,10 +18,13 @@ export const PartyCard: React.FC<PartyCardProps> = ({ party }) => {
             {dayjs(party.startDate).format("MMM DD YYYY")}
           </Text>
         </View>
-        <Image
-          style={styles.partyImage}
-          source={require("../../../assets/photo-05.png")}
-        />
+        <View style={styles.partyImageNotFound}>
+          <NotFoundImageIcon
+            width="80"
+            height="80"
+            style={styles.notFoundIcon}
+          />
+        </View>
       </View>
       <View style={styles.descriptionContainer}>
         <Text style={styles.partyNameText}>{party.name}</Text>
