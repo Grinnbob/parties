@@ -2777,10 +2777,10 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/eslint-plugin/-/eslint-plugin-1.3.0.tgz#9e558170c106bbafaa1ef502bd8e6d4651012bf9"
   integrity sha512-+zDZ20NUnSWghj7Ku5aFphMzuM9JulqCW+aPXT6IfIXFbb8tzYTTOSeRFOtuekJ99ibW2fUCSsjuKNlwDIbHFg==
 
-"@react-native-community/geolocation@^3.0.5":
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/@react-native-community/geolocation/-/geolocation-3.0.6.tgz#e2c83c242f917ce5a494cedb161c37abd5f2a72a"
-  integrity sha512-+iidKFgw1HxCJSHVnlywAKu6uerdpDAKTXLRnlsUdhgqtgTiIixb496Z267iPVFmIO1bp4lOU6UiwzmvcyXdbg==
+"@react-native-community/geolocation@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@react-native-community/geolocation/-/geolocation-3.1.0.tgz#573881e9536d55cc2af74762183fa7ba575b2553"
+  integrity sha512-Aj76wMeCLz9kczpe7W2IXxSRNj+hRR7sqyfXq9ZaJIWNH23jeJfzMpovclg+e1uM8Vr8jCYEcZyD4rKub6Vc/Q==
 
 "@react-native/assets-registry@^0.72.0":
   version "0.72.0"
@@ -11743,6 +11743,13 @@ react-is@^17.0.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
+react-native-animatable@1.3.3:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/react-native-animatable/-/react-native-animatable-1.3.3.tgz#a13a4af8258e3bb14d0a9d839917e9bb9274ec8a"
+  integrity sha512-2ckIxZQAsvWn25Ho+DK3d1mXIgj7tITkrS4pYDvx96WyOttSvzzFeQnM2od0+FUMzILbdHDsDEqZvnz1DYNQ1w==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-native-appsflyer@^6.10.3:
   version "6.12.2"
   resolved "https://registry.yarnpkg.com/react-native-appsflyer/-/react-native-appsflyer-6.12.2.tgz#ad7c4aee72c3537b6fe038edbc49104f71788250"
@@ -11758,12 +11765,10 @@ react-native-config@^1.5.1:
   resolved "https://registry.yarnpkg.com/react-native-config/-/react-native-config-1.5.1.tgz#73c94f511493e9b7ff9350cdf351d203a1b05acc"
   integrity sha512-g1xNgt1tV95FCX+iWz6YJonxXkQX0GdD3fB8xQtR1GUBEqweB9zMROW77gi2TygmYmUkBI7LU4pES+zcTyK4HA==
 
-react-native-date-picker@^4.2.10:
-  version "4.2.14"
-  resolved "https://registry.yarnpkg.com/react-native-date-picker/-/react-native-date-picker-4.2.14.tgz#ebeb3bf8d682268a4e405decde1e72ab95ecffb7"
-  integrity sha512-rP0ycj3I+8x4pIUGjeh7pL+cMPntKccLGX/OXx790bsIM0Hcyg0ZL86kGnnZu9fEUhXlgdr3OK/jhQue5L6kSQ==
-  dependencies:
-    prop-types "^15.8.1"
+react-native-date-picker@^4.3.3:
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/react-native-date-picker/-/react-native-date-picker-4.3.3.tgz#5ca4ca10283538ab9307b7f2dc6b83233ded122b"
+  integrity sha512-Lq2hGZkwoyCMsxi/uw4KVGu4/xdPZ8AHEx2SU5KY2mipHFpX+r4n5/gXa+rpCRkARJaTFYPZ7S59bT9KMh7fGw==
 
 react-native-device-info@^10.4.0:
   version "10.9.0"
@@ -11782,9 +11787,9 @@ react-native-gesture-handler@^2.8.0:
     prop-types "^15.7.2"
 
 react-native-google-places-autocomplete@^2.5.1:
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/react-native-google-places-autocomplete/-/react-native-google-places-autocomplete-2.5.1.tgz#93d5ac3e34e3e8f594aae5349f9e2d3e0b87484e"
-  integrity sha512-2FZZomogB18mLSC/N39UcpiVoJn/fFIpud1M2KZMom/pJhSMgfqV4qLjHuzaDyYIl7KBz/zpGDcbYgmtvvpkHQ==
+  version "2.5.6"
+  resolved "https://registry.yarnpkg.com/react-native-google-places-autocomplete/-/react-native-google-places-autocomplete-2.5.6.tgz#94be31b17ed53ecf4a4a6670fd9acd7a46c2ff6d"
+  integrity sha512-Dy7mFKyEoiNeWPLd7HUkrI/SzJYe7GST55FGtiXzXDoPs05LYHIOCPrT9qFE51COh5X8kgDKm+f7D5aMY/aMbg==
   dependencies:
     lodash.debounce "^4.0.8"
     prop-types "^15.7.2"
@@ -11839,6 +11844,14 @@ react-native-mime-types@^2.4.0:
   integrity sha512-a7LymNr7yQzrDEhSMPNAy9aIs1OckBpo6G8OkjVQTzaCe0XaSXCXu6KJsu/a4c3HVF9t0FiFSnxsRVEctpPI0g==
   dependencies:
     mime-db "~1.37.0"
+
+react-native-modal@^13.0.1:
+  version "13.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-modal/-/react-native-modal-13.0.1.tgz#691f1e646abb96fa82c1788bf18a16d585da37cd"
+  integrity sha512-UB+mjmUtf+miaG/sDhOikRfBOv0gJdBU2ZE1HtFWp6UixW9jCk/bhGdHUgmZljbPpp0RaO/6YiMmQSSK3kkMaw==
+  dependencies:
+    prop-types "^15.6.2"
+    react-native-animatable "1.3.3"
 
 react-native-onesignal@^5.0.2:
   version "5.0.2"
@@ -12407,6 +12420,11 @@ rn-fetch-blob@^0.12.0:
   dependencies:
     base-64 "0.1.0"
     glob "7.0.6"
+
+rn-range-slider@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/rn-range-slider/-/rn-range-slider-2.2.2.tgz#bab4abf12f028df55364e041af6fce29ad46d7ea"
+  integrity sha512-34qdWz0oPEa6Wa9+B0+IihxolfydGPfzKvIyjieCyz4+YzVuSizalwpwRufxAnojfFPxqX1Kt/CTBckt8K7eEQ==
 
 rsvp@^4.8.4:
   version "4.8.5"

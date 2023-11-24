@@ -25,7 +25,7 @@ import apis from "../../apis";
 import MagnifyGlass from "../../assets/magnifyGlassSearch.svg";
 import Filter from "../../assets/filter.svg";
 
-services = [
+const services = [
   {
     id: 1,
     name: "Party Decorations",
@@ -55,7 +55,7 @@ const VendorProfileScreen = () => {
   const renderItem = ({ item }) => {
     return (
       <Pressable
-        onPress={() => navigate("ServiceDetails", { title: item.name })}
+        onPress={() => navigate("ServiceDetails", { service: item })}
         style={{ width: "50%", paddingVertical: 5, paddingHorizontal: 5 }}
       >
         <ImageBackground

@@ -1,7 +1,11 @@
 import React from "react";
 import { styles } from "./styles";
-import { View } from "react-native";
+import { StyleProp, View, ViewStyle } from "react-native";
 
-export const Divider: React.FC = () => {
-  return <View style={styles.divider} />;
+type DividerProps = {
+  style?: StyleProp<ViewStyle>;
+};
+
+export const Divider: React.FC<DividerProps> = (props) => {
+  return <View style={[styles.divider, props.style]} />;
 };

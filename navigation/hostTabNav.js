@@ -7,6 +7,7 @@ import BottomNavContainer from "../components/navigation/CustomBottomTabBar";
 import HelpSearchScreen from "../screens/Host/HelpSearchScreen";
 import ServiceDetails from "../screens/Host/ServiceDetail";
 import VendorInfo from "../screens/Host/VendorInfo";
+import { RequestQuoteScreen } from "../screens/Host/RequestQuote";
 
 // const BottomTab = createBottomTabNavigator();
 
@@ -59,6 +60,11 @@ function HomeNavigator() {
       <HomeStack.Screen
         name="VendorInfo"
         component={VendorInfo}
+        options={{ headerShown: false, gestureEnabled: false }}
+      />
+      <HomeStack.Screen
+        name="RequestQuoteScreen"
+        component={RequestQuoteScreen}
         options={{ headerShown: false, gestureEnabled: false }}
       />
     </HomeStack.Navigator>

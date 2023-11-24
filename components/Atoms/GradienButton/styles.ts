@@ -9,10 +9,20 @@ export const styles = StyleSheet.create({
     minHeight: 40,
     alignItems: "center",
     justifyContent: "center",
+    position: "relative",
+  },
+  disabledRoot: {
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
   },
   text: {
     fontSize: FontSize.textBody13Regular_size,
     lineHeight: 15.51,
+    color: Color.textMainWhite,
+  },
+  disabledText: {
+    color: "rgba(138, 138, 138, 1)",
+  },
+  activityIndicator: {
     color: Color.textMainWhite,
   },
 });

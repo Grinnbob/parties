@@ -193,6 +193,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         reject(null);
         return;
       }
+      console.log("data", data);
       chatSocket.current.emit(
         "image_message",
         data,

@@ -134,6 +134,7 @@ export const useChatMessages = ({
           id,
           uri: imageUrl,
         });
+        console.log("uploadedImage", uploadedImage);
         if (uploadedImage?.success) {
           const response = await sendImage({
             UserId: userId, // ToDO remove after BE fix
@@ -184,6 +185,8 @@ export const useChatMessages = ({
           ConversationId: conversationId, // ToDO remove after BE fix
           userId,
           conversationId,
+          UserId: userId, // ToDO remove after BE fix
+          ConversationId: conversationId, // ToDO remove after BE fix
           message: params.message,
         });
         console.log("response", response);

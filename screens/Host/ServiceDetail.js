@@ -15,11 +15,13 @@ import { useNavigation } from "@react-navigation/core";
 import apis from "../../apis";
 import useGlobalState from "../../stateManagement/hook";
 import types from "../../stateManagement/types";
-import SearchBar from "../../components/Input/SearchBar";
+import { SearchInput } from "../../components/Input/SearchInput";
 import Filter from "../../assets/filterIcon.svg";
 import SearchServiceCard from "../../components/SearchServiceCard";
 import GradientPill from "./component/GradientPill";
 import MagnifyGlass from "../../assets/magnifyGlassSearch.svg";
+import { GradientButton } from "../../components/Atoms";
+import useDebounce from "../../utils/useDebounce";
 
 // filterSelections = [
 //   { id: 1, title: "Latest" },
@@ -31,9 +33,6 @@ import MagnifyGlass from "../../assets/magnifyGlassSearch.svg";
 
 const ServiceDetails = ({ route }) => {
   const navigation = useNavigation();
-  const [title, setTitle] = useState(
-    route?.params?.title || route?.params?.search
-  );
   const [searchTerm, setSearchTerm] = useState(
     route?.params?.search?.name || ""
   );
@@ -47,10 +46,31 @@ const ServiceDetails = ({ route }) => {
     types.albumType.searchList.key,
     types.albumType.searchList.default
   );
+  const [searchText, setSearchText] = useState("");
+  const debounceSearchText = useDebounce(searchText);
+
+  const { name, id } = route.params.service;
+  console.log("route.params", route.params);
 
   useEffect(() => {
+    const grabAllVendor = async () => {
+      try {
+        setIsLoading(true);
+        console.log("debounceSearchText", debounceSearchText);
+        console.log("id", id);
+        const res = await apis.vendor.getSearchResults({
+          search: debounceSearchText,
+          serviceTypeId: id,
+        });
+        console.log("res", res);
+        setVendorList(res.data);
+        setIsLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     grabAllVendor();
-  }, [route]);
+  }, [debounceSearchText, id]);
 
   // useEffect(() => {
   //   switch (selectedFilter) {
@@ -75,16 +95,8 @@ const ServiceDetails = ({ route }) => {
   //   }
   // }, [selectedFilter]);
 
-  const grabAllVendor = async () => {
-    try {
-      setIsLoading(true);
-      const res = await apis.vendor.getSearchResults(route?.params?.search);
-
-      setVendorList(res.data);
-      setIsLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
+  const handleSearchTextChange = (text) => {
+    setSearchText(text);
   };
 
   // const renderTag = ({ item }) => {
@@ -105,7 +117,7 @@ const ServiceDetails = ({ route }) => {
         source={require("../../assets/bg8.png")}
       />
       <View style={[styles.alertmodalbg, styles.alertmodalbgLayout]} />
-      <View style={styles.topnavigationContent}>
+      <View style={[styles.topnavigationContent, { paddingHorizontal: 12 }]}>
         <Pressable style={styles.backLayout} onPress={() => navigation.pop()}>
           <Image
             style={styles.vectorIcon}
@@ -114,7 +126,7 @@ const ServiceDetails = ({ route }) => {
           />
         </Pressable>
         <View style={styles.title2}>
-          <Text style={styles.title3}>{title}</Text>
+          <Text style={styles.title3}>{name}</Text>
         </View>
         <View style={{ width: 40, height: 40 }}></View>
       </View>
@@ -126,43 +138,13 @@ const ServiceDetails = ({ route }) => {
           marginTop: 10,
           // marginBottom: 20,
         }}
-      >
-        {/* <SearchBar
-          placeholder="Search"
-          placeholderTextColor={"#8A8A8A"}
-          onChangeText={(text) => {
-            setSearchTerm(text);
-          }}
-          value={searchTerm}
-          onDebounce={onDebounce}
-          onCancel={handleCancel}
-          cancelEnabled={searchTerm.length}
-          delay={1000}
-          mt={0}
-        /> */}
-      </View>
-      {/* <FlatList
-        data={filterSelections}
-        renderItem={renderTag}
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingBottom: 10,
-        }}
-        ListHeaderComponent={
-          <View
-            style={{
-              height: 34,
-              justifyContent: "center",
-              borderRightColor: "#232323",
-              borderRightWidth: 1,
-              padding: 14,
-            }}
-          >
-            <Filter />
-          </View>
-        }
-      /> */}
+      />
+      <SearchInput
+        value={searchText}
+        onChangeText={handleSearchTextChange}
+        containerStyle={{ paddingHorizontal: 24, width: "100%" }}
+        loading={isLoading}
+      />
       <FlatList
         data={vendorList}
         renderItem={({ item }) => (
@@ -179,17 +161,22 @@ const ServiceDetails = ({ route }) => {
           minHeight: "100%",
         }}
         ListEmptyComponent={
-          <Text
-            style={{
-              color: "#8A8A8A",
-              marginBottom: 5,
-              fontWeight: "400",
-              fontSize: 14,
-              lineHeight: 21,
-            }}
-          >
-            No results found
-          </Text>
+          isLoading ? (
+            <></>
+          ) : (
+            <Text
+              style={{
+                color: "#8A8A8A",
+                marginBottom: 5,
+                fontWeight: "400",
+                fontSize: 14,
+                lineHeight: 21,
+                paddingHorizontal: 12,
+              }}
+            >
+              No results found
+            </Text>
+          )
         }
         ListHeaderComponent={
           isLoading ? (
