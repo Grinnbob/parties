@@ -22,8 +22,8 @@ export const MyQuoteMessage: React.FC<MyQuoteMessageProps> = ({
 }) => {
   const { party } = chatMessage;
   const startDate = useMemo(() => {
-    const start = dayjs(party.startDate).format("MM/DD/YYYY");
-    const end = dayjs(party.endDate).format("MM/DD/YYYY");
+    const start = dayjs(party?.startDate).format("MM/DD/YYYY");
+    const end = dayjs(party?.endDate).format("MM/DD/YYYY");
 
     return start === end ? start : `${start} - ${end}`;
   }, [party]);
@@ -32,7 +32,7 @@ export const MyQuoteMessage: React.FC<MyQuoteMessageProps> = ({
     <View style={styles.root}>
       <View style={styles.infoContainer}>
         <View style={styles.messageContainer}>
-          <Text style={styles.partyNameText}>{party.name}</Text>
+          <Text style={styles.partyNameText}>{party?.name}</Text>
           <View style={styles.partyInfoContainer}>
             <View style={styles.partyItemRowInfo}>
               <CalendarIcon style={styles.icon} />
@@ -41,11 +41,11 @@ export const MyQuoteMessage: React.FC<MyQuoteMessageProps> = ({
             <View style={styles.partyItemRowInfo}>
               <ClockIcon style={styles.icon} />
               <Text style={styles.contentText}>
-                {dayjs(party.startTime).format("h:mm A")} -{" "}
-                {dayjs(party.endTime).format("h:mm A")}
+                {dayjs(party?.startTime).format("h:mm A")} -{" "}
+                {dayjs(party?.endTime).format("h:mm A")}
               </Text>
             </View>
-            {!!party.street && (
+            {!!party?.street && (
               <View style={styles.partyItemRowInfo}>
                 <LocationIcon style={styles.icon} />
                 <Text style={styles.contentText}>{party.street}</Text>
@@ -54,12 +54,12 @@ export const MyQuoteMessage: React.FC<MyQuoteMessageProps> = ({
             <View style={styles.partyItemRowInfo}>
               <GuestsIcon style={styles.icon} />
               <Text style={styles.contentText}>
-                {party.attendingMin}-{party.attendingMax} guest
+                {party?.attendingMin}-{party?.attendingMax} guest
               </Text>
             </View>
           </View>
-          {!!party.description && (
-            <Text style={styles.descriptionText}>{party.description}</Text>
+          {!!party?.description && (
+            <Text style={styles.descriptionText}>{party?.description}</Text>
           )}
         </View>
       </View>

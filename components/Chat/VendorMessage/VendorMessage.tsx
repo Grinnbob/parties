@@ -4,6 +4,7 @@ import { styles } from "./styles";
 import { PersonIcon } from "../../Icons";
 import dayjs from "dayjs";
 import { ChatMessageModel } from "../../../models";
+import FastImage from "react-native-fast-image";
 
 type VendorMessageProps = {
   chatMessage: ChatMessageModel;
@@ -15,7 +16,7 @@ export const VendorMessage: React.FC<VendorMessageProps> = ({
   return (
     <View style={styles.root}>
       {chatMessage.user?.avatar ? (
-        <Image
+        <FastImage
           style={styles.person}
           resizeMode="cover"
           source={{
@@ -33,18 +34,18 @@ export const VendorMessage: React.FC<VendorMessageProps> = ({
       <View style={styles.infoContainer}>
         <Text style={styles.name}>{chatMessage.user?.name}</Text>
         <View style={styles.messageContainer}>
-          {!!chatMessage?.message?.text && (
-            <Text style={styles.messageText}>{chatMessage.message.text}</Text>
+          {!!chatMessage?.message && (
+            <Text style={styles.messageText}>{chatMessage.message}</Text>
           )}
-          {!!chatMessage?.message?.messageImage && (
-            <Image
-              source={{ uri: chatMessage.message.messageImage }}
+          {!!chatMessage?.messageImage && (
+            <FastImage
+              source={{ uri: chatMessage.messageImage }}
               resizeMode="contain"
             />
           )}
         </View>
         <Text style={styles.time}>
-          {dayjs(chatMessage?.message?.createdAt).format("hh:mm A")}
+          {dayjs(chatMessage?.createdAt).format("hh:mm A")}
         </Text>
       </View>
     </View>

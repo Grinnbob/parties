@@ -10,6 +10,7 @@ import { styles } from "./styles";
 import { ExclamationWarningIcon, PersonIcon } from "../../Icons";
 import dayjs from "dayjs";
 import { ChatMessageModel } from "../../../models";
+import FastImage from "react-native-fast-image";
 
 type ChatMessageProps = {
   chatMessage: ChatMessageModel;
@@ -26,8 +27,8 @@ export const MyMessage: React.FC<ChatMessageProps> = ({
   const [isImageLoadError, setIsImageLoadError] = useState(false);
 
   const handleImagePress = () => {
-    if (chatMessage?.message?.messageImage) {
-      onImagePress?.(chatMessage.message.messageImage);
+    if (chatMessage?.messageImage) {
+      onImagePress?.(chatMessage.messageImage);
     }
   };
 
@@ -43,7 +44,7 @@ export const MyMessage: React.FC<ChatMessageProps> = ({
           {!!chatMessage?.message && (
             <Text style={styles.messageText}>{chatMessage.message}</Text>
           )}
-          {!!chatMessage?.message?.messageImage && (
+          {!!chatMessage?.messageImage && (
             <>
               {isImageLoadError ? (
                 <Image
@@ -52,9 +53,9 @@ export const MyMessage: React.FC<ChatMessageProps> = ({
                 />
               ) : (
                 <TouchableOpacity onPress={handleImagePress}>
-                  <Image
+                  <FastImage
                     source={{
-                      uri: chatMessage.message.messageImage,
+                      uri: chatMessage.messageImage,
                     }}
                     style={styles.messageImage}
                     onError={() => {
@@ -89,7 +90,7 @@ export const MyMessage: React.FC<ChatMessageProps> = ({
         </View>
       </View>
       {chatMessage.user?.avatar ? (
-        <Image
+        <FastImage
           style={styles.image}
           resizeMode="cover"
           source={{ uri: chatMessage.user?.avatar }}

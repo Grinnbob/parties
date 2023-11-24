@@ -1,17 +1,12 @@
+import { PartyModel } from "./PartyModel";
+
 export type ChatMessageModel = {
   id: number | string;
-  message?:
-    | {
-        _id: number | string;
-        createdAt: string | Date;
-        text?: string;
-        messageImage?: string;
-        type: "text" | "image";
-        user?: { _id: number | string; avatar: string; name: string };
-      }
-    | string;
-  createdAt: string;
-  updatedAt: string;
+  message?: string | null;
+  createdAt: string | Date;
+  updatedAt?: string | Date;
+  image?: string | null;
+  messageImage?: string | null;
   user: {
     name: string;
     _id: number;
@@ -19,9 +14,10 @@ export type ChatMessageModel = {
   };
   UserId: number;
   ConversationId: number;
-  QuoteId?: number;
-  party: any;
+  QuoteId?: number | null;
+  party?: PartyModel | null;
   success?: boolean;
   isLoading?: boolean;
+  type: "text" | "image";
   error?: "timeout" | "unknown";
 };

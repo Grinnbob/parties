@@ -200,9 +200,7 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
   };
 
   const handleCancelPress = () => {
-    if (currentStep !== RequestQuoteStepEnum.FINISH) {
-      navigation.pop();
-    }
+    navigation.pop();
   };
 
   const progressBarValue = useMemo(() => {

@@ -144,18 +144,15 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         reject(null);
         return;
       }
-      console.log("emit", data);
-      // chatSocket.current?.connect();
-      console.log("connected", chatSocket.current?.connected);
       chatSocket.current.emit(
         "text_message",
         data,
         withTimeout(
-          (response: ChatMessageModel) => {
-            console.log("socket response", response);
-            if (response && response.success) {
-              setReceivedMessage(response);
-              resolve(response);
+          (response: { data: ChatMessageModel; success: boolean }) => {
+            console.log("socket response!!", response);
+            if (response?.success) {
+              setReceivedMessage(response.data);
+              resolve(response.data);
             }
             reject(null);
           },
@@ -193,16 +190,15 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         reject(null);
         return;
       }
-      console.log("data", data);
       chatSocket.current.emit(
         "image_message",
         data,
         withTimeout(
-          (response: ChatMessageModel) => {
+          (response: { data: ChatMessageModel; success: boolean }) => {
             console.log("socket response", response);
-            if (response && response.success) {
-              setReceivedMessage(response);
-              resolve(response);
+            if (response?.success) {
+              setReceivedMessage(response.data);
+              resolve(response.data);
             }
             reject(null);
           },

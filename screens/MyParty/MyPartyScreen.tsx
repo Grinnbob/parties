@@ -32,7 +32,6 @@ export const MyPartyScreen: React.FC = () => {
         setIsLoading(true);
         const res = await apis.party.getMyParties({
           search: debounceSearchText,
-          minDate: new Date(),
         });
         setPartyList(res.data);
         setIsLoading(false);

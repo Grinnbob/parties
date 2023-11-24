@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -47,7 +47,9 @@ export const Chat: React.FC<ChatProps> = ({ conversationId, userId }) => {
     setImagePreviewUrl("");
   };
 
-  console.log("groupedMessages", JSON.stringify(groupedMessages));
+  const handleContentSizeChange = useCallback((w: number, h: number) => {
+    scrollViewRef.current?.scrollToEnd({ animated: false });
+  }, []);
 
   return (
     <>
@@ -56,6 +58,7 @@ export const Chat: React.FC<ChatProps> = ({ conversationId, userId }) => {
         automaticallyAdjustKeyboardInsets={true}
         keyboardShouldPersistTaps="always"
         contentContainerStyle={styles.messagesContainer}
+        onContentSizeChange={handleContentSizeChange}
       >
         {Object.keys(groupedMessages).map((key) => {
           const split = key.split(" ");

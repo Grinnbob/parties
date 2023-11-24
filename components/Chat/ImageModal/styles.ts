@@ -3,17 +3,14 @@ import { Color, Padding } from "../../../GlobalStyles";
 
 export const styles = StyleSheet.create({
   root: {
-    // backgroundColor: "black",
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: Padding.p_base,
-    backgroundColor: Color.primaryGrey,
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
   },
   image: {
-    flex: 1,
     width: "100%",
-    resizeMode: "contain",
-    minHeight: 100,
+    flex: 100,
   },
 });
