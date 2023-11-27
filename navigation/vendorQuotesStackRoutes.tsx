@@ -1,12 +1,14 @@
 import React from "react";
-import { EventMessageScreen, EventScreen } from "../screens/Event";
+import { EventMessageScreen, EventScreen } from "../screens/Quote";
 import { createStackNavigator } from "@react-navigation/stack";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { AllJobsScreen } from "../screens/Quote";
 
 export type VendorQuotesStackParamList = {
-  Event: undefined;
-  EventMessages: undefined;
+  AllJobsScreen: undefined;
+  EventScreen: undefined;
+  EventMessageScreen: undefined;
 };
 
 const Stack = createStackNavigator<VendorQuotesStackParamList>();
@@ -18,8 +20,7 @@ export const VendorQuotesStackRoutes: React.FC<Props> = ({
 }) => {
   React.useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
-    if (routeName === "EventMessages") {
-      console.log("hit");
+    if (routeName === "EventScreen" || routeName === "EventMessageScreen") {
       navigation.setOptions({ tabBarStyle: { display: "none" } });
     } else {
       navigation.setOptions({ tabBarStyle: { display: "flex" } });
@@ -29,17 +30,24 @@ export const VendorQuotesStackRoutes: React.FC<Props> = ({
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName="Event"
+      initialRouteName="AllJobsScreen"
     >
       <Stack.Screen
-        name="Event"
+        name="AllJobsScreen"
+        component={AllJobsScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="EventScreen"
         component={EventScreen}
         options={{
           headerShown: false,
         }}
       />
       <Stack.Screen
-        name="EventMessages"
+        name="EventMessageScreen"
         component={EventMessageScreen}
         options={{
           headerShown: false,

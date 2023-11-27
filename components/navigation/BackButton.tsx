@@ -14,7 +14,7 @@ export const BackButton: React.FC<BackButtonProps> = ({ onPress }) => {
     if (onPress) {
       onPress();
     } else {
-      navigation.pop();
+      navigation.goBack();
     }
   };
 

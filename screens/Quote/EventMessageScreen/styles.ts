@@ -12,6 +12,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     // alignItems: "flex-start",
+    paddingHorizontal: 24,
     marginTop: 50,
   },
   backButton: {
@@ -44,7 +45,7 @@ export const styles = StyleSheet.create({
   },
   hidden: {
     marginRight: 15,
-    height: 40,
-    width: 40,
+    height: 24,
+    width: 24,
   },
 });

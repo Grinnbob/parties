@@ -1,27 +1,26 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, ImageBackground, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  ImageBackground,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { styles } from "./styles";
-import { Divider, Tabs } from "../../../components/Atoms";
+import { Tabs } from "../../../components/Atoms";
 import { useNavigation } from "@react-navigation/native";
 import { BackButton } from "../../../components/navigation/BackButton";
 import { ConversationModel, PartyModel } from "../../../models";
-import {
-  CalendarIcon,
-  ClockIcon,
-  GuestsIcon,
-  LocationIcon,
-  NotFoundImageIcon,
-} from "../../../components/Icons";
-import dayjs from "dayjs";
+import { NotFoundImageIcon } from "../../../components/Icons";
 import { Chat } from "../../../components/Chat";
 import useGlobalState from "../../../stateManagement/hook";
 import StateTypes from "../../../stateManagement/StateTypes";
 import apis from "../../../apis";
+import { PartyInfo } from "../../../components/Moleculs";
 
 const tabs = [
   {
     id: "eventDetails",
-    label: "Event Details",
+    label: "Quote Details",
   },
   {
     id: "messages",
@@ -56,7 +55,6 @@ export const PartyDetailsScreen: React.FC<PartyDetailsScreenProps> = ({
       const response = await apis.conversation.getByPartyId({
         PartyId: party.id,
       });
-      console.log("response conversation", response);
       setConversation(response.data[0]);
       setIsConversationLoading(false);
     };
@@ -67,13 +65,6 @@ export const PartyDetailsScreen: React.FC<PartyDetailsScreenProps> = ({
     setSelectedTab(id);
   };
 
-  const startDate = useMemo(() => {
-    const start = dayjs(party.startDate).format("MM/DD/YYYY");
-    const end = dayjs(party.endDate).format("MM/DD/YYYY");
-
-    return start === end ? start : `${start} - ${end}`;
-  }, [party]);
-
   return (
     <View style={styles.screen}>
       <ImageBackground
@@ -81,13 +72,7 @@ export const PartyDetailsScreen: React.FC<PartyDetailsScreenProps> = ({
         resizeMode="cover"
         source={require("../../../assets/bg11.png")}
       />
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "column",
-          justifyContent: "flex-start",
-        }}
-      >
+      <View style={styles.container}>
         <View style={styles.header}>
           <View style={styles.partyImageNotFound}>
             <NotFoundImageIcon
@@ -97,9 +82,9 @@ export const PartyDetailsScreen: React.FC<PartyDetailsScreenProps> = ({
             />
           </View>
           <View style={styles.headerInnerContainer}>
-            <View style={styles.backButtonContainer}>
+            <TouchableOpacity style={styles.backButtonContainer}>
               <BackButton />
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
         <Tabs value={selectedTab} tabs={tabs} onChange={handleTabChange} />
@@ -111,40 +96,7 @@ export const PartyDetailsScreen: React.FC<PartyDetailsScreenProps> = ({
               tabs[0].id === selectedTab ? styles.visibleTab : undefined,
             ]}
           >
-            <Text style={styles.contentTitle}>{party.name}</Text>
-            <View style={styles.partyInfoContainer}>
-              <Divider style={styles.divider} />
-              <View style={styles.partyItemRowInfo}>
-                <CalendarIcon style={styles.icon} />
-                <Text style={styles.contentText}>{startDate}</Text>
-              </View>
-              <View style={styles.partyItemRowInfo}>
-                <ClockIcon style={styles.icon} />
-                <Text style={styles.contentText}>
-                  {dayjs(party.startTime).format("h:mm A")} -{" "}
-                  {dayjs(party.endTime).format("h:mm A")}
-                </Text>
-              </View>
-              {!!party.street && (
-                <View style={styles.partyItemRowInfo}>
-                  <LocationIcon style={styles.icon} />
-                  <Text style={styles.contentText}>{party.street}</Text>
-                </View>
-              )}
-              <View style={styles.partyItemRowInfo}>
-                <GuestsIcon style={styles.icon} />
-                <Text style={styles.contentText}>
-                  {party.attendingMin}-{party.attendingMax} guest
-                </Text>
-              </View>
-              <Divider style={styles.divider} />
-            </View>
-            {!!party.description && (
-              <View style={styles.descriptionContainer}>
-                <Text style={styles.contentTitle}>Party Details</Text>
-                <Text style={styles.contentText}>{party.description}</Text>
-              </View>
-            )}
+            <PartyInfo party={party} />
           </View>
           <View
             style={[
@@ -153,10 +105,7 @@ export const PartyDetailsScreen: React.FC<PartyDetailsScreenProps> = ({
             ]}
           >
             {isConversationLoading || !conversation?.id ? (
-              <ActivityIndicator
-                size={16}
-                style={styles.activityIndicator}
-              ></ActivityIndicator>
+              <ActivityIndicator size={16} style={styles.activityIndicator} />
             ) : (
               <Chat conversationId={conversation?.id} userId={user.id} />
             )}

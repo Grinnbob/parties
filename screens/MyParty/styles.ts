@@ -44,6 +44,7 @@ export const styles = StyleSheet.create({
     minHeight: "100%",
     gap: 16,
     marginTop: 24,
+    paddingBottom: 40,
   },
   noResultsContainer: {
     justifyContent: "center",

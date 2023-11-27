@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 import { ImageBackground, Text, View } from "react-native";
 import { styles } from "./styles";
 import VendorBackButton from "../../../components/navigation/VendorBackButton";
@@ -7,12 +7,30 @@ import { Divider } from "../../../components/Atoms";
 import { Chat } from "../../../components/Chat";
 import useGlobalState from "../../../stateManagement/hook";
 import StateTypes from "../../../stateManagement/StateTypes";
+import { QuoteModel } from "../../../models";
+import { BackButton } from "../../../components/navigation/BackButton";
 
-export const EventMessageScreen: React.FC = () => {
-  const { navigate } = useNavigation();
-  const handleBackPress = () => {
-    navigate("Event");
+type EventMessageScreenProps = {
+  route: {
+    params: {
+      quote: QuoteModel;
+      conversationId: number;
+    };
   };
+};
+
+export const EventMessageScreen: React.FC<EventMessageScreenProps> = ({
+  route,
+  ...rest
+}) => {
+  const navigation = useNavigation();
+  console.log("navigation", rest, route);
+  const handleBackPress = () => {
+    navigation.goBack();
+  };
+
+  const { quote, conversationId } = route.params;
+  const { Party: party } = quote;
 
   const [user] = useGlobalState(StateTypes.user.key, StateTypes.user.default);
 
@@ -24,15 +42,15 @@ export const EventMessageScreen: React.FC = () => {
         source={require("../../../assets/bg11.png")}
       />
       <View style={styles.header}>
-        <VendorBackButton onPress={handleBackPress} style={styles.backButton} />
+        <BackButton onPress={handleBackPress} />
         <View>
-          <Text style={styles.title}>Anthony's Tacos</Text>
+          <Text style={styles.title}>{party.name}</Text>
           <Text style={styles.serviceName}>Food service</Text>
         </View>
         <View style={styles.hidden} />
       </View>
       <Divider />
-      <Chat conversationId={"1"} userId={user.id} />
+      <Chat conversationId={conversationId} userId={user.id} />
     </View>
   );
 };

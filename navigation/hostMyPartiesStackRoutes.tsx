@@ -1,5 +1,4 @@
 import React from "react";
-import { EventMessageScreen, EventScreen } from "../screens/Event";
 import { createStackNavigator } from "@react-navigation/stack";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
