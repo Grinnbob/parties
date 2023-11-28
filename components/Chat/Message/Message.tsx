@@ -11,17 +11,22 @@ import { ExclamationWarningIcon, PersonIcon } from "../../Icons";
 import dayjs from "dayjs";
 import { ChatMessageModel } from "../../../models";
 import FastImage from "react-native-fast-image";
+import { Color } from "../../../GlobalStyles";
 
 type ChatMessageProps = {
   chatMessage: ChatMessageModel;
   onErrorPress?: (id: string | number) => void;
   onImagePress?: (imageUrl: string) => void;
+  isMe: boolean;
+  type: "vendor" | "host";
 };
 
-export const MyMessage: React.FC<ChatMessageProps> = ({
+export const Message: React.FC<ChatMessageProps> = ({
   chatMessage,
   onErrorPress,
   onImagePress,
+  isMe,
+  type,
 }) => {
   const isDisabled = chatMessage.isLoading || !!chatMessage.error;
   const [isImageLoadError, setIsImageLoadError] = useState(false);
@@ -32,12 +37,42 @@ export const MyMessage: React.FC<ChatMessageProps> = ({
     }
   };
 
+  const isHost = type === "host";
+  const isVendor = type === "vendor";
+
   return (
-    <View style={styles.root}>
-      <View style={styles.infoContainer}>
+    <View style={[styles.root, isMe ? undefined : styles.otherPersonMessage]}>
+      <View
+        style={[
+          styles.infoContainer,
+          isMe ? undefined : styles.otherPersonInfoContainer,
+        ]}
+      >
+        {!isMe && (
+          <View
+            style={{ flexDirection: "row", gap: 16, alignItems: "flex-start" }}
+          >
+            {chatMessage.user?.avatar ? (
+              <FastImage
+                style={styles.image}
+                resizeMode="cover"
+                source={{ uri: chatMessage.user?.avatar }}
+              />
+            ) : (
+              <PersonIcon
+                width={32}
+                height={32}
+                fill={isHost ? Color.primaryPink : "#531878"}
+              />
+            )}
+            <Text style={styles.name}>{chatMessage.user?.name}</Text>
+          </View>
+        )}
         <View
           style={[
-            styles.messageContainer,
+            isMe ? undefined : styles.otherPersonMessageContainer,
+            isHost ? styles.messageHostContainer : undefined,
+            isVendor ? styles.messageVendorContainer : undefined,
             isDisabled ? styles.disabled : undefined,
           ]}
         >
@@ -67,7 +102,9 @@ export const MyMessage: React.FC<ChatMessageProps> = ({
             </>
           )}
         </View>
-        <View style={styles.footer}>
+        <View
+          style={[styles.footer, isMe ? undefined : styles.footerOtherPerson]}
+        >
           {chatMessage.isLoading && (
             <ActivityIndicator size={6} style={styles.activityIndicator} />
           )}
@@ -89,14 +126,23 @@ export const MyMessage: React.FC<ChatMessageProps> = ({
           </Text>
         </View>
       </View>
-      {chatMessage.user?.avatar ? (
-        <FastImage
-          style={styles.image}
-          resizeMode="cover"
-          source={{ uri: chatMessage.user?.avatar }}
-        />
-      ) : (
-        <PersonIcon width={32} height={32} style={styles.personIcon} />
+      {isMe && (
+        <>
+          {chatMessage.user?.avatar ? (
+            <FastImage
+              style={styles.image}
+              resizeMode="cover"
+              source={{ uri: chatMessage.user?.avatar }}
+            />
+          ) : (
+            <PersonIcon
+              width={32}
+              height={32}
+              fill={isHost ? Color.primaryPink : "#531878"}
+              style={styles.personIcon}
+            />
+          )}
+        </>
       )}
     </View>
   );

@@ -35,4 +35,16 @@ export const styles = StyleSheet.create({
   activityIndicator: {
     marginTop: 24,
   },
+  noResultsContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 24,
+  },
+  noResultsText: {
+    color: Color.gray300,
+    marginBottom: 5,
+    fontWeight: "400",
+    fontSize: 14,
+    lineHeight: 21,
+  },
 });

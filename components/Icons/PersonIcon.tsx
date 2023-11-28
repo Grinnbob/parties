@@ -1,12 +1,13 @@
 import React from "react";
 import Svg, { Path } from "react-native-svg";
 import { SvgIconProps } from "../../types";
+import { Color } from "../../GlobalStyles";
 
 export const PersonIcon: React.FC<SvgIconProps> = ({
   width = 21,
   height = 22,
   style,
-  fill = "#FF077E",
+  fill = Color.primaryPink,
 }) => {
   return (
     <Svg

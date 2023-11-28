@@ -1,9 +1,15 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { ImageBackground, TouchableOpacity, View } from "react-native";
 import { styles } from "./styles";
 import { useNavigation } from "@react-navigation/native";
 import { Divider, GradientButton, Tabs } from "../../../components/Atoms";
-import { CreateQuoteModal } from "../CreateQuoteModal/CreateQuoteModal";
+import { CreateQuoteModal } from "../../../components/Moleculs/CreateQuoteModal/CreateQuoteModal";
 import { PartyInfo } from "../../../components/Moleculs";
 import { ConversationModel, QuoteModel } from "../../../models";
 import { NotFoundImageIcon } from "../../../components/Icons";
@@ -20,7 +26,7 @@ type PartyDetailsScreenProps = {
 
 export const EventScreen: React.FC<PartyDetailsScreenProps> = ({ route }) => {
   const navigation = useNavigation();
-  const { navigate } = navigation;
+  const { push } = navigation;
   const [isMessagePressed, setIsMessagedPressed] = useState(false);
   const tabs = useMemo(() => {
     return [
@@ -41,16 +47,25 @@ export const EventScreen: React.FC<PartyDetailsScreenProps> = ({ route }) => {
   const [conversation, setConversation] = useState<ConversationModel | null>(
     null
   );
+  const isInitialized = useRef(false);
   const { quote } = route.params;
   const { Party: party } = quote;
+
+  useEffect(() => {
+    if (!isInitialized.current && quote.status === "new") {
+      isInitialized.current = true;
+      apis.quote.changeStatus(quote.id, "pending");
+    }
+  }, [quote]);
 
   const handleTabChange = (id: string) => {
     if (id === tabs[1].id) {
       if (!isConversationLoading) {
-        navigate("EventMessages", {
+        push("EventMessageScreen", {
           quote,
           conversationId: conversation?.id,
         });
+        return;
       } else {
         setIsMessagedPressed(true);
         return;
@@ -64,7 +79,7 @@ export const EventScreen: React.FC<PartyDetailsScreenProps> = ({ route }) => {
 
   useEffect(() => {
     if (conversation?.id && isMessagePressed) {
-      navigate("EventMessages", {
+      push("EventMessageScreen", {
         quote,
         conversationId: conversation?.id,
       });
@@ -87,6 +102,10 @@ export const EventScreen: React.FC<PartyDetailsScreenProps> = ({ route }) => {
     getConversationId();
   }, [party.id]);
 
+  const handleBackPress = useCallback(() => {
+    navigation.pop();
+  }, []);
+
   return (
     <View style={styles.screen}>
       <ImageBackground
@@ -105,7 +124,7 @@ export const EventScreen: React.FC<PartyDetailsScreenProps> = ({ route }) => {
           </View>
           <View style={styles.headerInnerContainer}>
             <TouchableOpacity style={styles.backButtonContainer}>
-              <BackButton />
+              <BackButton onPress={handleBackPress} />
             </TouchableOpacity>
           </View>
         </View>

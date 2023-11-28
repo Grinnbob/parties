@@ -3,7 +3,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 import Modal from "react-native-modal";
 import { styles } from "./styles";
 import { AntDesign } from "@expo/vector-icons";
-import { GradientButton } from "../../../components/Atoms";
+import { GradientButton } from "../../Atoms";
 
 type Quote = {
   price: string;

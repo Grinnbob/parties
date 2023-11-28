@@ -15,3 +15,5 @@ export * from "./GuestsIcon";
 export * from "./ClockIcon";
 export * from "./NotFoundImageIcon";
 export * from "./RightArrowIcon";
+export * from "./DenyQuoteIcon";
+export * from "./CloseCircleIcon";

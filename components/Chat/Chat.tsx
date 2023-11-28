@@ -6,23 +6,29 @@ import {
   ScrollView,
 } from "react-native";
 import { Tag } from "../Atoms";
-import { MyMessage } from "./MyMessage/MyMessage";
+import { Message } from "./Message/Message";
 import { VendorMessage } from "./VendorMessage/VendorMessage";
 import { MessageInput } from "./MessageInput";
 import { styles } from "./styles";
 import dayjs from "dayjs";
 import { useChatMessages } from "./hooks/useChatMessages";
 import { ImageModal } from "./ImageModal";
-import { MyQuoteMessage } from "./MyQuoteMessage";
+import { QuoteMessage } from "./QuoteMessage";
+import { Color } from "../../GlobalStyles";
 
 const currentYear = dayjs().format("YYYY");
 
 type ChatProps = {
   conversationId: number;
-  userId: string;
+  userId: number;
+  vendorId: number;
 };
 
-export const Chat: React.FC<ChatProps> = ({ conversationId, userId }) => {
+export const Chat: React.FC<ChatProps> = ({
+  conversationId,
+  userId,
+  vendorId,
+}) => {
   const scrollViewRef = useRef<ScrollView | null>(null);
   const {
     isLoading,
@@ -69,36 +75,35 @@ export const Chat: React.FC<ChatProps> = ({ conversationId, userId }) => {
             <React.Fragment key={key}>
               <Tag text={tag} style={styles.tag} />
               {groupedMessages[key].map((chatMessage) => {
-                if (String(chatMessage?.user?._id) === String(userId)) {
-                  if (chatMessage.QuoteId) {
-                    return (
-                      <MyQuoteMessage
-                        key={chatMessage.id}
-                        chatMessage={chatMessage}
-                      />
-                    );
-                  }
+                const isMe = chatMessage?.user?._id === userId;
+
+                if (chatMessage.QuoteId) {
                   return (
-                    <MyMessage
+                    <QuoteMessage
                       key={chatMessage.id}
                       chatMessage={chatMessage}
-                      onErrorPress={onErrorPress}
-                      onImagePress={handleImagePress}
+                      isMe={isMe}
                     />
                   );
                 }
 
                 return (
-                  <VendorMessage
+                  <Message
                     key={chatMessage.id}
                     chatMessage={chatMessage}
+                    onErrorPress={onErrorPress}
+                    onImagePress={handleImagePress}
+                    isMe={isMe}
+                    type={
+                      chatMessage?.user?._id === vendorId ? "vendor" : "host"
+                    }
                   />
                 );
               })}
             </React.Fragment>
           );
         })}
-        {isLoading && <ActivityIndicator size={24} />}
+        {isLoading && <ActivityIndicator color={Color.primaryPink} size={24} />}
       </ScrollView>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "position" : null}

@@ -1,23 +1,41 @@
 import React from "react";
-import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  StyleProp,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 import { styles } from "./styles";
 import { Color } from "../../../GlobalStyles";
 
 export type TabsProps = {
   value: string;
-  tabs: Array<{ id: string; label: string; loading: boolean }>;
+  tabs: Array<{
+    id: string;
+    label: string;
+    loading?: boolean;
+    style?: StyleProp<ViewStyle>;
+  }>;
   onChange: (id: string) => void;
+  style?: StyleProp<ViewStyle>;
 };
 
-export const Tabs: React.FC<TabsProps> = ({ value, tabs, onChange }) => {
+export const Tabs: React.FC<TabsProps> = ({ value, tabs, onChange, style }) => {
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, style]}>
       {tabs.map((item) => {
         const isSelected = item.id === value;
+        console.log("item.style", item.style);
         return (
           <TouchableOpacity
             key={item.id}
-            style={[styles.tab, isSelected ? styles.selectedTab : undefined]}
+            style={[
+              styles.tab,
+              item.style,
+              isSelected ? styles.selectedTab : undefined,
+            ]}
             onPress={() => onChange(item.id)}
           >
             <View style={styles.textContainer}>

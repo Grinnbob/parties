@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
     flexDirection: "column",
     paddingHorizontal: Padding.p_5xl,
     paddingTop: Padding.p_5xl,
-    paddingBottom: 88,
+    paddingBottom: 100,
     justifyContent: "flex-start",
     alignItems: "center",
   },

@@ -21,10 +21,8 @@ type EventMessageScreenProps = {
 
 export const EventMessageScreen: React.FC<EventMessageScreenProps> = ({
   route,
-  ...rest
 }) => {
   const navigation = useNavigation();
-  console.log("navigation", rest, route);
   const handleBackPress = () => {
     navigation.goBack();
   };
@@ -50,7 +48,11 @@ export const EventMessageScreen: React.FC<EventMessageScreenProps> = ({
         <View style={styles.hidden} />
       </View>
       <Divider />
-      <Chat conversationId={conversationId} userId={user.id} />
+      <Chat
+        conversationId={conversationId}
+        userId={user.id}
+        vendorId={quote.VendorId}
+      />
     </View>
   );
 };

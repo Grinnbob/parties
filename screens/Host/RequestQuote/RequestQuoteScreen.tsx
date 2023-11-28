@@ -152,6 +152,7 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
         } else {
           partyId = quote.party?.id;
         }
+        console.log("vendor", vendor);
         const response = await apis.quote.create({
           assembling: quote.assembling!,
           shipment: quote.shipment!,

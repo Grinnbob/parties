@@ -24,45 +24,54 @@ export const styles = StyleSheet.create({
     alignItems: "flex-end",
     flex: 1,
   },
-  disabled: {
-    opacity: 0.5,
+  partyNameText: {
+    fontSize: 16,
+    lineHeight: 19,
+    fontWeight: "700",
+    color: Color.textMainWhite,
   },
   messageContainer: {
     borderColor: "#a530ee",
     borderWidth: 1,
     borderRadius: Border.br_base,
     backgroundColor: "#6C1B9EB2",
-    paddingVertical: Padding.p_5xs,
-    paddingHorizontal: Padding.p_base,
+    padding: Padding.p_base,
   },
-  messageText: {
+  contentText: {
+    fontSize: 14,
+    lineHeight: 19,
     color: Color.textMainWhite,
   },
-  time: {
-    fontSize: FontSize.textBody12Medium_size,
-    color: "#FFFFFF",
+  partyInfoContainer: {
+    flexDirection: "column",
+    gap: 16,
+    paddingVertical: Padding.p_5xl,
   },
-  footer: {
-    flex: 1,
+  partyItemRowInfo: {
     flexDirection: "row",
-    justifyContent: "flex-start",
+    gap: 16,
     alignItems: "center",
-    marginTop: 6,
-    minHeight: 16,
   },
-  activityIndicator: { marginRight: 14 },
-  errorIcon: {
-    marginRight: 8,
-    marginBottom: 0,
+  icon: {
+    color: Color.primaryPink,
+  },
+  descriptionText: {
+    fontSize: 14,
+    lineHeight: 19,
     color: Color.textMainWhite,
   },
-  messageImage: {
-    flex: 1,
-    width: 150,
-    height: 150,
-    maxHeight: 150,
-    resizeMode: "cover",
-    borderRadius: Border.br_5xs,
-    overflow: "hidden",
+  actionsRoot: {
+    borderColor: "#FF077E33",
+    borderWidth: 1,
+    borderRadius: Border.br_base,
+    backgroundColor: "#FF077E33",
+    padding: Padding.p_base,
+    flexDirection: "column",
+    gap: 16,
+  },
+  actionTitle: {
+    fontSize: 18,
+    lineHeight: 27,
+    color: Color.textMainWhite,
   },
 });
