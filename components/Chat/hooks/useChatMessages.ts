@@ -299,10 +299,8 @@ export const useChatMessages = ({
         setMessages((prevState) => {
           console.log("receivedMessage", receivedMessage);
           if (prevState.find((item) => item.id === receivedMessage.id)) {
-            console.log("find");
             return prevState;
           } else {
-            console.log("not found");
             setTimeout(() => {
               scrollViewRef?.current?.scrollToEnd();
             });
