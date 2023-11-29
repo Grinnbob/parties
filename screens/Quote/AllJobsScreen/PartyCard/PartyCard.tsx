@@ -18,9 +18,14 @@ const formatter = new Intl.NumberFormat("en-US", {
 type PartyCardProps = {
   party: PartyModel;
   onPress: () => void;
+  price: number;
 };
 
-export const PartyCard: React.FC<PartyCardProps> = ({ party, onPress }) => {
+export const PartyCard: React.FC<PartyCardProps> = ({
+  party,
+  price,
+  onPress,
+}) => {
   return (
     <TouchableOpacity style={styles.root} onPress={onPress}>
       <View style={styles.partyContainer}>
@@ -46,7 +51,7 @@ export const PartyCard: React.FC<PartyCardProps> = ({ party, onPress }) => {
       </View>
       <View style={styles.rightContainer}>
         <RightArrowIcon style={styles.arrowIcon} />
-        <Text style={styles.titleText}>{formatter.format(3000)}</Text>
+        <Text style={styles.titleText}>{formatter.format(price)}</Text>
       </View>
     </TouchableOpacity>
   );

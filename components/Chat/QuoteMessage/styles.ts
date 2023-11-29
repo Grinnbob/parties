@@ -2,40 +2,16 @@ import { StyleSheet } from "react-native";
 import { Border, Color, FontSize, Padding } from "../../../GlobalStyles";
 
 export const styles = StyleSheet.create({
-  root: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    justifyContent: "flex-end",
-    width: "100%",
-  },
-  image: {
-    borderRadius: 100,
-    width: 32,
-    height: 32,
-    marginBottom: 32,
-    marginLeft: 16,
-  },
   personIcon: {
     marginBottom: 24,
     marginLeft: 16,
   },
-  infoContainer: {
-    flexDirection: "column",
-    alignItems: "flex-end",
-    flex: 1,
-  },
   partyNameText: {
+    marginTop: 8,
     fontSize: 16,
     lineHeight: 19,
     fontWeight: "700",
     color: Color.textMainWhite,
-  },
-  messageContainer: {
-    borderColor: "#a530ee",
-    borderWidth: 1,
-    borderRadius: Border.br_base,
-    backgroundColor: "#6C1B9EB2",
-    padding: Padding.p_base,
   },
   contentText: {
     fontSize: 14,
@@ -45,7 +21,8 @@ export const styles = StyleSheet.create({
   partyInfoContainer: {
     flexDirection: "column",
     gap: 16,
-    paddingVertical: Padding.p_5xl,
+    paddingTop: Padding.p_5xl,
+    paddingBottom: 8,
   },
   partyItemRowInfo: {
     flexDirection: "row",
@@ -59,9 +36,24 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 19,
     color: Color.textMainWhite,
+    marginTop: 8,
+    marginBottom: 8,
+  },
+  innerContainer: {
+    width: "100%",
+    flexDirection: "row",
+    gap: 16,
+  },
+  image: {
+    borderRadius: 100,
+    width: 32,
+    height: 32,
+    marginBottom: 32,
+    marginLeft: 16,
   },
   actionsRoot: {
-    borderColor: "#FF077E33",
+    flex: 1,
+    borderColor: "rgba(255, 7, 126, 0.20)",
     borderWidth: 1,
     borderRadius: Border.br_base,
     backgroundColor: "#FF077E33",
@@ -73,5 +65,13 @@ export const styles = StyleSheet.create({
     fontSize: 18,
     lineHeight: 27,
     color: Color.textMainWhite,
+    fontWeight: "700",
+  },
+  createQuoteText: {
+    fontSize: 16,
+    lineHeight: 22,
+  },
+  denyRequestButton: {
+    borderColor: Color.primaryPink,
   },
 });

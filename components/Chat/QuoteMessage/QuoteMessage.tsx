@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { Image, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { styles } from "./styles";
 import {
   CalendarIcon,
@@ -11,17 +11,22 @@ import {
 import { ChatMessageModel } from "../../../models";
 import dayjs from "dayjs";
 import { Button, GradientButton } from "../../Atoms";
-import { DenyQuoteModal } from "../../Moleculs/DenyQuoteModal";
+import { DenyQuoteModal } from "../../Moleculs";
 import { CreateQuoteModal } from "../../Moleculs/CreateQuoteModal/CreateQuoteModal";
+import { Message } from "../Message/Message";
+import FastImage from "react-native-fast-image";
+import { Color } from "../../../GlobalStyles";
+import useGlobalState from "../../../stateManagement/hook";
+import StateTypes from "../../../stateManagement/StateTypes";
 
 type MyQuoteMessageProps = {
   chatMessage: ChatMessageModel;
-  onErrorPress?: (id: string | number) => void;
-  onImagePress?: (imageUrl: string) => void;
+  isMe: boolean;
 };
 
 export const QuoteMessage: React.FC<MyQuoteMessageProps> = ({
   chatMessage,
+  isMe,
 }) => {
   const { party } = chatMessage;
   const startDate = useMemo(() => {
@@ -46,11 +51,16 @@ export const QuoteMessage: React.FC<MyQuoteMessageProps> = ({
     });
   }, []);
 
+  const [user] = useGlobalState(StateTypes.user.key, StateTypes.user.default);
+
   return (
     <>
-      <View style={styles.root}>
-        <View style={styles.infoContainer}>
-          <View style={styles.messageContainer}>
+      <Message
+        chatMessage={chatMessage}
+        isMe={isMe}
+        type="host"
+        content={
+          <>
             <Text style={styles.partyNameText}>{party?.name}</Text>
             <View style={styles.partyInfoContainer}>
               <View style={styles.partyItemRowInfo}>
@@ -80,30 +90,48 @@ export const QuoteMessage: React.FC<MyQuoteMessageProps> = ({
             {!!party?.description && (
               <Text style={styles.descriptionText}>{party?.description}</Text>
             )}
-          </View>
-        </View>
-        {chatMessage.user?.avatar ? (
-          <Image
-            style={styles.image}
-            resizeMode="cover"
-            source={{ uri: chatMessage.user?.avatar }}
-          />
-        ) : (
-          <PersonIcon width={32} height={32} style={styles.personIcon} />
-        )}
-      </View>
-      <View style={styles.actionsRoot}>
-        <Text style={styles.actionTitle}>
-          Would you like to accept or deny this Job?
-        </Text>
-        <GradientButton text="Create a Quote" />
-        <Button text="Denny Request" onPress={toggleDenyModal} />
-      </View>
-      <DenyQuoteModal isOpen={isDenyModalOpen} onClose={toggleDenyModal} />
-      <CreateQuoteModal
-        isOpen={isCreateQuoteModalOpen}
-        onClose={toggleQuoteModal}
+          </>
+        }
       />
+      {!isMe && (
+        <>
+          <View style={styles.innerContainer}>
+            <View style={styles.actionsRoot}>
+              <Text style={styles.actionTitle}>
+                Would you like to accept or deny this Job?
+              </Text>
+              <GradientButton
+                text="Create a Quote"
+                textStyle={styles.createQuoteText}
+                onPress={toggleQuoteModal}
+              />
+              <Button
+                text="Denny Request"
+                onPress={toggleDenyModal}
+                style={styles.denyRequestButton}
+              />
+            </View>
+            {user?.avatar ? (
+              <FastImage
+                style={styles.image}
+                resizeMode="cover"
+                source={{ uri: user?.avatar }}
+              />
+            ) : (
+              <PersonIcon width={32} height={32} fill={Color.primaryPink} />
+            )}
+          </View>
+          <DenyQuoteModal
+            isOpen={isDenyModalOpen}
+            onClose={toggleDenyModal}
+            quoteId={chatMessage.QuoteId!}
+          />
+          <CreateQuoteModal
+            isOpen={isCreateQuoteModalOpen}
+            onClose={toggleQuoteModal}
+          />
+        </>
+      )}
     </>
   );
 };

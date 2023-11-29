@@ -10,11 +10,13 @@ import { styles } from "./styles";
 import { useNavigation } from "@react-navigation/native";
 import { Divider, GradientButton, Tabs } from "../../../components/Atoms";
 import { CreateQuoteModal } from "../../../components/Moleculs/CreateQuoteModal/CreateQuoteModal";
-import { PartyInfo } from "../../../components/Moleculs";
+import { DenyQuoteModal, PartyInfo } from "../../../components/Moleculs";
 import { ConversationModel, QuoteModel } from "../../../models";
 import { NotFoundImageIcon } from "../../../components/Icons";
 import { BackButton } from "../../../components/navigation/BackButton";
 import apis from "../../../apis";
+import { useRecoilState } from "recoil";
+import { selectedQuoteAtom } from "../../../stateManagement";
 
 type PartyDetailsScreenProps = {
   route: {
@@ -42,27 +44,40 @@ export const EventScreen: React.FC<PartyDetailsScreenProps> = ({ route }) => {
     ];
   }, [isMessagePressed]);
   const [selectedTab, setSelectedTab] = useState(tabs[0].id);
-  const [isCreatQuoteModalOpen, setIsCreateQuoteModalOpen] = useState(false);
   const [isConversationLoading, setIsConversationLoading] = useState(true);
   const [conversation, setConversation] = useState<ConversationModel | null>(
     null
   );
+  const [isDenyModalOpen, setIsDenyModalOpen] = useState(false);
+  const [isCreateQuoteModalOpen, setIsCreateQuoteModalOpen] = useState(false);
+
+  const toggleDenyModal = useCallback(() => {
+    setIsDenyModalOpen((prevState) => {
+      return !prevState;
+    });
+  }, []);
+
+  const toggleQuoteModal = useCallback(() => {
+    setIsCreateQuoteModalOpen((prevState) => {
+      return !prevState;
+    });
+  }, []);
+
   const isInitialized = useRef(false);
-  const { quote } = route.params;
-  const { Party: party } = quote;
+  const [selectedQuote] = useRecoilState(selectedQuoteAtom);
+  const { Party: party } = selectedQuote;
 
   useEffect(() => {
-    if (!isInitialized.current && quote.status === "new") {
+    if (!isInitialized.current && selectedQuote?.status === "new") {
       isInitialized.current = true;
-      apis.quote.changeStatus(quote.id, "pending");
+      apis.quote.changeStatus(selectedQuote?.id!, "pending");
     }
-  }, [quote]);
+  }, [selectedQuote]);
 
   const handleTabChange = (id: string) => {
     if (id === tabs[1].id) {
       if (!isConversationLoading) {
         push("EventMessageScreen", {
-          quote,
           conversationId: conversation?.id,
         });
         return;
@@ -80,16 +95,11 @@ export const EventScreen: React.FC<PartyDetailsScreenProps> = ({ route }) => {
   useEffect(() => {
     if (conversation?.id && isMessagePressed) {
       push("EventMessageScreen", {
-        quote,
         conversationId: conversation?.id,
       });
       setIsMessagedPressed(false);
     }
   }, [conversation]);
-
-  const toggleCreateQuotePress = () => {
-    setIsCreateQuoteModalOpen(!isCreatQuoteModalOpen);
-  };
 
   useEffect(() => {
     const getConversationId = async () => {
@@ -134,16 +144,16 @@ export const EventScreen: React.FC<PartyDetailsScreenProps> = ({ route }) => {
           {selectedTab === "eventDetails" && (
             <>
               <PartyInfo party={party} />
-              {(quote.status === "new" || quote.status === "pending") && (
+              {(selectedQuote?.status === "new" ||
+                selectedQuote?.status === "pending") && (
                 <>
-                  <Divider style={styles.divider} />
                   <View style={styles.actionsContainer}>
                     <View style={styles.actionButtonContainer}>
                       <GradientButton
                         text="Deny Request"
                         style={styles.leftButton}
                         textStyle={styles.actionButtonText}
-                        disabled={true}
+                        onPress={toggleDenyModal}
                       />
                     </View>
                     <View style={styles.actionButtonContainer}>
@@ -151,7 +161,7 @@ export const EventScreen: React.FC<PartyDetailsScreenProps> = ({ route }) => {
                         text="Create a Quote"
                         style={styles.rightButton}
                         textStyle={styles.actionButtonText}
-                        onPress={toggleCreateQuotePress}
+                        onPress={toggleQuoteModal}
                       />
                     </View>
                   </View>
@@ -161,8 +171,13 @@ export const EventScreen: React.FC<PartyDetailsScreenProps> = ({ route }) => {
             </>
           )}
           <CreateQuoteModal
-            isOpen={isCreatQuoteModalOpen}
-            onClose={toggleCreateQuotePress}
+            isOpen={isCreateQuoteModalOpen}
+            onClose={toggleQuoteModal}
+          />
+          <DenyQuoteModal
+            isOpen={isDenyModalOpen}
+            onClose={toggleDenyModal}
+            quoteId={selectedQuote?.id!}
           />
         </View>
       </View>

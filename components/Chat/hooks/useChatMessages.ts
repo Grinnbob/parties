@@ -23,7 +23,7 @@ export const useChatMessages = ({
   scrollViewRef,
 }: {
   conversationId: number;
-  userId: string;
+  userId: number;
   scrollViewRef: MutableRefObject<ScrollView | null>;
 }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -288,7 +288,6 @@ export const useChatMessages = ({
   useEffect(() => {
     if (!isLoading) {
       setTimeout(() => {
-        console.log("scrollToEnd");
         scrollViewRef?.current?.scrollToEnd();
       });
     }

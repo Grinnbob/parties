@@ -14,8 +14,9 @@ import { QuoteModel } from "../../../models";
 import { PartyCard } from "./PartyCard";
 import { useNavigation } from "@react-navigation/native";
 import { Color } from "../../../GlobalStyles";
-import useGlobalState from "../../../stateManagement/hook";
-import StateTypes from "../../../stateManagement/StateTypes";
+import { useRecoilState } from "recoil";
+import { quotesListAtom, selectedQuoteAtom } from "../../../stateManagement";
+import cloneDeep from "lodash/cloneDeep";
 
 const tabs = [
   {
@@ -37,8 +38,8 @@ export const AllJobsScreen: React.FC = () => {
   const { navigate } = navigation;
   const [selectedTab, setSelectedTab] = useState(tabs[0].id);
   const [isLoading, setIsLoading] = useState(true);
-  const [quotes, setQuotes] = useState<QuoteModel[]>([]);
-  const [user] = useGlobalState(StateTypes.user.key, StateTypes.user.default);
+  const [quotes, setQuotes] = useRecoilState(quotesListAtom);
+  const [, setSelectedQuote] = useRecoilState(selectedQuoteAtom);
   const handleTabChange = (id: string) => {
     setSelectedTab(id);
   };
@@ -47,16 +48,17 @@ export const AllJobsScreen: React.FC = () => {
     return (
       <PartyCard
         party={element.item.Party}
+        price={element.item.price}
         onPress={() => {
-          navigate("EventScreen", {
-            quote: element.item,
-          });
+          setSelectedQuote(element.item);
+          navigate("EventScreen");
           if (element.item.status === "new") {
+            const newQuotes = cloneDeep(quotes);
             const item = quotes.find((item) => item.id === element.item.id);
             if (item) {
               item.status = "pending";
             }
-            setQuotes([...quotes]);
+            setQuotes([...newQuotes]);
           }
         }}
       />
@@ -65,22 +67,18 @@ export const AllJobsScreen: React.FC = () => {
 
   useEffect(() => {
     const getAllQuotes = async () => {
-      const response = await apis.quote.getAll({});
+      const response = await apis.quote.getMy();
       setQuotes(response.data);
       setIsLoading(false);
     };
     getAllQuotes();
   }, []);
 
-  console.log("quotes", quotes);
-
   const selectedData = useMemo(() => {
     return quotes
       .filter((item) => item.status === selectedTab)
       .filter((item) => !!item.Party);
   }, [quotes, selectedTab]);
-
-  console.log("selectedData", selectedData);
 
   return (
     <View style={styles.screen}>

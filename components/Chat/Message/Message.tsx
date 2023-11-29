@@ -17,6 +17,7 @@ type ChatMessageProps = {
   chatMessage: ChatMessageModel;
   onErrorPress?: (id: string | number) => void;
   onImagePress?: (imageUrl: string) => void;
+  content?: React.ReactNode;
   isMe: boolean;
   type: "vendor" | "host";
 };
@@ -25,6 +26,7 @@ export const Message: React.FC<ChatMessageProps> = ({
   chatMessage,
   onErrorPress,
   onImagePress,
+  content,
   isMe,
   type,
 }) => {
@@ -49,9 +51,7 @@ export const Message: React.FC<ChatMessageProps> = ({
         ]}
       >
         {!isMe && (
-          <View
-            style={{ flexDirection: "row", gap: 16, alignItems: "flex-start" }}
-          >
+          <View style={styles.personInnerContainer}>
             {chatMessage.user?.avatar ? (
               <FastImage
                 style={styles.image}
@@ -62,7 +62,7 @@ export const Message: React.FC<ChatMessageProps> = ({
               <PersonIcon
                 width={32}
                 height={32}
-                fill={isHost ? Color.primaryPink : "#531878"}
+                fill={isHost ? "#531878" : Color.primaryPink}
               />
             )}
             <Text style={styles.name}>{chatMessage.user?.name}</Text>
@@ -101,6 +101,7 @@ export const Message: React.FC<ChatMessageProps> = ({
               )}
             </>
           )}
+          {content}
         </View>
         <View
           style={[styles.footer, isMe ? undefined : styles.footerOtherPerson]}
@@ -138,7 +139,7 @@ export const Message: React.FC<ChatMessageProps> = ({
             <PersonIcon
               width={32}
               height={32}
-              fill={isHost ? Color.primaryPink : "#531878"}
+              fill={isHost ? "#531878" : Color.primaryPink}
               style={styles.personIcon}
             />
           )}

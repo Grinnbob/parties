@@ -14,9 +14,10 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 24,
-    paddingVertical: Padding.p_13xl,
     paddingHorizontal: Padding.p_5xl,
     backgroundColor: Color.textMainWhite,
+    paddingTop: 48,
+    paddingBottom: 20,
     borderRadius: 20,
     position: "relative",
   },
@@ -29,11 +30,26 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 22,
     color: Color.labelColorLightPrimary,
+    fontWeight: "700",
   },
   actions: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     gap: 16,
+  },
+  button: {
+    width: 130,
+  },
+  closeButtonText: {
+    color: Color.gray300,
+    borderColor: Color.gray300,
+  },
+  buttonTextStyle: {
+    fontSize: 16,
+    lineHeight: 20,
+  },
+  denyButtonStyle: {
+    borderRadius: 30,
   },
 });

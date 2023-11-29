@@ -14,6 +14,7 @@ export type QuoteModel = {
   notes: string | null;
   paymentOption: string;
   shipment: string;
-  status: "new" | "pending" | "accepted";
+  status: "new" | "pending" | "accepted" | "denied";
   updatedAt: string;
+  price: number;
 };

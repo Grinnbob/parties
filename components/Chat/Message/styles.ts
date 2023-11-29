@@ -30,6 +30,11 @@ export const styles = StyleSheet.create({
   otherPersonInfoContainer: {
     alignItems: "flex-start",
   },
+  personInnerContainer: {
+    flexDirection: "row",
+    gap: 16,
+    alignItems: "flex-start",
+  },
   name: {
     width: "100%",
     fontWeight: "bold",

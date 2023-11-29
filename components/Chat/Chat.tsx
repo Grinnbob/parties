@@ -7,7 +7,6 @@ import {
 } from "react-native";
 import { Tag } from "../Atoms";
 import { Message } from "./Message/Message";
-import { VendorMessage } from "./VendorMessage/VendorMessage";
 import { MessageInput } from "./MessageInput";
 import { styles } from "./styles";
 import dayjs from "dayjs";
@@ -57,6 +56,13 @@ export const Chat: React.FC<ChatProps> = ({
     scrollViewRef.current?.scrollToEnd({ animated: false });
   }, []);
 
+  const getType = (id: number) => {
+    if (vendorId) {
+      return id === vendorId ? "vendor" : "host";
+    }
+    return userId === id ? "host" : "vendor";
+  };
+
   return (
     <>
       <ScrollView
@@ -94,9 +100,7 @@ export const Chat: React.FC<ChatProps> = ({
                     onErrorPress={onErrorPress}
                     onImagePress={handleImagePress}
                     isMe={isMe}
-                    type={
-                      chatMessage?.user?._id === vendorId ? "vendor" : "host"
-                    }
+                    type={getType(chatMessage?.user?._id)}
                   />
                 );
               })}

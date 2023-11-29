@@ -27,7 +27,6 @@ export const Tabs: React.FC<TabsProps> = ({ value, tabs, onChange, style }) => {
     <View style={[styles.root, style]}>
       {tabs.map((item) => {
         const isSelected = item.id === value;
-        console.log("item.style", item.style);
         return (
           <TouchableOpacity
             key={item.id}

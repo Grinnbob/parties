@@ -9,6 +9,8 @@ import useGlobalState from "../../../stateManagement/hook";
 import StateTypes from "../../../stateManagement/StateTypes";
 import { QuoteModel } from "../../../models";
 import { BackButton } from "../../../components/navigation/BackButton";
+import { useRecoilState } from "recoil";
+import { selectedQuoteAtom } from "../../../stateManagement";
 
 type EventMessageScreenProps = {
   route: {
@@ -27,8 +29,9 @@ export const EventMessageScreen: React.FC<EventMessageScreenProps> = ({
     navigation.goBack();
   };
 
-  const { quote, conversationId } = route.params;
-  const { Party: party } = quote;
+  const { conversationId } = route.params;
+  const [selectedQuote] = useRecoilState(selectedQuoteAtom);
+  const { Party: party } = selectedQuote;
 
   const [user] = useGlobalState(StateTypes.user.key, StateTypes.user.default);
 
@@ -43,7 +46,7 @@ export const EventMessageScreen: React.FC<EventMessageScreenProps> = ({
         <BackButton onPress={handleBackPress} />
         <View>
           <Text style={styles.title}>{party.name}</Text>
-          <Text style={styles.serviceName}>Food service</Text>
+          <Text style={styles.serviceName}>{party.description}</Text>
         </View>
         <View style={styles.hidden} />
       </View>
@@ -51,7 +54,7 @@ export const EventMessageScreen: React.FC<EventMessageScreenProps> = ({
       <Chat
         conversationId={conversationId}
         userId={user.id}
-        vendorId={quote.VendorId}
+        vendorId={user.id}
       />
     </View>
   );
