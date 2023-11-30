@@ -1,4 +1,5 @@
 import { PartyModel } from "./PartyModel";
+import { QuoteModel } from "./QuoteModel";
 
 export type ChatMessageModel = {
   id: number | string;
@@ -15,6 +16,7 @@ export type ChatMessageModel = {
   UserId: number;
   ConversationId: number;
   QuoteId?: number | null;
+  quote?: QuoteModel;
   party?: PartyModel | null;
   success?: boolean;
   isLoading?: boolean;

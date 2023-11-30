@@ -36,6 +36,7 @@ export const Chat: React.FC<ChatProps> = ({
     onSubmitMessage,
     groupedMessages,
     onErrorPress,
+    setMessages,
   } = useChatMessages({
     conversationId,
     userId,
@@ -89,6 +90,7 @@ export const Chat: React.FC<ChatProps> = ({
                       key={chatMessage.id}
                       chatMessage={chatMessage}
                       isMe={isMe}
+                      setMessages={setMessages}
                     />
                   );
                 }

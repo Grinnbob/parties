@@ -28,4 +28,8 @@ export const styles = StyleSheet.create({
     width: 66,
     height: 40,
   },
+  submitButtonText: {
+    fontSize: 13,
+    fontWeight: "700",
+  },
 });

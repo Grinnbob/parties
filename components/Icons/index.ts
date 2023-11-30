@@ -17,3 +17,4 @@ export * from "./NotFoundImageIcon";
 export * from "./RightArrowIcon";
 export * from "./DenyQuoteIcon";
 export * from "./CloseCircleIcon";
+export * from "./QuoteSubmittedIcon";

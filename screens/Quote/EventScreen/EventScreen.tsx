@@ -173,6 +173,7 @@ export const EventScreen: React.FC<PartyDetailsScreenProps> = ({ route }) => {
           <CreateQuoteModal
             isOpen={isCreateQuoteModalOpen}
             onClose={toggleQuoteModal}
+            quoteId={selectedQuote?.id!}
           />
           <DenyQuoteModal
             isOpen={isDenyModalOpen}

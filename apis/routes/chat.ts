@@ -10,7 +10,7 @@ export const uploadChatImage = async (data: {
   id: string | number;
   uri: string;
   conversationId: number;
-  userId: string;
+  userId: number;
 }) => {
   const { uri, id, conversationId, userId } = data;
   const uploadRes = await API.imageApi(

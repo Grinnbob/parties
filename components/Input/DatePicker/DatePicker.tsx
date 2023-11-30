@@ -78,11 +78,11 @@ export const DatePicker: React.FC<DatePickerProps> = ({
           value: inputValue,
           onPressIn: handleOpen,
           isFocused: isOpen,
-          rightElement: isTimePicker ? (
+          InputRightElement: isTimePicker ? (
             <AntDesign
               name="down"
               size={15}
-              style={{ right: 26, color: Color.primaryPink }}
+              style={styles.rightElement}
               onPress={handleOpen}
             />
           ) : (

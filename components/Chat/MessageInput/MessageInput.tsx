@@ -110,7 +110,11 @@ export const MessageInput = React.forwardRef<TextInput, MessageInputProps>(
           onChangeText={onChangeText}
           placeholderTextColor={Color.textMainWhite}
         />
-        <GradientButton text="Send" onPress={handleSubmitEditing} />
+        <GradientButton
+          text="Send"
+          textStyle={styles.submitButtonText}
+          onPress={handleSubmitEditing}
+        />
       </View>
     );
   }

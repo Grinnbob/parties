@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import { Text, View } from "react-native";
 import { styles } from "./styles";
 import {
@@ -22,11 +28,13 @@ import StateTypes from "../../../stateManagement/StateTypes";
 type MyQuoteMessageProps = {
   chatMessage: ChatMessageModel;
   isMe: boolean;
+  setMessages: Dispatch<SetStateAction<ChatMessageModel[]>>;
 };
 
 export const QuoteMessage: React.FC<MyQuoteMessageProps> = ({
   chatMessage,
   isMe,
+  setMessages,
 }) => {
   const { party } = chatMessage;
   const startDate = useMemo(() => {
@@ -52,6 +60,24 @@ export const QuoteMessage: React.FC<MyQuoteMessageProps> = ({
   }, []);
 
   const [user] = useGlobalState(StateTypes.user.key, StateTypes.user.default);
+
+  const handleAccept = useCallback(() => {
+    if (chatMessage.QuoteId) {
+      setMessages((prevState) => {
+        const newState = [...prevState];
+        const index = newState.findIndex(
+          (item) => item.QuoteId === chatMessage.QuoteId
+        );
+
+        if (index >= 0 && newState[index]?.quote?.status) {
+          // @ts-expect-error ignore
+          newState[index].quote.status = "accepted";
+        }
+
+        return newState;
+      });
+    }
+  }, [setMessages, chatMessage.QuoteId]);
 
   return (
     <>
@@ -93,45 +119,49 @@ export const QuoteMessage: React.FC<MyQuoteMessageProps> = ({
           </>
         }
       />
-      {!isMe && (
-        <>
-          <View style={styles.innerContainer}>
-            <View style={styles.actionsRoot}>
-              <Text style={styles.actionTitle}>
-                Would you like to accept or deny this Job?
-              </Text>
-              <GradientButton
-                text="Create a Quote"
-                textStyle={styles.createQuoteText}
-                onPress={toggleQuoteModal}
-              />
-              <Button
-                text="Denny Request"
-                onPress={toggleDenyModal}
-                style={styles.denyRequestButton}
-              />
+      {!isMe &&
+        (chatMessage.quote?.status === "pending" ||
+          chatMessage.quote?.status == "new") && (
+          <>
+            <View style={styles.innerContainer}>
+              <View style={styles.actionsRoot}>
+                <Text style={styles.actionTitle}>
+                  Would you like to accept or deny this Job?
+                </Text>
+                <GradientButton
+                  text="Create a Quote"
+                  textStyle={styles.createQuoteText}
+                  onPress={toggleQuoteModal}
+                />
+                <Button
+                  text="Denny Request"
+                  onPress={toggleDenyModal}
+                  style={styles.denyRequestButton}
+                />
+              </View>
+              {user?.avatar ? (
+                <FastImage
+                  style={styles.image}
+                  resizeMode="cover"
+                  source={{ uri: user?.avatar }}
+                />
+              ) : (
+                <PersonIcon width={32} height={32} fill={Color.primaryPink} />
+              )}
             </View>
-            {user?.avatar ? (
-              <FastImage
-                style={styles.image}
-                resizeMode="cover"
-                source={{ uri: user?.avatar }}
-              />
-            ) : (
-              <PersonIcon width={32} height={32} fill={Color.primaryPink} />
-            )}
-          </View>
-          <DenyQuoteModal
-            isOpen={isDenyModalOpen}
-            onClose={toggleDenyModal}
-            quoteId={chatMessage.QuoteId!}
-          />
-          <CreateQuoteModal
-            isOpen={isCreateQuoteModalOpen}
-            onClose={toggleQuoteModal}
-          />
-        </>
-      )}
+            <DenyQuoteModal
+              isOpen={isDenyModalOpen}
+              onClose={toggleDenyModal}
+              quoteId={chatMessage.QuoteId!}
+            />
+            <CreateQuoteModal
+              isOpen={isCreateQuoteModalOpen}
+              onClose={toggleQuoteModal}
+              quoteId={chatMessage.QuoteId!}
+              onAccept={handleAccept}
+            />
+          </>
+        )}
     </>
   );
 };

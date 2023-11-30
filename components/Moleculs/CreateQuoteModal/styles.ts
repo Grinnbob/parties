@@ -48,4 +48,43 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 22,
   },
+  inputsContainer: {
+    marginTop: 24,
+    flexDirection: "column",
+    gap: 24,
+    width: "100%",
+    justifyContent: "flex-start",
+  },
+  priceInput: {
+    paddingLeft: 2,
+    marginLeft: 2,
+    borderLeftWidth: 0,
+  },
+  usdSymbol: {
+    color: Color.textMainWhite,
+    fontSize: 16,
+    lineHeight: 22,
+    paddingLeft: 16,
+    paddingRight: 0,
+  },
+  infoContainer: {
+    flexDirection: "column",
+    width: "100%",
+  },
+  quoteValidText: {
+    color: Color.gray300,
+    fontSize: 16,
+    lineHeight: 22,
+  },
+  cancellationTerms: {
+    fontSize: 16,
+    lineHeight: 22,
+    fontWeight: "700",
+    marginTop: 16,
+    color: Color.textMainWhite,
+  },
+  cancelWith: {
+    marginTop: 8,
+    marginBottom: 24,
+  },
 });

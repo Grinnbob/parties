@@ -37,3 +37,19 @@ export const changeStatus = async (
   });
   return response;
 };
+
+export const approveQuote = async (
+  id: number,
+  data: Pick<
+    QuoteModel,
+    | "due"
+    | "downpayment"
+    | "paymentOption"
+    | "price"
+    | "status"
+    | "cancellationTerm"
+  >
+) => {
+  const response = await API.putApi(`${Base}/${id}`, data);
+  return response;
+};

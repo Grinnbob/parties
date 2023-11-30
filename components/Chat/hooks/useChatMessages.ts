@@ -15,7 +15,7 @@ import { useChat } from "./useChat";
 import { ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getAllMessages, uploadChatImage } from "../../../apis/routes/chat";
-import { ChatMessageModel } from "../../../models/ChatMessageModel";
+import { ChatMessageModel } from "../../../models";
 
 export const useChatMessages = ({
   conversationId,
@@ -56,7 +56,7 @@ export const useChatMessages = ({
         id: ChatMessageModel["id"];
         createdAt: ChatMessageModel["createdAt"];
         user: ChatMessageModel["user"];
-        messageImage: ChatMessageModel["message"]["messageImage"];
+        messageImage: ChatMessageModel["messageImage"];
       }>
     ) => {
       setMessages((prevState) => {
@@ -78,9 +78,9 @@ export const useChatMessages = ({
           if (values.user) {
             item.user = values.user;
           }
-          // if (values.messageImage) {
-          //   item.message?.messageImage = values.messageImage;
-          // }
+          if (values.messageImage) {
+            item.messageImage = values.messageImage;
+          }
         }
         return newState;
       });
@@ -221,7 +221,7 @@ export const useChatMessages = ({
               const response = await sendMessage({
                 userId,
                 conversationId,
-                message: item.message,
+                message: item?.message || "",
               });
               console.log("response", response);
               setMessageData(id, {
@@ -314,7 +314,6 @@ export const useChatMessages = ({
   useEffect(() => {
     if (isStorageInitialized) {
       getAllMessages(conversationId).then((response) => {
-        // console.log("getAllMessages", JSON.stringify(response));
         setMessages(response.data);
         setIsLoading(false);
       });
@@ -327,6 +326,7 @@ export const useChatMessages = ({
     isLoading,
     message,
     onMessageChange,
+    setMessages,
     onSubmitMessage,
     groupedMessages,
     onErrorPress,
