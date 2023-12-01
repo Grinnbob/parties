@@ -30,7 +30,6 @@ export const registerForBiometrics = async () => {
   const response = await API.postApi(`${Base}/register/biometrics`, {
     publicKey,
     id: `${Config.APP_BUNDLE_ID}${id}`,
-
   });
   return response;
 };
@@ -45,16 +44,24 @@ export const registerForPassCode = async (data: DEVICE) => {
 };
 export const grabAuthToken = async () => {
   const id = await DeviceInfo.getUniqueId();
-  const response = await API.getApi(`${Base}/authToken?id=${Config.APP_BUNDLE_ID}${id}`);
-  if (!response.encryptedAuth64) return response;
+  const response = await API.getApi(
+    `${Base}/authToken?id=${Config.APP_BUNDLE_ID}${id}`
+  );
+  if (!response.encryptedAuth64) {
+    return response;
+  }
   const token = await decrypt(response.encryptedAuth64);
   API.setAUTH_TOKEN(token);
   return { success: token !== "" };
 };
 export const loginWithBiometrics = async () => {
   const id = await DeviceInfo.getUniqueId();
-  const response = await API.getApi(`${Base}/login/biometrics?id=${Config.APP_BUNDLE_ID}${id}`);
-  if (!response.encryptedAuth64) return response;
+  const response = await API.getApi(
+    `${Base}/login/biometrics?id=${Config.APP_BUNDLE_ID}${id}`
+  );
+  if (!response.encryptedAuth64) {
+    return response;
+  }
   const token = await decrypt(response.encryptedAuth64);
   API.setAUTH_TOKEN(token);
   return { success: token !== "" };

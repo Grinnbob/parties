@@ -1,11 +1,11 @@
-import * as API from '../base';
-const Base = 'joinVendorVendorType';
+import * as API from "../base";
+const Base = "joinVendorVendorType";
 
 interface JOIN_VENDOR_VENDOR_TYPE {
   id?: string;
-  VendorId?: string;
-  VendorType?: string;
-  PrevVendorType?: string;
+  vendorId?: string;
+  vendorType?: string;
+  prevVendorType?: string;
 }
 
 export const create = async (data: JOIN_VENDOR_VENDOR_TYPE) => {

@@ -8,7 +8,7 @@ interface VENDOR {
   description?: String;
   service?: String;
   taxId?: Number;
-  UserId?: Number;
+  userId?: Number;
 }
 
 interface AVATAR {
@@ -37,6 +37,7 @@ export const deleteById = async (id: string) => {
 };
 
 export const getAll = async (query: any = {}) => {
+  console.log("------getAll", query);
   let url = `${Base}/`;
   let first = true;
   let queryArray = Object.keys(query);

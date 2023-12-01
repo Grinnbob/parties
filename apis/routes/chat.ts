@@ -1,7 +1,7 @@
 import * as API from "../base";
 const Base = "chat";
 export const getAllMessages = async (conversationId: number) => {
-  let url = `/message/?ConversationId=${conversationId}`;
+  let url = `/message/?conversationId=${conversationId}`;
   const response = await API.getApi(url);
   return response;
 };

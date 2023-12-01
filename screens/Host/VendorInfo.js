@@ -36,7 +36,7 @@ const VendorProfileScreen = ({ route, navigation }) => {
   };
 
   const getServices = async () => {
-    const res = await apis.service.getAll({ VendorId: vendorProfile?.id });
+    const res = await apis.service.getAll({ vendorId: vendorProfile?.id });
     console.log("RES", res);
     setServices(res.data);
   };
@@ -44,7 +44,7 @@ const VendorProfileScreen = ({ route, navigation }) => {
   const getBackground = async () => {
     try {
       const res = await apis.document.getAll({
-        VendorId: vendorProfile?.id,
+        vendorId: vendorProfile?.id,
       });
 
       setBackgroundLink(res.data[0].link);

@@ -1,10 +1,10 @@
 import { PartyModel } from "./PartyModel";
 
 export type QuoteModel = {
-  PartyId: number;
-  Party: PartyModel;
-  UserId: number;
-  VendorId: number;
+  partyId: number;
+  party: PartyModel;
+  userId: number;
+  vendorId: number;
   assembling: string;
   cancellationTerm: string;
   createdAt: string;

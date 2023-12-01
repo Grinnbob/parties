@@ -53,7 +53,7 @@ export const PartyDetailsScreen: React.FC<PartyDetailsScreenProps> = ({
   useEffect(() => {
     const getConversationId = async () => {
       const response = await apis.conversation.getByPartyId({
-        PartyId: party.id,
+        partyId: party.id,
       });
       setConversation(response.data[0]);
       setIsConversationLoading(false);

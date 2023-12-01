@@ -1,44 +1,44 @@
-import * as API from '../base';
-import * as assets from './assets';
-import {manipulateAsync, FlipType, SaveFormat} from 'expo-image-manipulator';
+import * as API from "../base";
+import * as assets from "./assets";
+import { manipulateAsync, FlipType, SaveFormat } from "expo-image-manipulator";
 
-const Base = 'document';
+const Base = "document";
 interface DOCUMENT {
   id?: string;
   name?: string;
   key?: string;
   link?: string;
-  VendorId?: string;
+  vendorId?: string;
   uri?: string;
-  AlbumId?: number;
+  albumId?: number;
 }
 
 interface COMPRESSION {
-    compress: number;
-    format: SaveFormat;
+  compress: number;
+  format: SaveFormat;
 }
 
 interface DOCUMENT_UPLOAD {
   id?: number;
-  VendorId?: number;
+  vendorId?: number;
   uri: string;
   type: string;
-  AlbumId?: number;
+  albumId?: number;
   compression?: COMPRESSION;
 }
 
 export const create = async (data: DOCUMENT_UPLOAD) => {
-  const {uri, VendorId, type, AlbumId, compression} = data;
-  console.log("DATA COMING IN CREATE DOC", data)
-  const id = AlbumId? AlbumId : VendorId;
-  if(!id) return {success: false}
+  const { uri, vendorId, type, albumId, compression } = data;
+  console.log("DATA COMING IN CREATE DOC", data);
+  const id = albumId ? albumId : vendorId;
+  if (!id) return { success: false };
   const uploadRes = await API.imageApi(type, id, uri, compression);
   if (uploadRes.success) {
     const docBody = {
       key: uploadRes?.data?.key,
-      VendorId: VendorId,
+      vendorId: vendorId,
       name: uploadRes?.data?.key,
-      AlbumId: AlbumId
+      albumId: albumId,
     };
 
     const response = await API.postApi(`${Base}/`, docBody);

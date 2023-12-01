@@ -13,9 +13,9 @@ export type ChatMessageModel = {
     _id: number;
     avatar: string;
   };
-  UserId: number;
-  ConversationId: number;
-  QuoteId?: number | null;
+  userId: number;
+  conversationId: number;
+  quoteId?: number | null;
   quote?: QuoteModel;
   party?: PartyModel | null;
   success?: boolean;

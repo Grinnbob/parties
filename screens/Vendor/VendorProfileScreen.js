@@ -74,7 +74,7 @@ const VendorProfileScreen = ({ route }) => {
 
   const getService = async () => {
     try {
-      const res = await apis.service.getAll({ VendorId: vendor[0]?.id });
+      const res = await apis.service.getAll({ vendorId: vendor[0]?.id });
 
       if (res && res.data) {
         setService(res.data);
@@ -89,7 +89,7 @@ const VendorProfileScreen = ({ route }) => {
 
   const getAlbum = async () => {
     try {
-      const res = await apis.album.getAll({ VendorId: vendor[0]?.id });
+      const res = await apis.album.getAll({ vendorId: vendor[0]?.id });
 
       if (res && res.data) {
         setAlbum(res.data);
@@ -434,7 +434,7 @@ const VendorProfileScreen = ({ route }) => {
                       </Text>
                       <TouchableOpacity>
                         <Image
-                          source={{ uri: item.Documents[0]?.link }}
+                          source={{ uri: item.documents[0]?.link }}
                           style={{
                             width: 50,
                             height: 50,

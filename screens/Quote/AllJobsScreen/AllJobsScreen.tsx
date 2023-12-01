@@ -47,7 +47,7 @@ export const AllJobsScreen: React.FC = () => {
   const renderPartyCard = (element: ListRenderItemInfo<QuoteModel>) => {
     return (
       <PartyCard
-        party={element.item.Party}
+        party={element.item.party}
         price={element.item.price}
         onPress={() => {
           setSelectedQuote(element.item);
@@ -68,6 +68,7 @@ export const AllJobsScreen: React.FC = () => {
   useEffect(() => {
     const getAllQuotes = async () => {
       const response = await apis.quote.getMy();
+      console.log("response", response);
       setQuotes(response.data);
       setIsLoading(false);
     };
@@ -77,7 +78,7 @@ export const AllJobsScreen: React.FC = () => {
   const selectedData = useMemo(() => {
     return quotes
       .filter((item) => item.status === selectedTab)
-      .filter((item) => !!item.Party);
+      .filter((item) => !!item.party);
   }, [quotes, selectedTab]);
 
   return (

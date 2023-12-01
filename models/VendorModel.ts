@@ -1,5 +1,5 @@
 export type VendorModel = {
-  UserId: number | null;
+  userId: number | null;
   address: string | null;
   avatar: string;
   city: string;

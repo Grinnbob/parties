@@ -6,15 +6,15 @@ export const create = async (data: {
   assembling: string;
   shipment: string;
   services: number[];
-  VendorId: number;
-  PartyId: number;
+  vendorId: number;
+  partyId: number;
   notes: string;
 }) => {
   const response = await API.postApi(`${Base}/`, data);
   return response;
 };
 
-export const getAll = async (params: { UserId?: number }) => {
+export const getAll = async (params: { userId?: number }) => {
   const urlSearchParams = new URLSearchParams();
   Object.keys(params).forEach((key: string) => {
     urlSearchParams.append(key, String(params[key as keyof typeof params]));

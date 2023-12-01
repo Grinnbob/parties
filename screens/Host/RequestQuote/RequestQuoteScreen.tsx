@@ -157,8 +157,8 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
           assembling: quote.assembling!,
           shipment: quote.shipment!,
           services: quote.services,
-          VendorId: vendor?.id,
-          PartyId: Number(partyId),
+          vendorId: vendor?.id,
+          partyId: Number(partyId),
           notes: quote.notes!,
         });
         if (!response.success) {

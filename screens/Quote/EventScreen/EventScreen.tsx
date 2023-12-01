@@ -65,7 +65,7 @@ export const EventScreen: React.FC<PartyDetailsScreenProps> = ({ route }) => {
 
   const isInitialized = useRef(false);
   const [selectedQuote] = useRecoilState(selectedQuoteAtom);
-  const { Party: party } = selectedQuote;
+  const { party } = selectedQuote as QuoteModel;
 
   useEffect(() => {
     if (!isInitialized.current && selectedQuote?.status === "new") {
@@ -104,7 +104,7 @@ export const EventScreen: React.FC<PartyDetailsScreenProps> = ({ route }) => {
   useEffect(() => {
     const getConversationId = async () => {
       const response = await apis.conversation.getByPartyId({
-        PartyId: party.id,
+        partyId: party.id,
       });
       setConversation(response.data[0]);
       setIsConversationLoading(false);

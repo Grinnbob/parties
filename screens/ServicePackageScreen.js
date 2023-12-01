@@ -55,7 +55,7 @@ const ServicePackageScreen = ({ navigation, route }) => {
         rate: rate,
         description: description,
         amount: serveAmount,
-        VendorId: vendor[0].id,
+        vendorId: vendor[0].id,
       });
       setIsLoading(false);
       if (res && res.success === false) {

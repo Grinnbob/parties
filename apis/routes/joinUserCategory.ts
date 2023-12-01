@@ -1,9 +1,9 @@
-import * as API from '../base';
-const Base = 'joinUserCategory';
+import * as API from "../base";
+const Base = "joinUserCategory";
 
-interface JOIN_USER_CATEGORY{
+interface JOIN_USER_CATEGORY {
   id?: string;
-  UserId?: string;
+  userId?: string;
   CategoryId?: string;
 }
 

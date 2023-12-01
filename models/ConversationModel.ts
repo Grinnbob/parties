@@ -1,5 +1,5 @@
 export type ConversationModel = {
-  PartyId: number;
+  partyId: number;
   createdAt: string;
   id: number;
   latestMessage: null;

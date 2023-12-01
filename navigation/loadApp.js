@@ -14,7 +14,9 @@ export default async (setToken, setUser) => {
     }
     if (res.isRegisteredForBiometrics) {
       const authenticate = await LocalAuthentication.authenticateAsync();
-      if (!authenticate) return setToken("auth");
+      if (!authenticate) {
+        return setToken("auth");
+      }
       await apis.device.loginWithBiometrics();
       return grabUserAndNav(setToken, setUser);
     }
@@ -33,6 +35,7 @@ const grabUserAndNav = async (setToken, setUser, shouldNotNav) => {
   console.log("res from self:", res.data);
   if (res.success) {
     setUser(res.data);
+    console.log("!!---res.data", res.data);
     setToken(res.data.isVerified ? res.data.role : "verify");
     return true;
   }

@@ -62,11 +62,11 @@ export const QuoteMessage: React.FC<MyQuoteMessageProps> = ({
   const [user] = useGlobalState(StateTypes.user.key, StateTypes.user.default);
 
   const handleAccept = useCallback(() => {
-    if (chatMessage.QuoteId) {
+    if (chatMessage.quoteId) {
       setMessages((prevState) => {
         const newState = [...prevState];
         const index = newState.findIndex(
-          (item) => item.QuoteId === chatMessage.QuoteId
+          (item) => item.quoteId === chatMessage.quoteId
         );
 
         if (index >= 0 && newState[index]?.quote?.status) {
@@ -77,7 +77,7 @@ export const QuoteMessage: React.FC<MyQuoteMessageProps> = ({
         return newState;
       });
     }
-  }, [setMessages, chatMessage.QuoteId]);
+  }, [setMessages, chatMessage.quoteId]);
 
   return (
     <>
@@ -152,12 +152,12 @@ export const QuoteMessage: React.FC<MyQuoteMessageProps> = ({
             <DenyQuoteModal
               isOpen={isDenyModalOpen}
               onClose={toggleDenyModal}
-              quoteId={chatMessage.QuoteId!}
+              quoteId={chatMessage.quoteId!}
             />
             <CreateQuoteModal
               isOpen={isCreateQuoteModalOpen}
               onClose={toggleQuoteModal}
-              quoteId={chatMessage.QuoteId!}
+              quoteId={chatMessage.quoteId!}
               onAccept={handleAccept}
             />
           </>

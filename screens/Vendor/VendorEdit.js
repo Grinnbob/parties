@@ -107,7 +107,7 @@ const VendorEdit = ({ route, navigation }) => {
         setAdd(res.data.address);
         ref.current?.setAddressText(res?.data?.address);
         setDistance(res.data.distance);
-        setImageList(res.data.Documents);
+        setImageList(res.data.documents);
         setServiceInitialType(res.data.listOfType[0].id);
         setService(res.data.listOfType[0].title);
         setVendorKeyList(res.data.listOfKeys);
@@ -295,7 +295,7 @@ const VendorEdit = ({ route, navigation }) => {
         description: serviceDescription,
         phoneNumber: phone,
         taxId: ein,
-        UserId: user.id,
+        userId: user.id,
         views: 0,
         sales: 0.0,
         favorites: 0,
@@ -336,14 +336,14 @@ const VendorEdit = ({ route, navigation }) => {
 
       const key = await apis.joinVendorKey.createEditMulti({
         list: vendorKeyList,
-        VendorId: vendor[0]?.id,
+        vendorId: vendor[0]?.id,
       });
 
       if (serviceType && serviceInitialType) {
         const joinVendorType = await apis.joinVendorVendorType.update({
           id: vendor[0]?.id,
-          VendorTypeId: serviceType,
-          PrevVendorType: serviceInitialType,
+          vendorTypeId: serviceType,
+          prevVendorType: serviceInitialType,
         });
 
         console.log("JOIN VENDOR", joinVendorType);
