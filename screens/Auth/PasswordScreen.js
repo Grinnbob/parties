@@ -238,7 +238,7 @@ const PasswordScreen = ({ route }) => {
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
-                  flexWrap: 1,
+                  // flexWrap: 1,
                 }}
               >
                 <Text

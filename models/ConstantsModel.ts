@@ -8,6 +8,7 @@ export type ConstantsModel = {
       NONE: Option;
       SETUP: Option;
     };
+    DOWNPAYMENT: { FULL: Option; HALF: Option; THIRD: Option };
     CANCELLATION: { WITHIN24BACK80: Option };
     PAY: { CARD: Option; CASH: Option };
     SHIPMENT: { DELIVERY: Option; PICKUP: Option };

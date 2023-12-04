@@ -26,6 +26,8 @@ import useGlobalState from "../../stateManagement/hook";
 import StateTypes from "../../stateManagement/StateTypes";
 import { useNavigation } from "@react-navigation/core";
 import GradientBar from "./components/GradientBar";
+import FastImage from "react-native-fast-image";
+import { IconBg } from "../../components/Atoms";
 
 const renderItem = ({ item }) => {
   return (
@@ -156,7 +158,7 @@ const VendorProfileScreen = ({ route }) => {
           resizeMode="cover"
           source={require("../../assets/bg18.png")}
         />
-        <ImageBackground
+        <FastImage
           style={[
             styles.vendorprofilescreenChild,
             styles.topnavigationContentLayout,
@@ -175,38 +177,44 @@ const VendorProfileScreen = ({ route }) => {
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
-                marginTop: 50,
+                marginTop: 40,
               }}
             >
               <View style={{ flexDirection: "row" }}>
-                <Pressable onPress={toggleDrawer} hitSlop={20}>
-                  <Image
-                    style={styles.xIconLayout}
-                    resizeMode="cover"
-                    source={require("../../assets/iconsaxlinearhambergermenu1.png")}
-                  />
-                </Pressable>
+                <IconBg>
+                  <Pressable onPress={toggleDrawer} hitSlop={20}>
+                    <Image
+                      style={styles.xIconLayout}
+                      resizeMode="cover"
+                      source={require("../../assets/iconsaxlinearhambergermenu1.png")}
+                    />
+                  </Pressable>
+                </IconBg>
                 <View
                   style={{
                     width: 20,
                     height: 20,
                   }}
-                ></View>
+                />
               </View>
-              <View style={{ flexDirection: "row" }}>
+              <View style={{ flexDirection: "row", gap: 8 }}>
                 <Pressable onPress={() => navigate("Edit")}>
-                  <Image
-                    style={[styles.pencilIcon1, styles.iconSpaceBlock]}
-                    resizeMode="cover"
-                    source={require("../../assets/pencil1.png")}
-                  />
+                  <IconBg>
+                    <Image
+                      style={[styles.pencilIcon1]}
+                      resizeMode="cover"
+                      source={require("../../assets/pencil1.png")}
+                    />
+                  </IconBg>
                 </Pressable>
                 <Pressable onPress={onShare}>
-                  <Image
-                    style={[styles.pencilIcon1, styles.iconSpaceBlock]}
-                    resizeMode="cover"
-                    source={require("../../assets/sharenetwork.png")}
-                  />
+                  <IconBg>
+                    <Image
+                      style={[styles.pencilIcon1]}
+                      resizeMode="cover"
+                      source={require("../../assets/sharenetwork.png")}
+                    />
+                  </IconBg>
                 </Pressable>
               </View>
             </View>
@@ -221,7 +229,7 @@ const VendorProfileScreen = ({ route }) => {
               </Text>
             )}
           </View>
-        </ImageBackground>
+        </FastImage>
         <LinearGradient
           style={styles.vendorDesc}
           locations={[0, 1]}
@@ -696,10 +704,6 @@ const styles = StyleSheet.create({
     paddingTop: Padding.p_4xs,
     flexDirection: "row",
     alignItems: "center",
-  },
-  iconSpaceBlock: {
-    marginLeft: 10,
-    overflow: "hidden",
   },
   bgIcon: {
     width: "100%",

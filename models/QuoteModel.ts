@@ -1,5 +1,14 @@
 import { PartyModel } from "./PartyModel";
 
+export enum QuoteStatusEnum {
+  NEW = "new",
+  PENDING = "pending",
+  ACCEPTED = "accepted",
+  DENIED_BY_HOST = "deniedByHost",
+  ACCEPTED_BY_VENDOR = "acceptedByVendor",
+  DENIED_BY_VENDOR = "deniedByVendor",
+}
+
 export type QuoteModel = {
   partyId: number;
   party: PartyModel;
@@ -14,7 +23,7 @@ export type QuoteModel = {
   notes: string | null;
   paymentOption: string;
   shipment: string;
-  status: "new" | "pending" | "accepted" | "denied";
+  status: QuoteStatusEnum;
   updatedAt: string;
   price: number;
 };

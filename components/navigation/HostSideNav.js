@@ -8,6 +8,7 @@ import {
   View,
   ImageBackground,
   ScrollView,
+  SafeAreaView,
 } from "react-native";
 import MenuCard from "../../components/MenuCard";
 import { useNavigation } from "@react-navigation/core";
@@ -40,47 +41,51 @@ const HostSideNav = ({}) => {
   };
 
   return (
-    <ScrollView style={{ backgroundColor: "#000" }}>
+    <ScrollView
+      style={{ backgroundColor: "#000" }}
+      contentContainerStyle={styles.root}
+    >
       <ImageBackground
         style={styles.bgIcon}
         resizeMode="cover"
         source={require("../../assets/bg11.png")}
-      ></ImageBackground>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginTop: 50,
-        }}
-      >
-        <TouchableOpacity onPress={() => navigate("ServiceSelectScreen")}>
-          <Image
-            style={styles.backIconLayout}
-            resizeMode="cover"
-            source={require("../../assets/back.png")}
-          />
-        </TouchableOpacity>
-        <View style={styles.title}>
-          <Text style={styles.title1}>Setting</Text>
-        </View>
-        <View style={{ width: 30, height: 30 }}></View>
-      </View>
-      <View style={styles.divider}></View>
-      <View style={styles.settings}>
-        <View style={styles.container}>
-          <TouchableOpacity
-            style={styles.touchableopacity}
-            activeOpacity={0.2}
-            onPress={() => navigate("EditAccount")}
-          >
-            <MenuCard
-              icon={require("../../assets/iconsaxlinearuser.png")}
-              title="Account settings"
-              propWidth={327}
-              propAlignSelf="unset"
+      />
+      <SafeAreaView style={styles.safeAreaView}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginTop: 18,
+          }}
+        >
+          <TouchableOpacity onPress={() => navigate("ServiceSelectScreen")}>
+            <Image
+              style={styles.backIconLayout}
+              resizeMode="cover"
+              source={require("../../assets/back.png")}
             />
           </TouchableOpacity>
-          {/* <TouchableOpacity
+          <View style={styles.title}>
+            <Text style={styles.title1}>Settings</Text>
+          </View>
+          <View style={{ width: 30, height: 30 }}></View>
+        </View>
+        <View style={styles.divider}></View>
+        <View style={styles.settings}>
+          <View style={styles.container}>
+            <TouchableOpacity
+              style={styles.touchableopacity}
+              activeOpacity={0.2}
+              onPress={() => navigate("EditAccount")}
+            >
+              <MenuCard
+                icon={require("../../assets/iconsaxlinearuser.png")}
+                title="Account settings"
+                propWidth={327}
+                propAlignSelf="unset"
+              />
+            </TouchableOpacity>
+            {/* <TouchableOpacity
               style={styles.touchableopacity}
               activeOpacity={0.2}
               // onPress={() => navigation.navigate("EditAccount")}
@@ -93,90 +98,97 @@ const HostSideNav = ({}) => {
               />
             </TouchableOpacity> */}
 
-          <TouchableOpacity
-            style={styles.touchableopacity}
-            activeOpacity={0.2}
-            onPress={() => navigate("FAQ")}
-          >
-            <MenuCard
-              icon={require("../../assets/question.png")}
-              title="FAQ"
-              propWidth={327}
-              propAlignSelf="unset"
-            />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.touchableopacity}
-            activeOpacity={0.2}
-            onPress={() => navigate("Term")}
-          >
-            <MenuCard
-              icon={require("../../assets/iconsaxlineardocumenttext.png")}
-              title="Terms & Policy"
-              propWidth={327}
-              propAlignSelf="unset"
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.touchableopacity}
-            activeOpacity={0.2}
-            onPress={() => navigate("Privacy")}
-          >
-            <MenuCard
-              icon={require("../../assets/iconsaxlinearshieldtick.png")}
-              title="Privacy Policy"
-              propWidth={327}
-              propAlignSelf="unset"
-            />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.touchableopacity}
-            activeOpacity={0.2}
-            onPress={() => navigate("Report")}
-          >
-            <MenuCard
-              icon={require("../../assets/iconsaxlinearflag.png")}
-              title="Report problem"
-              propWidth={327}
-              propAlignSelf="unset"
-            />
-          </TouchableOpacity>
-          {user.role === "vendor" && (
             <TouchableOpacity
               style={styles.touchableopacity}
               activeOpacity={0.2}
-              onPress={switchToVendor}
+              onPress={() => navigate("FAQ")}
             >
               <MenuCard
-                icon={require("../../assets/iconsaxlineararrangehorizontalcircle.png")}
-                title="Switch to vendor"
+                icon={require("../../assets/question.png")}
+                title="FAQ"
                 propWidth={327}
                 propAlignSelf="unset"
               />
             </TouchableOpacity>
-          )}
+
+            <TouchableOpacity
+              style={styles.touchableopacity}
+              activeOpacity={0.2}
+              onPress={() => navigate("Term")}
+            >
+              <MenuCard
+                icon={require("../../assets/iconsaxlineardocumenttext.png")}
+                title="Terms & Policy"
+                propWidth={327}
+                propAlignSelf="unset"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.touchableopacity}
+              activeOpacity={0.2}
+              onPress={() => navigate("Privacy")}
+            >
+              <MenuCard
+                icon={require("../../assets/iconsaxlinearshieldtick.png")}
+                title="Privacy Policy"
+                propWidth={327}
+                propAlignSelf="unset"
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.touchableopacity}
+              activeOpacity={0.2}
+              onPress={() => navigate("Report")}
+            >
+              <MenuCard
+                icon={require("../../assets/iconsaxlinearflag.png")}
+                title="Report problem"
+                propWidth={327}
+                propAlignSelf="unset"
+              />
+            </TouchableOpacity>
+            {user.role === "vendor" && (
+              <TouchableOpacity
+                style={styles.touchableopacity}
+                activeOpacity={0.2}
+                onPress={switchToVendor}
+              >
+                <MenuCard
+                  icon={require("../../assets/iconsaxlineararrangehorizontalcircle.png")}
+                  title="Switch to vendor"
+                  propWidth={327}
+                  propAlignSelf="unset"
+                />
+              </TouchableOpacity>
+            )}
+          </View>
+          <TouchableOpacity
+            style={[styles.touchableopacity, styles.logout]}
+            activeOpacity={0.2}
+            onPress={logout}
+          >
+            <MenuCard
+              propMarginTop="unset"
+              icon={require("../../assets/iconsaxlinearlogoutcurve.png")}
+              title="Log out"
+              propWidth="unset"
+              propAlignSelf="stretch"
+            />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          style={styles.touchableopacity}
-          activeOpacity={0.2}
-          onPress={logout}
-        >
-          <MenuCard
-            propMarginTop="unset"
-            icon={require("../../assets/iconsaxlinearlogoutcurve.png")}
-            title="Log out"
-            propWidth="unset"
-            propAlignSelf="stretch"
-          />
-        </TouchableOpacity>
-      </View>
+      </SafeAreaView>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  root: {
+    flexGrow: 1,
+  },
+  safeAreaView: {
+    flex: 1,
+  },
   title2Typo: {
     fontFamily: FontFamily.typographyBodyMediumRegular,
     lineHeight: 22,
@@ -213,7 +225,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Padding.p_5xl,
     marginTop: 20,
     justifyContent: "space-between",
-    height: "100%",
+    flex: 1,
     width: "100%",
   },
   leftTitle: {
@@ -252,6 +264,9 @@ const styles = StyleSheet.create({
     borderColor: "rgba(77, 77, 77, 0.5)",
     borderBottomWidth: 1,
     marginBottom: 10,
+  },
+  logout: {
+    marginBottom: 30,
   },
 });
 

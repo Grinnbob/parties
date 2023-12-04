@@ -86,7 +86,7 @@ const InputBoxes = ({
           style={[
             styles.shadows,
             {
-              borderColor: "rgba(255, 255, 255, 0.2)",
+              borderColor: "rgba(255, 255, 255, 0.4)",
               borderWidth: 2,
             },
           ]}
@@ -95,7 +95,7 @@ const InputBoxes = ({
         <View
           style={[
             styles.shadows,
-            { borderColor: "rgba(255, 255, 255, 0.2)", borderWidth: 1 },
+            { borderColor: "rgba(255, 255, 255, 0.4)", borderWidth: 1 },
           ]}
         >
           {index > values.length && (
