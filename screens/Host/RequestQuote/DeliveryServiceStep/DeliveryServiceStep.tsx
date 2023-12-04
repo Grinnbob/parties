@@ -27,9 +27,6 @@ export const DeliveryServiceStep: React.FC<DeliveryServiceStepProps> = ({
   setQuote,
 }) => {
   const [constants, isConstantsLoading] = useLoadable(constantsQuery);
-  const options = useMemo(() => {
-    return constants?.QUOTE_OPTIONS.PAY;
-  }, [constants]);
 
   const deliveryServiceOptions = useMemo(() => {
     if (constants) {
@@ -112,7 +109,7 @@ export const DeliveryServiceStep: React.FC<DeliveryServiceStepProps> = ({
           }}
           style={styles.listItem}
         >
-          <Text style={styles.listItemText}>{element.item.id}</Text>
+          <Text style={styles.listItemText}>{element.item.text}</Text>
           {element.item.id === quote.assembling ? (
             <CheckCircleIcon />
           ) : (

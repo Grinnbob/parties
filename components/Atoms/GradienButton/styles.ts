@@ -22,7 +22,4 @@ export const styles = StyleSheet.create({
   disabledText: {
     color: "rgba(138, 138, 138, 1)",
   },
-  activityIndicator: {
-    color: Color.textMainWhite,
-  },
 });

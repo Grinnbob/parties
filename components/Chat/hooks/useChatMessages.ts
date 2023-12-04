@@ -15,18 +15,19 @@ import { useChat } from "./useChat";
 import { ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getAllMessages, uploadChatImage } from "../../../apis/routes/chat";
-import { ChatMessageModel } from "../../../models/ChatMessageModel";
+import { ChatMessageModel } from "../../../models";
 
 export const useChatMessages = ({
   conversationId,
   userId,
   scrollViewRef,
 }: {
-  conversationId: string;
-  userId: string;
+  conversationId: number;
+  userId: number;
   scrollViewRef: MutableRefObject<ScrollView | null>;
 }) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [isStorageInitialized, setIsStorageInitialized] = useState(false);
   const {
     receivedMessage,
     startChatSocket,
@@ -38,7 +39,7 @@ export const useChatMessages = ({
   const messagesRef = useRef(messages);
   const groupedMessages = useMemo(() => {
     return groupBy(messages, (record) =>
-      dayjs(record.message.createdAt).format("YYYY MMM DD")
+      dayjs(record.createdAt).format("YYYY MMM DD")
     );
   }, [messages]);
 
@@ -52,15 +53,15 @@ export const useChatMessages = ({
       id: string | number,
       values: Partial<{
         isLoading: boolean;
-        id: ChatMessageModel["message"]["_id"];
-        createdAt: ChatMessageModel["message"]["createdAt"];
-        user: ChatMessageModel["message"]["user"];
-        messageImage: ChatMessageModel["message"]["messageImage"];
+        id: ChatMessageModel["id"];
+        createdAt: ChatMessageModel["createdAt"];
+        user: ChatMessageModel["user"];
+        messageImage: ChatMessageModel["messageImage"];
       }>
     ) => {
       setMessages((prevState) => {
         const newState = prevState.slice();
-        const item = newState.find((item) => item.message._id === id);
+        const item = newState.find((item) => item.id === id);
         if (item) {
           if (values?.isLoading !== undefined) {
             item.isLoading = values?.isLoading;
@@ -69,16 +70,16 @@ export const useChatMessages = ({
             }
           }
           if (values.id) {
-            item.message._id = values.id;
+            item.id = values.id;
           }
           if (values.createdAt) {
-            item.message.createdAt = new Date(values.createdAt);
+            item.createdAt = new Date(values.createdAt);
           }
           if (values.user) {
-            item.message.user = values.user;
+            item.user = values.user;
           }
           if (values.messageImage) {
-            item.message.messageImage = values.messageImage;
+            item.messageImage = values.messageImage;
           }
         }
         return newState;
@@ -90,7 +91,7 @@ export const useChatMessages = ({
   const setMessageError = useCallback((id: string | number) => {
     setMessages((prevState) => {
       const newState = prevState.slice();
-      const message = newState.find((item) => item.message._id === id);
+      const message = newState.find((item) => item.id === id);
       if (message) {
         message.isLoading = false;
         message.error = "timeout";
@@ -105,24 +106,23 @@ export const useChatMessages = ({
   }) => {
     const id = uuid.v4() as string;
     if (params.image) {
-      console.log("params.image", params.image);
       try {
         const imageUrl = params.image?.assets?.[0].uri || "";
         setMessages([
           ...messages,
           {
-            message: {
-              _id: id,
-              createdAt: new Date(),
-              type: "image",
-              messageImage: imageUrl,
-              user: {
-                _id: userId,
-                avatar: "",
-                name: "",
-              },
+            id: id,
+            createdAt: new Date(),
+            type: "image",
+            messageImage: imageUrl,
+            user: {
+              _id: Number(userId),
+              avatar: "",
+              name: "",
             },
             isLoading: true,
+            UserId: Number(userId),
+            ConversationId: conversationId,
           },
         ]);
         setTimeout(() => {
@@ -143,13 +143,13 @@ export const useChatMessages = ({
             userId,
             image: uploadedImage.data.key,
           });
-          console.log("response", response);
+          console.log("response image", response);
           setMessageData(id, {
             isLoading: false,
-            id: response.message._id,
-            createdAt: response.message.createdAt,
-            user: response.message.user,
-            messageImage: response.message.messageImage,
+            id: response.id,
+            createdAt: response.createdAt,
+            user: response.user,
+            messageImage: response.messageImage,
           });
         } else {
           setMessageError(id);
@@ -161,18 +161,18 @@ export const useChatMessages = ({
       setMessages([
         ...messages,
         {
-          message: {
-            _id: id,
-            createdAt: new Date(),
-            type: "text",
-            text: params.message,
-            user: {
-              _id: userId,
-              avatar: "",
-              name: "",
-            },
+          id: id,
+          createdAt: new Date(),
+          type: "text",
+          message: params.message,
+          user: {
+            _id: Number(userId),
+            avatar: "",
+            name: "",
           },
           isLoading: true,
+          UserId: Number(userId),
+          ConversationId: conversationId,
         },
       ]);
       setMessage("");
@@ -189,17 +189,13 @@ export const useChatMessages = ({
           ConversationId: conversationId, // ToDO remove after BE fix
           message: params.message,
         });
-        console.log("response", response);
-        if (response?.success && response?.message?._id) {
-          setMessageData(id, {
-            isLoading: false,
-            id: response?.message?._id,
-            createdAt: response?.message?.createdAt,
-            user: response?.message?.user,
-          });
-        } else {
-          setMessageError(id);
-        }
+        console.log("response text", response);
+        setMessageData(id, {
+          isLoading: false,
+          id: response?.id,
+          createdAt: response?.createdAt,
+          user: response?.user,
+        });
       } catch (e) {
         console.log("error", e);
         setMessageError(id);
@@ -219,23 +215,20 @@ export const useChatMessages = ({
       async (selectedIndex: number) => {
         switch (selectedIndex) {
           case retryButtonIndex:
-            const item = messages.find((item) => item.message._id === id);
-            if (!item?.message.text) {
-              return;
-            }
+            const item = messages.find((item) => item.id === id);
             try {
               setMessageData(id, { isLoading: true });
               const response = await sendMessage({
                 userId,
                 conversationId,
-                message: item.message.text,
+                message: item?.message || "",
               });
               console.log("response", response);
               setMessageData(id, {
                 isLoading: false,
-                id: response.message._id,
-                createdAt: response.message.createdAt,
-                user: response.message.user,
+                id: response.id,
+                createdAt: response.createdAt,
+                user: response.user,
               });
             } catch (e) {
               setMessageError(id);
@@ -243,9 +236,7 @@ export const useChatMessages = ({
             return;
           case deleteButtonIndex:
             setMessages((prevState) => {
-              return prevState
-                .slice()
-                .filter((item) => item.message._id !== id);
+              return prevState.slice().filter((item) => item.id !== id);
             });
             return;
         }
@@ -273,7 +264,7 @@ export const useChatMessages = ({
         }
       })
       .finally(() => {
-        setIsLoading(false);
+        setIsStorageInitialized(true);
       });
   }, [conversationId]);
 
@@ -306,11 +297,8 @@ export const useChatMessages = ({
     if (receivedMessage) {
       setTimeout(() => {
         setMessages((prevState) => {
-          if (
-            prevState.find(
-              (item) => item.message._id === receivedMessage.message._id
-            )
-          ) {
+          console.log("receivedMessage", receivedMessage);
+          if (prevState.find((item) => item.id === receivedMessage.id)) {
             return prevState;
           } else {
             setTimeout(() => {
@@ -324,10 +312,13 @@ export const useChatMessages = ({
   }, [receivedMessage]);
 
   useEffect(() => {
-    getAllMessages(conversationId).then((response) => {
-      console.log("getAllMessages", response);
-    });
-  }, [conversationId]);
+    if (isStorageInitialized) {
+      getAllMessages(conversationId).then((response) => {
+        setMessages(response.data);
+        setIsLoading(false);
+      });
+    }
+  }, [conversationId, isStorageInitialized]);
 
   messagesRef.current = messages;
 
@@ -335,6 +326,7 @@ export const useChatMessages = ({
     isLoading,
     message,
     onMessageChange,
+    setMessages,
     onSubmitMessage,
     groupedMessages,
     onErrorPress,

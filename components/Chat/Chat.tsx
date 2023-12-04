@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -6,22 +6,28 @@ import {
   ScrollView,
 } from "react-native";
 import { Tag } from "../Atoms";
-import { MyMessage } from "./MyMessage/MyMessage";
-import { VendorMessage } from "./VendorMessage/VendorMessage";
+import { Message } from "./Message/Message";
 import { MessageInput } from "./MessageInput";
 import { styles } from "./styles";
 import dayjs from "dayjs";
 import { useChatMessages } from "./hooks/useChatMessages";
 import { ImageModal } from "./ImageModal";
+import { QuoteMessage } from "./QuoteMessage";
+import { Color } from "../../GlobalStyles";
 
 const currentYear = dayjs().format("YYYY");
 
 type ChatProps = {
-  conversationId: string;
-  userId: string;
+  conversationId: number;
+  userId: number;
+  vendorId: number;
 };
 
-export const Chat: React.FC<ChatProps> = ({ conversationId, userId }) => {
+export const Chat: React.FC<ChatProps> = ({
+  conversationId,
+  userId,
+  vendorId,
+}) => {
   const scrollViewRef = useRef<ScrollView | null>(null);
   const {
     isLoading,
@@ -30,6 +36,7 @@ export const Chat: React.FC<ChatProps> = ({ conversationId, userId }) => {
     onSubmitMessage,
     groupedMessages,
     onErrorPress,
+    setMessages,
   } = useChatMessages({
     conversationId,
     userId,
@@ -46,6 +53,17 @@ export const Chat: React.FC<ChatProps> = ({ conversationId, userId }) => {
     setImagePreviewUrl("");
   };
 
+  const handleContentSizeChange = useCallback((w: number, h: number) => {
+    scrollViewRef.current?.scrollToEnd({ animated: false });
+  }, []);
+
+  const getType = (id: number) => {
+    if (vendorId) {
+      return id === vendorId ? "vendor" : "host";
+    }
+    return userId === id ? "host" : "vendor";
+  };
+
   return (
     <>
       <ScrollView
@@ -53,6 +71,7 @@ export const Chat: React.FC<ChatProps> = ({ conversationId, userId }) => {
         automaticallyAdjustKeyboardInsets={true}
         keyboardShouldPersistTaps="always"
         contentContainerStyle={styles.messagesContainer}
+        onContentSizeChange={handleContentSizeChange}
       >
         {Object.keys(groupedMessages).map((key) => {
           const split = key.split(" ");
@@ -63,30 +82,34 @@ export const Chat: React.FC<ChatProps> = ({ conversationId, userId }) => {
             <React.Fragment key={key}>
               <Tag text={tag} style={styles.tag} />
               {groupedMessages[key].map((chatMessage) => {
-                if (
-                  String(chatMessage?.message?.user?._id) === String(userId)
-                ) {
+                const isMe = chatMessage?.user?._id === userId;
+
+                if (chatMessage.QuoteId) {
                   return (
-                    <MyMessage
-                      key={chatMessage.message._id}
+                    <QuoteMessage
+                      key={chatMessage.id}
                       chatMessage={chatMessage}
-                      onErrorPress={onErrorPress}
-                      onImagePress={handleImagePress}
+                      isMe={isMe}
+                      setMessages={setMessages}
                     />
                   );
                 }
 
                 return (
-                  <VendorMessage
-                    key={chatMessage.message._id}
+                  <Message
+                    key={chatMessage.id}
                     chatMessage={chatMessage}
+                    onErrorPress={onErrorPress}
+                    onImagePress={handleImagePress}
+                    isMe={isMe}
+                    type={getType(chatMessage?.user?._id)}
                   />
                 );
               })}
             </React.Fragment>
           );
         })}
-        {isLoading && <ActivityIndicator size={24} />}
+        {isLoading && <ActivityIndicator color={Color.primaryPink} size={24} />}
       </ScrollView>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "position" : null}

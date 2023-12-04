@@ -7,7 +7,10 @@ export const create = async (data: Omit<PartyModel, "id">) => {
   return response;
 };
 
-export const getMyParties = async (params: { minDate: string }) => {
+export const getMyParties = async (params: {
+  search?: string;
+  minDate?: Date;
+}) => {
   const urlSearchParams = new URLSearchParams();
   Object.keys(params).forEach((key: string) => {
     urlSearchParams.append(key, String(params[key as keyof typeof params]));

@@ -1,13 +1,25 @@
+import { PartyModel } from "./PartyModel";
+import { QuoteModel } from "./QuoteModel";
+
 export type ChatMessageModel = {
-  message: {
-    _id: number | string;
-    createdAt: string | Date;
-    text?: string;
-    messageImage?: string;
-    type: "text" | "image";
-    user?: { _id: number | string; avatar: string; name: string };
+  id: number | string;
+  message?: string | null;
+  createdAt: string | Date;
+  updatedAt?: string | Date;
+  image?: string | null;
+  messageImage?: string | null;
+  user: {
+    name: string;
+    _id: number;
+    avatar: string;
   };
+  UserId: number;
+  ConversationId: number;
+  QuoteId?: number | null;
+  quote?: QuoteModel;
+  party?: PartyModel | null;
   success?: boolean;
   isLoading?: boolean;
+  type: "text" | "image";
   error?: "timeout" | "unknown";
 };

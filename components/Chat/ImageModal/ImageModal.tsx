@@ -1,6 +1,7 @@
 import React from "react";
-import { Image, Modal, View, Pressable } from "react-native";
+import { Modal, Pressable } from "react-native";
 import { styles } from "./styles";
+import FastImage from "react-native-fast-image";
 
 type ImageModalProps = {
   imageUrl?: string;
@@ -22,7 +23,11 @@ export const ImageModal: React.FC<ImageModalProps> = ({
     >
       {!!imageUrl && (
         <Pressable onPress={onClose} style={styles.root}>
-          <Image source={{ uri: imageUrl }} style={styles.image} />
+          <FastImage
+            source={{ uri: imageUrl }}
+            style={styles.image}
+            resizeMode="contain"
+          />
         </Pressable>
       )}
     </Modal>

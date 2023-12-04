@@ -1,5 +1,5 @@
 export type PartyModel = {
-  id: string;
+  id: number;
   name: string;
   description?: string;
   theme?: string;

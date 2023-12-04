@@ -1,7 +1,8 @@
 import React from "react";
-import Svg, { Path, SvgProps } from "react-native-svg";
+import Svg, { Path } from "react-native-svg";
+import { SvgIconProps } from "../../types";
 
-export const RequestSendIcon: React.FC<SvgProps> = (props) => {
+export const RequestSendIcon: React.FC<SvgIconProps> = (props) => {
   return (
     <Svg width="70" height="70" viewBox="0 0 70 70" fill="none" {...props}>
       <Path

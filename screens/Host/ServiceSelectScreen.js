@@ -20,7 +20,6 @@ import {
 import { useNavigation } from "@react-navigation/core";
 import HorizontalBar from "../../assets/horizontalbar.svg";
 import { HStack, Text } from "native-base";
-import apis from "../../apis";
 
 import MagnifyGlass from "../../assets/magnifyGlassSearch.svg";
 import Filter from "../../assets/filter.svg";

@@ -20,16 +20,12 @@ import {
   UncheckedCircleIcon,
 } from "../../../../components/Icons";
 import { Divider } from "../../../../components/Atoms";
-import { RequestQuote, RequestQuoteStepEnum } from "../RequestQuoteScreen";
+import {
+  NewParty,
+  RequestQuote,
+  RequestQuoteStepEnum,
+} from "../RequestQuoteScreen";
 import { PartyModel } from "../../../../models";
-
-export type Party = {
-  id: string;
-  name: string;
-  date?: Date;
-  startTime?: Date;
-  endTime?: Date;
-};
 
 type SelectPartyStepProps = {
   quote: RequestQuote;
@@ -50,15 +46,15 @@ export const SelectPartyStep: React.FC<SelectPartyStepProps> = ({
       {
         id: "",
         name: "",
-      },
+      } as unknown as PartyModel,
     ];
   }, [parties]);
 
-  const handleSelectParty = (party: Party) => {
+  const handleSelectParty = (party: PartyModel) => {
     setQuote((prevState) => {
       return {
         ...prevState,
-        party: party,
+        party: party as unknown as NewParty,
       };
     });
   };
@@ -77,7 +73,7 @@ export const SelectPartyStep: React.FC<SelectPartyStepProps> = ({
     });
   }, [isValid]);
 
-  const renderParty = (element: ListRenderItemInfo<Party>) => {
+  const renderParty = (element: ListRenderItemInfo<PartyModel>) => {
     return (
       <View style={styles.partyItemContainer}>
         <TouchableOpacity
@@ -89,9 +85,10 @@ export const SelectPartyStep: React.FC<SelectPartyStepProps> = ({
           <Text style={styles.partyText}>
             {element.item.name ? element.item.name : "New Party"}
           </Text>
-          {!!element.item.date && (
+          {!!element.item.startDate && (
             <Text style={styles.partyText}>
-              {dayjs(element.item.date).format("MM dd,YYYY")}
+              {" "}
+              {dayjs(element.item.startDate).format("MMM dd,YYYY")}
             </Text>
           )}
           {element.item.id === quote?.party?.id ? (

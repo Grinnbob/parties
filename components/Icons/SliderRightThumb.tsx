@@ -1,7 +1,8 @@
 import React from "react";
-import { Svg, Circle, SvgProps } from "react-native-svg";
+import { Svg, Circle } from "react-native-svg";
+import { SvgIconProps } from "../../types";
 
-export const SliderRightThumb: React.FC<SvgProps> = (props) => {
+export const SliderRightThumb: React.FC<SvgIconProps> = (props) => {
   return (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" {...props}>
       <Circle

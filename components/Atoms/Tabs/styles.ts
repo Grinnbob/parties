@@ -18,10 +18,22 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: FontSize.size_base,
     color: "#8A8A8A",
+    position: "relative",
+  },
+  textContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   selectedText: {
     textAlign: "center",
     fontSize: FontSize.size_base,
     color: "#FFF",
+  },
+  activityIndicator: {
+    marginRight: 8,
+  },
+  hidden: {
+    width: 14,
   },
 });

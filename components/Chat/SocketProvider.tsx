@@ -17,13 +17,13 @@ export type SocketContextProps = {
   chatSocketDisconnect: () => void;
   socketDisconnect: () => void;
   sendMessage: (data: {
-    conversationId: string;
-    userId: string;
+    conversationId: number;
+    userId: number;
     message: string;
   }) => Promise<ChatMessageModel>;
   sendImage: (data: {
-    conversationId: string;
-    userId: string;
+    conversationId: number;
+    userId: number;
     image: string;
   }) => Promise<ChatMessageModel>;
   findMuted: (data: unknown) => Promise<void>;
@@ -103,7 +103,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     if (!chatSocket.current) {
       return;
     }
-    chatSocket.current.on("receive_message", (message: ChatMessageModel) => {
+    chatSocket.current.on("receive_text", (message: ChatMessageModel) => {
       setReceivedMessage((prev) => message);
     });
 
@@ -140,22 +140,17 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 
     return new Promise((resolve, reject) => {
       if (!chatSocket.current) {
-        console.log("error");
         reject(null);
         return;
       }
-      console.log("emit", data);
-      // chatSocket.current?.connect();
-      console.log("connected", chatSocket.current?.connected);
       chatSocket.current.emit(
         "text_message",
         data,
         withTimeout(
-          (response: ChatMessageModel) => {
+          (response: { data: ChatMessageModel; success: boolean }) => {
             console.log("socket response", response);
-            if (response && response.success) {
-              setReceivedMessage(response);
-              resolve(response);
+            if (response?.success) {
+              resolve(response.data);
             }
             reject(null);
           },
@@ -193,16 +188,14 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         reject(null);
         return;
       }
-      console.log("data", data);
       chatSocket.current.emit(
         "image_message",
         data,
         withTimeout(
-          (response: ChatMessageModel) => {
+          (response: { data: ChatMessageModel; success: boolean }) => {
             console.log("socket response", response);
-            if (response && response.success) {
-              setReceivedMessage(response);
-              resolve(response);
+            if (response?.success) {
+              resolve(response.data);
             }
             reject(null);
           },

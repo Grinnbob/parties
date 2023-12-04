@@ -27,6 +27,7 @@ import * as joinVendorKey from "./joinVendorKey";
 import * as constants from "./constants";
 import * as quote from "./quote";
 import * as party from "./party";
+import * as conversation from "./converstaion";
 export default {
   auth,
   device,
@@ -57,4 +58,5 @@ export default {
   constants,
   quote,
   party,
+  conversation,
 };

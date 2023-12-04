@@ -12,6 +12,7 @@ import LinearGradient from "react-native-linear-gradient";
 import { styles } from "./styles";
 import { RecoilLoadable } from "recoil";
 import loading = RecoilLoadable.loading;
+import { Color } from "../../../GlobalStyles";
 
 type GradientButtonProps = {
   text: string;
@@ -53,7 +54,7 @@ export const GradientButton: React.FC<GradientButtonProps> = ({
           angle={-90}
         >
           {loading ? (
-            <ActivityIndicator size={16} style={styles.activityIndicator} />
+            <ActivityIndicator size={16} color={Color.textMainWhite} />
           ) : (
             <Text style={[styles.text, textStyle]}>{text}</Text>
           )}
