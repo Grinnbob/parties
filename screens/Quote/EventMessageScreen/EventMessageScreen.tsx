@@ -1,7 +1,6 @@
 import React from "react";
 import { ImageBackground, Text, View } from "react-native";
 import { styles } from "./styles";
-import VendorBackButton from "../../../components/navigation/VendorBackButton";
 import { useNavigation } from "@react-navigation/native";
 import { Divider } from "../../../components/Atoms";
 import { Chat } from "../../../components/Chat";
@@ -31,7 +30,7 @@ export const EventMessageScreen: React.FC<EventMessageScreenProps> = ({
 
   const { conversationId } = route.params;
   const [selectedQuote] = useRecoilState(selectedQuoteAtom);
-  const { Party: party } = selectedQuote;
+  const { party } = selectedQuote as QuoteModel;
 
   const [user] = useGlobalState(StateTypes.user.key, StateTypes.user.default);
 

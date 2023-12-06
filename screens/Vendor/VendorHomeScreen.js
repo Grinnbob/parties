@@ -40,12 +40,12 @@ const VendorHomeScreen = () => {
   }, [user]);
 
   const grabVendorInfo = async () => {
-    const res = await apis.vendor.getAll({ UserId: user.id });
+    const res = await apis.vendor.getAll({ userId: user.id });
     setVendorInfo(res.data);
   };
 
   const grabNotification = async () => {
-    const res = await apis.notificationControl.getAll({ UserId: user.id });
+    const res = await apis.notificationControl.getAll({ userId: user.id });
     if (res && res.success) {
       setNotification(res.length);
     }

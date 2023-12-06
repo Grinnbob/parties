@@ -35,13 +35,13 @@ export const DenyQuoteModal: React.FC<DenyQuoteModalProps> = ({
 
   const handleDenyQuote = async () => {
     setIsLoading(true);
-    const response = await apis.quote.changeStatus(quoteId, "denied");
+    const response = await apis.quote.changeStatus(quoteId, "deniedByVendor");
     setIsLoading(false);
     if (response.success) {
       const newQuotes = cloneDeep(quotes);
       const index = newQuotes.findIndex((item) => item.id === quoteId);
       if (index >= 0) {
-        newQuotes[index].status = "denied";
+        newQuotes[index].status = "deniedByVendor";
       }
       setQuotes(newQuotes);
       toast.show({

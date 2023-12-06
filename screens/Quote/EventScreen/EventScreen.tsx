@@ -11,7 +11,11 @@ import { useNavigation } from "@react-navigation/native";
 import { Divider, GradientButton, Tabs } from "../../../components/Atoms";
 import { CreateQuoteModal } from "../../../components/Moleculs/CreateQuoteModal/CreateQuoteModal";
 import { DenyQuoteModal, PartyInfo } from "../../../components/Moleculs";
-import { ConversationModel, QuoteModel } from "../../../models";
+import {
+  ConversationModel,
+  QuoteModel,
+  QuoteStatusEnum,
+} from "../../../models";
 import { NotFoundImageIcon } from "../../../components/Icons";
 import { BackButton } from "../../../components/navigation/BackButton";
 import apis from "../../../apis";
@@ -65,12 +69,12 @@ export const EventScreen: React.FC<PartyDetailsScreenProps> = ({ route }) => {
 
   const isInitialized = useRef(false);
   const [selectedQuote] = useRecoilState(selectedQuoteAtom);
-  const { Party: party } = selectedQuote;
+  const { party } = selectedQuote as QuoteModel;
 
   useEffect(() => {
     if (!isInitialized.current && selectedQuote?.status === "new") {
       isInitialized.current = true;
-      apis.quote.changeStatus(selectedQuote?.id!, "pending");
+      apis.quote.changeStatus(selectedQuote?.id!, QuoteStatusEnum.PENDING);
     }
   }, [selectedQuote]);
 
@@ -104,7 +108,7 @@ export const EventScreen: React.FC<PartyDetailsScreenProps> = ({ route }) => {
   useEffect(() => {
     const getConversationId = async () => {
       const response = await apis.conversation.getByPartyId({
-        PartyId: party.id,
+        partyId: party.id,
       });
       setConversation(response.data[0]);
       setIsConversationLoading(false);
@@ -144,8 +148,8 @@ export const EventScreen: React.FC<PartyDetailsScreenProps> = ({ route }) => {
           {selectedTab === "eventDetails" && (
             <>
               <PartyInfo party={party} />
-              {(selectedQuote?.status === "new" ||
-                selectedQuote?.status === "pending") && (
+              {(selectedQuote?.status === QuoteStatusEnum.NEW ||
+                selectedQuote?.status === QuoteStatusEnum.PENDING) && (
                 <>
                   <View style={styles.actionsContainer}>
                     <View style={styles.actionButtonContainer}>

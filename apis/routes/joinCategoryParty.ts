@@ -1,10 +1,10 @@
-import * as API from '../base';
-const Base = 'joinCategoryParty';
+import * as API from "../base";
+const Base = "joinCategoryParty";
 
 interface JOIN_CATEGORY_PARTY {
   id?: string;
   CategoryId?: string;
-  PartyId?: string;
+  partyId?: string;
 }
 
 export const create = async (data: JOIN_CATEGORY_PARTY) => {

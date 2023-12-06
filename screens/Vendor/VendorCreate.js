@@ -244,7 +244,7 @@ const VendorCreate = () => {
         description: serviceDescription,
         phoneNumber: phone,
         taxId: ein,
-        UserId: user.id,
+        userId: user.id,
         views: 0,
         sales: 0.0,
         favorites: 0,
@@ -281,12 +281,12 @@ const VendorCreate = () => {
 
       const key = await apis.joinVendorKey.createMulti({
         list: verifyKeyList,
-        VendorId: res?.data?.id,
+        vendorId: res?.data?.id,
       });
 
       const joinVendorType = await apis.joinVendorVendorType.create({
-        VendorId: res?.data?.id,
-        VendorTypeId: serviceType,
+        vendorId: res?.data?.id,
+        vendorTypeId: serviceType,
       });
       if (res && res.success === false) {
         toast.show({

@@ -84,7 +84,7 @@ export const Chat: React.FC<ChatProps> = ({
               {groupedMessages[key].map((chatMessage) => {
                 const isMe = chatMessage?.user?._id === userId;
 
-                if (chatMessage.QuoteId) {
+                if (chatMessage.quoteId) {
                   return (
                     <QuoteMessage
                       key={chatMessage.id}

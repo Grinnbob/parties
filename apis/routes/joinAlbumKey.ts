@@ -1,10 +1,10 @@
-import * as API from '../base';
-const Base = 'joinAlbumKey';
+import * as API from "../base";
+const Base = "joinAlbumKey";
 
 interface JOIN_ALBUM_KEY {
   id?: string;
-  AlbumId?: string;
-  KeyId?: string;
+  albumId?: string;
+  keyId?: string;
 }
 
 export const create = async (data: JOIN_ALBUM_KEY) => {

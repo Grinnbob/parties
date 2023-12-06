@@ -43,7 +43,7 @@ const SearchServiceCard = ({
   const getBackground = async () => {
     try {
       const res = await apis.document.getAll({
-        VendorId: vendor?.id,
+        vendorId: vendor?.id,
       });
 
       setBackgroundLink(res.data[0].link);

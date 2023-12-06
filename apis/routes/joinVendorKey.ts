@@ -1,10 +1,10 @@
-import * as API from '../base';
-const Base = 'joinVendorKey';
+import * as API from "../base";
+const Base = "joinVendorKey";
 
 interface JOIN_VENDOR_KEY {
   id?: string;
-  VendorId?: string;
-  KeyId?: string;
+  vendorId?: string;
+  keyId?: string;
 }
 
 export const create = async (data: JOIN_VENDOR_KEY) => {
@@ -20,7 +20,6 @@ export const createEditMulti = async (data: JOIN_VENDOR_KEY) => {
   const response = await API.postApi(`${Base}/editMulti`, data);
   return response;
 };
-
 
 export const update = async (data: JOIN_VENDOR_KEY) => {
   const response = await API.putApi(`${Base}/${data.id}`, data);

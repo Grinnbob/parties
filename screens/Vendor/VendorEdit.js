@@ -49,6 +49,8 @@ const VendorEdit = ({ route, navigation }) => {
     StateTypes.selectedphoto.default
   );
 
+  const currentVendor = vendor[0];
+
   const toast = useToast();
   const ref = useRef();
   const [isLoading, setIsLoading] = useState(false);
@@ -57,10 +59,10 @@ const VendorEdit = ({ route, navigation }) => {
   const [serviceInitialType, setServiceInitialType] = useState("");
   const [service, setService] = useState("");
   const [serviceType, setServiceType] = useState("");
-  const [phone, setPhone] = useState(vendor[0].phoneNumber || "");
+  const [phone, setPhone] = useState(currentVendor?.phoneNumber || "");
   const [serviceArea, setServiceArea] = useState("");
   const [serviceDescription, setServiceDescription] = useState("");
-  const [ein, setEin] = useState(vendor[0].taxId.toString() || "");
+  const [ein, setEin] = useState(currentVendor?.taxId?.toString() || "");
   const [imageOne, setImageOne] = useState("");
   const [imageTwo, setImageTwo] = useState("");
   const [imageThree, setImageThree] = useState("");
@@ -68,14 +70,13 @@ const VendorEdit = ({ route, navigation }) => {
   const [avatar, setAvatar] = useState("");
   const [address, setAddress] = useState("");
   const [add, setAdd] = useState("");
-  const [state, setState] = useState(vendor[0].state || "");
-  const [city, setCity] = useState(vendor[0].city || "");
+  const [state, setState] = useState(currentVendor?.state || "");
+  const [city, setCity] = useState(currentVendor?.city || "");
   const [lat, setLat] = useState(0);
   const [long, setLong] = useState(0);
-  const [distance, setDistance] = useState(vendor[0].distance || "");
+  const [distance, setDistance] = useState(currentVendor?.distance || "");
   const [vendorType, setVendorType] = useState([]);
   const [loading, setLoading] = useState(true);
-
   // useEffect(() => {
   //   setImageOne(imageList ? (imageList[0] ? imageList[0] : "") : "");
   //   setImageTwo(imageList ? (imageList[1] ? imageList[1] : "") : "");
@@ -94,27 +95,29 @@ const VendorEdit = ({ route, navigation }) => {
 
   const getVendorInfo = async () => {
     try {
-      const res = await apis.vendor.getById(vendor[0].id);
-      console.log("RES", res);
-      if (res && res.data) {
-        setServiceName(res.data.name);
-        setServiceDescription(res.data.description);
-        setEin(res.data.taxId.toString());
-        setPhone(res.data.phoneNumber);
-        setAvatar(res.data.avatar);
-        setCity(res.data.city);
-        setState(res.data.state);
-        setAdd(res.data.address);
-        ref.current?.setAddressText(res?.data?.address);
-        setDistance(res.data.distance);
-        setImageList(res.data.Documents);
-        setServiceInitialType(res.data.listOfType[0].id);
-        setService(res.data.listOfType[0].title);
-        setVendorKeyList(res.data.listOfKeys);
+      if (currentVendor) {
+        const res = await apis.vendor.getById(currentVendor?.id);
+        if (res && res.data) {
+          setServiceName(res.data.name);
+          setServiceDescription(res.data.description);
+          setEin(res.data.taxId.toString());
+          setPhone(res.data.phoneNumber);
+          setAvatar(res.data.avatar);
+          setCity(res.data.city);
+          setState(res.data.state);
+          setAdd(res.data.address);
+          ref.current?.setAddressText(res?.data?.address);
+          setDistance(res.data.distance);
+          setImageList(res.data.documents);
+          setServiceInitialType(res.data.listOfType[0]?.id);
+          setService(res.data.listOfType[0]?.title);
+          setVendorKeyList(res.data.listOfKeys);
+        }
       }
-      setLoading(false);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -290,12 +293,12 @@ const VendorEdit = ({ route, navigation }) => {
     try {
       setIsLoading(true);
       const res = await apis.vendor.update({
-        id: vendor[0]?.id,
+        id: currentVendor?.id,
         name: serviceName,
         description: serviceDescription,
         phoneNumber: phone,
         taxId: ein,
-        UserId: user.id,
+        userId: user.id,
         views: 0,
         sales: 0.0,
         favorites: 0,
@@ -313,7 +316,7 @@ const VendorEdit = ({ route, navigation }) => {
       if (selectedPhoto[0]?.node?.image?.uri) {
         const avatarRes = await apis.vendor.UploadAvatar({
           uri: selectedPhoto[0]?.node?.image?.uri,
-          id: vendor[0]?.id,
+          id: currentVendor?.id,
         });
       }
       // const list = [];
@@ -327,7 +330,7 @@ const VendorEdit = ({ route, navigation }) => {
       //   if (el && !el.id) {
       //     const document = await apis.document.create({
       //       uri: el,
-      //       VendorId: vendor[0].id,
+      //       VendorId: currentVendor.id,
       //       type: serviceType ? serviceType : serviceInitialType,
       //     });
       //     console.log("DOC RES", document);
@@ -336,14 +339,14 @@ const VendorEdit = ({ route, navigation }) => {
 
       const key = await apis.joinVendorKey.createEditMulti({
         list: vendorKeyList,
-        VendorId: vendor[0]?.id,
+        vendorId: currentVendor?.id,
       });
 
       if (serviceType && serviceInitialType) {
         const joinVendorType = await apis.joinVendorVendorType.update({
-          id: vendor[0]?.id,
-          VendorTypeId: serviceType,
-          PrevVendorType: serviceInitialType,
+          id: currentVendor?.id,
+          vendorTypeId: serviceType,
+          prevVendorType: serviceInitialType,
         });
 
         console.log("JOIN VENDOR", joinVendorType);
@@ -590,20 +593,20 @@ const VendorEdit = ({ route, navigation }) => {
                   onValueChange={(itemValue) => setServiceArea(itemValue)}
                 >
                   <Select.Item
-                    label={`20 miles from ${city || vendor[0].city}, ${
-                      state || vendor[0].state
+                    label={`20 miles from ${city || currentVendor?.city}, ${
+                      state || currentVendor?.state
                     }`}
                     value="20"
                   />
                   <Select.Item
-                    label={`30 miles from ${city || vendor[0].city}, ${
-                      state || vendor[0].state
+                    label={`30 miles from ${city || currentVendor?.city}, ${
+                      state || currentVendor?.state
                     }`}
                     value="30"
                   />
                   <Select.Item
-                    label={`50 miles from ${city || vendor[0].city}, ${
-                      state || vendor[0].state
+                    label={`50 miles from ${city || currentVendor?.city}, ${
+                      state || currentVendor?.state
                     }`}
                     value="50"
                   />

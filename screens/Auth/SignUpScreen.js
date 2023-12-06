@@ -126,6 +126,7 @@ const SignUpScreen = () => {
                   value={email}
                   variant="underlined"
                   onDebounce={onDebounce}
+                  delay={1000}
                   mb={3}
                   errorText={
                     showValidationError

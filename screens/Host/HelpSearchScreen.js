@@ -38,7 +38,7 @@ const HelpSearchScreen = () => {
     try {
       const res = await apis.recentSearch.create({
         name: item,
-        UserId: user.id,
+        userId: user.id,
       });
 
       navigation.navigate("ServiceDetails", { search: item });
@@ -56,7 +56,7 @@ const HelpSearchScreen = () => {
 
   const grabRecentSearch = async () => {
     try {
-      const res = await apis.recentSearch.getAll({ UserId: user.id });
+      const res = await apis.recentSearch.getAll({ userId: user.id });
 
       if (res && res.success) {
         setRecentResult(res.data);

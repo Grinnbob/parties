@@ -114,7 +114,7 @@ const PhotoAlbumScreen = ({ route, navigation }) => {
 
   const grabVendorInfo = async () => {
     try {
-      const res = await apis.vendor.getAll({ UserId: user.id });
+      const res = await apis.vendor.getAll({ userId: user.id });
 
       setVendorInfo(res.data);
     } catch (error) {
@@ -132,20 +132,20 @@ const PhotoAlbumScreen = ({ route, navigation }) => {
       const res = await apis.album.create({
         name: albumName,
         theme: selectedOption,
-        VendorId: vendorInfo[0].id,
+        vendorId: vendorInfo[0].id,
       });
 
       for (const el of selectedPhoto) {
         const document = await apis.document.create({
           uri: el?.node?.image?.uri,
           type: selectedOption,
-          AlbumId: res.data.id,
+          albumId: res.data.id,
         });
       }
 
       await apis.joinAlbumKey.createMulti({
         list: searchEditList,
-        AlbumId: res?.data?.id,
+        albumId: res?.data?.id,
       });
 
       if (res && res.success === false) {

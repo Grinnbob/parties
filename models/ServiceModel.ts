@@ -1,5 +1,5 @@
 export type ServiceModel = {
-  VendorId: number;
+  vendorId: number;
   amount: number;
   createdAt: string;
   description: string;

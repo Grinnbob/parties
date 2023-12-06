@@ -10,7 +10,7 @@ import {
 import { styles } from "./styles";
 import { Tabs } from "../../../components/Atoms";
 import apis from "../../../apis";
-import { QuoteModel } from "../../../models";
+import { QuoteModel, QuoteStatusEnum } from "../../../models";
 import { PartyCard } from "./PartyCard";
 import { useNavigation } from "@react-navigation/native";
 import { Color } from "../../../GlobalStyles";
@@ -22,13 +22,20 @@ const tabs = [
   {
     id: "new",
     label: "New Requests",
+    statuses: [QuoteStatusEnum.NEW],
   },
   {
     id: "pending",
     label: "Pending",
+    statuses: [
+      QuoteStatusEnum.ACCEPTED_BY_VENDOR,
+      QuoteStatusEnum.PENDING,
+      QuoteStatusEnum,
+    ],
   },
   {
     id: "accepted",
+    statuses: [QuoteStatusEnum.ACCEPTED],
     label: "Accepted",
   },
 ];
@@ -36,27 +43,30 @@ const tabs = [
 export const AllJobsScreen: React.FC = () => {
   const navigation = useNavigation();
   const { navigate } = navigation;
-  const [selectedTab, setSelectedTab] = useState(tabs[0].id);
+  const [selectedTab, setSelectedTab] = useState(tabs[0]);
   const [isLoading, setIsLoading] = useState(true);
   const [quotes, setQuotes] = useRecoilState(quotesListAtom);
   const [, setSelectedQuote] = useRecoilState(selectedQuoteAtom);
   const handleTabChange = (id: string) => {
-    setSelectedTab(id);
+    const tab = tabs.find((item) => item.id === id);
+    if (tab) {
+      setSelectedTab(tab);
+    }
   };
 
   const renderPartyCard = (element: ListRenderItemInfo<QuoteModel>) => {
     return (
       <PartyCard
-        party={element.item.Party}
+        party={element.item.party}
         price={element.item.price}
         onPress={() => {
           setSelectedQuote(element.item);
           navigate("EventScreen");
-          if (element.item.status === "new") {
+          if (element.item.status === QuoteStatusEnum.NEW) {
             const newQuotes = cloneDeep(quotes);
             const item = quotes.find((item) => item.id === element.item.id);
             if (item) {
-              item.status = "pending";
+              item.status = QuoteStatusEnum.PENDING;
             }
             setQuotes([...newQuotes]);
           }
@@ -68,6 +78,7 @@ export const AllJobsScreen: React.FC = () => {
   useEffect(() => {
     const getAllQuotes = async () => {
       const response = await apis.quote.getMy();
+      console.log("response", response);
       setQuotes(response.data);
       setIsLoading(false);
     };
@@ -76,8 +87,8 @@ export const AllJobsScreen: React.FC = () => {
 
   const selectedData = useMemo(() => {
     return quotes
-      .filter((item) => item.status === selectedTab)
-      .filter((item) => !!item.Party);
+      .filter((item) => selectedTab.statuses.includes(item.status))
+      .filter((item) => !!item.party);
   }, [quotes, selectedTab]);
 
   return (
@@ -90,7 +101,7 @@ export const AllJobsScreen: React.FC = () => {
       <View style={styles.header}>
         <Text style={styles.titleText}>Your Jobs</Text>
       </View>
-      <Tabs value={selectedTab} tabs={tabs} onChange={handleTabChange} />
+      <Tabs value={selectedTab.id} tabs={tabs} onChange={handleTabChange} />
       {isLoading ? (
         <ActivityIndicator
           size={16}

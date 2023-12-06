@@ -17,24 +17,13 @@ import apis from "../../../apis";
 import dayjs from "dayjs";
 import { useRecoilState } from "recoil";
 import { useToast } from "native-base";
-import { QuoteModel } from "../../../models";
+import { QuoteModel, QuoteStatusEnum } from "../../../models";
 
 type Quote = {
   price: string;
   downPayment: string;
   remainder: string;
 };
-
-const downPaymentOptions = [
-  {
-    value: 50,
-    label: "50% Due at Booking",
-  },
-  {
-    value: 100,
-    label: "100% Due at Booking",
-  },
-];
 
 type CreateQuoteModalProps = {
   isOpen: boolean;
@@ -56,6 +45,7 @@ export const CreateQuoteModal: React.FC<CreateQuoteModalProps> = ({
     downPayment: "",
     remainder: "",
   });
+
   const [isSubmitted, setIsSubmitted] = useState(false);
   const toggleSubmittedModal = useCallback(() => {
     setIsSubmitted((prevState) => {
@@ -77,28 +67,43 @@ export const CreateQuoteModal: React.FC<CreateQuoteModalProps> = ({
     setQuote(newQuote);
   };
 
-  const paymentOptions = useMemo(() => {
+  const [paymentOptions, downPaymentOptions] = useMemo(() => {
     if (constants) {
-      return Object.keys(constants.QUOTE_OPTIONS.PAY).map((key) => {
-        return {
-          label:
-            constants.QUOTE_OPTIONS.PAY[
-              key as keyof typeof constants.QUOTE_OPTIONS.PAY
-            ].text,
-          value:
-            constants.QUOTE_OPTIONS.PAY[
-              key as keyof typeof constants.QUOTE_OPTIONS.PAY
-            ].id,
-        };
-      });
+      return [
+        Object.keys(constants.QUOTE_OPTIONS.PAY).map((key) => {
+          return {
+            label:
+              constants.QUOTE_OPTIONS.PAY[
+                key as keyof typeof constants.QUOTE_OPTIONS.PAY
+              ].text,
+            value:
+              constants.QUOTE_OPTIONS.PAY[
+                key as keyof typeof constants.QUOTE_OPTIONS.PAY
+              ].id,
+          };
+        }),
+        Object.keys(constants.QUOTE_OPTIONS.DOWNPAYMENT).map((key) => {
+          return {
+            label:
+              constants.QUOTE_OPTIONS.DOWNPAYMENT[
+                key as keyof typeof constants.QUOTE_OPTIONS.DOWNPAYMENT
+              ].text,
+            value:
+              constants.QUOTE_OPTIONS.DOWNPAYMENT[
+                key as keyof typeof constants.QUOTE_OPTIONS.DOWNPAYMENT
+              ].id,
+          };
+        }),
+      ];
     }
-    return [];
+    return [[], []];
   }, [constants]);
 
   const handleSubmit = async () => {
     setIsLoading(true);
+    console.log("quote", quote);
     const data = {
-      status: "accepted",
+      status: QuoteStatusEnum.ACCEPTED_BY_VENDOR,
       price: Number(quote.price),
       due: dayjs().add(15, "days").toDate(),
       downpayment: Number(quote.downPayment),

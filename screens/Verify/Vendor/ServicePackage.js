@@ -70,7 +70,7 @@ const ServicePackageScreen = ({ navigation, route }) => {
         rate: rate,
         description: description,
         amount: serveAmount,
-        VendorId: vendor[0].id,
+        vendorId: vendor[0].id,
       });
 
       const joinServiceType = await apis.joinServiceServiceType.create({

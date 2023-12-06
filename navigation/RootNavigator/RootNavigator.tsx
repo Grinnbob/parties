@@ -54,7 +54,7 @@ export const RootNavigator: React.FC = () => {
   }, [user]);
 
   const grabVendor = async () => {
-    const res = await apis.vendor.getAll({ UserId: user.id });
+    const res = await apis.vendor.getAll({ userId: user.id });
 
     setVendor(res.data);
     if (res.length < 1 && user.role === "vendor") {

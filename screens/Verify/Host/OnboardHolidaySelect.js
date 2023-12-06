@@ -71,7 +71,7 @@ const OnboardHolidaySelect = () => {
       setIsLoading(true);
       console.log("tags---", tags);
       const res = await apis.joinUserCategory.createMulti({
-        UserId: user.id,
+        userId: user.id,
         tags: tags.map((item) => {
           return {
             id: item.id,

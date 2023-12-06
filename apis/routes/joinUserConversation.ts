@@ -1,10 +1,10 @@
-import * as API from '../base';
-const Base = 'joinUserConversation';
+import * as API from "../base";
+const Base = "joinUserConversation";
 
 interface JOIN_USER_CONVERSATION {
   id?: string;
-  UserId?: string;
-  ConversationId?: string;
+  userId?: string;
+  conversationId?: string;
 }
 
 export const create = async (data: JOIN_USER_CONVERSATION) => {

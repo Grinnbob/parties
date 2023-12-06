@@ -121,8 +121,8 @@ export const useChatMessages = ({
               name: "",
             },
             isLoading: true,
-            UserId: Number(userId),
-            ConversationId: conversationId,
+            userId: Number(userId),
+            conversationId: conversationId,
           },
         ]);
         setTimeout(() => {
@@ -137,8 +137,6 @@ export const useChatMessages = ({
         console.log("uploadedImage", uploadedImage);
         if (uploadedImage?.success) {
           const response = await sendImage({
-            UserId: userId, // ToDO remove after BE fix
-            ConversationId: conversationId, // ToDO remove after BE fix
             conversationId,
             userId,
             image: uploadedImage.data.key,
@@ -171,8 +169,8 @@ export const useChatMessages = ({
             name: "",
           },
           isLoading: true,
-          UserId: Number(userId),
-          ConversationId: conversationId,
+          userId: Number(userId),
+          conversationId: conversationId,
         },
       ]);
       setMessage("");
@@ -181,12 +179,8 @@ export const useChatMessages = ({
       });
       try {
         const response = await sendMessage({
-          UserId: userId, // ToDO remove after BE fix
-          ConversationId: conversationId, // ToDO remove after BE fix
           userId,
           conversationId,
-          UserId: userId, // ToDO remove after BE fix
-          ConversationId: conversationId, // ToDO remove after BE fix
           message: params.message,
         });
         console.log("response text", response);
