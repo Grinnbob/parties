@@ -10,8 +10,9 @@ const DismissKeyboard = ({ children, ...props }) => (
   <KeyboardAvoidingView
     behavior={Platform.OS === "ios" ? "padding" : "height"}
     style={{ flex: 1 }}
+    {...props}
   >
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} {...props}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       {children}
     </TouchableWithoutFeedback>
   </KeyboardAvoidingView>

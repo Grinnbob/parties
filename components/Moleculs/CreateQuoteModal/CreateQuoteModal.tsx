@@ -101,7 +101,6 @@ export const CreateQuoteModal: React.FC<CreateQuoteModalProps> = ({
 
   const handleSubmit = async () => {
     setIsLoading(true);
-    console.log("quote", quote);
     const data = {
       status: QuoteStatusEnum.ACCEPTED_BY_VENDOR,
       price: Number(quote.price),

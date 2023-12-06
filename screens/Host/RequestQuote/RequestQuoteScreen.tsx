@@ -23,6 +23,8 @@ import apis from "../../../apis";
 import dayjs from "dayjs";
 import { PartyModel, ServiceModel, VendorModel } from "../../../models";
 import { useToast } from "native-base";
+import { useRecoilRefresher_UNSTABLE } from "recoil";
+import { myPartiesQuery } from "../../../stateManagement";
 
 export type NewParty = {
   id?: number | string;
@@ -77,6 +79,7 @@ type RequestQuoteScreenProps = {
 export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
   route,
 }) => {
+  const refreshMyParties = useRecoilRefresher_UNSTABLE(myPartiesQuery);
   const navigation = useNavigation();
   const toast = useToast();
   const [currentStep, setCurrentStep] = useState(
@@ -152,7 +155,6 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
         } else {
           partyId = quote.party?.id;
         }
-        console.log("vendor", vendor);
         const response = await apis.quote.create({
           assembling: quote.assembling!,
           shipment: quote.shipment!,
@@ -161,13 +163,13 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
           partyId: Number(partyId),
           notes: quote.notes!,
         });
+        refreshMyParties();
         if (!response.success) {
           toast.show({
             description: "Something went wrong. Please try again.",
           });
           return;
         }
-        console.log("response", response);
       } finally {
         setIsSubmitting(false);
       }

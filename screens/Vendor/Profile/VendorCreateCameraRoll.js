@@ -104,7 +104,11 @@ const VendorCreateCameraRoll = ({ route, navigation }) => {
               title={"Upload photos & videos"}
               RightComponent={
                 <Pressable onPress={handleDone}>
-                  <Text color={"#FFF"} fontWeight={"700"}>
+                  <Text
+                    color={"#FFF"}
+                    fontWeight={"700"}
+                    style={styles.doneButton}
+                  >
                     Done
                   </Text>
                 </Pressable>
@@ -162,6 +166,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
+  },
+  doneButton: {
+    marginRight: 18,
   },
 });
 

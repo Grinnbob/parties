@@ -1,5 +1,5 @@
-import * as API from '../base';
-const Base = 'user';
+import * as API from "../base";
+const Base = "user";
 interface USER {
   id: string;
 }
@@ -20,7 +20,7 @@ export const update = async (data: USER) => {
 };
 
 export const getById = async (id: string) => {
-  const response = await API.getApi(`${Base}/${id}}`);
+  const response = await API.getApi(`${Base}/${id}`);
   return response;
 };
 export const getSelf = async () => {
@@ -29,6 +29,7 @@ export const getSelf = async () => {
 };
 
 export const deleteById = async (id: string) => {
+  console.log("deleteById", deleteById);
   const response = await API.deleteApi(`${Base}/${id}`);
   return response;
 };

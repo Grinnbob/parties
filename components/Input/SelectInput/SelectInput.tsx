@@ -4,7 +4,7 @@ import { Select, ISelectProps } from "native-base";
 import { ISelectItemProps } from "native-base/lib/typescript/components/primitives/Select/types";
 import { Color } from "../../../GlobalStyles";
 import { styles } from "./styles";
-import { Text, View } from "react-native";
+import { Platform, Text, View } from "react-native";
 
 type SelectInputProps = ISelectProps & {
   label?: string;
@@ -28,18 +28,27 @@ export const SelectInput: React.FC<SelectInputProps> = ({
         minHeight={54}
         lineHeight={22}
         style={[styles.root, style]}
+        _actionSheet={{
+          useRNModal: Platform.OS === "ios",
+        }}
         dropdownCloseIcon={
           <AntDesign
             name="down"
             size={15}
-            style={{ right: 20, color: Color.primaryPink }}
+            style={{
+              right: 20,
+              color: Color.primaryPink,
+            }}
           />
         }
         dropdownOpenIcon={
           <AntDesign
             name="down"
             size={15}
-            style={{ right: 20, color: Color.primaryPink }}
+            style={{
+              right: 20,
+              color: Color.primaryPink,
+            }}
           />
         }
       >

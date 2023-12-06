@@ -156,6 +156,9 @@ export const useChatMessages = ({
         setMessageError(id);
       }
     } else if (params.message) {
+      if (params.message.trim() === "") {
+        return;
+      }
       setMessages([
         ...messages,
         {

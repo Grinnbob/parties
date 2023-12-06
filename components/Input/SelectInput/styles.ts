@@ -7,6 +7,8 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     color: Color.textMainWhite,
+    borderColor: "transparent",
+    elevation: 1000,
   },
   label: {
     color: Color.textMainWhite,

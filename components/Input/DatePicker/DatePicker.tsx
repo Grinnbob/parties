@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import RNDatePicker, {
   DatePickerProps as RNDatePickerProps,
 } from "react-native-date-picker";
 import { TextInput, TextInputProps } from "../TextInput";
 import dayjs from "dayjs";
-import { Color } from "../../../GlobalStyles";
 import { CalendarIcon } from "../../Icons";
-import { View } from "react-native";
 import { styles } from "./styles";
 import { AntDesign } from "@expo/vector-icons";
+import { Keyboard } from "react-native";
 
 type DatePickerProps = Partial<TextInputProps> & {
   datePickerProps?: Omit<RNDatePickerProps, "date">;
@@ -32,6 +31,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   date,
   error,
 }) => {
+  const inputRef = useRef();
   const isTimePicker = datePickerProps?.mode === "time";
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState(() => {
@@ -45,22 +45,22 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   });
   const handleCancel = () => {
     setIsOpen(false);
+    Keyboard.dismiss();
   };
 
   const handleOpen = () => {
-    setIsOpen(true);
+    const newVal = !isOpen;
+    setIsOpen(newVal);
   };
 
   const handleConfirm = (date: Date) => {
-    console.log("datePickerProps", datePickerProps);
     if (isTimePicker) {
-      console.log("date", date);
       setInputValue(formatTime(date));
     } else {
       setInputValue(formatDate(date));
     }
     onChange?.(date);
-    setIsOpen(false);
+    handleCancel();
   };
 
   useEffect(() => {
@@ -69,15 +69,20 @@ export const DatePicker: React.FC<DatePickerProps> = ({
     };
   }, []);
 
+  // console.log("inputRef", inputRef);
+
   return (
     <>
       <TextInput
         formControlProps={formControlProps}
         inputProps={{
           ...inputProps,
+          ref: inputRef,
           value: inputValue,
           onPressIn: handleOpen,
           isFocused: isOpen,
+          focusable: false,
+          onTouchStart: Keyboard.dismiss,
           InputRightElement: isTimePicker ? (
             <AntDesign
               name="down"
@@ -86,7 +91,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
               onPress={handleOpen}
             />
           ) : (
-            <CalendarIcon style={styles.calendarIcon} />
+            <CalendarIcon style={styles.calendarIcon} onPress={handleOpen} />
           ),
         }}
         error={error}

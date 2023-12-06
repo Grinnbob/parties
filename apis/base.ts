@@ -26,7 +26,7 @@ export const deleteApi = async (path: string) => {
   try {
     log(path, "DELETE REQUEST", "none");
     const headers = { crossorigin: true, Authorization: AUTH_TOKEN };
-    const res = await axios.delete(`${Config.API_URL_BASE}${path}`, {
+    const res = await axios.delete(`${Config.API_URL_BASE}/${path}`, {
       headers,
     });
     log(path, "DELETE RES", res.data);
@@ -96,7 +96,7 @@ export const putApi = async (path: string, data: object) => {
 export const deleteApiEncrypted = async (path: string) => {
   try {
     const headers = { crossorigin: true, Authorization: AUTH_TOKEN };
-    const res = await axios.delete(`${Config.API_URL_BASE}${path}`, {
+    const res = await axios.delete(`${Config.API_URL_BASE}/${path}`, {
       headers,
     });
     setAUTH_TOKEN(res.headers.authorization);

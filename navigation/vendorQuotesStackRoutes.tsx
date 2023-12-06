@@ -8,7 +8,7 @@ import { AllJobsScreen } from "../screens/Quote";
 export type VendorQuotesStackParamList = {
   AllJobsScreen: undefined;
   EventScreen: undefined;
-  EventMessageScreen: undefined;
+  PartyMessageScreen: undefined;
 };
 
 const Stack = createStackNavigator<VendorQuotesStackParamList>();
