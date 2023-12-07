@@ -97,6 +97,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     chatSocket.current.connect();
     chatSocket.current.emit("create", data);
     chatSocket.current.emit("read", data);
+    chatSocket.current.emit("connection", data);
   };
 
   const addChatSocketListeners = () => {

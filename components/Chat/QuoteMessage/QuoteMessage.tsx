@@ -36,7 +36,7 @@ export const QuoteMessage: React.FC<MyQuoteMessageProps> = ({
   isMe,
   setMessages,
 }) => {
-  const { party } = chatMessage;
+  const { party, quote } = chatMessage;
   const startDate = useMemo(() => {
     const start = dayjs(party?.startDate).format("MM/DD/YYYY");
     const end = dayjs(party?.endDate).format("MM/DD/YYYY");

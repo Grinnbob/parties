@@ -105,7 +105,7 @@ export const CreateQuoteModal: React.FC<CreateQuoteModalProps> = ({
       status: QuoteStatusEnum.ACCEPTED_BY_VENDOR,
       price: Number(quote.price),
       due: dayjs().add(15, "days").toDate(),
-      downpayment: Number(quote.downPayment),
+      downpayment: quote.downPayment,
       paymentOption: quote.remainder,
       cancellationTerm: constants.QUOTE_OPTIONS.CANCELLATION.WITHIN24BACK80.id,
     };

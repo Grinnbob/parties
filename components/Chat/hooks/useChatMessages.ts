@@ -294,7 +294,6 @@ export const useChatMessages = ({
     if (receivedMessage) {
       setTimeout(() => {
         setMessages((prevState) => {
-          console.log("receivedMessage", receivedMessage);
           if (prevState.find((item) => item.id === receivedMessage.id)) {
             return prevState;
           } else {
@@ -311,6 +310,7 @@ export const useChatMessages = ({
   useEffect(() => {
     if (isStorageInitialized) {
       getAllMessages(conversationId).then((response) => {
+        console.log("response.data", response.data);
         setMessages(response.data);
         setIsLoading(false);
       });
