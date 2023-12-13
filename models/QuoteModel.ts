@@ -6,6 +6,7 @@ export enum QuoteStatusEnum {
   ACCEPTED = "accepted",
   DENIED_BY_HOST = "deniedByHost",
   ACCEPTED_BY_VENDOR = "acceptedByVendor",
+  ACCEPTED_BY_HOST = "acceptedByHost",
   DENIED_BY_VENDOR = "deniedByVendor",
 }
 

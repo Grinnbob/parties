@@ -32,7 +32,6 @@ const ForgotPasswordScreen = () => {
     try {
       setIsLoading(true);
       const resp = await apis.auth.forgotPasswordCodeRequest({ phone: phone });
-      console.log("RESP", resp);
       if (resp && resp.success === false) {
         toast.show({
           placement: "top",

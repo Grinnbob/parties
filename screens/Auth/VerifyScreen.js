@@ -5,6 +5,7 @@ import {
   View,
   TouchableOpacity,
   ActivityIndicator,
+  Keyboard,
 } from "react-native";
 import { Padding, Color, FontSize, FontFamily } from "../../GlobalStyles";
 import { Text, VStack, useToast } from "native-base";

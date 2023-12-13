@@ -8,10 +8,10 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import LinearGradient from "react-native-linear-gradient";
+import LinearGradient, {
+  LinearGradientProps,
+} from "react-native-linear-gradient";
 import { styles } from "./styles";
-import { RecoilLoadable } from "recoil";
-import loading = RecoilLoadable.loading;
 import { Color } from "../../../GlobalStyles";
 
 type GradientButtonProps = {
@@ -21,6 +21,7 @@ type GradientButtonProps = {
   textStyle?: StyleProp<TextStyle>;
   disabled?: boolean;
   loading?: boolean;
+  colors?: LinearGradientProps["colors"];
 };
 
 export const GradientButton: React.FC<GradientButtonProps> = ({
@@ -30,6 +31,7 @@ export const GradientButton: React.FC<GradientButtonProps> = ({
   style,
   disabled,
   loading,
+  colors,
 }) => {
   return (
     <TouchableOpacity onPress={onPress} disabled={disabled || loading}>
@@ -49,7 +51,7 @@ export const GradientButton: React.FC<GradientButtonProps> = ({
         <LinearGradient
           style={[styles.root, style]}
           locations={[0, 1]}
-          colors={["#6c1b9e", "#ff077e"]}
+          colors={colors ? colors : ["#6c1b9e", "#ff077e"]}
           useAngle={true}
           angle={-90}
         >

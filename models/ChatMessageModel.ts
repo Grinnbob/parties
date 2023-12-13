@@ -1,5 +1,5 @@
 import { PartyModel } from "./PartyModel";
-import { QuoteModel } from "./QuoteModel";
+import { QuoteModel, QuoteStatusEnum } from "./QuoteModel";
 
 export type ChatMessageModel = {
   id: number | string;
@@ -22,4 +22,7 @@ export type ChatMessageModel = {
   isLoading?: boolean;
   type: "text" | "image";
   error?: "timeout" | "unknown";
+  meta?: {
+    status?: QuoteStatusEnum;
+  };
 };

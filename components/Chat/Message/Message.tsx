@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import {
   ActivityIndicator,
   Image,
+  StyleProp,
   Text,
   TouchableOpacity,
   View,
+  ViewStyle,
 } from "react-native";
 import { styles } from "./styles";
 import { ExclamationWarningIcon, PersonIcon } from "../../Icons";
@@ -20,6 +22,8 @@ type ChatMessageProps = {
   content?: React.ReactNode;
   isMe: boolean;
   type: "vendor" | "host";
+  style?: StyleProp<ViewStyle>;
+  contentStyle?: StyleProp<ViewStyle>;
 };
 
 export const Message: React.FC<ChatMessageProps> = ({
@@ -29,6 +33,8 @@ export const Message: React.FC<ChatMessageProps> = ({
   content,
   isMe,
   type,
+  style,
+  contentStyle,
 }) => {
   const isDisabled = chatMessage.isLoading || !!chatMessage.error;
   const [isImageLoadError, setIsImageLoadError] = useState(false);
@@ -43,7 +49,9 @@ export const Message: React.FC<ChatMessageProps> = ({
   const isVendor = type === "vendor";
 
   return (
-    <View style={[styles.root, isMe ? undefined : styles.otherPersonMessage]}>
+    <View
+      style={[styles.root, isMe ? undefined : styles.otherPersonMessage, style]}
+    >
       <View
         style={[
           styles.infoContainer,
@@ -74,6 +82,7 @@ export const Message: React.FC<ChatMessageProps> = ({
             isHost ? styles.messageHostContainer : undefined,
             isVendor ? styles.messageVendorContainer : undefined,
             isDisabled ? styles.disabled : undefined,
+            contentStyle,
           ]}
         >
           {!!chatMessage?.message && (

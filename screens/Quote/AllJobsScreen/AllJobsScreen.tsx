@@ -27,11 +27,7 @@ const tabs = [
   {
     id: "pending",
     label: "Pending",
-    statuses: [
-      QuoteStatusEnum.ACCEPTED_BY_VENDOR,
-      QuoteStatusEnum.PENDING,
-      QuoteStatusEnum,
-    ],
+    statuses: [QuoteStatusEnum.ACCEPTED_BY_VENDOR, QuoteStatusEnum.PENDING],
   },
   {
     id: "accepted",

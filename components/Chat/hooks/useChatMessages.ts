@@ -317,6 +317,14 @@ export const useChatMessages = ({
     }
   }, [conversationId, isStorageInitialized]);
 
+  const refreshMessages = useCallback(() => {
+    setIsLoading(true);
+    getAllMessages(conversationId).then((response) => {
+      setMessages(response.data);
+      setIsLoading(false);
+    });
+  }, []);
+
   messagesRef.current = messages;
 
   return {
@@ -327,5 +335,6 @@ export const useChatMessages = ({
     onSubmitMessage,
     groupedMessages,
     onErrorPress,
+    refreshMessages,
   };
 };
