@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -22,6 +22,7 @@ type ChatMessageProps = {
   content?: React.ReactNode;
   isMe: boolean;
   type: "vendor" | "host";
+  userIconColor?: string;
   style?: StyleProp<ViewStyle>;
   contentStyle?: StyleProp<ViewStyle>;
 };
@@ -35,6 +36,7 @@ export const Message: React.FC<ChatMessageProps> = ({
   type,
   style,
   contentStyle,
+  userIconColor,
 }) => {
   const isDisabled = chatMessage.isLoading || !!chatMessage.error;
   const [isImageLoadError, setIsImageLoadError] = useState(false);
@@ -47,6 +49,13 @@ export const Message: React.FC<ChatMessageProps> = ({
 
   const isHost = type === "host";
   const isVendor = type === "vendor";
+
+  const userIconFill = useMemo(() => {
+    if (userIconColor) {
+      return userIconColor;
+    }
+    return isHost ? "#531878" : Color.primaryPink;
+  }, [isHost]);
 
   return (
     <View
@@ -67,11 +76,7 @@ export const Message: React.FC<ChatMessageProps> = ({
                 source={{ uri: chatMessage.user?.avatar }}
               />
             ) : (
-              <PersonIcon
-                width={32}
-                height={32}
-                fill={isHost ? "#531878" : Color.primaryPink}
-              />
+              <PersonIcon width={32} height={32} fill={userIconColor} />
             )}
             <Text style={styles.name}>{chatMessage.user?.name}</Text>
           </View>
@@ -148,7 +153,7 @@ export const Message: React.FC<ChatMessageProps> = ({
             <PersonIcon
               width={32}
               height={32}
-              fill={isHost ? "#531878" : Color.primaryPink}
+              fill={userIconFill}
               style={styles.personIcon}
             />
           )}

@@ -193,6 +193,7 @@ export const QuoteMessage: React.FC<QuoteMessageProps> = ({
           isMe={isMe}
           type="host"
           contentStyle={styles.acceptedByVendorContainer}
+          userIconColor={Color.primaryPink}
           content={
             <>
               <QuoteInfo quote={quote!} />
