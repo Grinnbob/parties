@@ -71,7 +71,9 @@ const SearchModal = ({ navigation }) => {
           delay={1000}
         />
         <FlatList
-          data={searchResult}
+          data={searchResult.filter(
+            (item) => !verifyKeyList.find((key) => key.id === item.id)
+          )}
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.border}
