@@ -101,12 +101,11 @@ export const CreateQuoteModal: React.FC<CreateQuoteModalProps> = ({
 
   const handleSubmit = async () => {
     setIsLoading(true);
-    console.log("quote", quote);
     const data = {
       status: QuoteStatusEnum.ACCEPTED_BY_VENDOR,
       price: Number(quote.price),
       due: dayjs().add(15, "days").toDate(),
-      downpayment: Number(quote.downPayment),
+      downpayment: quote.downPayment,
       paymentOption: quote.remainder,
       cancellationTerm: constants.QUOTE_OPTIONS.CANCELLATION.WITHIN24BACK80.id,
     };

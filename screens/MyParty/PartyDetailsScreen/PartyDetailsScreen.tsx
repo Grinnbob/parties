@@ -1,32 +1,15 @@
-import React, { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  ImageBackground,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import React, { useEffect, useMemo, useState } from "react";
+import { ImageBackground, TouchableOpacity, View } from "react-native";
 import { styles } from "./styles";
 import { Tabs } from "../../../components/Atoms";
 import { useNavigation } from "@react-navigation/native";
 import { BackButton } from "../../../components/navigation/BackButton";
 import { ConversationModel, PartyModel } from "../../../models";
 import { NotFoundImageIcon } from "../../../components/Icons";
-import { Chat } from "../../../components/Chat";
 import useGlobalState from "../../../stateManagement/hook";
 import StateTypes from "../../../stateManagement/StateTypes";
 import apis from "../../../apis";
 import { PartyInfo } from "../../../components/Moleculs";
-
-const tabs = [
-  {
-    id: "eventDetails",
-    label: "Quote Details",
-  },
-  {
-    id: "messages",
-    label: "Messages",
-  },
-];
 
 type PartyDetailsScreenProps = {
   route: {
@@ -40,9 +23,22 @@ export const PartyDetailsScreen: React.FC<PartyDetailsScreenProps> = ({
   route,
 }) => {
   const navigation = useNavigation();
-  const { navigate } = navigation;
+  const { push } = navigation;
+  const [isMessagePressed, setIsMessagedPressed] = useState(false);
+  const tabs = useMemo(() => {
+    return [
+      {
+        id: "eventDetails",
+        label: "Event Details",
+      },
+      {
+        id: "messages",
+        label: "Messages",
+        loading: isMessagePressed,
+      },
+    ];
+  }, [isMessagePressed]);
   const [selectedTab, setSelectedTab] = useState(tabs[0].id);
-  const [user] = useGlobalState(StateTypes.user.key, StateTypes.user.default);
   const [conversation, setConversation] = useState<ConversationModel | null>(
     null
   );
@@ -62,6 +58,21 @@ export const PartyDetailsScreen: React.FC<PartyDetailsScreenProps> = ({
   }, [party.id]);
 
   const handleTabChange = (id: string) => {
+    if (id === tabs[1].id) {
+      if (!isConversationLoading) {
+        push("PartyMessageScreen", {
+          party,
+          conversationId: conversation?.id,
+        });
+        return;
+      } else {
+        setIsMessagedPressed(true);
+        return;
+      }
+    }
+    if (isMessagePressed) {
+      setIsMessagedPressed(false);
+    }
     setSelectedTab(id);
   };
 
@@ -97,18 +108,6 @@ export const PartyDetailsScreen: React.FC<PartyDetailsScreenProps> = ({
             ]}
           >
             <PartyInfo party={party} />
-          </View>
-          <View
-            style={[
-              styles.tabContainer,
-              tabs[1].id === selectedTab ? styles.visibleTab : undefined,
-            ]}
-          >
-            {isConversationLoading || !conversation?.id ? (
-              <ActivityIndicator size={16} style={styles.activityIndicator} />
-            ) : (
-              <Chat conversationId={conversation?.id} userId={user.id} />
-            )}
           </View>
         </View>
       </View>

@@ -5,6 +5,7 @@ import {
   View,
   TouchableOpacity,
   Pressable,
+  Platform,
 } from "react-native";
 import { VStack, Input, Divider, Text, useToast } from "native-base";
 import LabelInput from "../../components/Input/LabelInput";
@@ -62,7 +63,9 @@ const SignUpScreen = () => {
   };
 
   return (
-    <DismissKeyboard>
+    <DismissKeyboard
+      keyboardVerticalOffset={Platform.select({ ios: -120, android: -70 })}
+    >
       <View style={styles.signupscreen}>
         {/* <View style={[styles.alertmodalbg, styles.alertmodalbgLayout]} /> */}
         <View style={{ flex: 1, justifyContent: "space-between" }}>

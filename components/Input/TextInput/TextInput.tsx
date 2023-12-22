@@ -9,7 +9,7 @@ import {
 const AnimatedInput = Animated.createAnimatedComponent(Input);
 import { styles } from "./styles";
 import { Color } from "../../../GlobalStyles";
-import { Text } from "react-native";
+import { Keyboard, Text } from "react-native";
 
 export type TextInputProps = {
   formControlProps?: IFormControlProps;
@@ -36,6 +36,7 @@ export const TextInput: React.FC<TextInputProps> = ({
         _focus={{
           borderColor: Color.textMainWhite,
         }}
+        minHeight={54}
         {...rest}
         style={[styles.root, style]}
       />

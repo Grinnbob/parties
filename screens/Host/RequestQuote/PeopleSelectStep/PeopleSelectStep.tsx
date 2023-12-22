@@ -74,6 +74,8 @@ export const PeopleSelectStep: React.FC<PeopleSelectStepProps> = ({
           ...styles.textArea,
           value: quote.party?.description,
           onChangeText: handleDescriptionChange,
+          returnKeyType: "done",
+          blurOnSubmit: true,
         }}
       />
     </View>

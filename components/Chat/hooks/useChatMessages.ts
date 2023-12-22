@@ -156,6 +156,9 @@ export const useChatMessages = ({
         setMessageError(id);
       }
     } else if (params.message) {
+      if (params.message.trim() === "") {
+        return;
+      }
       setMessages([
         ...messages,
         {
@@ -291,7 +294,6 @@ export const useChatMessages = ({
     if (receivedMessage) {
       setTimeout(() => {
         setMessages((prevState) => {
-          console.log("receivedMessage", receivedMessage);
           if (prevState.find((item) => item.id === receivedMessage.id)) {
             return prevState;
           } else {
@@ -308,11 +310,20 @@ export const useChatMessages = ({
   useEffect(() => {
     if (isStorageInitialized) {
       getAllMessages(conversationId).then((response) => {
+        console.log("response.data", response.data);
         setMessages(response.data);
         setIsLoading(false);
       });
     }
   }, [conversationId, isStorageInitialized]);
+
+  const refreshMessages = useCallback(() => {
+    setIsLoading(true);
+    getAllMessages(conversationId).then((response) => {
+      setMessages(response.data);
+      setIsLoading(false);
+    });
+  }, []);
 
   messagesRef.current = messages;
 
@@ -324,5 +335,6 @@ export const useChatMessages = ({
     onSubmitMessage,
     groupedMessages,
     onErrorPress,
+    refreshMessages,
   };
 };

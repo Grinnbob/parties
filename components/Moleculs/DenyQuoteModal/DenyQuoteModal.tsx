@@ -9,14 +9,19 @@ import { useRecoilState } from "recoil";
 import { quotesListAtom } from "../../../stateManagement";
 import cloneDeep from "lodash/cloneDeep";
 import apis from "../../../apis";
+import { QuoteStatusEnum } from "../../../models";
 
 type DenyQuoteModalProps = {
   isOpen: boolean;
   onClose: () => void;
   quoteId: number;
+  newStatus?: QuoteStatusEnum;
+  title?: string;
 };
 
 export const DenyQuoteModal: React.FC<DenyQuoteModalProps> = ({
+  newStatus,
+  title,
   isOpen,
   onClose,
   quoteId,
@@ -35,13 +40,18 @@ export const DenyQuoteModal: React.FC<DenyQuoteModalProps> = ({
 
   const handleDenyQuote = async () => {
     setIsLoading(true);
-    const response = await apis.quote.changeStatus(quoteId, "deniedByVendor");
+    const response = await apis.quote.changeStatus(
+      quoteId,
+      newStatus ? newStatus : QuoteStatusEnum.DENIED_BY_VENDOR
+    );
     setIsLoading(false);
     if (response.success) {
       const newQuotes = cloneDeep(quotes);
       const index = newQuotes.findIndex((item) => item.id === quoteId);
       if (index >= 0) {
-        newQuotes[index].status = "deniedByVendor";
+        newQuotes[index].status = newStatus
+          ? newStatus
+          : QuoteStatusEnum.DENIED_BY_VENDOR;
       }
       setQuotes(newQuotes);
       toast.show({
@@ -69,7 +79,9 @@ export const DenyQuoteModal: React.FC<DenyQuoteModalProps> = ({
         <View style={styles.innerContainer}>
           <CloseCircleIcon style={styles.closeIcon} onPress={handleClose} />
           <DenyQuoteIcon />
-          <Text style={styles.title}>Are sure to denied this request?</Text>
+          <Text style={styles.title}>
+            {title ? title : "Are sure to denied this request?"}
+          </Text>
           <View style={styles.actions}>
             <Button
               text="Close"

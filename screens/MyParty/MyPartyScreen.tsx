@@ -9,40 +9,28 @@ import { styles } from "./styles";
 import { SearchInput } from "../../components/Input/SearchInput";
 import { Text } from "native-base";
 import useDebounce from "../../utils/useDebounce";
-import { PartyModel } from "../../models";
 import { useNavigation } from "@react-navigation/core";
-import apis from "../../apis";
 import { PartyCard } from "./PartyCard";
-import dayjs from "dayjs";
+import { myPartiesQuery, partySearchFilterAtom } from "../../stateManagement";
+import { useLoadable } from "../../hooks";
+import { useRecoilState } from "recoil";
 
 export const MyPartyScreen: React.FC = () => {
   const navigation = useNavigation();
-  const [isLoading, setIsLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [partyList, setPartyList] = useState<PartyModel[]>([]);
   const debounceSearchText = useDebounce(searchText);
+  const [, setMyPartiesFilter] = useRecoilState(partySearchFilterAtom);
+  const [partyList, isPartyListLoading] = useLoadable(myPartiesQuery);
 
   const handleSearchTextChange = (text: string) => {
     setSearchText(text);
   };
 
   useEffect(() => {
-    const fetchAllParties = async () => {
-      try {
-        setIsLoading(true);
-        const res = await apis.party.getMyParties({
-          search: debounceSearchText,
-        });
-        setPartyList(res.data);
-        setIsLoading(false);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchAllParties();
+    setMyPartiesFilter({
+      search: debounceSearchText,
+    });
   }, [debounceSearchText]);
-
-  console.log("partyList", partyList);
 
   return (
     <View style={styles.screen}>
@@ -62,7 +50,7 @@ export const MyPartyScreen: React.FC = () => {
         <SearchInput
           value={searchText}
           onChangeText={handleSearchTextChange}
-          loading={isLoading}
+          loading={isPartyListLoading}
         />
         <FlatList
           data={partyList}
@@ -80,7 +68,7 @@ export const MyPartyScreen: React.FC = () => {
           )}
           contentContainerStyle={styles.flatList}
           ListEmptyComponent={
-            isLoading ? (
+            isPartyListLoading ? (
               <></>
             ) : (
               <View style={styles.noResultsContainer}>

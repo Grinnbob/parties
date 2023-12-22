@@ -8,6 +8,7 @@ export const styles = StyleSheet.create({
     justifyContent: "flex-end",
     marginTop: 60,
     flex: 1,
+    zIndex: 10,
   },
   container: {
     width: "100%",

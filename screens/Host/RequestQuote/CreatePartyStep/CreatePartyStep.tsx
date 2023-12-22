@@ -11,6 +11,7 @@ import {
 } from "react-native-google-places-autocomplete";
 import { Party } from "../SelectPartyStep";
 import dayjs from "dayjs";
+import DismissKeyboard from "../../../../layouts/DismissKeyboard";
 
 type CreatePartyStepProps = {
   quote: RequestQuote;
@@ -79,82 +80,84 @@ export const CreatePartyStep: React.FC<CreatePartyStepProps> = ({
   }, [isValid]);
 
   return (
-    <View style={styles.root}>
-      <Text style={styles.title}>Create Your Party!</Text>
-      <Text style={styles.subTitle}>
-        After you created your party you can start to book for party services!
-      </Text>
-      <ScrollView
-        contentContainerStyle={styles.inputsContainer}
-        keyboardShouldPersistTaps="handled"
-        horizontal={false}
-      >
-        <TextInput
-          inputProps={{
-            value: quote.party?.name,
-            onChangeText: (text: string) => {
-              handleFieldChange("name", text);
-            },
-            placeholder: "Party Name",
-          }}
-          formControlProps={{ style: styles.partyNameInput }}
-        />
-        <DatePicker
-          inputProps={{ placeholder: "Start Date" }}
-          date={quote.party?.startDate}
-          datePickerProps={{ mode: "date" }}
-          onChange={(date) => {
-            handleFieldChange("startDate", date);
-          }}
-          error={formErrors.startDate}
-        />
-        <DatePicker
-          inputProps={{ placeholder: "End Date" }}
-          date={quote.party?.endDate}
-          datePickerProps={{ mode: "date" }}
-          onChange={(date) => {
-            handleFieldChange("endDate", date);
-          }}
-          error={formErrors.endDate}
-        />
-        <View style={styles.timePickersContainer}>
-          <DatePicker
-            inputProps={{ placeholder: "Start time" }}
-            datePickerProps={{ mode: "time" }}
-            date={quote.party?.startTime}
-            onChange={(date) => {
-              handleFieldChange("startTime", date);
+    <DismissKeyboard>
+      <View style={styles.root}>
+        <Text style={styles.title}>Create Your Party!</Text>
+        <Text style={styles.subTitle}>
+          After you created your party you can start to book for party services!
+        </Text>
+        <ScrollView
+          contentContainerStyle={styles.inputsContainer}
+          keyboardShouldPersistTaps="handled"
+          horizontal={false}
+        >
+          <TextInput
+            inputProps={{
+              value: quote.party?.name,
+              onChangeText: (text: string) => {
+                handleFieldChange("name", text);
+              },
+              placeholder: "Party Name",
             }}
-            formControlProps={{ style: styles.timePicker }}
-            error={formErrors.startTime}
+            formControlProps={{ style: styles.partyNameInput }}
           />
           <DatePicker
-            inputProps={{ placeholder: "End time" }}
-            datePickerProps={{ mode: "time" }}
-            date={quote.party?.endTime}
+            inputProps={{ placeholder: "Start Date" }}
+            date={quote.party?.startDate}
+            datePickerProps={{ mode: "date", minimumDate: new Date() }}
             onChange={(date) => {
-              handleFieldChange("endTime", date);
+              handleFieldChange("startDate", date);
             }}
-            formControlProps={{ style: styles.timePicker }}
-            error={formErrors.endTime}
+            error={formErrors.startDate}
           />
-        </View>
-        <LocationAutocomplete
-          placeholder="Location"
-          value={quote.party?.street || ""}
-          textInputProps={{
-            onChangeText: (val) => {
-              handleFieldChange("street", val);
-            },
-          }}
-          onPress={(
-            data: GooglePlaceData,
-            detail: GooglePlaceDetail | null
-          ) => {
-            handleFieldChange("street", detail?.formatted_address || "");
-          }}
-        />
-      </ScrollView>
-    </View>
+          <DatePicker
+            inputProps={{ placeholder: "End Date" }}
+            date={quote.party?.endDate}
+            datePickerProps={{ mode: "date", minimumDate: new Date() }}
+            onChange={(date) => {
+              handleFieldChange("endDate", date);
+            }}
+            error={formErrors.endDate}
+          />
+          <View style={styles.timePickersContainer}>
+            <DatePicker
+              inputProps={{ placeholder: "Start time" }}
+              datePickerProps={{ mode: "time" }}
+              date={quote.party?.startTime}
+              onChange={(date) => {
+                handleFieldChange("startTime", date);
+              }}
+              formControlProps={{ style: styles.timePicker }}
+              error={formErrors.startTime}
+            />
+            <DatePicker
+              inputProps={{ placeholder: "End time" }}
+              datePickerProps={{ mode: "time" }}
+              date={quote.party?.endTime}
+              onChange={(date) => {
+                handleFieldChange("endTime", date);
+              }}
+              formControlProps={{ style: styles.timePicker }}
+              error={formErrors.endTime}
+            />
+          </View>
+          <LocationAutocomplete
+            placeholder="Location"
+            value={quote.party?.street || ""}
+            textInputProps={{
+              onChangeText: (val) => {
+                handleFieldChange("street", val);
+              },
+            }}
+            onPress={(
+              data: GooglePlaceData,
+              detail: GooglePlaceDetail | null
+            ) => {
+              handleFieldChange("street", detail?.formatted_address || "");
+            }}
+          />
+        </ScrollView>
+      </View>
+    </DismissKeyboard>
   );
 };

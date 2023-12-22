@@ -27,6 +27,8 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import Config from "react-native-config";
 import Skeleton from "./components/Skeleton";
 
+const maxTagCount = 5;
+
 const VendorEdit = ({ route, navigation }) => {
   const [imageList, setImageList] = useGlobalState(
     StateTypes.imageUploadList.key,
@@ -621,7 +623,14 @@ const VendorEdit = ({ route, navigation }) => {
                   value={serviceDescription}
                   onChangeText={(text) => setServiceDescription(text)}
                 />
-                <Pressable onPress={() => navigation.navigate("SearchModal")}>
+                <Pressable
+                  onPress={() => {
+                    if (vendorKeyList.length >= maxTagCount) {
+                      return;
+                    }
+                    navigation.navigate("SearchModal");
+                  }}
+                >
                   {vendorKeyList && vendorKeyList.length > 0 ? (
                     <View style={styles.form}>
                       <View
@@ -643,7 +652,7 @@ const VendorEdit = ({ route, navigation }) => {
                   ) : (
                     <View style={styles.form}>
                       <Text color={"#8a8a8a"}>
-                        Please enter 5 of your specialty keywords
+                        Please enter {maxTagCount} of your specialty keywords
                       </Text>
                     </View>
                   )}

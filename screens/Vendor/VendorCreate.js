@@ -30,6 +30,8 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import Config from "react-native-config";
 import loadApp from "../../navigation/loadApp";
 
+const maxTagCount = 5;
+
 const VendorCreate = () => {
   const toast = useToast();
   const navigation = useNavigation();
@@ -567,7 +569,14 @@ const VendorCreate = () => {
                     maxLength={440}
                     onChangeText={(text) => setServiceDescriprion(text)}
                   />
-                  <Pressable onPress={() => navigation.navigate("SearchModal")}>
+                  <Pressable
+                    onPress={() => {
+                      if (verifyKeyList.length >= maxTagCount) {
+                        return;
+                      }
+                      navigation.navigate("SearchModal");
+                    }}
+                  >
                     {verifyKeyList && verifyKeyList.length > 0 ? (
                       <View style={styles.form}>
                         <View
@@ -589,7 +598,7 @@ const VendorCreate = () => {
                     ) : (
                       <View style={styles.form}>
                         <Text color={"#8a8a8a"}>
-                          Please enter 5 of your specialty keywords
+                          Please enter {maxTagCount} of your specialty keywords
                         </Text>
                       </View>
                     )}

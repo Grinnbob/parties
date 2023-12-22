@@ -14,7 +14,7 @@ import {
   LocationIcon,
   PersonIcon,
 } from "../../Icons";
-import { ChatMessageModel } from "../../../models";
+import { ChatMessageModel, QuoteStatusEnum } from "../../../models";
 import dayjs from "dayjs";
 import { Button, GradientButton } from "../../Atoms";
 import { DenyQuoteModal } from "../../Moleculs";
@@ -24,19 +24,25 @@ import FastImage from "react-native-fast-image";
 import { Color } from "../../../GlobalStyles";
 import useGlobalState from "../../../stateManagement/hook";
 import StateTypes from "../../../stateManagement/StateTypes";
+import { GhostButton } from "../../GhostButton";
+import { ConfirmationModal } from "../../Moleculs/ConfirmationModal";
+import apis from "../../../apis";
+import { useToast } from "native-base";
+import { QuoteInfo } from "./QuoteInfo";
 
-type MyQuoteMessageProps = {
+type QuoteMessageProps = {
   chatMessage: ChatMessageModel;
   isMe: boolean;
   setMessages: Dispatch<SetStateAction<ChatMessageModel[]>>;
 };
 
-export const QuoteMessage: React.FC<MyQuoteMessageProps> = ({
+export const QuoteMessage: React.FC<QuoteMessageProps> = ({
   chatMessage,
   isMe,
   setMessages,
 }) => {
-  const { party } = chatMessage;
+  const toast = useToast();
+  const { party, quote } = chatMessage;
   const startDate = useMemo(() => {
     const start = dayjs(party?.startDate).format("MM/DD/YYYY");
     const end = dayjs(party?.endDate).format("MM/DD/YYYY");
@@ -44,11 +50,24 @@ export const QuoteMessage: React.FC<MyQuoteMessageProps> = ({
     return start === end ? start : `${start} - ${end}`;
   }, [party]);
 
-  const [isDenyModalOpen, setIsDenyModalOpen] = useState(false);
+  const [isDenyVendorModalOpen, setIsDenyVendorModalOpen] = useState(false);
+  const [isDenyHostModalOpen, setIsDenyHostModalOpen] = useState(false);
+  const [isDenyHostQuoteModalLoading, setIsDenyHostQuoteModalLoading] =
+    useState(false);
   const [isCreateQuoteModalOpen, setIsCreateQuoteModalOpen] = useState(false);
+  const [isAcceptHostQuoteModalOpen, setIsAcceptHostQuoteModalOpen] =
+    useState(false);
+  const [isAcceptHostQuoteModalLoading, setIsAcceptHostQuoteModalLoading] =
+    useState(false);
 
-  const toggleDenyModal = useCallback(() => {
-    setIsDenyModalOpen((prevState) => {
+  const toggleDenyVendorModal = useCallback(() => {
+    setIsDenyVendorModalOpen((prevState) => {
+      return !prevState;
+    });
+  }, []);
+
+  const toggleDenyHostModal = useCallback(() => {
+    setIsDenyHostModalOpen((prevState) => {
       return !prevState;
     });
   }, []);
@@ -57,6 +76,67 @@ export const QuoteMessage: React.FC<MyQuoteMessageProps> = ({
     setIsCreateQuoteModalOpen((prevState) => {
       return !prevState;
     });
+  }, []);
+
+  const toggleAcceptHostQuoteModal = useCallback(() => {
+    if (isAcceptHostQuoteModalLoading) {
+      return;
+    }
+    setIsAcceptHostQuoteModalOpen((prevState) => {
+      return !prevState;
+    });
+  }, [isAcceptHostQuoteModalLoading]);
+
+  const acceptHostQuote = useCallback(async () => {
+    setIsAcceptHostQuoteModalLoading(true);
+    const response = await apis.quote.changeStatus(
+      quote?.id!,
+      QuoteStatusEnum.ACCEPTED_BY_HOST
+    );
+    setIsAcceptHostQuoteModalLoading(false);
+    toggleAcceptHostQuoteModal();
+    if (!response.success) {
+      toast.show({
+        placement: "top",
+        description: "Something went wrong. Please try again.",
+      });
+    } else {
+      setMessages((prevState) => {
+        const newState = prevState.slice();
+        const message = newState.find((item) => item.id === chatMessage.id);
+        if (message?.quote) {
+          message.quote.status = QuoteStatusEnum.ACCEPTED_BY_HOST;
+        }
+
+        return newState;
+      });
+    }
+  }, []);
+
+  const denyHostQuote = useCallback(async () => {
+    setIsDenyHostQuoteModalLoading(true);
+    const response = await apis.quote.changeStatus(
+      quote?.id!,
+      QuoteStatusEnum.DENIED_BY_HOST
+    );
+    setIsDenyHostQuoteModalLoading(false);
+    toggleDenyHostModal();
+    if (!response.success) {
+      toast.show({
+        placement: "top",
+        description: "Something went wrong. Please try again.",
+      });
+    } else {
+      setMessages((prevState) => {
+        const newState = prevState.slice();
+        const message = newState.find((item) => item.id === chatMessage.id);
+        if (message?.quote) {
+          message.quote.status = QuoteStatusEnum.DENIED_BY_HOST;
+        }
+
+        return newState;
+      });
+    }
   }, []);
 
   const [user] = useGlobalState(StateTypes.user.key, StateTypes.user.default);
@@ -78,6 +158,90 @@ export const QuoteMessage: React.FC<MyQuoteMessageProps> = ({
       });
     }
   }, [setMessages, chatMessage.quoteId]);
+
+  if (
+    chatMessage.meta?.status === QuoteStatusEnum.ACCEPTED_BY_HOST ||
+    chatMessage.meta?.status === QuoteStatusEnum.DENIED_BY_HOST
+  ) {
+    let getTitle = () => {
+      if (quote?.status === QuoteStatusEnum.DENIED_BY_HOST) {
+        return "Offer rejected";
+      } else {
+        return "Offer accepted";
+      }
+    };
+    return (
+      <Message
+        chatMessage={chatMessage}
+        isMe={isMe}
+        type="host"
+        contentStyle={styles.acceptedByVendorContainer}
+        content={
+          <>
+            <QuoteInfo title={getTitle()} quote={quote!} />
+          </>
+        }
+      />
+    );
+  }
+
+  if (chatMessage.meta?.status === QuoteStatusEnum.ACCEPTED_BY_VENDOR) {
+    return (
+      <>
+        <Message
+          chatMessage={chatMessage}
+          isMe={isMe}
+          type="host"
+          contentStyle={styles.acceptedByVendorContainer}
+          userIconColor={Color.primaryPink}
+          content={
+            <>
+              <QuoteInfo quote={quote!} />
+              {quote?.status === QuoteStatusEnum.ACCEPTED_BY_VENDOR && (
+                <>
+                  {isMe ? null : (
+                    <View style={styles.hostActions}>
+                      <Text style={styles.bookVendorText}>
+                        Would you like to book this vendor?
+                      </Text>
+                      <GradientButton
+                        colors={["#FF077E", "#FF077E"]}
+                        style={styles.acceptButton}
+                        textStyle={styles.acceptButtonText}
+                        text="Yes, book this vendor!"
+                        onPress={toggleAcceptHostQuoteModal}
+                      />
+                      <GhostButton
+                        style={styles.declineButton}
+                        onPress={toggleDenyHostModal}
+                      >
+                        <Text style={styles.declineText}>Decline Offer</Text>
+                      </GhostButton>
+                    </View>
+                  )}
+                </>
+              )}
+            </>
+          }
+        />
+        <ConfirmationModal
+          isOpen={isDenyHostModalOpen}
+          onClose={toggleDenyHostModal}
+          title="Are sure to denied this offer?"
+          onAccept={denyHostQuote}
+          isLoading={isDenyHostQuoteModalLoading}
+        />
+
+        <ConfirmationModal
+          title="Are sure to accept this offer?"
+          isOpen={isAcceptHostQuoteModalOpen}
+          onClose={toggleAcceptHostQuoteModal}
+          onAccept={acceptHostQuote}
+          isLoading={isAcceptHostQuoteModalLoading}
+        />
+      </>
+    );
+  }
 
   return (
     <>
@@ -120,8 +284,8 @@ export const QuoteMessage: React.FC<MyQuoteMessageProps> = ({
         }
       />
       {!isMe &&
-        (chatMessage.quote?.status === "pending" ||
-          chatMessage.quote?.status == "new") && (
+        (chatMessage.quote?.status === QuoteStatusEnum.PENDING ||
+          chatMessage.quote?.status === QuoteStatusEnum.NEW) && (
           <>
             <View style={styles.innerContainer}>
               <View style={styles.actionsRoot}>
@@ -135,7 +299,7 @@ export const QuoteMessage: React.FC<MyQuoteMessageProps> = ({
                 />
                 <Button
                   text="Denny Request"
-                  onPress={toggleDenyModal}
+                  onPress={toggleDenyVendorModal}
                   style={styles.denyRequestButton}
                 />
               </View>
@@ -150,8 +314,8 @@ export const QuoteMessage: React.FC<MyQuoteMessageProps> = ({
               )}
             </View>
             <DenyQuoteModal
-              isOpen={isDenyModalOpen}
-              onClose={toggleDenyModal}
+              isOpen={isDenyVendorModalOpen}
+              onClose={toggleDenyVendorModal}
               quoteId={chatMessage.quoteId!}
             />
             <CreateQuoteModal

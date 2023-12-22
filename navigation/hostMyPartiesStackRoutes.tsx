@@ -2,8 +2,9 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { MyPartyScreen } from "../screens/MyParty/MyPartyScreen";
+import { MyPartyScreen } from "../screens/MyParty";
 import { PartyDetailsScreen } from "../screens/MyParty/PartyDetailsScreen";
+import { PartyMessageScreen } from "../screens/MyParty/PartyMessageScreen";
 
 export type VendorQuotesStackParamList = {
   MyPartyScreen: undefined;
@@ -41,6 +42,13 @@ export const HostMyPartiesStackRoutes: React.FC<Props> = ({
       <Stack.Screen
         name="PartyDetailsScreen"
         component={PartyDetailsScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="PartyMessageScreen"
+        component={PartyMessageScreen}
         options={{
           headerShown: false,
         }}

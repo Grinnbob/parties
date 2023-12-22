@@ -10,6 +10,7 @@ type SocketResponse = {
 };
 
 export type SocketContextProps = {
+  chatSocket: Socket | null;
   receivedMessage: ChatMessageModel | null;
   isTyping: boolean;
   isMuted: boolean;
@@ -97,6 +98,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     chatSocket.current.connect();
     chatSocket.current.emit("create", data);
     chatSocket.current.emit("read", data);
+    chatSocket.current.emit("connection", data);
   };
 
   const addChatSocketListeners = () => {
@@ -234,6 +236,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   };
 
   const socketContext = {
+    chatSocket: chatSocket.current,
     receivedMessage,
     isTyping,
     startChatSocket,

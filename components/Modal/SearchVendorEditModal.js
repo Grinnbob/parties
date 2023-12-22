@@ -6,7 +6,7 @@ import useGlobalState from "../../stateManagement/hook";
 import apis from "../../apis";
 import SearchBar from "../Input/SearchBar";
 
-const SearchVendorEditModal = ({ navigation }) => {
+const SearchVendorEditModal = ({ navigation, route }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [searchResult, setSearchResult] = useState([]);
@@ -15,6 +15,7 @@ const SearchVendorEditModal = ({ navigation }) => {
     StateTypes.vendorKeyList.key,
     StateTypes.vendorKeyList.default
   );
+  // console.log("vendorKeyList", vendorKeyList);
   const setSearch = async (item) => {
     if (item.id) {
       setVendorKeyList((vendorKeyList) => [...vendorKeyList, item]);
@@ -71,7 +72,9 @@ const SearchVendorEditModal = ({ navigation }) => {
           delay={1000}
         />
         <FlatList
-          data={searchResult}
+          data={searchResult.filter(
+            (item) => !vendorKeyList.find((key) => key.id === item.id)
+          )}
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.border}

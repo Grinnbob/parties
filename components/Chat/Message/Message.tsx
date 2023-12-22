@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Image,
+  StyleProp,
   Text,
   TouchableOpacity,
   View,
+  ViewStyle,
 } from "react-native";
 import { styles } from "./styles";
 import { ExclamationWarningIcon, PersonIcon } from "../../Icons";
@@ -20,6 +22,9 @@ type ChatMessageProps = {
   content?: React.ReactNode;
   isMe: boolean;
   type: "vendor" | "host";
+  userIconColor?: string;
+  style?: StyleProp<ViewStyle>;
+  contentStyle?: StyleProp<ViewStyle>;
 };
 
 export const Message: React.FC<ChatMessageProps> = ({
@@ -29,6 +34,9 @@ export const Message: React.FC<ChatMessageProps> = ({
   content,
   isMe,
   type,
+  style,
+  contentStyle,
+  userIconColor,
 }) => {
   const isDisabled = chatMessage.isLoading || !!chatMessage.error;
   const [isImageLoadError, setIsImageLoadError] = useState(false);
@@ -42,8 +50,17 @@ export const Message: React.FC<ChatMessageProps> = ({
   const isHost = type === "host";
   const isVendor = type === "vendor";
 
+  const userIconFill = useMemo(() => {
+    if (userIconColor) {
+      return userIconColor;
+    }
+    return isHost ? "#531878" : Color.primaryPink;
+  }, [isHost]);
+
   return (
-    <View style={[styles.root, isMe ? undefined : styles.otherPersonMessage]}>
+    <View
+      style={[styles.root, isMe ? undefined : styles.otherPersonMessage, style]}
+    >
       <View
         style={[
           styles.infoContainer,
@@ -59,11 +76,7 @@ export const Message: React.FC<ChatMessageProps> = ({
                 source={{ uri: chatMessage.user?.avatar }}
               />
             ) : (
-              <PersonIcon
-                width={32}
-                height={32}
-                fill={isHost ? "#531878" : Color.primaryPink}
-              />
+              <PersonIcon width={32} height={32} fill={userIconColor} />
             )}
             <Text style={styles.name}>{chatMessage.user?.name}</Text>
           </View>
@@ -74,6 +87,7 @@ export const Message: React.FC<ChatMessageProps> = ({
             isHost ? styles.messageHostContainer : undefined,
             isVendor ? styles.messageVendorContainer : undefined,
             isDisabled ? styles.disabled : undefined,
+            contentStyle,
           ]}
         >
           {!!chatMessage?.message && (
@@ -139,7 +153,7 @@ export const Message: React.FC<ChatMessageProps> = ({
             <PersonIcon
               width={32}
               height={32}
-              fill={isHost ? "#531878" : Color.primaryPink}
+              fill={userIconFill}
               style={styles.personIcon}
             />
           )}
