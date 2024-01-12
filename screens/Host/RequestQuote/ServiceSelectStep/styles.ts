@@ -66,6 +66,9 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
     paddingHorizontal: 24,
   },
+  serviceCard: {
+    marginHorizontal: 24,
+  },
   disabledService: {
     opacity: 0.5,
   },

@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   GooglePlacesAutocomplete,
   GooglePlacesAutocompleteProps,
@@ -21,14 +21,14 @@ type LocationAutocompleteProps = Omit<
   GooglePlacesAutocompleteProps,
   "query"
 > & {
-  value: string;
+  value?: string;
 };
 
-export const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
-  value,
-  ...rest
-}) => {
-  const ref = useRef<GooglePlacesAutocompleteRef | null>(null);
+export const LocationAutocomplete = React.forwardRef<
+  GooglePlacesAutocompleteRef,
+  LocationAutocompleteProps
+>((props, ref) => {
+  const { value, styles: fieldStyles, ...rest } = props;
   const [isFocused, setIsFocuses] = useState(false);
   const handleFocus = () => {
     setIsFocuses(true);
@@ -39,7 +39,7 @@ export const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
   };
 
   const handleClear = () => {
-    if (ref.current) {
+    if (ref?.current) {
       ref.current?.clear();
     }
     // @ts-expect-error onChangeText exist
@@ -65,9 +65,11 @@ export const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
       {...rest}
       listUnderlayColor="red"
       styles={{
-        container: [
+        ...fieldStyles,
+        textInputContainer: [
           styles.container,
           isFocused ? styles.containerFocused : undefined,
+          fieldStyles?.textInputContainer,
         ],
         textInput: [styles.textInput],
       }}
@@ -86,4 +88,4 @@ export const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
       onFail={(error) => console.error(error)}
     />
   );
-};
+});

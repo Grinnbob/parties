@@ -3,7 +3,6 @@ import { Color } from "../../../GlobalStyles";
 
 export const styles = StyleSheet.create({
   root: {
-    // borderColor: "rgba(255, 255, 255, 0.2)",
     borderWidth: 1,
     borderRadius: 8,
     color: Color.textMainWhite,
@@ -15,5 +14,11 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 22,
     marginBottom: 8,
+  },
+  arrowIconContainer: {
+    right: 25,
+  },
+  arrowIcon: {
+    color: Color.primaryPink,
   },
 });

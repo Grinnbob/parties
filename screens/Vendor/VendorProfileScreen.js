@@ -5,13 +5,12 @@ import {
   Text,
   View,
   ScrollView,
-  ImageBackground,
   FlatList,
   TouchableOpacity,
   Share,
   ActivityIndicator,
 } from "react-native";
-import { Pressable, Box, Skeleton } from "native-base";
+import { Pressable, Skeleton } from "native-base";
 import LinearGradient from "react-native-linear-gradient";
 import { useFocusEffect } from "@react-navigation/native";
 import {
@@ -25,9 +24,13 @@ import apis from "../../apis";
 import useGlobalState from "../../stateManagement/hook";
 import StateTypes from "../../stateManagement/StateTypes";
 import { useNavigation } from "@react-navigation/core";
-import GradientBar from "./components/GradientBar";
 import FastImage from "react-native-fast-image";
 import { IconBg } from "../../components/Atoms";
+import {
+  vendorProfileAlbumAtom,
+  vendorProfileServiceAtom,
+} from "../../stateManagement";
+import { useRecoilState } from "recoil";
 
 const renderItem = ({ item }) => {
   return (
@@ -44,10 +47,14 @@ const VendorProfileScreen = ({ route }) => {
     StateTypes.vendor.default
   );
   const [album, setAlbum] = useState([]);
-  const [service, setService] = useState([]);
+  const [vendorProfileServices, setVendorProfileServices] = useRecoilState(
+    vendorProfileServiceAtom
+  );
+  const [vendorProfileAlbum, setVendorProfileAlbum] = useState(
+    vendorProfileAlbumAtom
+  );
   const [backgroundLink, setBackgroundLink] = useState("");
   const [percent, setPercent] = useState(0);
-  const [media, setMedia] = useState(false);
   const [busDescription, setBusDescription] = useState(false);
   const [addService, setAddService] = useState(false);
   const [key, setKey] = useState([]);
@@ -79,7 +86,7 @@ const VendorProfileScreen = ({ route }) => {
       const res = await apis.service.getAll({ vendorId: vendor[0]?.id });
 
       if (res && res.data) {
-        setService(res.data);
+        setVendorProfileServices(res.data);
       }
       if (res.length > 0) {
         setAddService(true);
@@ -94,10 +101,7 @@ const VendorProfileScreen = ({ route }) => {
       const res = await apis.album.getAll({ vendorId: vendor[0]?.id });
 
       if (res && res.data) {
-        setAlbum(res.data);
-      }
-      if (res.length > 0) {
-        setMedia(true);
+        setVendorProfileAlbum(res.data);
       }
     } catch (error) {
       console.log(error);
@@ -130,21 +134,6 @@ const VendorProfileScreen = ({ route }) => {
       }
     }, [vendor])
   );
-
-  useEffect(() => {
-    if (busDescription && !media && !addService) {
-      setPercent(33);
-    } else if (
-      (!media && busDescription && addService) ||
-      (media && busDescription && !addService)
-    ) {
-      setPercent(66);
-    } else if (media && busDescription && addService) {
-      setPercent(100);
-    } else {
-      setPercent(0);
-    }
-  }, [busDescription, media, addService]);
 
   return (
     <ScrollView
@@ -241,112 +230,8 @@ const VendorProfileScreen = ({ route }) => {
             <Text style={[styles.title1, styles.titleTypo]}>
               Welcome to your new Party Favor Business Service Page
             </Text>
-            {isLoading ? (
-              <>
-                <Skeleton.Text paddingTop={10} />
-              </>
-            ) : (
-              <View style={styles.title2}>
-                <Text style={[styles.title3, styles.labelLayout]}>
-                  Your page is {percent}% complete
-                </Text>
-                {percent > 0 && <GradientBar value={`${percent}%`} />}
-              </View>
-            )}
           </View>
           <View style={styles.createProfile}>
-            <View>
-              <View style={styles.title4}>
-                <Image
-                  style={[
-                    styles.iconsaxlinearpersonalcard,
-                    styles.iconsaxlinearexportLayout,
-                  ]}
-                  resizeMode="cover"
-                  source={require("../../assets/iconsaxlinearpersonalcard.png")}
-                />
-                <Text style={[styles.createYourProfile1, styles.labelLayout]}>
-                  Create Your Profile
-                </Text>
-              </View>
-              {isLoading ? (
-                <>
-                  <Skeleton.Text paddingTop={10} />
-                </>
-              ) : (
-                <View style={styles.list}>
-                  {busDescription ? (
-                    <View style={styles.title4}>
-                      <Image
-                        style={[styles.checkIcon, styles.iconLayout]}
-                        resizeMode="cover"
-                        source={require("../../assets/check3.png")}
-                      />
-                      <Text style={styles.iProvideFoodTypo}>
-                        Edit Your Business Description
-                      </Text>
-                    </View>
-                  ) : (
-                    <View style={styles.title4}>
-                      <Image
-                        style={[styles.checkIcon, styles.iconLayout]}
-                        resizeMode="cover"
-                        source={require("../../assets/check4.png")}
-                      />
-                      <Text style={styles.iProvideFoodTypo}>
-                        Edit Your Business Description
-                      </Text>
-                    </View>
-                  )}
-                  {media ? (
-                    <View style={styles.view1}>
-                      <Image
-                        style={[styles.checkIcon, styles.iconLayout]}
-                        resizeMode="cover"
-                        source={require("../../assets/check3.png")}
-                      />
-                      <Text style={styles.iProvideFoodTypo}>
-                        Add Media of your past work
-                      </Text>
-                    </View>
-                  ) : (
-                    <View style={styles.view1}>
-                      <Image
-                        style={[styles.checkIcon, styles.iconLayout]}
-                        resizeMode="cover"
-                        source={require("../../assets/check4.png")}
-                      />
-                      <Text style={styles.iProvideFoodTypo}>
-                        Add Media of your past work
-                      </Text>
-                    </View>
-                  )}
-                  {addService ? (
-                    <View style={styles.view1}>
-                      <Image
-                        style={[styles.checkIcon, styles.iconLayout]}
-                        resizeMode="cover"
-                        source={require("../../assets/check3.png")}
-                      />
-                      <Text style={styles.iProvideFoodTypo}>
-                        Add + Price your service
-                      </Text>
-                    </View>
-                  ) : (
-                    <View style={styles.view1}>
-                      <Image
-                        style={[styles.checkIcon, styles.iconLayout]}
-                        resizeMode="cover"
-                        source={require("../../assets/check4.png")}
-                      />
-                      <Text style={styles.iProvideFoodTypo}>
-                        Add + Price your service
-                      </Text>
-                    </View>
-                  )}
-                </View>
-              )}
-            </View>
             {/* <View style={styles.buttons}>
               <LinearGradient
                 style={[styles.connect, styles.btnShadowBox]}
@@ -492,7 +377,7 @@ const VendorProfileScreen = ({ route }) => {
                 <FlatList
                   horizontal={true}
                   showsHorizontalScrollIndicator={false}
-                  data={service}
+                  data={vendorProfileServices}
                   renderItem={({ item }) => (
                     <>
                       <Pressable

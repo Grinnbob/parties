@@ -8,7 +8,8 @@ import {
 } from "react-native";
 import { styles } from "./styles";
 import LinearGradient from "react-native-linear-gradient";
-import { CheckCircleIcon } from "../../../../../components/Icons";
+import { CheckCircleIcon } from "../../../Icons";
+import FastImage, { FastImageProps } from "react-native-fast-image";
 
 type ServiceCardProps = {
   name: string;
@@ -16,8 +17,10 @@ type ServiceCardProps = {
   price: number;
   unit: string;
   style?: StyleProp<ViewStyle>;
-  isSelected: boolean;
-  onPress: () => void;
+  isSelected?: boolean;
+  onPress?: () => void;
+  disabled?: boolean;
+  image?: FastImageProps;
 };
 
 export const ServiceCard: React.FC<ServiceCardProps> = ({
@@ -28,9 +31,15 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
   style,
   isSelected,
   onPress,
+  disabled,
+  image,
 }) => {
   return (
-    <TouchableOpacity style={[styles.root, style]} onPress={onPress}>
+    <TouchableOpacity
+      style={[styles.root, style]}
+      onPress={onPress}
+      disabled={disabled}
+    >
       <View style={styles.header}>
         <View style={styles.priceContainer}>
           <Text style={styles.startAtText}>Starting at</Text>
@@ -52,6 +61,13 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
       <View style={styles.descriptionContainer}>
         <Text style={styles.descriptionText}>{description}</Text>
       </View>
+      {!!image && (
+        <FastImage
+          resizeMode="contain"
+          {...image}
+          style={[styles.image, image?.style]}
+        />
+      )}
       {isSelected && <CheckCircleIcon style={styles.checkIcon} />}
     </TouchableOpacity>
   );

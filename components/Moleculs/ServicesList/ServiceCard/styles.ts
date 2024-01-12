@@ -1,5 +1,5 @@
 import { Dimensions, StyleSheet } from "react-native";
-import { Color } from "../../../../../GlobalStyles";
+import { Color } from "../../../../GlobalStyles";
 
 export const styles = StyleSheet.create({
   root: {
@@ -7,7 +7,6 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 16,
     borderColor: Color.textMainWhite,
-    marginHorizontal: 24,
   },
   header: {
     flexDirection: "row",
@@ -75,5 +74,11 @@ export const styles = StyleSheet.create({
     width: 26,
     height: 26,
     top: "43%",
+  },
+  image: {
+    height: 142,
+    marginTop: -16,
+    marginBottom: 16,
+    marginHorizontal: 16,
   },
 });
