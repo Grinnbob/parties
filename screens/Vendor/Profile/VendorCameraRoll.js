@@ -9,6 +9,8 @@ import { Text, Pressable } from "native-base";
 import CustomCameraSelect from "./component/CustomCameraSelect";
 import StaggeredList from "@mindinventory/react-native-stagger-view";
 import { useCameraRoll } from "@react-native-camera-roll/camera-roll";
+import { useRecoilState } from "recoil";
+import { vendorSelectedMediaAtom } from "../../../stateManagement";
 
 const width = Dimensions.get("screen").width;
 
@@ -20,11 +22,11 @@ const VendorCameraRoll = ({ route, navigation }) => {
     StateTypes.photoalbum.key,
     StateTypes.photoalbum.default
   );
-  const [selectedVerifyPhoto, setSelectedVerifyPhoto] = useGlobalState(
-    StateTypes.selectedVerifyPhoto.key,
-    StateTypes.selectedVerifyPhoto.default
-  );
+  const [, setVendorSelectedMedia] = useRecoilState(vendorSelectedMediaAtom);
   const [photos, getPhotos, save] = useCameraRoll();
+  const { key } = route.params;
+
+  console.log("key", key);
 
   const handleCameraRoll = () => {
     getPhotos();
@@ -62,7 +64,12 @@ const VendorCameraRoll = ({ route, navigation }) => {
   };
 
   const handleDone = () => {
-    setSelectedVerifyPhoto(selection);
+    setVendorSelectedMedia((prevState) => {
+      return {
+        ...prevState,
+        [key]: selection,
+      };
+    });
     navigation.pop();
   };
 

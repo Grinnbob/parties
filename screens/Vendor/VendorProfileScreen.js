@@ -27,7 +27,7 @@ import { useNavigation } from "@react-navigation/core";
 import FastImage from "react-native-fast-image";
 import { IconBg } from "../../components/Atoms";
 import {
-  vendorProfileAlbumAtom,
+  vendorSelectedMediaAtom,
   vendorProfileServiceAtom,
 } from "../../stateManagement";
 import { useRecoilState } from "recoil";
@@ -51,7 +51,7 @@ const VendorProfileScreen = ({ route }) => {
     vendorProfileServiceAtom
   );
   const [vendorProfileAlbum, setVendorProfileAlbum] = useState(
-    vendorProfileAlbumAtom
+    vendorSelectedMediaAtom
   );
   const [backgroundLink, setBackgroundLink] = useState("");
   const [percent, setPercent] = useState(0);

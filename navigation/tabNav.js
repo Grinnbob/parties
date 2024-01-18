@@ -13,7 +13,7 @@ import Services from "../screens/Vendor/Services";
 import PhotoAlbumScreen from "../screens/Vendor/Profile/PhotoAlbumScreen";
 import HelpSearchScreen from "../screens/Host/HelpSearchScreen";
 import VendorCameraRoll from "../screens/Vendor/Profile/VendorCameraRoll";
-import VendorEdit from "../screens/Vendor/VendorEdit";
+import VendorEdit from "../screens/Vendor/VendorEdit/VendorEdit";
 import SearchVendorEditModal from "../components/Modal/SearchVendorEditModal";
 
 // const BottomTab = createBottomTabNavigator();

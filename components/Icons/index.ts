@@ -26,3 +26,4 @@ export * from "./PlusIcon";
 export * from "./CloseIcon";
 export * from "./ProfileIcon";
 export * from "./CheckIcon";
+export * from "./PlusCircle";
