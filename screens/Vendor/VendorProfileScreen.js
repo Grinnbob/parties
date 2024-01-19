@@ -27,7 +27,8 @@ import { useNavigation } from "@react-navigation/core";
 import FastImage from "react-native-fast-image";
 import { IconBg } from "../../components/Atoms";
 import {
-  vendorSelectedMediaAtom,
+  selectedMediaAtom,
+  serviceTypesAtom,
   vendorProfileServiceAtom,
 } from "../../stateManagement";
 import { useRecoilState } from "recoil";
@@ -41,7 +42,7 @@ const renderItem = ({ item }) => {
 };
 
 const VendorProfileScreen = ({ route }) => {
-  const { navigate, toggleDrawer } = useNavigation();
+  const { navigate, push, toggleDrawer } = useNavigation();
   const [vendor, setVendor] = useGlobalState(
     StateTypes.vendor.key,
     StateTypes.vendor.default
@@ -50,9 +51,9 @@ const VendorProfileScreen = ({ route }) => {
   const [vendorProfileServices, setVendorProfileServices] = useRecoilState(
     vendorProfileServiceAtom
   );
-  const [vendorProfileAlbum, setVendorProfileAlbum] = useState(
-    vendorSelectedMediaAtom
-  );
+  const [, setServiceTypes] = useRecoilState(serviceTypesAtom);
+  const [vendorProfileAlbum, setVendorProfileAlbum] =
+    useState(selectedMediaAtom);
   const [backgroundLink, setBackgroundLink] = useState("");
   const [percent, setPercent] = useState(0);
   const [busDescription, setBusDescription] = useState(false);
@@ -96,6 +97,16 @@ const VendorProfileScreen = ({ route }) => {
     }
   };
 
+  const getServiceTypes = async () => {
+    try {
+      const res = await apis.serviceType.getAll();
+
+      setServiceTypes(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const getAlbum = async () => {
     try {
       const res = await apis.album.getAll({ vendorId: vendor[0]?.id });
@@ -111,10 +122,10 @@ const VendorProfileScreen = ({ route }) => {
   const getVendorInfo = async () => {
     try {
       const res = await apis.vendor.getById(vendor[0].id);
-      console.log("RES", res.data);
+      console.log("RES!!!!!!!!!", res.data);
       if (res && res.data) {
         setKey(res.data.listOfKeys);
-        setBackgroundLink(res.data.avatar);
+        setBackgroundLink(res.data.background);
         setServiceName(res.data.name);
         setServiceDescription(res.data.description);
         setIsLoading(false);
@@ -129,6 +140,7 @@ const VendorProfileScreen = ({ route }) => {
       getAlbum();
       getService();
       getVendorInfo();
+      getServiceTypes();
       if (vendor && vendor[0]?.description) {
         setBusDescription(true);
       }
@@ -187,7 +199,7 @@ const VendorProfileScreen = ({ route }) => {
                 />
               </View>
               <View style={{ flexDirection: "row", gap: 8 }}>
-                <Pressable onPress={() => navigate("Edit")}>
+                <Pressable onPress={() => push("Edit")}>
                   <IconBg>
                     <Image
                       style={[styles.pencilIcon1]}

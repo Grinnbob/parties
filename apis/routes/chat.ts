@@ -19,7 +19,6 @@ export const uploadChatImage = async (data: {
     uri
   );
   if (uploadRes.success) {
-    console.log("uploadRes", uploadRes);
     return uploadRes;
   }
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import {
   StyleProp,
   Text,
@@ -8,8 +8,15 @@ import {
 } from "react-native";
 import { styles } from "./styles";
 import LinearGradient from "react-native-linear-gradient";
-import { CheckCircleIcon } from "../../../Icons";
+import {
+  CheckCircleIcon,
+  MoreVertIcon,
+  PencilIcon,
+  TrashIcon,
+} from "../../../Icons";
 import FastImage, { FastImageProps } from "react-native-fast-image";
+import { Color } from "../../../../GlobalStyles";
+import { Menu } from "../../../Atoms/Menu";
 
 type ServiceCardProps = {
   name: string;
@@ -21,6 +28,10 @@ type ServiceCardProps = {
   onPress?: () => void;
   disabled?: boolean;
   image?: FastImageProps;
+  actions?: {
+    onDelete: () => void;
+    onEdit: () => void;
+  };
 };
 
 export const ServiceCard: React.FC<ServiceCardProps> = ({
@@ -33,12 +44,31 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
   onPress,
   disabled,
   image,
+  actions,
 }) => {
+  const [isMenuOpen, setMenuOpen] = useState(false);
+
+  const toggleMenu = useCallback(() => {
+    setMenuOpen((prevState) => {
+      return !prevState;
+    });
+  }, []);
+
+  const handleEdit = useCallback(() => {
+    toggleMenu();
+    actions?.onEdit();
+  }, [actions, toggleMenu]);
+
+  const handleDelete = useCallback(() => {
+    toggleMenu();
+    actions?.onDelete();
+  }, [actions, toggleMenu]);
+
   return (
     <TouchableOpacity
       style={[styles.root, style]}
       onPress={onPress}
-      disabled={disabled}
+      disabled={disabled || !onPress}
     >
       <View style={styles.header}>
         <View style={styles.priceContainer}>
@@ -51,17 +81,68 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
         <LinearGradient
           style={styles.nameContainer}
           locations={[0, 1]}
-          colors={["#6c1b9e", "#ff077e"]}
+          colors={["#ff077e", "#ff077e"]}
           useAngle={true}
           angle={-90}
         >
           <Text style={styles.nameText}>{name}</Text>
+          <TouchableOpacity
+            style={styles.moreVertIconContainer}
+            onPress={toggleMenu}
+          >
+            <MoreVertIcon color={Color.textMainWhite} />
+          </TouchableOpacity>
+          {!!actions && (
+            <Menu
+              opened={isMenuOpen}
+              onBackdropPress={toggleMenu}
+              options={[
+                {
+                  children: (
+                    <View style={styles.menuOption}>
+                      <PencilIcon color={Color.textMainWhite} />
+                      <Text
+                        style={[
+                          styles.menuText,
+                          { color: Color.textMainWhite },
+                        ]}
+                      >
+                        Edit
+                      </Text>
+                    </View>
+                  ),
+                  onSelect: handleEdit,
+                  customStyles: {
+                    optionWrapper: {
+                      backgroundColor: Color.primaryPink,
+                    },
+                  },
+                },
+                {
+                  children: (
+                    <View style={styles.menuOption}>
+                      <TrashIcon color={Color.primaryPink} />
+                      <Text
+                        style={[
+                          styles.menuText,
+                          { color: Color.labelColorLightPrimary },
+                        ]}
+                      >
+                        Delete
+                      </Text>
+                    </View>
+                  ),
+                  onSelect: handleDelete,
+                },
+              ]}
+            />
+          )}
         </LinearGradient>
       </View>
       <View style={styles.descriptionContainer}>
         <Text style={styles.descriptionText}>{description}</Text>
       </View>
-      {!!image && (
+      {!!image?.source?.uri && (
         <FastImage
           resizeMode="contain"
           {...image}

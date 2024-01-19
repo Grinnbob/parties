@@ -7,6 +7,7 @@ export type ServiceModel = {
   name: string;
   price: number;
   rate: string;
+  image: string;
   serviceTypes: Array<{ id: number; title: string }>;
   updatedAt: string;
 };

@@ -27,3 +27,7 @@ export * from "./CloseIcon";
 export * from "./ProfileIcon";
 export * from "./CheckIcon";
 export * from "./PlusCircle";
+export * from "./CameraPlusIcon";
+export * from "./MoreVertIcon";
+export * from "./TrashIcon";
+export * from "./PencilIcon";

@@ -113,6 +113,11 @@ function CalendarNavigator() {
         options={{ headerShown: false, gestureEnabled: false }}
       />
       <CalendarStack.Screen
+        name="Service"
+        component={ServicePackageScreen}
+        options={{ headerShown: false, gestureEnabled: false }}
+      />
+      <CalendarStack.Screen
         name="CameraEdit"
         component={VendorCameraRoll}
         options={{ headerShown: false, gestureEnabled: false }}

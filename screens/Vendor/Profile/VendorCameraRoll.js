@@ -10,7 +10,7 @@ import CustomCameraSelect from "./component/CustomCameraSelect";
 import StaggeredList from "@mindinventory/react-native-stagger-view";
 import { useCameraRoll } from "@react-native-camera-roll/camera-roll";
 import { useRecoilState } from "recoil";
-import { vendorSelectedMediaAtom } from "../../../stateManagement";
+import { selectedMediaAtom } from "../../../stateManagement";
 
 const width = Dimensions.get("screen").width;
 
@@ -22,11 +22,9 @@ const VendorCameraRoll = ({ route, navigation }) => {
     StateTypes.photoalbum.key,
     StateTypes.photoalbum.default
   );
-  const [, setVendorSelectedMedia] = useRecoilState(vendorSelectedMediaAtom);
+  const [, setVendorSelectedMedia] = useRecoilState(selectedMediaAtom);
   const [photos, getPhotos, save] = useCameraRoll();
   const { key } = route.params;
-
-  console.log("key", key);
 
   const handleCameraRoll = () => {
     getPhotos();

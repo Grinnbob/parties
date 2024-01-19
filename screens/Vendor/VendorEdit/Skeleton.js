@@ -19,18 +19,17 @@ export default ({}) => {
         borderColor: "#8A8A8A",
       }}
     >
-      <Skeleton.Text lines={3} alignItems="start" px="5" />
+      <Skeleton.Text lines={1} alignItems="start" px="5" />
       <Skeleton
         borderWidth={1}
         borderColor="#8A8A8A"
         endColor="#8A8A8A"
         size="100px"
-        mt={20}
+        mt={10}
+        mb={10}
         rounded="full"
       />
 
-      <Skeleton mb="3" w="90%" rounded="8" />
-      <Skeleton mb="3" w="90%" rounded="8" />
       <Skeleton mb="3" w="90%" rounded="8" />
       <Skeleton mb="3" w="90%" rounded="8" />
       <Skeleton mb="3" w="90%" rounded="8" />

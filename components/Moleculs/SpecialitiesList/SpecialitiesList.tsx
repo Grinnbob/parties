@@ -11,7 +11,7 @@ import apis from "../../../apis";
 import { KeyItemModel } from "../../../models";
 import { AddButton } from "../../Atoms/AddButton";
 
-const MAX_KEY_COUNT = 5;
+export const MAX_SPECIALITIES_KEY_COUNT = 5;
 
 type SpecialitiesListProps = {
   label?: string;
@@ -74,7 +74,7 @@ export const SpecialitiesList: React.FC<SpecialitiesListProps> = ({
     });
   }, []);
 
-  const isDisabledAdd = keys.length >= MAX_KEY_COUNT;
+  const isDisabledAdd = keys.length >= MAX_SPECIALITIES_KEY_COUNT;
 
   return (
     <>
@@ -119,7 +119,7 @@ export const SpecialitiesList: React.FC<SpecialitiesListProps> = ({
         </View>
         {!isDisabledAdd && (
           <Text style={styles.maxCountText}>
-            Add at least {MAX_KEY_COUNT} key words
+            Add at least {MAX_SPECIALITIES_KEY_COUNT} key words
           </Text>
         )}
       </View>
@@ -141,6 +141,12 @@ export const SpecialitiesList: React.FC<SpecialitiesListProps> = ({
             delay={1000}
           />
           <FlatList
+            ListHeaderComponent={() => {
+              if (!isLoading) {
+                return <></>;
+              }
+              return <ActivityIndicator color={Color.primaryPink} size={16} />;
+            }}
             data={searchResult.filter(
               (item) => !keys.find((key) => key.id === item.id)
             )}

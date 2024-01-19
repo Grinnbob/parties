@@ -1,62 +1,86 @@
-import React, { useState, useEffect } from "react";
-import {
-  Image,
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  ScrollView,
-  Pressable,
-} from "react-native";
-import { Padding, Border, FontFamily, FontSize, Color } from "../GlobalStyles";
-import { AntDesign } from "@expo/vector-icons";
-import { useToast, Select, VStack } from "native-base";
+import React, { useState, useMemo, useCallback } from "react";
+import { Image, StyleSheet, Text, View, ScrollView } from "react-native";
+import { Padding, Border, FontFamily, Color } from "../GlobalStyles";
+import { useToast } from "native-base";
 import apis from "../apis";
-import MidGradientButton from "../components/MidGradientButton";
 import TopNavigationContent from "../components/TopNavigationContent";
-import Close from "../assets/x.svg";
 import ServicePackageModal from "../components/ServicePackageModal";
 import StateTypes from "../stateManagement/StateTypes";
 import useGlobalState from "../stateManagement/hook";
+import { SelectInput } from "../components/Input";
+import { TextInput } from "../components/Input";
+import { TextInputWithAI } from "../components/Moleculs/TextInputWithAI";
+import { PhotoInput } from "../components/Input/PhotoInput";
+import { GradientButton } from "../components/Atoms";
+import { useRecoilState } from "recoil";
+import { serviceTypesAtom } from "../stateManagement";
+import FastImage from "react-native-fast-image";
 
 const ServicePackageScreen = ({ navigation, route }) => {
   const toast = useToast();
-  const [packageName, setPackageName] = useState("");
-  const [serviceType, setServiceType] = useState("");
-  const [allService, setAllService] = useState([]);
-  const [price, setPrice] = useState("");
-  const [rate, setRate] = useState("");
-  const [description, setDescription] = useState("");
-  const [serveAmount, setServeAmount] = useState("");
+  const service = route.params?.service;
+  const [serviceTypes] = useRecoilState(serviceTypesAtom);
+  const [packageName, setPackageName] = useState(service?.name || "");
+  const [serviceType, setServiceType] = useState(
+    serviceTypes
+      .find((item) => item.id === service?.serviceTypes?.[0]?.id)
+      ?.id?.toString() || ""
+  );
+  const [price, setPrice] = useState(service?.price?.toString() || "");
+  const [rate, setRate] = useState(service?.rate || "");
+  const [description, setDescription] = useState(service?.description || "");
   const [isModalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [vendor, setVendor] = useGlobalState(
+  const [photo, setPhoto] = useState(service?.image || "");
+  const [isNewPhoto, setIsNewPhoto] = useState(false);
+  const [isAiDescriptionLoading, setIsAiDescriptionLoading] = useState(false);
+
+  const [vendor] = useGlobalState(
     StateTypes.vendor.key,
     StateTypes.vendor.default
   );
 
-  const grabService = async () => {
-    try {
-      const res = await apis.serviceType.getAll();
-
-      setAllService(res.data);
-    } catch (error) {
-      console.log(error);
-    }
+  const handlePhotoChange = (url) => {
+    setIsNewPhoto(true);
+    setPhoto(url);
   };
 
   const handleSave = async () => {
     try {
       setIsLoading(true);
-      const res = await apis.service.create({
+      const data = {
         name: packageName,
         type: serviceType,
         price: price,
         rate: rate,
         description: description,
-        amount: serveAmount,
         vendorId: vendor[0].id,
-      });
+        image: photo,
+      };
+      let id = service?.id;
+      let res;
+      if (service) {
+        res = await apis.service.update({
+          id,
+          ...data,
+        });
+      } else {
+        res = await apis.service.create(data);
+        id = res.data.id;
+      }
+      const updatedService = { ...res.data };
+      if (isNewPhoto) {
+        const newPhoto = await apis.service.uploadServicePhoto({
+          id,
+          uri: photo,
+        });
+        FastImage.preload([
+          {
+            uri: newPhoto.updated.image,
+          },
+        ]);
+        updatedService.image = newPhoto.updated.image;
+      }
       setIsLoading(false);
       if (res && res.success === false) {
         toast.show({
@@ -65,21 +89,78 @@ const ServicePackageScreen = ({ navigation, route }) => {
         });
       }
       if (res && res.success) {
-        setModalVisible(true);
-        setPrice("");
-        setRate("");
-        setDescription("");
-        setServeAmount("");
-        setPackageName("");
+        if (!service) {
+          setModalVisible(true);
+        } else {
+          toast.show({
+            placement: "top",
+            description: "Service updated",
+          });
+        }
+        route.params?.onEdit({
+          ...updatedService,
+          id,
+        });
+        navigation.pop();
       }
     } catch (error) {
+      setIsLoading(false);
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    grabService();
-  }, [route]);
+  const unitOptions = useMemo(() => {
+    return [
+      {
+        label: "Person",
+        value: "person",
+      },
+      {
+        label: "Hour",
+        value: "hour",
+      },
+      {
+        label: "Day",
+        value: "day",
+      },
+    ];
+  }, []);
+
+  const serviceTypeOptions = useMemo(() => {
+    return serviceTypes.map((item) => {
+      return {
+        label: item.title,
+        value: String(item.id),
+      };
+    });
+  }, [serviceTypes]);
+
+  const generateAiDescription = useCallback(async () => {
+    try {
+      if (!packageName || !serviceType) {
+        toast.show({
+          placement: "top",
+          description: "Please enter Package Name and Service Type",
+        });
+        return;
+      }
+      setIsAiDescriptionLoading(true);
+      const response = await apis.service.generateAiDescription({
+        name: packageName,
+        type: serviceTypeOptions.find((item) => item.id === serviceType)?.label,
+      });
+      if (response.success && !!response.data.choices?.[0]?.message?.content) {
+        setDescription(response.data.choices?.[0]?.message?.content);
+      } else {
+        toast.show({
+          placement: "top",
+          description: "AI not available now",
+        });
+      }
+    } finally {
+      setIsAiDescriptionLoading(false);
+    }
+  }, [packageName, serviceTypeOptions, serviceType, toast]);
 
   return (
     <>
@@ -94,149 +175,105 @@ const ServicePackageScreen = ({ navigation, route }) => {
             resizeMode="cover"
             source={require("../assets/bg3.png")}
           />
-          <TopNavigationContent
-            RightComponent={<Close />}
-            LeftComponent={() =>
-              navigation.navigate("Calendar", { screen: "Calendar" })
-            }
-          />
+          <TopNavigationContent LeftComponent={() => navigation.pop()} />
           <View style={styles.title}>
             <View>
               <Text style={styles.title1}>Service Package</Text>
               <Text style={styles.title2}>
-                By filling your service information you can {"\n"}create your
-                service package for hosts to {"\n"}find
+                Tell hosts what you offer! Showcase your services by filling in
+                your package info.
               </Text>
             </View>
           </View>
 
-          <View style={[styles.packagePosition]}>
-            <View style={[styles.packageName]}>
-              <TextInput
-                style={[styles.form, styles.formBorder]}
-                placeholder="Package Name"
-                keyboardType="default"
-                placeholderTextColor="#8a8a8a"
-                value={packageName}
-                onChangeText={setPackageName}
-              />
-              <Select
-                selectedValue={serviceType}
-                accessibilityLabel="Service Type"
-                placeholder="Service Type"
-                dropdownCloseIcon={
-                  <AntDesign
-                    name="down"
-                    size={15}
-                    style={{ right: 20, color: "#FF077E" }}
-                  />
-                }
-                dropdownOpenIcon={
-                  <AntDesign
-                    name="down"
-                    size={15}
-                    style={{ right: 20, color: "#FF077E" }}
-                  />
-                }
-                borderColor="rgba(255, 255, 255, 0.2)"
-                borderWidth={1}
-                borderRadius={8}
-                variant="unstyled"
-                marginTop={2}
-                marginBottom={5}
-                paddingLeft={6}
-                color={"#FFF"}
-                onValueChange={(itemValue) => setServiceType(itemValue)}
-              >
-                <Select.Item label="Food" value="food" />
-                <Select.Item label="Bartending" value="bartend" />
-                <Select.Item label="Party Rentals" value="party" />
-              </Select>
-            </View>
+          <View style={styles.packagePosition}>
+            <TextInput
+              style={[styles.form, styles.formBorder]}
+              inputProps={{
+                placeholder: "Package Name",
+                keyboardType: "default",
+                value: packageName,
+                onChangeText: setPackageName,
+                marginBottom: 1,
+              }}
+            />
+            <SelectInput
+              selectedValue={serviceType}
+              placeholder="Service Type"
+              options={serviceTypeOptions}
+              onValueChange={(itemValue) => setServiceType(itemValue)}
+            />
             <Text style={styles.estimateThisPackage}>
               Estimate This Package Price
             </Text>
             <View style={[styles.starting, styles.formSpaceBlock1]}>
               <Text style={styles.perTypo}>Starting at</Text>
               <TextInput
-                style={[styles.form2, styles.formSpaceBlock]}
-                placeholder="$--"
-                placeholderTextColor="#8a8a8a"
-                returnKeyType={"next"}
-                keyboardType={"phone-pad"}
-                value={price}
-                onChangeText={setPrice}
+                inputProps={{
+                  value: price,
+                  onChangeText: setPrice,
+                  keyboardType: "phone-pad",
+                  returnKeyType: "next",
+                  placeholder: "--",
+                  style: {
+                    paddingLeft: 0,
+                    paddingRight: 8,
+                  },
+                  InputLeftElement: (
+                    <Text
+                      style={[
+                        styles.usdSymbol,
+                        {
+                          color:
+                            price !== "" ? Color.textMainWhite : Color.gray300,
+                        },
+                      ]}
+                    >
+                      $
+                    </Text>
+                  ),
+                }}
+                formControlProps={{
+                  width: 60,
+                }}
               />
-              <Text style={[styles.per, styles.perTypo]}>per</Text>
-              <Select
+              <Text style={styles.perTypo}>per</Text>
+              <SelectInput
                 selectedValue={rate}
-                accessibilityLabel="---"
-                placeholder="---"
-                dropdownCloseIcon={
-                  <AntDesign
-                    name="down"
-                    size={15}
-                    style={{ right: 20, color: "#FF077E" }}
-                  />
-                }
-                dropdownOpenIcon={
-                  <AntDesign
-                    name="down"
-                    size={15}
-                    style={{ right: 20, color: "#FF077E" }}
-                  />
-                }
-                borderColor="rgba(255, 255, 255, 0.2)"
-                borderWidth={1}
-                borderRadius={8}
-                variant="unstyled"
-                width={150}
-                color={"#FFF"}
+                options={unitOptions}
                 onValueChange={(itemValue) => setRate(itemValue)}
-              >
-                <Select.Item label="Person" value="person" />
-                <Select.Item label="Hour" value="hour" />
-                <Select.Item label="Day" value="day" />
-              </Select>
+                placeholder="Person/ Hour / Day"
+                width={160}
+                style={{ paddingLeft: 8, paddingRight: 0 }}
+                marginBottom={2}
+                arrowIconStyle={{ display: "none" }}
+              />
             </View>
-            <TextInput
-              style={[styles.form4, styles.formSpaceBlock1]}
-              placeholder="Service Package Description"
-              keyboardType="default"
-              multiline={true}
-              placeholderTextColor="#8a8a8a"
-              value={description}
-              onChangeText={setDescription}
+            <TextInputWithAI
+              label="Package Description"
+              inputProps={{
+                value: description,
+                onChangeText: setDescription,
+                keyboardType: "default",
+                placeholder: "Service Package Description",
+              }}
+              isLoading={isAiDescriptionLoading}
+              onGeneratePress={generateAiDescription}
             />
-            <TextInput
-              style={[styles.form5, styles.formSpaceBlock1]}
-              placeholder="Serves XX People"
-              returnKeyType={"next"}
-              keyboardType={"phone-pad"}
-              placeholderTextColor="#8a8a8a"
-              value={serveAmount}
-              onChangeText={setServeAmount}
+            <PhotoInput
+              value={photo}
+              label="Add Photo "
+              isOptional={true}
+              onChange={handlePhotoChange}
             />
           </View>
-          <VStack
-            style={{
-              marginVertical: 40,
-              alignItems: "center",
-              marginBottom: 80,
-            }}
-          >
-            <MidGradientButton
-              onPress={handleSave}
-              isLoading={isLoading}
-              disabled={
-                !price || !serveAmount || !rate || !packageName || !description
-              }
-              label="Save"
-              formBackgroundColor="rgba(255, 255, 255, 0.1)"
-              formMarginTop="unset"
-              labelColor="#FFF"
-            />
-          </VStack>
+          <GradientButton
+            text="Publish"
+            disabled={!price || !rate || !packageName || !description}
+            onPress={handleSave}
+            style={styles.submitButton}
+            loading={isLoading}
+          />
         </View>
       </ScrollView>
     </>
@@ -246,6 +283,8 @@ const ServicePackageScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   packagePosition: {
     marginTop: 10,
+    flexDirection: "column",
+    gap: 16,
   },
   formBorder: {
     paddingVertical: Padding.p_base,
@@ -257,7 +296,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: Padding.p_5xl,
   },
   formSpaceBlock1: {
-    marginTop: 16,
     flexDirection: "row",
   },
   formSpaceBlock: {
@@ -304,9 +342,10 @@ const styles = StyleSheet.create({
     color: Color.labelColorDarkPrimary,
     fontWeight: "700",
     textAlign: "left",
+    marginTop: -16,
   },
   title2: {
-    color: Color.primaryAlmostGrey,
+    color: Color.gray300,
     marginTop: 8,
     fontFamily: FontFamily.typographyBodyMediumLight,
     fontWeight: "300",
@@ -336,6 +375,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Color.labelColorDarkPrimary,
     fontWeight: "700",
+    marginTop: 8,
   },
   form2: {
     marginLeft: 8,
@@ -344,11 +384,8 @@ const styles = StyleSheet.create({
     borderColor: "rgba(138, 138, 138, 0.3)",
     color: "#FFF",
   },
-  per: {
-    marginHorizontal: 8,
-  },
   starting: {
-    alignSelf: "stretch",
+    flexDirection: "row",
     alignItems: "center",
     width: "100%",
     justifyContent: "space-between",
@@ -392,6 +429,17 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     flex: 1,
     padding: 20,
+  },
+  submitButton: {
+    marginTop: 32,
+    marginBottom: 16,
+  },
+  usdSymbol: {
+    color: Color.textMainWhite,
+    fontSize: 16,
+    lineHeight: 22,
+    paddingLeft: 8,
+    paddingRight: 0,
   },
 });
 

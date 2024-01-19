@@ -16,7 +16,8 @@ export const styles = StyleSheet.create({
     borderColor: "#FFFFFF33",
     borderWidth: 1,
     borderRadius: 8,
-    paddingVertical: 16,
+    paddingTop: 8,
+    paddingBottom: 16,
     paddingHorizontal: 24,
   },
   input: {
@@ -25,7 +26,13 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 22,
   },
+  activityIndicator: {
+    width: 20,
+  },
   button: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 8,
     width: "100%",
     borderRadius: 30,
     backgroundColor: Color.labelColorLightPrimary,
@@ -34,8 +41,10 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonText: {
+    position: "relative",
     fontSize: 16,
     lineHeight: 22,
     color: Color.textMainWhite,
+    marginRight: 20,
   },
 });

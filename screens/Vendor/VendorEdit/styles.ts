@@ -7,8 +7,6 @@ export const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     justifyContent: "space-between",
-    paddingVertical: 10,
-    paddingHorizontal: 0,
   },
   titlePosition: {
     width: "100%",
@@ -20,7 +18,6 @@ export const styles = StyleSheet.create({
     fontSize: 16,
   },
   background: {
-    width: "100%",
     height: "100%",
   },
   bgIconPosition: {
@@ -108,7 +105,6 @@ export const styles = StyleSheet.create({
   },
   forms: {
     backgroundColor: "black",
-    alignItems: "center",
     marginTop: -170,
     zIndex: 30,
     borderTopLeftRadius: 32,
@@ -158,7 +154,7 @@ export const styles = StyleSheet.create({
     flexDirection: "column",
     marginTop: 8,
     marginBottom: 24,
-    marginLeft: 4,
+    marginLeft: 90,
   },
   milesInfo: {
     flexDirection: "row",

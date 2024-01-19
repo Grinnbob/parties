@@ -48,6 +48,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 16,
     borderTopRightRadius: 16,
+    position: "relative",
   },
   nameText: {
     color: Color.textMainWhite,
@@ -81,4 +82,12 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
     marginHorizontal: 16,
   },
+  moreVertIconContainer: {
+    position: "absolute",
+    right: 8,
+    top: 4,
+    padding: 8,
+  },
+  menuOption: { flexDirection: "row", gap: 8, alignItems: "center" },
+  menuText: { fontSize: 16, lineHeight: 24 },
 });

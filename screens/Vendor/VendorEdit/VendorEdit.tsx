@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import {
   Image,
   View,
@@ -7,13 +13,14 @@ import {
   ImageBackground,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import apis from "../../../apis";
 import { Text, useToast } from "native-base";
 import useGlobalState from "../../../stateManagement/hook";
 import StateTypes from "../../../stateManagement/StateTypes";
 import { GooglePlacesAutocompleteRef } from "react-native-google-places-autocomplete";
-import Skeleton from "../components/Skeleton";
+import Skeleton from "./Skeleton";
 import {
   AddBusinessIcon,
   AddPhotoIcon,
@@ -29,21 +36,24 @@ import {
 } from "../../../components/Input";
 import layout from "../../../utils/layout";
 import {
+  MAX_SPECIALITIES_KEY_COUNT,
   ProfileCompleteBanner,
   ServicesList,
   SpecialitiesList,
 } from "../../../components/Moleculs";
 import { useRecoilState } from "recoil";
-import { KeyItemModel } from "../../../models";
+import { KeyItemModel, ServiceModel } from "../../../models";
 import { TextInputWithAI } from "../../../components/Moleculs/TextInputWithAI";
 import {
   keyListAtom,
-  vendorSelectedMediaAtom,
+  selectedMediaAtom,
   vendorProfileServiceAtom,
-  VendorSelectedMediaEnum,
+  SelectedMediaEnum,
 } from "../../../stateManagement";
 import { styles } from "./styles";
 import FastImage from "react-native-fast-image";
+import cloneDeep from "lodash/cloneDeep";
+import { Color } from "../../../GlobalStyles";
 
 const VendorEdit = ({ navigation }) => {
   const insets = useSafeAreaInsets();
@@ -61,32 +71,59 @@ const VendorEdit = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [serviceName, setServiceName] = useState("");
 
-  const [vendorProfileServices] = useRecoilState(vendorProfileServiceAtom);
-  const [vendorSelectedMedia] = useRecoilState(vendorSelectedMediaAtom);
+  const [vendorProfileServices, setVendorServices] = useRecoilState(
+    vendorProfileServiceAtom
+  );
+  const [selectedMedia] = useRecoilState(selectedMediaAtom);
   const newAvatarUrl =
-    vendorSelectedMedia[VendorSelectedMediaEnum.PROFILE_AVATAR]?.[0].node.image
-      .uri;
+    selectedMedia[SelectedMediaEnum.VENDOR_PROFILE_AVATAR]?.[0].node.image.uri;
   const newProfileBgUrl =
-    vendorSelectedMedia[VendorSelectedMediaEnum.PROFILE_BG]?.[0].node.image.uri;
-  const [serviceArea, setServiceArea] = useState("");
+    selectedMedia[SelectedMediaEnum.VENDOR_PROFILE_BG]?.[0].node.image.uri;
   const [serviceDescription, setServiceDescription] = useState("");
   const [avatar, setAvatar] = useState("");
+  const [profileBackground, setProfileBackground] = useState("");
   const [address, setAddress] = useState("");
-  const [add, setAdd] = useState("");
   const [state, setState] = useState(currentVendor?.state || "");
   const [city, setCity] = useState(currentVendor?.city || "");
   const [lat, setLat] = useState(0);
   const [long, setLong] = useState(0);
   const [distance, setDistance] = useState(currentVendor?.distance || "");
   const [loading, setLoading] = useState(true);
+  const [isAiDescriptionLoading, setIsAiDescriptionLoading] = useState(false);
+
+  const handleServiceDeleted = useCallback(
+    (service: ServiceModel) => {
+      const index = vendorProfileServices.findIndex(
+        (item) => item.id === service.id
+      );
+      if (index >= 0) {
+        const newServices = [...vendorProfileServices];
+        newServices.splice(index, 1);
+        setVendorServices(newServices);
+      }
+    },
+    [vendorProfileServices]
+  );
+
+  const handleEditServiced = useCallback(
+    (service: ServiceModel) => {
+      const index = vendorProfileServices.findIndex(
+        (item) => item.id === service.id
+      );
+      if (index >= 0) {
+        const newServices = cloneDeep(vendorProfileServices);
+        newServices[index] = service;
+        setVendorServices(newServices);
+      } else {
+        setVendorServices([...vendorProfileServices, service]);
+      }
+    },
+    [vendorProfileServices]
+  );
 
   useEffect(() => {
     getVendorInfo();
   }, [user]);
-
-  useEffect(() => {
-    setDistance(serviceArea);
-  }, [serviceArea]);
 
   const getVendorInfo = async () => {
     try {
@@ -96,9 +133,10 @@ const VendorEdit = ({ navigation }) => {
           setServiceName(res.data.name);
           setServiceDescription(res.data.description);
           setAvatar(res.data.avatar);
+          setProfileBackground(res.data.background);
           setCity(res.data.city);
           setState(res.data.state);
-          setAdd(res.data.address);
+          setAddress(res.data.address);
           ref.current?.setAddressText(res?.data?.address);
           setDistance(res.data.distance);
           setVendorKeyList(res.data.listOfKeys);
@@ -113,7 +151,6 @@ const VendorEdit = ({ navigation }) => {
 
   const handleRemoveKey = async (tag: KeyItemModel) => {
     try {
-      await apis.joinVendorKey.deleteById(tag.id);
       const removed = vendorKeyList.filter((item, i) => item.id !== tag.id);
       setVendorKeyList(removed);
     } catch (error) {
@@ -126,21 +163,46 @@ const VendorEdit = ({ navigation }) => {
   };
 
   const changeAvatar = () => {
-    navigation.navigate("CameraEdit", {
-      key: VendorSelectedMediaEnum.PROFILE_AVATAR,
+    navigation.push("CameraEdit", {
+      key: SelectedMediaEnum.VENDOR_PROFILE_AVATAR,
     });
   };
 
   const changeProfileBg = () => {
-    navigation.navigate("CameraEdit", {
-      key: VendorSelectedMediaEnum.PROFILE_BG,
+    navigation.push("CameraEdit", {
+      key: SelectedMediaEnum.VENDOR_PROFILE_BG,
     });
   };
 
   const handleNext = async () => {
     try {
+      let errorMessage = "";
+      if (!avatar && !newAvatarUrl) {
+        errorMessage = "Please add your avatar";
+      } else if (!profileBackground && !newProfileBgUrl) {
+        errorMessage = "Please add profile background";
+      } else if (!serviceName) {
+        errorMessage = "Please add Business Name";
+      } else if (!address) {
+        errorMessage = "Please add Address";
+      } else if (!distance) {
+        errorMessage = "Please select Service Area";
+      } else if (vendorKeyList.length < MAX_SPECIALITIES_KEY_COUNT) {
+        errorMessage = "Please add at least 5 Specialities";
+      } else if (!serviceDescription) {
+        errorMessage = "Please add Description";
+      }
+
+      if (errorMessage) {
+        toast.show({
+          placement: "top",
+          description: errorMessage,
+        });
+        return;
+      }
+
       setIsLoading(true);
-      const res = await apis.vendor.update({
+      const data: Record<string, unknown> = {
         id: currentVendor?.id,
         name: serviceName,
         description: serviceDescription,
@@ -152,18 +214,42 @@ const VendorEdit = ({ navigation }) => {
         completed: 0,
         city: city,
         state: state,
-        address: address ? address : add,
+        address: address,
         distance: distance,
         point: { type: "Point", coordinates: [long, lat] },
-      });
+      };
 
       if (newAvatarUrl) {
-        const avatarRes = await apis.vendor.UploadAvatar({
+        const avatarResponse = await apis.vendor.uploadAvatar({
           uri: newAvatarUrl,
           id: currentVendor?.id,
         });
+        console.log("avatarResponse", avatarResponse);
+        FastImage.preload([
+          {
+            uri: avatarResponse.updated.avatar,
+          },
+        ]);
+        console.log("avatarRes", avatarResponse);
       }
 
+      if (newProfileBgUrl) {
+        const profileBackGroundResponse =
+          await apis.vendor.uploadProfileBackground({
+            uri: newProfileBgUrl,
+            id: currentVendor?.id,
+          });
+        FastImage.preload([
+          {
+            uri: profileBackGroundResponse.updated.background,
+          },
+        ]);
+        console.log("profileBackGroundResponse", profileBackGroundResponse);
+      }
+
+      const res = await apis.vendor.update(data);
+
+      console.log("aaaaaabasdsadasd", res);
       await apis.joinVendorKey.createEditMulti({
         list: vendorKeyList,
         vendorId: currentVendor?.id,
@@ -174,15 +260,13 @@ const VendorEdit = ({ navigation }) => {
           placement: "top",
           description: res.message,
         });
-        setIsLoading(false);
       }
       setIsLoading(false);
       if (res && res.success) {
         toast.show({
           placement: "top",
-          description: "Service information updated successfully!",
+          description: "Information updated successfully!",
         });
-        setVendorKeyList(StateTypes.vendorKeyList.default);
         navigation.pop();
       }
     } catch (error) {
@@ -223,6 +307,34 @@ const VendorEdit = ({ navigation }) => {
     ];
   }, [actualCity, actualState]);
 
+  const generateAiDescription = useCallback(async () => {
+    try {
+      if (vendorKeyList.length < MAX_SPECIALITIES_KEY_COUNT) {
+        toast.show({
+          placement: "top",
+          description: `Please enter at ${MAX_SPECIALITIES_KEY_COUNT} Specialities`,
+        });
+        return;
+      }
+      setIsAiDescriptionLoading(true);
+      const response = await apis.vendor.generateAiDescription({
+        id: currentVendor.id,
+        keys: vendorKeyList.map((item) => item.name),
+      });
+      console.log("generateAiDescription", response.data.choices);
+      if (response.success && !!response.data.choices?.[0]?.message?.content) {
+        setServiceDescription(response.data.choices?.[0]?.message?.content);
+      } else {
+        toast.show({
+          placement: "top",
+          description: "AI not available now",
+        });
+      }
+    } finally {
+      setIsAiDescriptionLoading(false);
+    }
+  }, [currentVendor, vendorKeyList, toast]);
+
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -235,40 +347,42 @@ const VendorEdit = ({ navigation }) => {
       >
         <View style={styles.mainContainer}>
           {loading && <Skeleton />}
-          <View>
+          <View style={loading ? { opacity: 0 } : undefined}>
             <View
-              style={[styles.accessoryPosition, { paddingTop: insets.top }]}
+              style={[
+                styles.accessoryPosition,
+                { paddingTop: insets.top ? insets.top : 16 },
+              ]}
             >
               <TouchableOpacity onPress={() => navigation.pop()} hitSlop={20}>
                 <BackIcon />
               </TouchableOpacity>
               <Text style={styles.editPageText}>Edit Page</Text>
-              <TouchableOpacity
-                onPress={handleNext}
-                disabled={
-                  !avatar ||
-                  !serviceName ||
-                  !add ||
-                  !distance ||
-                  !serviceDescription
-                }
-                hitSlop={20}
-              >
-                <Text style={styles.saveText}>Save</Text>
+              <TouchableOpacity onPress={handleNext} hitSlop={20}>
+                {isLoading ? (
+                  <ActivityIndicator size={16} color={Color.primaryPink} />
+                ) : (
+                  <Text style={styles.saveText}>Save</Text>
+                )}
               </TouchableOpacity>
             </View>
             <View style={styles.profileBg}>
-              <ImageBackground
-                source={
-                  newProfileBgUrl
-                    ? {
-                        uri: newProfileBgUrl,
-                      }
-                    : require("../../../assets/vendorEditHeader.png")
-                }
-                style={styles.profileBgImageContainer}
-                imageStyle={styles.profileBgImage}
-              />
+              {newProfileBgUrl ? (
+                <ImageBackground
+                  source={{
+                    uri: newProfileBgUrl,
+                  }}
+                  style={styles.profileBgImageContainer}
+                  imageStyle={styles.profileBgImage}
+                />
+              ) : (
+                <FastImage
+                  source={{
+                    uri: profileBackground,
+                  }}
+                  style={styles.profileBgImageContainer}
+                />
+              )}
               <View
                 style={{
                   width: "100%",
@@ -323,7 +437,9 @@ const VendorEdit = ({ navigation }) => {
               </TouchableOpacity>
             )}
 
-            <Text style={styles.businessNameText}>Business Name</Text>
+            <Text style={styles.businessNameText}>
+              {serviceName || "Business Name"}
+            </Text>
 
             <View style={styles.forms}>
               <Image
@@ -339,7 +455,7 @@ const VendorEdit = ({ navigation }) => {
                   <Text style={styles.cityText}>Service Area:</Text>
                   <Text style={styles.areaText}>
                     {" "}
-                    {serviceArea ? serviceArea : "00"} miles
+                    {distance ? distance : "00"} miles
                   </Text>
                 </View>
               </View>
@@ -350,6 +466,7 @@ const VendorEdit = ({ navigation }) => {
                     keyboardType: "default",
                     onChangeText: setServiceName,
                     value: serviceName,
+                    maxLength: 45,
                   }}
                 />
                 <ScrollView horizontal={false}>
@@ -362,6 +479,10 @@ const VendorEdit = ({ navigation }) => {
                         textInputContainer: {
                           width: layout.window.width - 48,
                         },
+                      }}
+                      value={address}
+                      textInputProps={{
+                        onChangeText: setAddress,
                       }}
                       onPress={(data, details = null) => {
                         setAddress(details.formatted_address);
@@ -385,17 +506,15 @@ const VendorEdit = ({ navigation }) => {
                 </ScrollView>
 
                 <SelectInput
-                  selectedValue={
-                    serviceArea ? serviceArea : distance.toString()
-                  }
+                  selectedValue={distance}
                   placeholder="Service Area"
                   options={serviceAreaOptions}
-                  onValueChange={(itemValue) => setServiceArea(itemValue)}
+                  onValueChange={(itemValue) => setDistance(itemValue)}
                   arrowIconStyle={styles.serviceAreaIcon}
                 />
 
                 <ProfileCompleteBanner
-                  albumCompleted={!!vendorSelectedMedia.length}
+                  albumCompleted={false}
                   businessDescriptionCompleted={!!serviceDescription.length}
                   servicesCompleted={!!vendorProfileServices.length}
                 />
@@ -413,12 +532,16 @@ const VendorEdit = ({ navigation }) => {
                     onChangeText: (text: string) => setServiceDescription(text),
                     maxLength: 440,
                   }}
+                  isLoading={isAiDescriptionLoading}
+                  onGeneratePress={generateAiDescription}
                 />
 
                 <ServicesList
                   label="Service Packages"
                   services={vendorProfileServices}
                   vendorId={vendor[0].id}
+                  onDelete={handleServiceDeleted}
+                  onEdit={handleEditServiced}
                 />
               </View>
             </View>

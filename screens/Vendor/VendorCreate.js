@@ -260,7 +260,7 @@ const VendorCreate = () => {
       });
 
       if (selectedVerifyPhoto[0]?.node?.image?.uri) {
-        const avatarRes = await apis.vendor.UploadAvatar({
+        const avatarRes = await apis.vendor.uploadAvatar({
           uri: selectedVerifyPhoto[0]?.node?.image?.uri,
           id: res?.data?.id,
         });

@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  ActivityIndicator,
   Text,
   TextInput,
   TextInputProps,
@@ -13,11 +14,15 @@ import { Color } from "../../../GlobalStyles";
 type TextInputWithAIProps = {
   label: string;
   inputProps?: TextInputProps;
+  isLoading?: boolean;
+  onGeneratePress?: () => void;
 };
 
 export const TextInputWithAI: React.FC<TextInputWithAIProps> = ({
   label,
   inputProps,
+  isLoading,
+  onGeneratePress,
 }) => {
   return (
     <View style={styles.root}>
@@ -30,7 +35,7 @@ export const TextInputWithAI: React.FC<TextInputWithAIProps> = ({
           multiline={true}
           {...inputProps}
         />
-        <TouchableOpacity>
+        <TouchableOpacity onPress={onGeneratePress} disabled={isLoading}>
           <LinearGradient
             colors={["#6C1B9E", "#FF077E"]}
             locations={[0, 1]}
@@ -39,6 +44,15 @@ export const TextInputWithAI: React.FC<TextInputWithAIProps> = ({
             style={{ padding: 1, borderRadius: 30 }}
           >
             <View style={styles.button}>
+              {isLoading ? (
+                <ActivityIndicator
+                  color={Color.textMainWhite}
+                  size={16}
+                  style={styles.activityIndicator}
+                />
+              ) : (
+                <View style={styles.activityIndicator} />
+              )}
               <Text style={styles.buttonText}>Generate AI Description</Text>
             </View>
           </LinearGradient>

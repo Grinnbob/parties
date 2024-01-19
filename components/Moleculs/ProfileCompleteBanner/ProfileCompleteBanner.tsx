@@ -24,7 +24,7 @@ export const ProfileCompleteBanner: React.FC<ProfileCompleteBannerProps> = ({
       value += 40;
     }
     if (servicesCompleted) {
-      value = 40;
+      value += 40;
     }
     return value;
   }, [businessDescriptionCompleted, albumCompleted, servicesCompleted]);
