@@ -55,7 +55,6 @@ const ServicePackageScreen = ({ navigation, route }) => {
         rate: rate,
         description: description,
         vendorId: vendor[0].id,
-        image: photo,
       };
       let id = service?.id;
       let res;
@@ -74,12 +73,13 @@ const ServicePackageScreen = ({ navigation, route }) => {
           id,
           uri: photo,
         });
+        console.log("newPhoto", newPhoto);
         FastImage.preload([
           {
-            uri: newPhoto.updated.image,
+            uri: newPhoto.data.image,
           },
         ]);
-        updatedService.image = newPhoto.updated.image;
+        updatedService.image = newPhoto.data.image;
       }
       setIsLoading(false);
       if (res && res.success === false) {
