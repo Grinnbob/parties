@@ -1,17 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  Text,
-  StyleSheet,
-  View,
-  ImageBackground,
-  Image,
-  ImageSourcePropType,
-  Pressable,
-} from "react-native";
+import { Text, StyleSheet, View, Pressable } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
-import { Color, FontFamily, FontSize, Border, Padding } from "../GlobalStyles";
+import { Color, FontFamily, FontSize, Padding } from "../GlobalStyles";
 import { useNavigation } from "@react-navigation/native";
 import apis from "../apis";
+import FastImage from "react-native-fast-image";
 
 const getStyleValue = (key, value) => {
   if (value === undefined) return;
@@ -59,9 +52,8 @@ const SearchServiceCard = ({
   return (
     <View style={[styles.cards, cardsStyle]}>
       {backgroundLink ? (
-        <ImageBackground
+        <FastImage
           style={styles.imgBgIcon}
-          imageStyle={{ borderRadius: 18 }}
           resizeMode="cover"
           source={{ uri: backgroundLink }}
         />
@@ -73,7 +65,7 @@ const SearchServiceCard = ({
             height: 134,
             borderRadius: 18,
           }}
-        ></View>
+        />
       )}
       {/* <View style={styles.priceWrapper}>
           <View style={[styles.price]}>

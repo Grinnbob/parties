@@ -6,7 +6,7 @@ import VendorProfileScreen from "../screens/Vendor/VendorProfileScreen";
 import AlbumTypeScreen from "../screens/Vendor/Profile/AlbumTypeScreen";
 import BottomNavContainer from "../components/navigation/CustomBottomTabBar";
 import Notifications from "../screens/Vendor/Notifications";
-import ServicePackageScreen from "../screens/ServicePackageScreen";
+import { ServicePackageScreen } from "../screens/ServicePackageScreen";
 import HolidayThemeScreen from "../screens/Vendor/Profile/HolidayThemeScreen";
 import Quotes from "../screens/Vendor/Quotes";
 import Services from "../screens/Vendor/Services";

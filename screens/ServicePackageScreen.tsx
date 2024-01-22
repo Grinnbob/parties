@@ -16,7 +16,7 @@ import { useRecoilState } from "recoil";
 import { serviceTypesAtom } from "../stateManagement";
 import FastImage from "react-native-fast-image";
 
-const ServicePackageScreen = ({ navigation, route }) => {
+export const ServicePackageScreen = ({ navigation, route }) => {
   const toast = useToast();
   const service = route.params?.service;
   const [serviceTypes] = useRecoilState(serviceTypesAtom);
@@ -442,5 +442,3 @@ const styles = StyleSheet.create({
     paddingRight: 0,
   },
 });
-
-export default ServicePackageScreen;

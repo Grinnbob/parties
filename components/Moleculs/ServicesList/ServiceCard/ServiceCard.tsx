@@ -86,56 +86,58 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
           angle={-90}
         >
           <Text style={styles.nameText}>{name}</Text>
-          <TouchableOpacity
-            style={styles.moreVertIconContainer}
-            onPress={toggleMenu}
-          >
-            <MoreVertIcon color={Color.textMainWhite} />
-          </TouchableOpacity>
           {!!actions && (
-            <Menu
-              opened={isMenuOpen}
-              onBackdropPress={toggleMenu}
-              options={[
-                {
-                  children: (
-                    <View style={styles.menuOption}>
-                      <PencilIcon color={Color.textMainWhite} />
-                      <Text
-                        style={[
-                          styles.menuText,
-                          { color: Color.textMainWhite },
-                        ]}
-                      >
-                        Edit
-                      </Text>
-                    </View>
-                  ),
-                  onSelect: handleEdit,
-                  customStyles: {
-                    optionWrapper: {
-                      backgroundColor: Color.primaryPink,
+            <>
+              <TouchableOpacity
+                style={styles.moreVertIconContainer}
+                onPress={toggleMenu}
+              >
+                <MoreVertIcon color={Color.textMainWhite} />
+              </TouchableOpacity>
+              <Menu
+                opened={isMenuOpen}
+                onBackdropPress={toggleMenu}
+                options={[
+                  {
+                    children: (
+                      <View style={styles.menuOption}>
+                        <PencilIcon color={Color.textMainWhite} />
+                        <Text
+                          style={[
+                            styles.menuText,
+                            { color: Color.textMainWhite },
+                          ]}
+                        >
+                          Edit
+                        </Text>
+                      </View>
+                    ),
+                    onSelect: handleEdit,
+                    customStyles: {
+                      optionWrapper: {
+                        backgroundColor: Color.primaryPink,
+                      },
                     },
                   },
-                },
-                {
-                  children: (
-                    <View style={styles.menuOption}>
-                      <TrashIcon color={Color.primaryPink} />
-                      <Text
-                        style={[
-                          styles.menuText,
-                          { color: Color.labelColorLightPrimary },
-                        ]}
-                      >
-                        Delete
-                      </Text>
-                    </View>
-                  ),
-                  onSelect: handleDelete,
-                },
-              ]}
-            />
+                  {
+                    children: (
+                      <View style={styles.menuOption}>
+                        <TrashIcon color={Color.primaryPink} />
+                        <Text
+                          style={[
+                            styles.menuText,
+                            { color: Color.labelColorLightPrimary },
+                          ]}
+                        >
+                          Delete
+                        </Text>
+                      </View>
+                    ),
+                    onSelect: handleDelete,
+                  },
+                ]}
+              />
+            </>
           )}
         </LinearGradient>
       </View>

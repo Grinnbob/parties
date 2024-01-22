@@ -3,7 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import HolidayThemeScreen from "../screens/Vendor/Profile/HolidayThemeScreen";
 import PhotoAlbumScreen from "../screens/Vendor/Profile/PhotoAlbumScreen";
 import CameraRollScreen from "../screens/Vendor/Profile/CameraRollScreen";
-import ServicePackageScreen from "../screens/ServicePackageScreen";
+import { ServicePackageScreen } from "../screens/ServicePackageScreen";
 import SearchAlbumModal from "../components/Modal/SearchAlbumModal";
 
 const AlbumStack = createStackNavigator();
