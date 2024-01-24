@@ -228,7 +228,7 @@ We've got it all! BBQ pit, lechon, beef brisket. Savory smoked for hours! Everyt
         </View>
       </View>
       <View style={[styles.topnavigationContent, styles.planPartyPosition]}>
-        <View style={[styles.leftAccessory, styles.accessoryPosition]}>
+        <View style={[styles.leftAccessory, styles.header]}>
           <Text style={styles.leftTitle}>Prev. Title</Text>
           <Image
             style={[styles.iconsaxlinearhambergermenu, styles.backLayout]}
@@ -252,7 +252,7 @@ We've got it all! BBQ pit, lechon, beef brisket. Savory smoked for hours! Everyt
             style={[styles.title1, styles.title1Typo]}
           >{`Food & Beverages`}</Text>
         </View>
-        <View style={[styles.rightAccessory, styles.accessoryPosition]}>
+        <View style={[styles.rightAccessory, styles.header]}>
           <Text style={[styles.title2, styles.titleClr]}>Label</Text>
           <Text style={[styles.title3, styles.titleClr]}>Invite</Text>
           <Image
@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
     color: Color.appColorPerfectPink,
     textAlign: "center",
   },
-  accessoryPosition: {
+  header: {
     paddingBottom: Padding.p_4xs,
     paddingTop: Padding.p_4xs,
     width: 130,

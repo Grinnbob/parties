@@ -16,6 +16,7 @@ type ServicesListProps = {
   vendorId: number;
   onDelete?: (service: ServiceModel) => void;
   onEdit?: (service: ServiceModel) => void;
+  isShowEmptyListPlaceholder?: boolean;
 };
 
 export const ServicesList: React.FC<ServicesListProps> = ({
@@ -24,6 +25,7 @@ export const ServicesList: React.FC<ServicesListProps> = ({
   vendorId,
   onDelete,
   onEdit,
+  isShowEmptyListPlaceholder,
 }) => {
   const toast = useToast();
   const navigation = useNavigation();
@@ -81,21 +83,35 @@ export const ServicesList: React.FC<ServicesListProps> = ({
   const { serviceGroups } = useServiceGroups(services);
 
   const renderService = (element: ListRenderItemInfo<ServiceModel>) => {
+    const actions = {
+      ...(onDelete
+        ? {
+            onDelete: () => {
+              handleDeletePress(element.item);
+            },
+          }
+        : {}),
+      ...(onEdit
+        ? {
+            onEdit: () => {
+              handleEditPress(element.item);
+            },
+          }
+        : {}),
+    };
+
     return (
       <ServiceCard
         name={element.item.name}
         description={element.item.description}
         price={element.item.price}
         unit={element.item.rate}
-        image={{ source: { uri: element.item.image }, resizeMode: "cover" }}
-        actions={{
-          onDelete: () => {
-            handleDeletePress(element.item);
-          },
-          onEdit: () => {
-            handleEditPress(element.item);
-          },
-        }}
+        image={
+          element.item.image
+            ? { source: { uri: element.item.image }, resizeMode: "cover" }
+            : undefined
+        }
+        actions={Object.keys(actions).length ? actions : undefined}
       />
     );
   };
@@ -106,30 +122,27 @@ export const ServicesList: React.FC<ServicesListProps> = ({
     <View style={styles.root}>
       <View style={styles.header}>
         <Text style={styles.title}>{label}</Text>
-        <AddButton onPress={handleAddPress} />
+        {!!onEdit && <AddButton onPress={handleAddPress} />}
       </View>
       <View style={styles.content}>
-        {groups.length ? (
-          <>
-            {groups.map((key, index) => {
-              return (
-                <View key={key} style={styles.serviceContainer}>
-                  <Text style={styles.serviceNameText}>{key}</Text>
-                  <FlatList
-                    data={serviceGroups[key]}
-                    renderItem={renderService}
-                    contentContainerStyle={[
-                      styles.serviceItemsContainer,
-                      index === services.length - 1
-                        ? styles.lastContainer
-                        : undefined,
-                    ]}
-                  />
-                </View>
-              );
-            })}
-          </>
-        ) : (
+        {groups.map((key, index) => {
+          return (
+            <View key={key} style={styles.serviceContainer}>
+              <Text style={styles.serviceNameText}>{key}</Text>
+              <FlatList
+                data={serviceGroups[key]}
+                renderItem={renderService}
+                contentContainerStyle={[
+                  styles.serviceItemsContainer,
+                  index === services.length - 1
+                    ? styles.lastContainer
+                    : undefined,
+                ]}
+              />
+            </View>
+          );
+        })}
+        {!groups.length && isShowEmptyListPlaceholder && (
           <ServiceCard
             name="Create A Service Package"
             description="Add a description for your package here. This is what your service package will look like once you add your image and details."

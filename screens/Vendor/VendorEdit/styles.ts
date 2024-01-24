@@ -19,10 +19,10 @@ export const styles = StyleSheet.create({
   },
   background: {
     height: "100%",
-  },
-  bgIconPosition: {
-    left: 0,
     position: "absolute",
+    right: 0,
+    top: -50,
+    left: -250,
   },
   addPhoto: {
     width: 92,
@@ -52,7 +52,7 @@ export const styles = StyleSheet.create({
     margin: 10,
     marginVertical: 30,
   },
-  accessoryPosition: {
+  header: {
     position: "absolute",
     flexDirection: "row",
     justifyContent: "space-between",
@@ -65,36 +65,8 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#4D4D4D80",
   },
-  backIconLayout: {
-    marginLeft: 5,
-    height: 40,
+  backIconContainer: {
     width: 40,
-  },
-  alertmodalbg: {
-    height: "100%",
-    overflow: "hidden",
-  },
-  input: {
-    width: layout.window.width - 48,
-    borderColor: "rgba(255, 255, 255, 0.2)",
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 15,
-    color: "#FFF",
-    fontSize: 14,
-    minHeight: 54,
-  },
-  textarea: {
-    width: 327,
-    height: 100,
-    marginTop: 10,
-    marginBottom: 10,
-    borderColor: "rgba(255, 255, 255, 0.2)",
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 15,
-    paddingTop: 12,
-    color: "#FFF",
   },
   bgGradient: {
     zIndex: 20,
@@ -122,7 +94,7 @@ export const styles = StyleSheet.create({
     bottom: 100,
     marginLeft: 24,
   },
-  avatarTouchable: {
+  avatarContainer: {
     width: 76,
     height: 76,
     borderRadius: 100,
@@ -198,7 +170,7 @@ export const styles = StyleSheet.create({
   serviceAreaIcon: {
     transform: [{ rotate: "270deg" }],
   },
-  profileBg: {
+  profileBackground: {
     width: "100%",
     height: 400,
     alignItems: "center",

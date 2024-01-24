@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
     color: Color.labelColorDarkPrimary,
   },
-  accessoryPosition: {
+  header: {
     paddingBottom: Padding.p_4xs,
     paddingTop: Padding.p_4xs,
     width: "100%",

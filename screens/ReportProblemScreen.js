@@ -81,7 +81,7 @@ const ReportProblemScreen = () => {
         <Text style={[styles.label1, styles.labelLayout]}>Send</Text>
       </TouchableOpacity>
       <View style={styles.topnavigationContent}>
-        <View style={[styles.leftAccessory, styles.accessoryPosition]}>
+        <View style={[styles.leftAccessory, styles.header]}>
           <Text style={styles.leftTitle}>Prev. Title</Text>
           <Image
             style={[styles.iconsaxlinearhambergermenu, styles.backLayout]}
@@ -104,7 +104,7 @@ const ReportProblemScreen = () => {
             Report a Problem
           </Text>
         </View>
-        <View style={[styles.rightAccessory, styles.accessoryPosition]}>
+        <View style={[styles.rightAccessory, styles.header]}>
           <Text style={[styles.title4, styles.titleClr]}>Label</Text>
           <Text style={[styles.title5, styles.title5SpaceBlock]}>Invite</Text>
           <Image
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
     width: 327,
   },
-  accessoryPosition: {
+  header: {
     paddingBottom: Padding.p_4xs,
     paddingTop: Padding.p_4xs,
     width: 130,

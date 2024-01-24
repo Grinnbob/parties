@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     fontSize: FontSize.typographyHeadingMedium_size,
   },
-  accessoryPosition: {
+  header: {
     paddingBottom: Padding.p_4xs,
     marginTop: 30,
     flexDirection: "row",

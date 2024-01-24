@@ -29,8 +29,8 @@ type ServiceCardProps = {
   disabled?: boolean;
   image?: FastImageProps;
   actions?: {
-    onDelete: () => void;
-    onEdit: () => void;
+    onDelete?: () => void;
+    onEdit?: () => void;
   };
 };
 
@@ -56,12 +56,12 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
 
   const handleEdit = useCallback(() => {
     toggleMenu();
-    actions?.onEdit();
+    actions?.onEdit?.();
   }, [actions, toggleMenu]);
 
   const handleDelete = useCallback(() => {
     toggleMenu();
-    actions?.onDelete();
+    actions?.onDelete?.();
   }, [actions, toggleMenu]);
 
   return (
@@ -144,7 +144,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
       <View style={styles.descriptionContainer}>
         <Text style={styles.descriptionText}>{description}</Text>
       </View>
-      {!!image?.source?.uri && (
+      {!!image && (
         <FastImage
           resizeMode="contain"
           {...image}

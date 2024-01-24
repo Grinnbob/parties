@@ -7,3 +7,4 @@ export * from "./VendorModel";
 export * from "./ConversationModel";
 export * from "./QuoteModel";
 export * from "./KeyItemModel";
+export * from "./VendorAlbumModel";

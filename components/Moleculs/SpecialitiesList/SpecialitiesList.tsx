@@ -16,8 +16,8 @@ export const MAX_SPECIALITIES_KEY_COUNT = 5;
 type SpecialitiesListProps = {
   label?: string;
   keys: Array<KeyItemModel>;
-  onChange: (keys: Array<KeyItemModel>) => void;
-  onRemove: (key: KeyItemModel) => Promise<void>;
+  onChange?: (keys: Array<KeyItemModel>) => void;
+  onRemove?: (key: KeyItemModel) => Promise<void>;
 };
 
 export const SpecialitiesList: React.FC<SpecialitiesListProps> = ({
@@ -35,7 +35,7 @@ export const SpecialitiesList: React.FC<SpecialitiesListProps> = ({
 
   const setSearch = async (item: KeyItemModel | { name: string }) => {
     if ((item as KeyItemModel).id) {
-      onChange([...keys, item as KeyItemModel]);
+      onChange?.([...keys, item as KeyItemModel]);
       setIsOpen(false);
       setSearchTerm("");
       return;
@@ -43,7 +43,7 @@ export const SpecialitiesList: React.FC<SpecialitiesListProps> = ({
 
     const res = await apis.key.create(item as KeyItemModel);
 
-    onChange([...keys, res.data]);
+    onChange?.([...keys, res.data]);
     setSearchTerm("");
     setIsOpen(false);
   };
@@ -74,18 +74,20 @@ export const SpecialitiesList: React.FC<SpecialitiesListProps> = ({
     });
   }, []);
 
-  const isDisabledAdd = keys.length >= MAX_SPECIALITIES_KEY_COUNT;
+  const isDisabledAdd = keys.length >= MAX_SPECIALITIES_KEY_COUNT || !onChange;
 
   return (
     <>
       <View style={styles.root}>
         <View style={styles.header}>
           <Text style={styles.title}>{label}</Text>
-          <AddButton
-            style={isDisabledAdd ? styles.hidden : undefined}
-            onPress={toggle}
-            disabled={isDisabledAdd}
-          />
+          {!!onChange && (
+            <AddButton
+              style={isDisabledAdd ? styles.hidden : undefined}
+              onPress={toggle}
+              disabled={isDisabledAdd}
+            />
+          )}
         </View>
         <View style={styles.tagsContainer}>
           {keys.map((key) => {
@@ -96,23 +98,25 @@ export const SpecialitiesList: React.FC<SpecialitiesListProps> = ({
                 style={styles.tag}
                 textStyle={styles.tagText}
               >
-                <TouchableOpacity
-                  onPress={async () => {
-                    setIdToDelete(key.id);
-                    await onRemove(key);
-                    setIdToDelete(null);
-                  }}
-                >
-                  {idToDelete === key.id ? (
-                    <ActivityIndicator
-                      color={Color.textMainWhite}
-                      size={8}
-                      style={styles.tagDeleteIndicator}
-                    />
-                  ) : (
-                    <CloseIcon color={Color.textMainWhite} />
-                  )}
-                </TouchableOpacity>
+                {!!onRemove && (
+                  <TouchableOpacity
+                    onPress={async () => {
+                      setIdToDelete(key.id);
+                      await onRemove?.(key);
+                      setIdToDelete(null);
+                    }}
+                  >
+                    {idToDelete === key.id ? (
+                      <ActivityIndicator
+                        color={Color.textMainWhite}
+                        size={8}
+                        style={styles.tagDeleteIndicator}
+                      />
+                    ) : (
+                      <CloseIcon color={Color.textMainWhite} />
+                    )}
+                  </TouchableOpacity>
+                )}
               </Tag>
             );
           })}

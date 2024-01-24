@@ -7,10 +7,10 @@ import Verify from "../screens/Verify/Verify";
 import OnboardScreen from "../screens/Verify/OnboardScreen";
 import OnboardSelectScreen from "../screens/Verify/Host/OnboardSelectScreen";
 import OnboardHolidaySelect from "../screens/Verify/Host/OnboardHolidaySelect";
-import VendorCreate from "../screens/Verify/Vendor/VendorCreate";
+import { VendorEdit } from "../screens/Vendor/VendorEdit";
 import VendorCameraRoll from "../screens/Vendor/Profile/VendorCameraRoll";
 import VendorReadySell from "../screens/Verify/Vendor/VendorReadySell";
-import ServicePackageScreen from "../screens/Verify/Vendor/ServicePackage";
+import { ServicePackageScreen } from "../screens/ServicePackageScreen";
 import VendorCreateCameraRoll from "../screens/Vendor/Profile/VendorCreateCameraRoll";
 import SearchOnboardModal from "../components/Modal/SearchOnboardModal";
 import WelcomeScreen from "../screens/Auth/WelcomeScreen";
@@ -87,7 +87,7 @@ export default (props) => {
       />
       <Stack.Screen
         name="VendorCreate"
-        component={VendorCreate}
+        component={VendorEdit}
         options={{ headerShown: false }}
       />
       <Stack.Screen

@@ -20,7 +20,7 @@ import { Text, useToast } from "native-base";
 import useGlobalState from "../../../stateManagement/hook";
 import StateTypes from "../../../stateManagement/StateTypes";
 import { GooglePlacesAutocompleteRef } from "react-native-google-places-autocomplete";
-import Skeleton from "./Skeleton";
+import { Skeleton } from "./Skeleton";
 import {
   AddBusinessIcon,
   AddPhotoIcon,
@@ -42,38 +42,52 @@ import {
   SpecialitiesList,
 } from "../../../components/Moleculs";
 import { useRecoilState } from "recoil";
-import { KeyItemModel, ServiceModel } from "../../../models";
+import { KeyItemModel, PartyModel, ServiceModel } from "../../../models";
 import { TextInputWithAI } from "../../../components/Moleculs/TextInputWithAI";
 import {
   keyListAtom,
   selectedMediaAtom,
   vendorProfileServiceAtom,
   SelectedMediaEnum,
+  vendorProfileAlbumAtom,
+  vendorProfileAtom,
 } from "../../../stateManagement";
 import { styles } from "./styles";
 import FastImage from "react-native-fast-image";
 import cloneDeep from "lodash/cloneDeep";
 import { Color } from "../../../GlobalStyles";
+import { PastProjectsList } from "../../../components/Moleculs/PastProjectsList";
+import { useFocusEffect } from "@react-navigation/native";
+import services from "../Services";
 
-const VendorEdit = ({ navigation }) => {
+type VendorEditProps = {
+  navigation: any;
+  route: {
+    params?: {
+      isCreate?: boolean;
+    };
+  };
+};
+
+export const VendorEdit: React.FC<VendorEditProps> = ({
+  navigation,
+  route,
+}) => {
+  const isCreate = !!route.params?.isCreate;
   const insets = useSafeAreaInsets();
   const [user] = useGlobalState(StateTypes.user.key, StateTypes.user.default);
-  const [vendor] = useGlobalState(
-    StateTypes.vendor.key,
-    StateTypes.vendor.default
-  );
+  const [vendor, setVendor] = useRecoilState(vendorProfileAtom);
   const [vendorKeyList, setVendorKeyList] = useRecoilState(keyListAtom);
-
-  const currentVendor = vendor[0];
 
   const toast = useToast();
   const ref = useRef<GooglePlacesAutocompleteRef | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [serviceName, setServiceName] = useState("");
 
   const [vendorProfileServices, setVendorServices] = useRecoilState(
     vendorProfileServiceAtom
   );
+  const [album] = useRecoilState(vendorProfileAlbumAtom);
   const [selectedMedia] = useRecoilState(selectedMediaAtom);
   const newAvatarUrl =
     selectedMedia[SelectedMediaEnum.VENDOR_PROFILE_AVATAR]?.[0].node.image.uri;
@@ -83,12 +97,14 @@ const VendorEdit = ({ navigation }) => {
   const [avatar, setAvatar] = useState("");
   const [profileBackground, setProfileBackground] = useState("");
   const [address, setAddress] = useState("");
-  const [state, setState] = useState(currentVendor?.state || "");
-  const [city, setCity] = useState(currentVendor?.city || "");
+  const [state, setState] = useState(vendor?.state || "");
+  const [city, setCity] = useState(vendor?.city || "");
   const [lat, setLat] = useState(0);
   const [long, setLong] = useState(0);
-  const [distance, setDistance] = useState(currentVendor?.distance || "");
-  const [loading, setLoading] = useState(true);
+  const [distance, setDistance] = useState(
+    vendor?.distance ? String(vendor?.distance) : ""
+  );
+  const [isVendorLoading, setIsVendorLoading] = useState(!vendor?.id);
   const [isAiDescriptionLoading, setIsAiDescriptionLoading] = useState(false);
 
   const handleServiceDeleted = useCallback(
@@ -122,30 +138,40 @@ const VendorEdit = ({ navigation }) => {
   );
 
   useEffect(() => {
-    getVendorInfo();
+    if (user?.id) {
+      getVendorInfo();
+    }
   }, [user]);
+
+  console.log("useruseruser", user);
 
   const getVendorInfo = async () => {
     try {
-      if (currentVendor) {
-        const res = await apis.vendor.getById(currentVendor?.id);
-        if (res && res.data) {
-          setServiceName(res.data.name);
-          setServiceDescription(res.data.description);
-          setAvatar(res.data.avatar);
-          setProfileBackground(res.data.background);
-          setCity(res.data.city);
-          setState(res.data.state);
-          setAddress(res.data.address);
-          ref.current?.setAddressText(res?.data?.address);
-          setDistance(res.data.distance);
-          setVendorKeyList(res.data.listOfKeys);
+      let data;
+      if (vendor?.id) {
+        data = vendor;
+      } else {
+        const resp = await apis.vendor.getAll({ userId: user.id });
+        if (resp.data?.[0]) {
+          data = resp.data[0];
         }
+      }
+      if (data) {
+        setServiceName(data.name);
+        setServiceDescription(data.description);
+        setAvatar(data.avatar);
+        setProfileBackground(data.background);
+        setCity(data.city);
+        setState(data.state);
+        setAddress(data.address);
+        ref.current?.setAddressText(data.address);
+        setDistance(data.distance ? String(data.distance) : "");
+        setVendorKeyList(data.listOfKeys || []);
       }
     } catch (error) {
       console.log(error);
     } finally {
-      setLoading(false);
+      setIsVendorLoading(false);
     }
   };
 
@@ -174,6 +200,8 @@ const VendorEdit = ({ navigation }) => {
     });
   };
 
+  console.log("currentVendorrr", vendor);
+
   const handleNext = async () => {
     try {
       let errorMessage = "";
@@ -201,9 +229,11 @@ const VendorEdit = ({ navigation }) => {
         return;
       }
 
-      setIsLoading(true);
+      setIsSaving(true);
+
+      let vendorId = vendor?.id;
       const data: Record<string, unknown> = {
-        id: currentVendor?.id,
+        id: vendorId,
         name: serviceName,
         description: serviceDescription,
         userId: user.id,
@@ -219,40 +249,37 @@ const VendorEdit = ({ navigation }) => {
         point: { type: "Point", coordinates: [long, lat] },
       };
 
+      const res = await apis.vendor.update(data);
+
       if (newAvatarUrl) {
         const avatarResponse = await apis.vendor.uploadAvatar({
           uri: newAvatarUrl,
-          id: currentVendor?.id,
+          id: vendorId,
         });
-        console.log("avatarResponse", avatarResponse);
+        console.log("avatarResponseavatarResponse", avatarResponse);
         FastImage.preload([
           {
-            uri: avatarResponse.updated.avatar,
+            uri: avatarResponse?.updated?.avatar,
           },
         ]);
-        console.log("avatarRes", avatarResponse);
       }
 
       if (newProfileBgUrl) {
         const profileBackGroundResponse =
           await apis.vendor.uploadProfileBackground({
             uri: newProfileBgUrl,
-            id: currentVendor?.id,
+            id: vendorId,
           });
         FastImage.preload([
           {
-            uri: profileBackGroundResponse.updated.background,
+            uri: profileBackGroundResponse?.updated?.background,
           },
         ]);
-        console.log("profileBackGroundResponse", profileBackGroundResponse);
       }
 
-      const res = await apis.vendor.update(data);
-
-      console.log("aaaaaabasdsadasd", res);
       await apis.joinVendorKey.createEditMulti({
         list: vendorKeyList,
-        vendorId: currentVendor?.id,
+        vendorId: vendorId,
       });
 
       if (res && res.success === false) {
@@ -261,13 +288,22 @@ const VendorEdit = ({ navigation }) => {
           description: res.message,
         });
       }
-      setIsLoading(false);
+
+      setIsSaving(false);
       if (res && res.success) {
-        toast.show({
-          placement: "top",
-          description: "Information updated successfully!",
+        setVendor({
+          ...data,
+          listOfKeys: vendorKeyList,
         });
-        navigation.pop();
+        if (isCreate) {
+          navigation.navigate("VendorReadySell", { vendorId: res?.data?.id });
+        } else {
+          toast.show({
+            placement: "top",
+            description: "Information updated successfully!",
+          });
+          navigation.pop();
+        }
       }
     } catch (error) {
       toast.show({
@@ -277,8 +313,8 @@ const VendorEdit = ({ navigation }) => {
     }
   };
 
-  const actualCity = city || currentVendor?.city;
-  const actualState = state || currentVendor?.state;
+  const actualCity = city || vendor?.city;
+  const actualState = state || vendor?.state;
 
   const serviceAreaOptions = useMemo(() => {
     const getLabel = (miles: number) => {
@@ -316,9 +352,16 @@ const VendorEdit = ({ navigation }) => {
         });
         return;
       }
+      if (!services.length) {
+        toast.show({
+          placement: "top",
+          description: `Please created at least one Service`,
+        });
+        return;
+      }
       setIsAiDescriptionLoading(true);
       const response = await apis.vendor.generateAiDescription({
-        id: currentVendor.id,
+        id: vendor.id,
         keys: vendorKeyList.map((item) => item.name),
       });
       console.log("generateAiDescription", response.data.choices);
@@ -333,7 +376,9 @@ const VendorEdit = ({ navigation }) => {
     } finally {
       setIsAiDescriptionLoading(false);
     }
-  }, [currentVendor, vendorKeyList, toast]);
+  }, [vendor, vendorKeyList, toast]);
+
+  console.log("vendor", vendor);
 
   return (
     <KeyboardAvoidingView
@@ -346,210 +391,224 @@ const VendorEdit = ({ navigation }) => {
         bounces={false}
       >
         <View style={styles.mainContainer}>
-          {loading && <Skeleton />}
-          <View style={loading ? { opacity: 0 } : undefined}>
-            <View
-              style={[
-                styles.accessoryPosition,
-                { paddingTop: insets.top ? insets.top : 16 },
-              ]}
-            >
-              <TouchableOpacity onPress={() => navigation.pop()} hitSlop={20}>
-                <BackIcon />
-              </TouchableOpacity>
-              <Text style={styles.editPageText}>Edit Page</Text>
-              <TouchableOpacity onPress={handleNext} hitSlop={20}>
-                {isLoading ? (
-                  <ActivityIndicator size={16} color={Color.primaryPink} />
-                ) : (
-                  <Text style={styles.saveText}>Save</Text>
-                )}
-              </TouchableOpacity>
-            </View>
-            <View style={styles.profileBg}>
-              {newProfileBgUrl ? (
-                <ImageBackground
-                  source={{
-                    uri: newProfileBgUrl,
-                  }}
-                  style={styles.profileBgImageContainer}
-                  imageStyle={styles.profileBgImage}
-                />
-              ) : (
-                <FastImage
-                  source={{
-                    uri: profileBackground,
-                  }}
-                  style={styles.profileBgImageContainer}
-                />
-              )}
+          {isVendorLoading && <Skeleton />}
+          {!isVendorLoading && (
+            <View>
               <View
-                style={{
-                  width: "100%",
-                  alignItems: "center",
-                  position: "absolute",
-                  top: 100,
-                }}
+                style={[
+                  styles.header,
+                  { paddingTop: insets.top ? insets.top : 16 },
+                ]}
               >
                 <TouchableOpacity
-                  onPress={changeProfileBg}
-                  style={styles.avatar}
+                  onPress={() => navigation.pop()}
+                  hitSlop={20}
+                  disabled={isCreate}
+                  style={styles.backIconContainer}
                 >
-                  <AddPhotoIcon />
+                  {!isCreate && <BackIcon />}
+                </TouchableOpacity>
+                <Text style={styles.editPageText}>Edit Page</Text>
+                <TouchableOpacity
+                  onPress={handleNext}
+                  hitSlop={20}
+                  style={styles.backIconContainer}
+                >
+                  {isSaving ? (
+                    <ActivityIndicator size={16} color={Color.primaryPink} />
+                  ) : (
+                    <Text style={styles.saveText}>Save</Text>
+                  )}
                 </TouchableOpacity>
               </View>
-            </View>
-
-            <LinearGradient
-              colors={["#FF077E", "transparent"]}
-              start={{ x: 0, y: 1 }}
-              end={{ x: 0, y: 0 }}
-              style={styles.bgGradient}
-            />
-
-            {avatar || newAvatarUrl ? (
-              <TouchableOpacity
-                style={styles.avatarTouchable}
-                onPress={changeAvatar}
-              >
-                {newAvatarUrl ? (
-                  <Image
-                    source={{ uri: newAvatarUrl }}
-                    style={styles.avatarBg}
+              <View style={styles.profileBackground}>
+                {newProfileBgUrl ? (
+                  <ImageBackground
+                    source={{
+                      uri: newProfileBgUrl,
+                    }}
+                    style={styles.profileBgImageContainer}
+                    imageStyle={styles.profileBgImage}
                   />
                 ) : (
                   <FastImage
                     source={{
-                      uri: avatar,
+                      uri: profileBackground,
                     }}
-                    style={styles.avatarBg}
+                    style={styles.profileBgImageContainer}
                   />
                 )}
-
-                <PlusCircle style={styles.avatarPlusIcon} />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                style={styles.whiteCircle}
-                onPress={changeAvatar}
-              >
-                <AddBusinessIcon />
-              </TouchableOpacity>
-            )}
-
-            <Text style={styles.businessNameText}>
-              {serviceName || "Business Name"}
-            </Text>
-
-            <View style={styles.forms}>
-              <Image
-                style={[styles.background, styles.bgIconPosition]}
-                resizeMode="cover"
-                source={require("../../../assets/bg7.png")}
-              />
-              <View style={styles.areaInfo}>
-                <Text style={styles.cityText}>
-                  {actualCity || "City"}, {actualState || "State"}
-                </Text>
-                <View style={styles.milesInfo}>
-                  <Text style={styles.cityText}>Service Area:</Text>
-                  <Text style={styles.areaText}>
-                    {" "}
-                    {distance ? distance : "00"} miles
-                  </Text>
+                <View
+                  style={{
+                    width: "100%",
+                    alignItems: "center",
+                    position: "absolute",
+                    top: 100,
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={changeProfileBg}
+                    style={styles.avatar}
+                  >
+                    <AddPhotoIcon />
+                  </TouchableOpacity>
                 </View>
               </View>
-              <View style={styles.inputsContainer}>
-                <TextInput
-                  inputProps={{
-                    placeholder: "Business Name",
-                    keyboardType: "default",
-                    onChangeText: setServiceName,
-                    value: serviceName,
-                    maxLength: 45,
-                  }}
-                />
-                <ScrollView horizontal={false}>
-                  <ScrollView horizontal={true}>
-                    <LocationAutocomplete
-                      ref={ref}
-                      fetchDetails={true}
-                      placeholder="Location"
-                      styles={{
-                        textInputContainer: {
-                          width: layout.window.width - 48,
-                        },
-                      }}
-                      value={address}
-                      textInputProps={{
-                        onChangeText: setAddress,
-                      }}
-                      onPress={(data, details = null) => {
-                        setAddress(details.formatted_address);
-                        setLat(details?.geometry?.location?.lat);
-                        setLong(details?.geometry?.location?.lng);
-                        setCity(
-                          details?.address_components.find((addressComponent) =>
-                            addressComponent.types.includes("locality")
-                          )?.short_name ?? "N/A"
-                        );
-                        setState(
-                          details?.address_components.find((addressComponent) =>
-                            addressComponent.types.includes(
-                              "administrative_area_level_1"
-                            )
-                          )?.short_name ?? "N/A"
-                        );
-                      }}
+
+              <LinearGradient
+                colors={["#FF077E", "transparent"]}
+                start={{ x: 0, y: 1 }}
+                end={{ x: 0, y: 0 }}
+                style={styles.bgGradient}
+              />
+
+              {avatar || newAvatarUrl ? (
+                <TouchableOpacity
+                  style={styles.avatarContainer}
+                  onPress={changeAvatar}
+                >
+                  {newAvatarUrl ? (
+                    <Image
+                      source={{ uri: newAvatarUrl }}
+                      style={styles.avatarBg}
                     />
+                  ) : (
+                    <FastImage
+                      source={{
+                        uri: avatar,
+                      }}
+                      style={styles.avatarBg}
+                    />
+                  )}
+
+                  <PlusCircle style={styles.avatarPlusIcon} />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={styles.whiteCircle}
+                  onPress={changeAvatar}
+                >
+                  <AddBusinessIcon />
+                </TouchableOpacity>
+              )}
+
+              <Text style={styles.businessNameText}>
+                {serviceName || "Business Name"}
+              </Text>
+
+              <View style={styles.forms}>
+                <ImageBackground
+                  style={styles.background}
+                  resizeMode="repeat"
+                  source={require("../../../assets/bg7.png")}
+                />
+                <View style={styles.areaInfo}>
+                  <Text style={styles.cityText}>
+                    {actualCity || "City"}, {actualState || "State"}
+                  </Text>
+                  <View style={styles.milesInfo}>
+                    <Text style={styles.cityText}>Service Area:</Text>
+                    <Text style={styles.areaText}>
+                      {" "}
+                      {distance ? distance : "00"} miles
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.inputsContainer}>
+                  <TextInput
+                    inputProps={{
+                      placeholder: "Business Name",
+                      keyboardType: "default",
+                      onChangeText: setServiceName,
+                      value: serviceName,
+                      maxLength: 45,
+                    }}
+                  />
+                  <ScrollView horizontal={false}>
+                    <ScrollView horizontal={true}>
+                      <LocationAutocomplete
+                        ref={ref}
+                        fetchDetails={true}
+                        placeholder="Location"
+                        styles={{
+                          textInputContainer: {
+                            width: layout.window.width - 48,
+                          },
+                        }}
+                        value={address}
+                        textInputProps={{
+                          onChangeText: setAddress,
+                        }}
+                        onPress={(data, details = null) => {
+                          setAddress(details.formatted_address);
+                          setLat(details?.geometry?.location?.lat);
+                          setLong(details?.geometry?.location?.lng);
+                          setCity(
+                            details?.address_components.find(
+                              (addressComponent) =>
+                                addressComponent.types.includes("locality")
+                            )?.short_name ?? "N/A"
+                          );
+                          setState(
+                            details?.address_components.find(
+                              (addressComponent) =>
+                                addressComponent.types.includes(
+                                  "administrative_area_level_1"
+                                )
+                            )?.short_name ?? "N/A"
+                          );
+                        }}
+                      />
+                    </ScrollView>
                   </ScrollView>
-                </ScrollView>
 
-                <SelectInput
-                  selectedValue={distance}
-                  placeholder="Service Area"
-                  options={serviceAreaOptions}
-                  onValueChange={(itemValue) => setDistance(itemValue)}
-                  arrowIconStyle={styles.serviceAreaIcon}
-                />
+                  <SelectInput
+                    selectedValue={distance}
+                    placeholder="Service Area"
+                    options={serviceAreaOptions}
+                    onValueChange={(itemValue) => setDistance(itemValue)}
+                    arrowIconStyle={styles.serviceAreaIcon}
+                  />
 
-                <ProfileCompleteBanner
-                  albumCompleted={false}
-                  businessDescriptionCompleted={!!serviceDescription.length}
-                  servicesCompleted={!!vendorProfileServices.length}
-                />
+                  <ProfileCompleteBanner
+                    albumCompleted={false}
+                    businessDescriptionCompleted={!!serviceDescription?.length}
+                    servicesCompleted={!!vendorProfileServices?.length}
+                  />
 
-                <SpecialitiesList
-                  keys={vendorKeyList}
-                  onChange={handleKeyChange}
-                  onRemove={handleRemoveKey}
-                />
+                  <SpecialitiesList
+                    keys={vendorKeyList}
+                    onChange={handleKeyChange}
+                    onRemove={handleRemoveKey}
+                  />
 
-                <TextInputWithAI
-                  label="Description"
-                  inputProps={{
-                    value: serviceDescription,
-                    onChangeText: (text: string) => setServiceDescription(text),
-                    maxLength: 440,
-                  }}
-                  isLoading={isAiDescriptionLoading}
-                  onGeneratePress={generateAiDescription}
-                />
+                  <PastProjectsList data={album} canEdit={true} />
 
-                <ServicesList
-                  label="Service Packages"
-                  services={vendorProfileServices}
-                  vendorId={vendor[0].id}
-                  onDelete={handleServiceDeleted}
-                  onEdit={handleEditServiced}
-                />
+                  <TextInputWithAI
+                    label="Description"
+                    inputProps={{
+                      value: serviceDescription,
+                      onChangeText: (text: string) =>
+                        setServiceDescription(text),
+                      maxLength: 440,
+                    }}
+                    isLoading={isAiDescriptionLoading}
+                    onGeneratePress={generateAiDescription}
+                  />
+                  <ServicesList
+                    label="Service Packages"
+                    services={vendorProfileServices}
+                    vendorId={vendor.id}
+                    onDelete={handleServiceDeleted}
+                    onEdit={handleEditServiced}
+                    isShowEmptyListPlaceholder={true}
+                  />
+                </View>
               </View>
             </View>
-          </View>
+          )}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 };
-
-export default VendorEdit;

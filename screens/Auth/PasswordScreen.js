@@ -95,7 +95,7 @@ const PasswordScreen = ({ route }) => {
         <View style={[styles.alertmodalbg, styles.alertmodalbgLayout]} />
         <View style={{ flex: 1, justifyContent: "space-between" }}>
           <View>
-            <View style={[styles.leftAccessory, styles.accessoryPosition]}>
+            <View style={[styles.leftAccessory, styles.header]}>
               <View style={styles.backLayout}>
                 <TouchableOpacity
                   style={styles.vector}
@@ -333,7 +333,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: Color.textMainWhite,
   },
-  accessoryPosition: {
+  header: {
     paddingBottom: Padding.p_4xs,
     paddingTop: Padding.p_4xs,
     width: 130,

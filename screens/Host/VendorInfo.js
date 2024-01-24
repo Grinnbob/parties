@@ -28,8 +28,6 @@ const VendorProfileScreen = ({ route, navigation }) => {
   const [backgroundLink, setBackgroundLink] = useState("");
   const [serviceTypes, isServiceTypesLoading] = useLoadable(serviceTypesQuery);
 
-  console.log("vendorProfile", vendorProfile);
-  console.log("serviceTypes", serviceTypes);
   const handleCall = () => {
     console.log(vendorProfile.phoneNumber);
     Linking.openURL(`tel:${vendorProfile.phoneNumber.replace(/\D/g, "")}`);

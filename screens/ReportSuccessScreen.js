@@ -13,7 +13,7 @@ const ReportSuccessScreen = () => {
       />
       <GradientPinkButton />
       <View style={styles.topnavigationContent}>
-        <View style={[styles.leftAccessory, styles.accessoryPosition]}>
+        <View style={[styles.leftAccessory, styles.header]}>
           <Text style={styles.leftTitle}>Prev. Title</Text>
           <Image
             style={[
@@ -32,7 +32,7 @@ const ReportSuccessScreen = () => {
         <View style={[styles.title, styles.titleFlexBox]}>
           <Text style={styles.title1}>Get Inspired</Text>
         </View>
-        <View style={[styles.rightAccessory, styles.accessoryPosition]}>
+        <View style={[styles.rightAccessory, styles.header]}>
           <Text style={styles.title2}>Next</Text>
           <Image
             style={[styles.magnifyingglassIcon, styles.iconSpaceBlock]}
@@ -62,7 +62,7 @@ const ReportSuccessScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  accessoryPosition: {
+  header: {
     paddingBottom: Padding.p_4xs,
     paddingTop: Padding.p_4xs,
     width: 130,

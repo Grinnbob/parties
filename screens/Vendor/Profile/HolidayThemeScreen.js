@@ -48,7 +48,7 @@ const HolidayThemeScreen = ({ route, navigation }) => {
         source={require("../../../assets/bg16.png")}
       />
       <View style={styles.topnavigationContentPosition}>
-        <View style={[styles.leftAccessory1, styles.accessoryPosition]}>
+        <View style={[styles.leftAccessory1, styles.header]}>
           <Pressable
             onPress={() => navigation.navigate("Calendar", { screen: "Album" })}
           >
@@ -59,7 +59,7 @@ const HolidayThemeScreen = ({ route, navigation }) => {
             />
           </Pressable>
         </View>
-        <View style={[styles.accessoryPosition]}>
+        <View style={[styles.header]}>
           <Text style={[styles.title6, styles.titleTypo1]}>
             {route.params.title}
           </Text>
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: Color.labelColorDarkPrimary,
   },
-  accessoryPosition: {
+  header: {
     flexDirection: "row",
     alignItems: "center",
   },

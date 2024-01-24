@@ -31,3 +31,4 @@ export * from "./CameraPlusIcon";
 export * from "./MoreVertIcon";
 export * from "./TrashIcon";
 export * from "./PencilIcon";
+export * from "./ShareNetworkIcon";

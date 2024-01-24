@@ -48,7 +48,7 @@ const TermScreen = () => {
         </Text>
       </View>
       <View style={styles.topnavigationContent}>
-        <View style={[styles.leftAccessory, styles.accessoryPosition]}>
+        <View style={[styles.leftAccessory, styles.header]}>
           <Text style={styles.leftTitle}>Prev. Title</Text>
           <Image
             style={[styles.iconsaxlinearhambergermenu, styles.backIconLayout]}
@@ -64,7 +64,7 @@ const TermScreen = () => {
         <View style={styles.title}>
           <Text style={styles.title1}>{`Terms & Policy`}</Text>
         </View>
-        <View style={[styles.rightAccessory, styles.accessoryPosition]}>
+        <View style={[styles.rightAccessory, styles.header]}>
           <Text style={styles.title2}>Label</Text>
         </View>
       </View>
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
     fontFamily: FontFamily.typographyBodyMediumRegular,
   },
-  accessoryPosition: {
+  header: {
     paddingBottom: Padding.p_4xs,
     paddingTop: Padding.p_4xs,
     width: 130,

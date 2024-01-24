@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     fontSize: 16,
   },
-  accessoryPosition: {
+  header: {
     paddingBottom: Padding.p_4xs,
     paddingTop: Padding.p_4xs,
     alignItems: "center",

@@ -70,7 +70,7 @@ const SignUpScreen = () => {
         {/* <View style={[styles.alertmodalbg, styles.alertmodalbgLayout]} /> */}
         <View style={{ flex: 1, justifyContent: "space-between" }}>
           <View>
-            <View style={[styles.leftAccessory, styles.accessoryPosition]}>
+            <View style={[styles.leftAccessory, styles.header]}>
               <TouchableOpacity
                 onPress={() => navigation.navigate("WelcomeScreen")}
               >
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     fontSize: FontSize.typographyHeadingMedium_size,
   },
-  accessoryPosition: {
+  header: {
     paddingBottom: Padding.p_4xs,
     marginTop: 30,
     flexDirection: "row",
