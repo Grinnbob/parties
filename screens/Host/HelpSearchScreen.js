@@ -24,7 +24,7 @@ const HelpSearchScreen = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [searchResult, setSearchResult] = useState([])
     const [recentResult, setRecentResult] = useState([])
-    const [debouceValue, setDebounceValue] = useState("")
+    const [debounceValue, setDebounceValue] = useState("")
     const [searchList, setSearchList] = useGlobalState(
         types.albumType.searchList.key,
         types.albumType.searchList.default
@@ -36,22 +36,26 @@ const HelpSearchScreen = () => {
 
     const setSearch = async (item) => {
         try {
-            const res = await apis.recentSearch.create({
+            const result = await apis.recentSearch.create({
                 name: item,
                 userId: user.id,
             })
 
-            navigation.navigate("ServiceDetails", { search: item })
+            const selectedItem = searchResult.find((res) => res.name === item)
+            navigation.navigate("VendorInfo", { params: selectedItem })
 
-            setSearchList((searchList) => [...searchList, res.data])
+            setSearchList((searchList) => [...searchList, result.data])
             setSearchTerm("")
         } catch (error) {
             console.log(error)
         }
     }
 
-    const viewRecentSearch = (recent) => {
-        navigation.navigate("ServiceDetails", { search: recent.name })
+    const viewRecentSearch = async (recent) => {
+        const selectedItem = searchResult.find(
+            (res) => res.name === recent?.name
+        )
+        navigation.navigate("VendorInfo", { params: selectedItem })
     }
 
     const grabRecentSearch = async () => {
@@ -68,7 +72,7 @@ const HelpSearchScreen = () => {
 
     const removeRecentSearch = async () => {
         try {
-            const res = await apis.recentSearch.deleteByUserId(user.id)
+            await apis.recentSearch.deleteByUserId(user.id)
             setRecentResult([])
         } catch (error) {
             console.log(error)
@@ -85,7 +89,7 @@ const HelpSearchScreen = () => {
 
             const res = await apis.vendor.getAllSearch(txt)
 
-            if (res.success) {
+            if (res?.success) {
                 setSearchResult(res.data)
             }
             setDebounceValue(txt)
@@ -146,9 +150,9 @@ const HelpSearchScreen = () => {
             </View>
 
             <FlatList
-                data={searchResult}
+                data={searchResult.map((item) => item.name)}
                 ListHeaderComponent={
-                    debouceValue.length >= 1 ? (
+                    debounceValue.length >= 1 ? (
                         <View />
                     ) : (
                         <VStack>
@@ -205,7 +209,7 @@ const HelpSearchScreen = () => {
                     )
                 }
                 renderItem={({ item }) =>
-                    debouceValue.length >= 1 ? (
+                    debounceValue.length >= 1 ? (
                         <TouchableOpacity
                             key={item.id}
                             style={styles.border}
@@ -218,7 +222,7 @@ const HelpSearchScreen = () => {
                     )
                 }
                 ListEmptyComponent={() =>
-                    debouceValue.length ? (
+                    debounceValue.length ? (
                         <Text style={styles.searchTerm}>No result found</Text>
                     ) : (
                         <View />

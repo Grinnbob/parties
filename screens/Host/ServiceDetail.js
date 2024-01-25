@@ -6,6 +6,13 @@ import { useNavigation } from "@react-navigation/core"
 import apis from "../../apis"
 import { SearchInput } from "../../components/Input/SearchInput"
 import SearchServiceCard from "../../components/SearchServiceCard"
+import { Image, StyleSheet, View, Pressable, FlatList } from "react-native"
+import { Text } from "native-base"
+import { Color } from "../../GlobalStyles"
+import { useNavigation } from "@react-navigation/core"
+import apis from "../../apis"
+import { SearchInput } from "../../components/Input/SearchInput"
+import SearchServiceCard from "../../components/SearchServiceCard"
 import useDebounce from "../../utils/useDebounce"
 
 // filterSelections = [
@@ -22,8 +29,7 @@ const ServiceDetails = ({ route }) => {
     const [vendorList, setVendorList] = useState([])
     const [searchText, setSearchText] = useState(route?.params?.search || "")
     const debounceSearchText = useDebounce(searchText)
-
-    const { name, id } = route.params?.service || {}
+    const { name, id } = route.params.service || {}
 
     useEffect(() => {
         const grabAllVendor = async () => {
@@ -33,7 +39,7 @@ const ServiceDetails = ({ route }) => {
                     search: debounceSearchText,
                     serviceTypeId: id,
                 })
-                console.log("res", res)
+
                 setVendorList(res.data)
                 setIsLoading(false)
             } catch (error) {

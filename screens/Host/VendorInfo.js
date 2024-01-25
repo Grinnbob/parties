@@ -22,20 +22,17 @@ import { GradientButton } from "../../components/Atoms"
 import { useLoadable } from "../../hooks"
 import { serviceTypesQuery } from "../../stateManagement/atoms"
 
-const VendorProfileScreen = ({ route, navigation }) => {
+const VendorInfo = ({ route, navigation }) => {
     const [vendorProfile, setVendorProfile] = useState()
     const [services, setServices] = useState([])
     const [backgroundLink, setBackgroundLink] = useState("")
-    const [serviceTypes, isServiceTypesLoading] = useLoadable(serviceTypesQuery)
 
     const handleCall = () => {
-        console.log(vendorProfile.phoneNumber)
         Linking.openURL(`tel:${vendorProfile.phoneNumber.replace(/\D/g, "")}`)
     }
 
     const getServices = async () => {
         const res = await apis.service.getAll({ vendorId: vendorProfile?.id })
-        console.log("RES", res)
         setServices(res.data)
     }
 
@@ -58,7 +55,7 @@ const VendorProfileScreen = ({ route, navigation }) => {
     }, [route])
 
     useEffect(() => {
-        if (vendorProfile && vendorProfile?.id) {
+        if (vendorProfile?.id) {
             getServices()
             getBackground()
         }
@@ -86,7 +83,7 @@ const VendorProfileScreen = ({ route, navigation }) => {
                         styles.topnavigationContentLayout,
                     ]}
                     resizeMode="cover"
-                    source={{ uri: backgroundLink }}
+                    source={{ uri: backgroundLink ? backgroundLink : "/" }}
                 >
                     <View
                         style={{
@@ -689,4 +686,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default VendorProfileScreen
+export default VendorInfo
