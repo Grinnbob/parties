@@ -34,6 +34,7 @@ const PhotoAlbumScreen = ({ route, navigation }) => {
   const [albumName, setAlbumName] = useState("");
   const [vendorInfo, setVendorInfo] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState(0);
 
   const [user, setUser] = useGlobalState(
     StateTypes.user.key,
@@ -141,7 +142,12 @@ const PhotoAlbumScreen = ({ route, navigation }) => {
           type: selectedOption,
           albumId: res.data.id,
         });
+        setUploadedFiles((prevState) => {
+          return prevState + 1;
+        });
       }
+
+      console.log("searchEditList", searchEditList);
 
       await apis.joinAlbumKey.createMulti({
         list: searchEditList,
@@ -155,11 +161,14 @@ const PhotoAlbumScreen = ({ route, navigation }) => {
         });
         setIsLoading(false);
       }
+
       if (res && res.success) {
         setIsLoading(false);
         setSelectedPhoto(types.albumType.selectedphoto.default);
         setSearchEditList(types.albumType.searchEditList.default);
-        navigation.navigate("Profile", { success: true });
+        navigation.pop();
+        navigation.pop();
+        navigation.pop();
       }
       setIsLoading(false);
     } catch (error) {
@@ -211,7 +220,10 @@ const PhotoAlbumScreen = ({ route, navigation }) => {
                 }}
               >
                 {selectedPhoto.map((item, i) => (
-                  <Pressable onPress={() => handleRemoveImage(item)}>
+                  <Pressable
+                    onPress={() => handleRemoveImage(item)}
+                    key={item.node.image.uri}
+                  >
                     <View>
                       <CloseCircle
                         style={{
@@ -331,6 +343,12 @@ const PhotoAlbumScreen = ({ route, navigation }) => {
                 formBackgroundColor="rgba(255, 255, 255, 0.1)"
                 formMarginTop="unset"
                 labelColor="#FFF"
+                isLoading={isLoading}
+                loadingText={
+                  uploadedFiles && isLoading
+                    ? `${uploadedFiles} of ${selectedPhoto.length} images uploaded`
+                    : undefined
+                }
               />
             </View>
           </View>

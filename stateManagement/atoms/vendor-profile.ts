@@ -6,12 +6,24 @@ export const vendorProfileAtom = atom<any>({
   default: {},
 });
 
-export const vendorProfileServiceAtom = atom<ServiceModel[]>({
+export const vendorProfileServiceAtom = atom<{
+  isFetched: boolean;
+  data: ServiceModel[];
+}>({
   key: "vendorProfileServiceAtom",
-  default: [],
+  default: {
+    isFetched: false,
+    data: [],
+  },
 });
 
-export const vendorProfileAlbumAtom = atom<Array<VendorAlbumModel>>({
+export const vendorProfileAlbumAtom = atom<{
+  isFetched: boolean;
+  data: Array<VendorAlbumModel>;
+}>({
   key: "vendorProfileAlbumAtom",
-  default: [],
+  default: {
+    isFetched: false,
+    data: [],
+  },
 });

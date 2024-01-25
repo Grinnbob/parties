@@ -10,7 +10,6 @@ import {
   Alert,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
-import { useFocusEffect } from "@react-navigation/native";
 import apis from "../../../apis";
 import { useNavigation } from "@react-navigation/core";
 import FastImage from "react-native-fast-image";
@@ -35,10 +34,10 @@ export const VendorProfileScreen = ({ route }) => {
   const insets = useSafeAreaInsets();
 
   const { navigate, push, toggleDrawer } = useNavigation();
-  const [album, setAlbum] = useRecoilState(vendorProfileAlbumAtom);
+  const [serviceTypes, setServiceTypes] = useRecoilState(serviceTypesAtom);
   const [vendorProfile, setVendorProfile] = useRecoilState(vendorProfileAtom);
-  const [, setServiceTypes] = useRecoilState(serviceTypesAtom);
   const [services, setServices] = useRecoilState(vendorProfileServiceAtom);
+  const [album, setAlbum] = useRecoilState(vendorProfileAlbumAtom);
   const [isLoading, setIsLoading] = useState(true);
 
   const onShare = async () => {
@@ -62,9 +61,15 @@ export const VendorProfileScreen = ({ route }) => {
 
   const getServiceTypes = async () => {
     try {
+      if (serviceTypes.isFetched) {
+        return;
+      }
       const res = await apis.serviceType.getAll();
 
-      setServiceTypes(res.data);
+      setServiceTypes({
+        isFetched: true,
+        data: res.data,
+      });
     } catch (error) {
       console.log(error);
     }
@@ -72,10 +77,16 @@ export const VendorProfileScreen = ({ route }) => {
 
   const getAlbum = async () => {
     try {
+      if (album.isFetched) {
+        return;
+      }
       const res = await apis.album.getAll({ vendorId: vendorProfile.id });
 
       if (res && res.data) {
-        setAlbum(res.data);
+        setAlbum({
+          isFetched: true,
+          data: res.data,
+        });
       }
     } catch (error) {
       console.log(error);
@@ -84,9 +95,17 @@ export const VendorProfileScreen = ({ route }) => {
 
   const getServices = async () => {
     try {
-      const res = await apis.service.getAll(vendorProfile.id);
+      if (services.isFetched) {
+        return;
+      }
+      const res = await apis.service.getAll({ vendorId: vendorProfile.id });
       if (res && res.data) {
-        setServices(res.data);
+        setServices(() => {
+          return {
+            isFetched: true,
+            data: res.data,
+          };
+        });
       }
     } catch (error) {
       console.log("getServicesError", error);
@@ -102,7 +121,7 @@ export const VendorProfileScreen = ({ route }) => {
     });
   }, [vendorProfile]);
 
-  const { serviceGroups } = useServiceGroups(services);
+  const { serviceGroups } = useServiceGroups(services.data);
 
   return (
     <ScrollView
@@ -219,17 +238,17 @@ export const VendorProfileScreen = ({ route }) => {
                   </View>
                 )}
                 <SpecialitiesList keys={vendorProfile.listOfKeys} />
-                {!!album.length && <PastProjectsList data={album} />}
+                {!!album.data.length && <PastProjectsList data={album.data} />}
                 <View style={styles.sectionContainer}>
                   <Text style={styles.sectionTitle}>Description</Text>
                   <Text style={styles.descriptionText}>
                     {vendorProfile.description || "-"}
                   </Text>
                 </View>
-                {!!services?.length && (
+                {!!services.data?.length && (
                   <ServicesList
                     label="Service Packages"
-                    services={services}
+                    services={services.data}
                     vendorId={vendorProfile.id}
                   />
                 )}

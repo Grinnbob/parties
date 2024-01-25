@@ -23,6 +23,9 @@ import { HostBottomNav } from "../Host/HostBottomNav";
 import { vendorProfileAtom } from "../../stateManagement";
 import AlbumTypeScreen from "../../screens/Vendor/Profile/AlbumTypeScreen";
 import { useRecoilState } from "recoil";
+import AlbumNavigator from "../AlbumNavigator";
+import { ServicePackageScreen } from "../../screens/ServicePackageScreen";
+import VendorReadySell from "../../screens/Verify/Vendor/VendorReadySell";
 
 const Stack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -53,18 +56,20 @@ export const RootNavigator: React.FC = () => {
   const grabVendor = async () => {
     const res = await apis.vendor.getAll({ userId: user.id });
 
-    if (res.data[0]) {
-      const vendorResp = await apis.vendor.getById(res.data[0].id);
+    const fetchedVendor = res.data[0];
+    if (fetchedVendor) {
+      const vendorResp = await apis.vendor.getById(fetchedVendor.id);
       setVendor(vendorResp.data);
     }
-    if (res.data?.length === 0 && user.role === "vendor") {
+    if (
+      user.role === "vendor" &&
+      (res.data?.length === 0 || !fetchedVendor.profileDone)
+    ) {
       setVendorEdit(true);
     } else {
       setVendorEdit(false);
     }
   };
-
-  console.log("vendor11111", vendor);
 
   const vendorCreate = () => {
     return (
@@ -84,6 +89,21 @@ export const RootNavigator: React.FC = () => {
           name="Album"
           component={AlbumTypeScreen}
           options={{ headerShown: false, gestureEnabled: false }}
+        />
+        <Stack.Screen
+          name="AlbumNavigator"
+          component={AlbumNavigator}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Service"
+          component={ServicePackageScreen}
+          options={{ headerShown: false, gestureEnabled: false }}
+        />
+        <Stack.Screen
+          name="VendorReadySell"
+          component={VendorReadySell}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
     );

@@ -37,11 +37,11 @@ export const PhotoInput: React.FC<PhotoInputProps> = ({
       onChange(
         selectedMedia[SelectedMediaEnum.PHOTO_INPUT]?.[0]?.node.image.uri
       );
+      setSelectedMedia({});
     }
   }, [selectedMedia[SelectedMediaEnum.PHOTO_INPUT], onChange]);
 
   const changeProfileBg = () => {
-    console.log("navigation", navigation);
     navigation.push("CameraEdit", {
       key: SelectedMediaEnum.PHOTO_INPUT,
     });

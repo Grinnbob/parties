@@ -24,6 +24,7 @@ const MidGradientButton = ({
   labelColor,
   disabled,
   isLoading,
+  loadingText,
   width,
 }) => {
   const formStyle = useMemo(() => {
@@ -70,7 +71,14 @@ const MidGradientButton = ({
         isLoading={isLoading}
       >
         {isLoading ? (
-          <ActivityIndicator size="small" color="#FFF" />
+          <>
+            <ActivityIndicator size="small" color="#FFF" />
+            {loadingText && (
+              <Text style={[styles.label, styles.loadingText]}>
+                {loadingText}
+              </Text>
+            )}
+          </>
         ) : (
           <Text style={[styles.label, labelStyle]}>{label}</Text>
         )}
@@ -110,6 +118,9 @@ const styles = StyleSheet.create({
     width: 327,
     height: 40,
     borderRadius: 30,
+  },
+  loadingText: {
+    marginLeft: 16,
   },
 });
 

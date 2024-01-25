@@ -13,7 +13,7 @@ import { TextInputWithAI } from "../components/Moleculs/TextInputWithAI";
 import { PhotoInput } from "../components/Input/PhotoInput";
 import { GradientButton } from "../components/Atoms";
 import { useRecoilState } from "recoil";
-import { serviceTypesAtom } from "../stateManagement";
+import { serviceTypesAtom, vendorProfileAtom } from "../stateManagement";
 import FastImage from "react-native-fast-image";
 
 export const ServicePackageScreen = ({ navigation, route }) => {
@@ -22,10 +22,11 @@ export const ServicePackageScreen = ({ navigation, route }) => {
   const [serviceTypes] = useRecoilState(serviceTypesAtom);
   const [packageName, setPackageName] = useState(service?.name || "");
   const [serviceType, setServiceType] = useState(
-    serviceTypes
+    serviceTypes.data
       .find((item) => item.id === service?.serviceTypes?.[0]?.id)
       ?.id?.toString() || ""
   );
+  console.log("serviceTypes", serviceTypes);
   const [price, setPrice] = useState(service?.price?.toString() || "");
   const [rate, setRate] = useState(service?.rate || "");
   const [description, setDescription] = useState(service?.description || "");
@@ -35,13 +36,12 @@ export const ServicePackageScreen = ({ navigation, route }) => {
   const [isNewPhoto, setIsNewPhoto] = useState(false);
   const [isAiDescriptionLoading, setIsAiDescriptionLoading] = useState(false);
 
-  const [vendor] = useGlobalState(
-    StateTypes.vendor.key,
-    StateTypes.vendor.default
-  );
+  console.log("photo", photo);
+  const [vendorProfile, setVendorProfile] = useRecoilState(vendorProfileAtom);
 
-  const handlePhotoChange = (url) => {
+  const handlePhotoChange = (url: string) => {
     setIsNewPhoto(true);
+    console.log("url", url);
     setPhoto(url);
   };
 
@@ -54,7 +54,7 @@ export const ServicePackageScreen = ({ navigation, route }) => {
         price: price,
         rate: rate,
         description: description,
-        vendorId: vendor[0].id,
+        vendorId: vendorProfile.id,
       };
       let id = service?.id;
       let res;
@@ -96,12 +96,12 @@ export const ServicePackageScreen = ({ navigation, route }) => {
             placement: "top",
             description: "Service updated",
           });
+          navigation.pop();
         }
         route.params?.onEdit({
           ...updatedService,
           id,
         });
-        navigation.pop();
       }
     } catch (error) {
       setIsLoading(false);
@@ -127,7 +127,7 @@ export const ServicePackageScreen = ({ navigation, route }) => {
   }, []);
 
   const serviceTypeOptions = useMemo(() => {
-    return serviceTypes.map((item) => {
+    return serviceTypes.data.map((item) => {
       return {
         label: item.title,
         value: String(item.id),
@@ -147,7 +147,8 @@ export const ServicePackageScreen = ({ navigation, route }) => {
       setIsAiDescriptionLoading(true);
       const response = await apis.service.generateAiDescription({
         name: packageName,
-        type: serviceTypeOptions.find((item) => item.id === serviceType)?.label,
+        type: serviceTypeOptions.find((item) => item.value === serviceType)
+          ?.label,
       });
       if (response.success && !!response.data.choices?.[0]?.message?.content) {
         setDescription(response.data.choices?.[0]?.message?.content);

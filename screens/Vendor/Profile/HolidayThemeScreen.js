@@ -49,9 +49,7 @@ const HolidayThemeScreen = ({ route, navigation }) => {
       />
       <View style={styles.topnavigationContentPosition}>
         <View style={[styles.leftAccessory1, styles.header]}>
-          <Pressable
-            onPress={() => navigation.navigate("Calendar", { screen: "Album" })}
-          >
+          <Pressable onPress={() => navigation.pop()}>
             <Image
               style={styles.backIcon1Layout}
               resizeMode="cover"

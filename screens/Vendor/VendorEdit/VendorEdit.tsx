@@ -51,14 +51,13 @@ import {
   SelectedMediaEnum,
   vendorProfileAlbumAtom,
   vendorProfileAtom,
+  serviceTypesAtom,
 } from "../../../stateManagement";
 import { styles } from "./styles";
 import FastImage from "react-native-fast-image";
 import cloneDeep from "lodash/cloneDeep";
 import { Color } from "../../../GlobalStyles";
 import { PastProjectsList } from "../../../components/Moleculs/PastProjectsList";
-import { useFocusEffect } from "@react-navigation/native";
-import services from "../Services";
 
 type VendorEditProps = {
   navigation: any;
@@ -76,7 +75,6 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
   const isCreate = !!route.params?.isCreate;
   const insets = useSafeAreaInsets();
   const [user] = useGlobalState(StateTypes.user.key, StateTypes.user.default);
-  const [vendor, setVendor] = useRecoilState(vendorProfileAtom);
   const [vendorKeyList, setVendorKeyList] = useRecoilState(keyListAtom);
 
   const toast = useToast();
@@ -84,11 +82,11 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
   const [isSaving, setIsSaving] = useState(false);
   const [serviceName, setServiceName] = useState("");
 
-  const [vendorProfileServices, setVendorServices] = useRecoilState(
-    vendorProfileServiceAtom
-  );
-  const [album] = useRecoilState(vendorProfileAlbumAtom);
+  const [vendor, setVendor] = useRecoilState(vendorProfileAtom);
+  const [services, setServices] = useRecoilState(vendorProfileServiceAtom);
+  const [album, setAlbum] = useRecoilState(vendorProfileAlbumAtom);
   const [selectedMedia] = useRecoilState(selectedMediaAtom);
+  const [serviceTypes, setServiceTypes] = useRecoilState(serviceTypesAtom);
   const newAvatarUrl =
     selectedMedia[SelectedMediaEnum.VENDOR_PROFILE_AVATAR]?.[0].node.image.uri;
   const newProfileBgUrl =
@@ -109,32 +107,43 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
 
   const handleServiceDeleted = useCallback(
     (service: ServiceModel) => {
-      const index = vendorProfileServices.findIndex(
-        (item) => item.id === service.id
-      );
+      const index = services.data.findIndex((item) => item.id === service.id);
       if (index >= 0) {
-        const newServices = [...vendorProfileServices];
+        const newServices = [...services.data];
         newServices.splice(index, 1);
-        setVendorServices(newServices);
+        setServices((prevState) => {
+          return {
+            ...prevState,
+            data: newServices,
+          };
+        });
       }
     },
-    [vendorProfileServices]
+    [services]
   );
 
   const handleEditServiced = useCallback(
     (service: ServiceModel) => {
-      const index = vendorProfileServices.findIndex(
-        (item) => item.id === service.id
-      );
+      const index = services.data.findIndex((item) => item.id === service.id);
       if (index >= 0) {
-        const newServices = cloneDeep(vendorProfileServices);
+        const newServices = cloneDeep(services.data);
         newServices[index] = service;
-        setVendorServices(newServices);
+        setServices((prevState) => {
+          return {
+            ...prevState,
+            data: newServices,
+          };
+        });
       } else {
-        setVendorServices([...vendorProfileServices, service]);
+        setServices((prevState) => {
+          return {
+            ...prevState,
+            data: [...prevState.data, service],
+          };
+        });
       }
     },
-    [vendorProfileServices]
+    [services]
   );
 
   useEffect(() => {
@@ -142,8 +151,6 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
       getVendorInfo();
     }
   }, [user]);
-
-  console.log("useruseruser", user);
 
   const getVendorInfo = async () => {
     try {
@@ -156,6 +163,38 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
           data = resp.data[0];
         }
       }
+      if (!album.isFetched) {
+        const res = await apis.album.getAll({ vendorId: data.id });
+
+        if (res && res.data) {
+          setAlbum({
+            isFetched: true,
+            data: res.data,
+          });
+        }
+      }
+
+      if (!services.isFetched) {
+        const res = await apis.service.getAll({ vendorId: data.id });
+        if (res && res.data) {
+          setServices(() => {
+            return {
+              isFetched: true,
+              data: res.data,
+            };
+          });
+        }
+      }
+
+      if (!serviceTypes.isFetched) {
+        const res = await apis.serviceType.getAll();
+
+        setServiceTypes({
+          isFetched: true,
+          data: res.data,
+        });
+      }
+
       if (data) {
         setServiceName(data.name);
         setServiceDescription(data.description);
@@ -199,8 +238,6 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
       key: SelectedMediaEnum.VENDOR_PROFILE_BG,
     });
   };
-
-  console.log("currentVendorrr", vendor);
 
   const handleNext = async () => {
     try {
@@ -247,6 +284,7 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
         address: address,
         distance: distance,
         point: { type: "Point", coordinates: [long, lat] },
+        profileDone: true,
       };
 
       const res = await apis.vendor.update(data);
@@ -256,12 +294,13 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
           uri: newAvatarUrl,
           id: vendorId,
         });
-        console.log("avatarResponseavatarResponse", avatarResponse);
-        FastImage.preload([
-          {
-            uri: avatarResponse?.updated?.avatar,
-          },
-        ]);
+        if (avatarResponse?.updated?.avatar) {
+          FastImage.preload([
+            {
+              uri: avatarResponse?.updated?.avatar,
+            },
+          ]);
+        }
       }
 
       if (newProfileBgUrl) {
@@ -270,11 +309,13 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
             uri: newProfileBgUrl,
             id: vendorId,
           });
-        FastImage.preload([
-          {
-            uri: profileBackGroundResponse?.updated?.background,
-          },
-        ]);
+        if (profileBackGroundResponse?.updated?.background) {
+          FastImage.preload([
+            {
+              uri: profileBackGroundResponse?.updated?.background,
+            },
+          ]);
+        }
       }
 
       await apis.joinVendorKey.createEditMulti({
@@ -573,7 +614,7 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
                   <ProfileCompleteBanner
                     albumCompleted={false}
                     businessDescriptionCompleted={!!serviceDescription?.length}
-                    servicesCompleted={!!vendorProfileServices?.length}
+                    servicesCompleted={!!services?.length}
                   />
 
                   <SpecialitiesList
@@ -582,7 +623,7 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
                     onRemove={handleRemoveKey}
                   />
 
-                  <PastProjectsList data={album} canEdit={true} />
+                  <PastProjectsList data={album.data} canEdit={true} />
 
                   <TextInputWithAI
                     label="Description"
@@ -597,7 +638,7 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
                   />
                   <ServicesList
                     label="Service Packages"
-                    services={vendorProfileServices}
+                    services={services.data}
                     vendorId={vendor.id}
                     onDelete={handleServiceDeleted}
                     onEdit={handleEditServiced}

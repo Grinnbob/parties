@@ -1,6 +1,12 @@
 import { atom } from "recoil";
 
-export const serviceTypesAtom = atom<Array<{ id: number; title: string }>>({
+export const serviceTypesAtom = atom<{
+  isFetched: boolean;
+  data: Array<{ id: number; title: string }>;
+}>({
   key: "serviceTypesAtom",
-  default: [],
+  default: {
+    isFetched: false,
+    data: [],
+  },
 });
