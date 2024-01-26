@@ -121,7 +121,7 @@ const ServiceScreen = () => {
       </View>
       <BottomTab />
       <View style={styles.topnavigationContent}>
-        <View style={[styles.leftAccessory, styles.accessoryPosition]}>
+        <View style={[styles.leftAccessory, styles.header]}>
           <Text style={styles.leftTitle}>Prev. Title</Text>
           <Image
             style={[styles.iconsaxlinearhambergermenu, styles.backIconLayout]}
@@ -137,7 +137,7 @@ const ServiceScreen = () => {
         <View style={styles.title2}>
           <Text style={styles.title3}>{`Food & Beverages`}</Text>
         </View>
-        <View style={[styles.rightAccessory, styles.accessoryPosition]}>
+        <View style={[styles.rightAccessory, styles.header]}>
           <Text style={[styles.title4, styles.label3Typo]}>Label</Text>
         </View>
       </View>
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.typographyBodyMediumRegular,
     textAlign: "center",
   },
-  accessoryPosition: {
+  header: {
     paddingBottom: Padding.p_4xs,
     paddingTop: Padding.p_4xs,
     width: 130,

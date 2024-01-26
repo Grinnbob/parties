@@ -13,7 +13,7 @@ const SuccessPhotoScreen = () => {
         source={require("../assets/bg5.png")}
       />
       <View style={styles.topnavigationContent}>
-        <View style={[styles.leftAccessory, styles.accessoryPosition]}>
+        <View style={[styles.leftAccessory, styles.header]}>
           <Text style={[styles.leftTitle, styles.leftTitleTypo]}>Cancel</Text>
           <Image
             style={[
@@ -42,7 +42,7 @@ const SuccessPhotoScreen = () => {
             style={[styles.title1, styles.titleFlexBox]}
           >{`Upload photos & videos`}</Text>
         </View>
-        <View style={[styles.rightAccessory, styles.accessoryPosition]}>
+        <View style={[styles.rightAccessory, styles.header]}>
           <Text style={styles.title2}>Done</Text>
           <Image
             style={[
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
   },
-  accessoryPosition: {
+  header: {
     paddingBottom: Padding.p_4xs,
     paddingTop: Padding.p_4xs,
     width: 130,

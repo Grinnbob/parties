@@ -35,10 +35,6 @@ const VendorReadySell = ({ route }) => {
     await loadApp(setToken, setUser);
   };
 
-  const addServicePackage = () => {
-    navigation.navigate("Service", { vendorId: route.params.vendorId });
-  };
-
   return (
     <View style={styles.signupscreen}>
       <ImageBackground
@@ -72,8 +68,6 @@ const VendorReadySell = ({ route }) => {
             </View>
             <View style={styles.forms}>
               <Text style={styles.formbold}>What's Next</Text>
-              <Text style={styles.form}>Create service profile page</Text>
-              <Text style={styles.formgrey}>Add service package</Text>
               <Text style={styles.formgrey}>Find upcoming parties</Text>
             </View>
           </HStack>
@@ -81,27 +75,15 @@ const VendorReadySell = ({ route }) => {
       </View>
       <View style={{ width: "100%", alignItems: "center", marginBottom: 30 }}>
         <MidGradientButton
-          onPress={addServicePackage}
+          onPress={onNext}
           label="Add service package"
-          formPosition="unset"
+          formPosition="Next"
           formTop="unset"
           formLeft="unset"
           formBackgroundColor="rgba(255, 255, 255, 0.1)"
           formMarginTop="unset"
           labelColor="#FFF"
         />
-        <Pressable onPress={onNext}>
-          <Text
-            style={{
-              color: "#FFFFFF",
-              fontWeight: "400",
-              fontSize: 16,
-              marginTop: 20,
-            }}
-          >
-            I'll add later
-          </Text>
-        </Pressable>
       </View>
     </View>
   );
@@ -128,7 +110,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     fontSize: FontSize.typographyHeadingMedium_size,
   },
-  accessoryPosition: {
+  header: {
     paddingBottom: Padding.p_4xs,
     marginTop: 30,
     flexDirection: "row",

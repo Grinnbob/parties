@@ -57,7 +57,7 @@ const ForgotPasswordScreen = () => {
         <View style={[styles.alertmodalbg, styles.alertmodalbgLayout]} />
         <View style={{ flex: 1, justifyContent: "space-between", padding: 20 }}>
           <View style={{ width: "100%", marginBottom: 30 }}>
-            <View style={styles.accessoryPosition}>
+            <View style={styles.header}>
               <View style={styles.backLayout}>
                 <TouchableOpacity
                   style={styles.vector}
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     fontSize: 16,
   },
-  accessoryPosition: {
+  header: {
     paddingBottom: Padding.p_4xs,
     paddingTop: Padding.p_4xs,
     alignItems: "center",

@@ -260,7 +260,7 @@ const VendorCreate = () => {
       });
 
       if (selectedVerifyPhoto[0]?.node?.image?.uri) {
-        const avatarRes = await apis.vendor.UploadAvatar({
+        const avatarRes = await apis.vendor.uploadAvatar({
           uri: selectedVerifyPhoto[0]?.node?.image?.uri,
           id: res?.data?.id,
         });
@@ -337,7 +337,7 @@ const VendorCreate = () => {
               style={{ flex: 1, justifyContent: "space-between", padding: 10 }}
             >
               <View>
-                <View style={styles.accessoryPosition}>
+                <View style={styles.header}>
                   <TouchableOpacity onPress={logout} hitSlop={20}>
                     <Back />
                   </TouchableOpacity>
@@ -755,7 +755,7 @@ const styles = StyleSheet.create({
     margin: 10,
     marginVertical: 30,
   },
-  accessoryPosition: {
+  header: {
     flexDirection: "row",
     justifyContent: "space-between",
     paddingBottom: Padding.p_4xs,

@@ -17,27 +17,30 @@ import TestFairy from "react-native-testfairy";
 import Config from "react-native-config";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { SocketProvider } from "./components/Chat";
+import { MenuProvider } from "react-native-popup-menu";
 
 const App = () => {
   useEffect(() => {
     TestFairy.begin(Config.TEST_FAIRY_KEY);
   }, []);
   return (
-    <View
-      style={{
-        flex: 1,
-      }}
-    >
-      <Wrapper>
-        <RecoilRoot>
-          <ActionSheetProvider>
-            <SocketProvider>
-              <RootNavigator />
-            </SocketProvider>
-          </ActionSheetProvider>
-        </RecoilRoot>
-      </Wrapper>
-    </View>
+    <MenuProvider>
+      <View
+        style={{
+          flex: 1,
+        }}
+      >
+        <Wrapper>
+          <RecoilRoot>
+            <ActionSheetProvider>
+              <SocketProvider>
+                <RootNavigator />
+              </SocketProvider>
+            </ActionSheetProvider>
+          </RecoilRoot>
+        </Wrapper>
+      </View>
+    </MenuProvider>
   );
 };
 

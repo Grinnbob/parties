@@ -8,6 +8,8 @@ import apis from "../../apis";
 import StateTypes from "../../stateManagement/StateTypes";
 import useGlobalState from "../../stateManagement/hook";
 import DismissKeyboard from "../../layouts/DismissKeyboard";
+import { useRecoilState } from "recoil";
+import { vendorProfileAtom } from "../../stateManagement";
 
 const selections = [
   { id: 1, title: "I'm a party host!" },
@@ -18,6 +20,7 @@ const OnboardScreen = ({ route }) => {
   const navigation = useNavigation();
   const [selected, setSelected] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [, setVendorProfile] = useRecoilState(vendorProfileAtom);
   const [user, setUser] = useGlobalState(
     StateTypes.user.key,
     StateTypes.user.default
@@ -41,14 +44,37 @@ const OnboardScreen = ({ route }) => {
           id: route?.params?.id || user.id,
           role: "vendor",
         });
-        console.log("RES", res);
         setIsLoading(false);
         if (res && res.success) {
-          navigation.navigate("VendorCreate");
+          const vendorRes = await apis.vendor.create({
+            name: "",
+            description: "",
+            userId: user.id,
+            views: 0,
+            sales: 0.0,
+            favorites: 0,
+            request: 0,
+            completed: 0,
+            city: "",
+            state: "",
+            address: "",
+            distance: 0,
+            point: { type: "Point", coordinates: [0, 0] },
+          });
+
+          if (vendorRes.success) {
+            setVendorProfile(vendorRes.data);
+
+            navigation.navigate("VendorCreate", {
+              isCreate: true,
+            });
+          }
         }
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -76,6 +102,7 @@ const OnboardScreen = ({ route }) => {
               enable={selected === item.id}
               handlePressIn={() => handlePress(item)}
               onPress={handleNext}
+              loading={isLoading && selected === item.id}
             />
           ))}
         </View>

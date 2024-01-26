@@ -1,26 +1,18 @@
 import React, { useState, useEffect } from "react"
-import {
-    Image,
-    StyleSheet,
-    View,
-    Pressable,
-    Linking,
-    FlatList,
-    TouchableOpacity,
-    ActivityIndicator,
-} from "react-native"
-import { Text, Input, Icon } from "native-base"
+import { Image, StyleSheet, View, Pressable, FlatList } from "react-native"
+import { Text } from "native-base"
 import { Color } from "../../GlobalStyles"
 import { useNavigation } from "@react-navigation/core"
 import apis from "../../apis"
-import useGlobalState from "../../stateManagement/hook"
-import types from "../../stateManagement/types"
 import { SearchInput } from "../../components/Input/SearchInput"
-import Filter from "../../assets/filterIcon.svg"
 import SearchServiceCard from "../../components/SearchServiceCard"
-import GradientPill from "./component/GradientPill"
-import MagnifyGlass from "../../assets/magnifyGlassSearch.svg"
-import { GradientButton } from "../../components/Atoms"
+import { Image, StyleSheet, View, Pressable, FlatList } from "react-native"
+import { Text } from "native-base"
+import { Color } from "../../GlobalStyles"
+import { useNavigation } from "@react-navigation/core"
+import apis from "../../apis"
+import { SearchInput } from "../../components/Input/SearchInput"
+import SearchServiceCard from "../../components/SearchServiceCard"
 import useDebounce from "../../utils/useDebounce"
 
 // filterSelections = [
@@ -33,22 +25,11 @@ import useDebounce from "../../utils/useDebounce"
 
 const ServiceDetails = ({ route }) => {
     const navigation = useNavigation()
-    const [searchTerm, setSearchTerm] = useState(
-        route?.params?.search?.name || ""
-    )
-    const [selectedFilter, setSelectedFilter] = useState("Latest")
-    const [filterChoice, setFilterChoice] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const [vendorList, setVendorList] = useState([])
-    const [searchResult, setSearchResult] = useState([])
-    const [debouceValue, setDebounceValue] = useState("")
-    const [searchList, setSearchList] = useGlobalState(
-        types.albumType.searchList.key,
-        types.albumType.searchList.default
-    )
-    const [searchText, setSearchText] = useState("")
+    const [searchText, setSearchText] = useState(route?.params?.search || "")
     const debounceSearchText = useDebounce(searchText)
-    const { name, id } = route.params.service
+    const { name, id } = route.params.service || {}
 
     useEffect(() => {
         const grabAllVendor = async () => {

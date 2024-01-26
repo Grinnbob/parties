@@ -26,7 +26,6 @@ const VendorInfo = ({ route, navigation }) => {
     const [vendorProfile, setVendorProfile] = useState()
     const [services, setServices] = useState([])
     const [backgroundLink, setBackgroundLink] = useState("")
-    const [serviceTypes, isServiceTypesLoading] = useLoadable(serviceTypesQuery)
 
     const handleCall = () => {
         Linking.openURL(`tel:${vendorProfile.phoneNumber.replace(/\D/g, "")}`)

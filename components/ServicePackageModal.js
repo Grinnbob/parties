@@ -15,7 +15,7 @@ const ServicePackageModal = ({ modalVisible, setModalVisible }) => {
 
   const serviceAdded = () => {
     setModalVisible(false);
-    navigation.navigate("Calendar", { success: true });
+    navigation.pop();
   };
 
   return (
@@ -23,10 +23,7 @@ const ServicePackageModal = ({ modalVisible, setModalVisible }) => {
       animationType="slide"
       transparent={true}
       visible={modalVisible}
-      onRequestClose={() => {
-        Alert.alert("Modal has been closed.");
-        setModalVisible(!modalVisible);
-      }}
+      onRequestClose={serviceAdded}
     >
       <View style={[styles.alertmodal, styles.alertmodalLayout]}>
         <View style={[styles.alert, styles.alertFlexBox]}>

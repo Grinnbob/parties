@@ -1,4 +1,3 @@
-import { SetterOrUpdater } from "recoil";
 import apis from "../apis";
 
 import * as LocalAuthentication from "expo-local-authentication";
@@ -36,7 +35,7 @@ const grabUserAndNav = async (setToken, setUser, shouldNotNav) => {
   if (res.success) {
     setUser(res.data);
     console.log("!!---res.data", res.data);
-    setToken(res.data.isVerified ? res.data.role : "verify");
+    setToken(res.data?.isVerified ? res.data.role : "verify");
     return true;
   }
   if (!shouldNotNav) setToken("auth");

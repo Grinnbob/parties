@@ -14,9 +14,10 @@ import {
 } from "react-native";
 import { styles } from "./styles";
 import { RequestQuote, RequestQuoteStepEnum } from "../RequestQuoteScreen";
-import { ServiceCard } from "./ServiceCard";
+import { ServiceCard } from "../../../../components/Moleculs";
 import { Button, GradientButton } from "../../../../components/Atoms";
 import { ServiceModel } from "../../../../models";
+import { useServiceGroups } from "../../../../hooks/useServiceGroups";
 
 type SelectServiceStepProps = {
   quote: RequestQuote;
@@ -56,7 +57,6 @@ export const ServiceSelectStep: React.FC<SelectServiceStepProps> = ({
   }, [isValid]);
 
   const renderService = (element: ListRenderItemInfo<ServiceModel>) => {
-    console.log("element", element);
     return (
       <ServiceCard
         name={element.item.name}
@@ -64,11 +64,12 @@ export const ServiceSelectStep: React.FC<SelectServiceStepProps> = ({
         price={element.item.price}
         unit={element.item.rate}
         isSelected={quote.services.includes(element.item.id)}
-        style={
+        style={[
+          styles.serviceCard,
           !!quote.services.length && !quote.services.includes(element.item.id)
             ? styles.disabledService
-            : undefined
-        }
+            : undefined,
+        ]}
         onPress={() => {
           handleSelectService(element.item.id);
         }}
@@ -97,21 +98,7 @@ export const ServiceSelectStep: React.FC<SelectServiceStepProps> = ({
     return services;
   }, [services, quote.selectedSpecialties]);
 
-  const serviceGroups = useMemo(() => {
-    const result: Record<string, Array<ServiceModel>> = {};
-
-    filteredServices.forEach((service) => {
-      service.serviceTypes.forEach((type) => {
-        if (result[type.title]) {
-          result[type.title] = [...result[type.title], service];
-        } else {
-          result[type.title] = [service];
-        }
-      });
-    });
-
-    return result;
-  }, [filteredServices, services]);
+  const { serviceGroups } = useServiceGroups(filteredServices);
 
   const handleSelectSpecialty = (
     item: ServiceModel["serviceTypes"][number],

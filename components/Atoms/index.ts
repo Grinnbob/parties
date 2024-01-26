@@ -6,3 +6,4 @@ export * from "./ProgressBar";
 export * from "./RangeSlider";
 export * from "./Button";
 export * from "./IconBg";
+export * from "./Menu";

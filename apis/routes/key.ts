@@ -1,17 +1,13 @@
-import * as API from '../base';
-const Base = 'key';
+import * as API from "../base";
+import { KeyItemModel } from "../../models";
+const Base = "key";
 
-interface KEY {
-  id: Number;
-  name?: String;
-}
-
-export const create = async (data: KEY) => {
+export const create = async (data: KeyItemModel) => {
   const response = await API.postApi(`${Base}/`, data);
   return response;
 };
 
-export const update = async (data: KEY) => {
+export const update = async (data: KeyItemModel) => {
   const response = await API.putApi(`${Base}/${data.id}`, data);
   return response;
 };

@@ -2,18 +2,18 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import VendorHomeScreen from "../screens/Vendor/VendorHomeScreen";
-import VendorProfileScreen from "../screens/Vendor/VendorProfileScreen";
+import { VendorProfileScreen } from "../screens/Vendor/VendorProfileScreen/VendorProfileScreen";
 import AlbumTypeScreen from "../screens/Vendor/Profile/AlbumTypeScreen";
 import BottomNavContainer from "../components/navigation/CustomBottomTabBar";
 import Notifications from "../screens/Vendor/Notifications";
-import ServicePackageScreen from "../screens/ServicePackageScreen";
+import { ServicePackageScreen } from "../screens/ServicePackageScreen";
 import HolidayThemeScreen from "../screens/Vendor/Profile/HolidayThemeScreen";
 import Quotes from "../screens/Vendor/Quotes";
 import Services from "../screens/Vendor/Services";
 import PhotoAlbumScreen from "../screens/Vendor/Profile/PhotoAlbumScreen";
 import HelpSearchScreen from "../screens/Host/HelpSearchScreen";
 import VendorCameraRoll from "../screens/Vendor/Profile/VendorCameraRoll";
-import VendorEdit from "../screens/Vendor/VendorEdit";
+import { VendorEdit } from "../screens/Vendor/VendorEdit";
 import SearchVendorEditModal from "../components/Modal/SearchVendorEditModal";
 
 // const BottomTab = createBottomTabNavigator();
@@ -110,6 +110,11 @@ function CalendarNavigator() {
       <CalendarStack.Screen
         name="Edit"
         component={VendorEdit}
+        options={{ headerShown: false, gestureEnabled: false }}
+      />
+      <CalendarStack.Screen
+        name="Service"
+        component={ServicePackageScreen}
         options={{ headerShown: false, gestureEnabled: false }}
       />
       <CalendarStack.Screen

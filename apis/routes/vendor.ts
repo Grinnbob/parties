@@ -4,10 +4,8 @@ const Base = "vendor"
 interface VENDOR {
     id: Number
     name?: String
-    phoneNumber?: String
     description?: String
     service?: String
-    taxId?: Number
     userId?: Number
 }
 
@@ -76,13 +74,6 @@ export const getAllSearch = async (search: string) => {
     return response
 }
 
-export const getAllSearchWithData = async (search: string) => {
-    let url = `${Base}/results?search=${search}`
-
-    const response = await API.getApi(url)
-    return response
-}
-
 export const getSearchResults = async (params: {
     search: string
     serviceTypeId: number
@@ -97,7 +88,7 @@ export const getSearchResults = async (params: {
     return response
 }
 
-export const UploadAvatar = async (data: AVATAR) => {
+export const uploadAvatar = async (data: AVATAR) => {
     const { uri, id } = data
     const uploadRes = await API.imageApi("avatar", id, uri)
     if (uploadRes.success) {
@@ -108,4 +99,29 @@ export const UploadAvatar = async (data: AVATAR) => {
         const response = await API.putApi(`${Base}/${id}`, avatarBody)
         return response
     }
+}
+
+export const uploadProfileBackground = async (data: AVATAR) => {
+    const { uri, id } = data
+    const uploadRes = await API.imageApi("background", id, uri)
+    if (uploadRes.success) {
+        const avatarBody = {
+            background: uploadRes?.data?.key,
+        }
+
+        const response = await API.putApi(`${Base}/${id}`, avatarBody)
+        return response
+    }
+}
+
+export const generateAiDescription = async ({
+    id,
+    keys,
+}: {
+    id: string
+    keys: string[]
+}) => {
+    let url = `${Base}/${id}/generateAiDescription`
+    const response = await API.postApi(url, { keys })
+    return response
 }

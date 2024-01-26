@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, Pressable, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  Pressable,
+  View,
+  ActivityIndicator,
+} from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { FontFamily, Border, FontSize, Color } from "../../GlobalStyles";
 
@@ -8,6 +14,7 @@ export default ({
   enable,
   onPress = () => {},
   handlePressIn = () => {},
+  loading,
 }) => {
   return (
     <Pressable
@@ -59,6 +66,13 @@ export default ({
             angle={-90}
           >
             <Text style={[styles.iamAParty, styles.partyTypo]}>{title}</Text>
+            {loading && (
+              <ActivityIndicator
+                color={Color.textMainWhite}
+                size={16}
+                style={styles.activityIndicator}
+              />
+            )}
           </LinearGradient>
         </View>
       </LinearGradient>
@@ -123,5 +137,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginBottom: 10,
     marginTop: 10,
+  },
+  activityIndicator: {
+    position: "absolute",
+    bottom: 16,
   },
 });

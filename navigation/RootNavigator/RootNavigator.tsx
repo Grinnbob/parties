@@ -8,24 +8,24 @@ import useGlobalState from "../../stateManagement/hook";
 import StateTypes from "../../stateManagement/StateTypes";
 import VendorDrawerNav from "../vendorDrawerNav";
 import VerifyNav from "../VerifyNav";
-import VendorCreate from "../../screens/Vendor/VendorCreate";
+import { VendorEdit } from "../../screens/Vendor/VendorEdit";
 import apis from "../../apis";
 import layout from "../../utils/layout";
 import { ImageBackground } from "react-native";
 import VendorCameraRoll from "../../screens/Vendor/Profile/VendorCameraRoll";
-import SearchModal from "../../components/Modal/SearchModal";
 import { VendorQuotesStackRoutes } from "../vendorQuotesStackRoutes";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { DashboardIcon } from "../../components/Icons/DashboardIcon";
-import {
-  PartyIcon,
-  QuotesInactiveIcon,
-  ServicesIcon,
-} from "../../components/Icons";
+import { QuotesInactiveIcon } from "../../components/Icons";
 import { Color } from "../../GlobalStyles";
 import { styles } from "./styles";
-import { HostMyPartiesStackRoutes } from "../hostMyPartiesStackRoutes";
 import { HostBottomNav } from "../Host/HostBottomNav";
+import { vendorProfileAtom } from "../../stateManagement";
+import AlbumTypeScreen from "../../screens/Vendor/Profile/AlbumTypeScreen";
+import { useRecoilState } from "recoil";
+import AlbumNavigator from "../AlbumNavigator";
+import { ServicePackageScreen } from "../../screens/ServicePackageScreen";
+import VendorReadySell from "../../screens/Verify/Vendor/VendorReadySell";
 
 const Stack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -39,10 +39,7 @@ export const RootNavigator: React.FC = () => {
     StateTypes.user.key,
     StateTypes.user.default
   );
-  const [vendor, setVendor] = useGlobalState(
-    StateTypes.vendor.key,
-    StateTypes.vendor.default
-  );
+  const [vendor, setVendor] = useRecoilState(vendorProfileAtom);
   const [vendorEdit, setVendorEdit] = useState(false);
 
   useEffect(() => {
@@ -50,14 +47,24 @@ export const RootNavigator: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (!user?.id) {
+      return;
+    }
     grabVendor();
   }, [user]);
 
   const grabVendor = async () => {
     const res = await apis.vendor.getAll({ userId: user.id });
 
-    setVendor(res.data);
-    if (res.length < 1 && user.role === "vendor") {
+    const fetchedVendor = res.data[0];
+    if (fetchedVendor) {
+      const vendorResp = await apis.vendor.getById(fetchedVendor.id);
+      setVendor(vendorResp.data);
+    }
+    if (
+      user.role === "vendor" &&
+      (res.data?.length === 0 || !fetchedVendor.profileDone)
+    ) {
       setVendorEdit(true);
     } else {
       setVendorEdit(false);
@@ -69,18 +76,34 @@ export const RootNavigator: React.FC = () => {
       <Stack.Navigator>
         <Stack.Screen
           name="VerifyCreate"
-          component={VendorCreate}
+          component={VendorEdit}
           options={{ headerShown: false }}
+          initialParams={{ isCreate: true, vendor }}
         />
         <Stack.Screen
-          name="VerifyCameraRoll"
+          name="CameraEdit"
           component={VendorCameraRoll}
+          options={{ headerShown: false, gestureEnabled: false }}
+        />
+        <Stack.Screen
+          name="Album"
+          component={AlbumTypeScreen}
+          options={{ headerShown: false, gestureEnabled: false }}
+        />
+        <Stack.Screen
+          name="AlbumNavigator"
+          component={AlbumNavigator}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="SearchModal"
-          component={SearchModal}
-          options={{ headerShown: false, presentation: "modal" }}
+          name="Service"
+          component={ServicePackageScreen}
+          options={{ headerShown: false, gestureEnabled: false }}
+        />
+        <Stack.Screen
+          name="VendorReadySell"
+          component={VendorReadySell}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
     );
@@ -171,6 +194,7 @@ export const RootNavigator: React.FC = () => {
         );
     }
   };
+
   return (
     <NavigationContainer theme={DarkTheme}>
       {token !== "auth" && vendorEdit ? vendorCreate() : selectStack()}

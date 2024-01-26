@@ -74,7 +74,7 @@ const AlbumTypeScreen = ({ navigation }) => {
         <TopNavigationContent
           title="What kind of album this is"
           rightAccessoryDisplay="none"
-          LeftComponent={() => navigation.navigate("Profile")}
+          LeftComponent={() => navigation.pop()}
         />
       </VStack>
 

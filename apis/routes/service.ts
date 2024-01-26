@@ -1,5 +1,5 @@
-import * as API from '../base';
-const Base = 'service';
+import * as API from "../base";
+const Base = "service";
 
 interface SERVICE {
   id: Number;
@@ -10,7 +10,6 @@ interface SERVICE {
   description?: String;
   amount?: String;
 }
-
 
 export const create = async (data: SERVICE) => {
   const response = await API.postApi(`${Base}/`, data);
@@ -46,4 +45,26 @@ export const getAll = async (query: any = {}) => {
   }
   const response = await API.getApi(url);
   return response;
+};
+
+export const generateAiDescription = async (data: {
+  id: string;
+  keys: string[];
+}) => {
+  let url = `${Base}/generateAiDescription`;
+  const response = await API.postApi(url, data);
+  return response;
+};
+
+export const uploadServicePhoto = async (data: { uri: string; id: string }) => {
+  const { uri, id } = data;
+  const uploadRes = await API.imageApi("image", id, uri);
+  if (uploadRes.success) {
+    const avatarBody = {
+      image: uploadRes?.data?.key,
+    };
+
+    const response = await API.putApi(`${Base}/${id}`, avatarBody);
+    return response;
+  }
 };

@@ -1,5 +1,5 @@
 import { Dimensions, StyleSheet } from "react-native";
-import { Color } from "../../../../../GlobalStyles";
+import { Color } from "../../../../GlobalStyles";
 
 export const styles = StyleSheet.create({
   root: {
@@ -7,7 +7,6 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 16,
     borderColor: Color.textMainWhite,
-    marginHorizontal: 24,
   },
   header: {
     flexDirection: "row",
@@ -49,6 +48,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 16,
     borderTopRightRadius: 16,
+    position: "relative",
   },
   nameText: {
     color: Color.textMainWhite,
@@ -76,4 +76,18 @@ export const styles = StyleSheet.create({
     height: 26,
     top: "43%",
   },
+  image: {
+    height: 142,
+    marginTop: -16,
+    marginBottom: 16,
+    marginHorizontal: 16,
+  },
+  moreVertIconContainer: {
+    position: "absolute",
+    right: 8,
+    top: 4,
+    padding: 8,
+  },
+  menuOption: { flexDirection: "row", gap: 8, alignItems: "center" },
+  menuText: { fontSize: 16, lineHeight: 24 },
 });

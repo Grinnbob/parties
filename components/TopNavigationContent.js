@@ -1,7 +1,8 @@
-import React, { useMemo } from "react";
-import { Text, StyleSheet, Image, View, Pressable } from "react-native";
-import { Padding, Color, FontSize, FontFamily } from "../GlobalStyles";
+import React from "react";
+import { Text, StyleSheet, View, Pressable } from "react-native";
+import { Color, FontFamily } from "../GlobalStyles";
 import { useNavigation } from "@react-navigation/core";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Back from "../assets/back.svg";
 
 const TopNavigationContent = ({
@@ -11,8 +12,14 @@ const TopNavigationContent = ({
   LeftComponent,
 }) => {
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
   return (
-    <View style={styles.topnavigationContent}>
+    <View
+      style={{
+        ...styles.topnavigationContent,
+        marginTop: insets.top ? insets.top : 16,
+      }}
+    >
       <Pressable
         onPress={LeftComponent ? LeftComponent : () => navigation.pop()}
         style={{ marginLeft: 10, ...backStyle }}
@@ -53,7 +60,6 @@ const styles = StyleSheet.create({
   topnavigationContent: {
     justifyContent: "space-between",
     flexDirection: "row",
-    marginTop: 40,
     marginBottom: 20,
   },
 });

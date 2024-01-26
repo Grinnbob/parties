@@ -86,7 +86,8 @@ const HelpSearchScreen = () => {
     const onDebounce = async (txt) => {
         try {
             setIsLoading(true)
-            const res = await apis.vendor.getAllSearchWithData(txt)
+
+            const res = await apis.vendor.getAllSearch(txt)
 
             if (res?.success) {
                 setSearchResult(res.data)

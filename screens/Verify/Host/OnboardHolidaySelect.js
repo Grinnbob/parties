@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     color: Color.labelColorDarkPrimary,
     textAlign: "center",
   },
-  accessoryPosition: {
+  header: {
     paddingBottom: Padding.p_4xs,
     paddingTop: Padding.p_4xs,
     width: 130,
