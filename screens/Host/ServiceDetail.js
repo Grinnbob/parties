@@ -17,7 +17,7 @@ import useDebounce from "../../utils/useDebounce"
 // ];
 
 const ServiceDetails = ({ route }) => {
-    const navigation = useNavigation()``
+    const navigation = useNavigation()
     const [isLoading, setIsLoading] = useState(false)
     const [vendorList, setVendorList] = useState([])
     const [searchText, setSearchText] = useState(route?.params?.search || "")
