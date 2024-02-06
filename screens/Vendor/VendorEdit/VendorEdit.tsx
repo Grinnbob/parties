@@ -93,7 +93,7 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
     selectedMedia[SelectedMediaEnum.VENDOR_PROFILE_BG]?.[0].node.image.uri;
   const [serviceDescription, setServiceDescription] = useState("");
   const [avatar, setAvatar] = useState("");
-  const [profileBackground, setProfileBackground] = useState("");
+  const [background, setBackground] = useState("");
   const [address, setAddress] = useState("");
   const [state, setState] = useState(vendor?.state || "");
   const [city, setCity] = useState(vendor?.city || "");
@@ -199,7 +199,7 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
         setServiceName(data.name);
         setServiceDescription(data.description);
         setAvatar(data.avatar);
-        setProfileBackground(data.background);
+        setBackground(data.background);
         setCity(data.city);
         setState(data.state);
         setAddress(data.address);
@@ -244,7 +244,7 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
       let errorMessage = "";
       if (!avatar && !newAvatarUrl) {
         errorMessage = "Please add your avatar";
-      } else if (!profileBackground && !newProfileBgUrl) {
+      } else if (!background && !newProfileBgUrl) {
         errorMessage = "Please add profile background";
       } else if (!serviceName) {
         errorMessage = "Please add Business Name";
@@ -289,8 +289,9 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
 
       const res = await apis.vendor.update(data);
 
+      let avatarResponse;
       if (newAvatarUrl) {
-        const avatarResponse = await apis.vendor.uploadAvatar({
+        avatarResponse = await apis.vendor.uploadAvatar({
           uri: newAvatarUrl,
           id: vendorId,
         });
@@ -303,12 +304,12 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
         }
       }
 
+      let profileBackGroundResponse;
       if (newProfileBgUrl) {
-        const profileBackGroundResponse =
-          await apis.vendor.uploadProfileBackground({
-            uri: newProfileBgUrl,
-            id: vendorId,
-          });
+        profileBackGroundResponse = await apis.vendor.uploadProfileBackground({
+          uri: newProfileBgUrl,
+          id: vendorId,
+        });
         if (profileBackGroundResponse?.updated?.background) {
           FastImage.preload([
             {
@@ -334,6 +335,9 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
       if (res && res.success) {
         setVendor({
           ...data,
+          avatar: avatarResponse?.updated?.avatar || avatar,
+          background:
+            profileBackGroundResponse?.updated?.background || background,
           listOfKeys: vendorKeyList,
         });
         if (isCreate) {
@@ -474,7 +478,7 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
                 ) : (
                   <FastImage
                     source={{
-                      uri: profileBackground,
+                      uri: background,
                     }}
                     style={styles.profileBgImageContainer}
                   />
