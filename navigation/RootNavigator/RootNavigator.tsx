@@ -154,6 +154,7 @@ export const RootNavigator: React.FC = () => {
               activeTintColor: Color.primaryPink,
               inactiveTintColor: Color.gray300,
               showLabel: true,
+              keyboardHidesTabBar: true,
             }}
           >
             <BottomTab.Screen
