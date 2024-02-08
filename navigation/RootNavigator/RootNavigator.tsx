@@ -39,11 +39,10 @@ export const RootNavigator: React.FC = () => {
     StateTypes.user.key,
     StateTypes.user.default
   );
-  const [isVendorFetching, setIsVendorFetching] = useState(true);
+  const [isVendorFetching, setIsVendorFetching] = useState(token !== "auth");
   const [vendor, setVendor] = useRecoilState(vendorProfileAtom);
   const [vendorEdit, setVendorEdit] = useState(false);
-  const isShowLoadingScreen =
-    !user?.id || isVendorFetching || token === "loading";
+  const isShowLoadingScreen = isVendorFetching || token === "loading";
 
   useEffect(() => {
     loadApp(setToken, setUser);

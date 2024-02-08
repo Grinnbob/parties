@@ -79,9 +79,8 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
   const toast = useToast();
   const ref = useRef<GooglePlacesAutocompleteRef | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [serviceName, setServiceName] = useState("");
-
   const [vendor, setVendor] = useRecoilState(vendorProfileAtom);
+  const [serviceName, setServiceName] = useState(vendor.name || "");
   const [services, setServices] = useRecoilState(vendorProfileServiceAtom);
   const [album, setAlbum] = useRecoilState(vendorProfileAlbumAtom);
   const [selectedMedia, setSelectedMedia] = useRecoilState(selectedMediaAtom);
@@ -90,10 +89,12 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
     selectedMedia[SelectedMediaEnum.VENDOR_PROFILE_AVATAR]?.[0].node.image.uri;
   const newProfileBgUrl =
     selectedMedia[SelectedMediaEnum.VENDOR_PROFILE_BG]?.[0].node.image.uri;
-  const [serviceDescription, setServiceDescription] = useState("");
-  const [avatar, setAvatar] = useState("");
-  const [background, setBackground] = useState("");
-  const [address, setAddress] = useState("");
+  const [serviceDescription, setServiceDescription] = useState(
+    vendor?.description || ""
+  );
+  const [avatar, setAvatar] = useState(vendor?.avatar || "");
+  const [background, setBackground] = useState(vendor?.background || "");
+  const [address, setAddress] = useState(vendor?.address || "");
   const [state, setState] = useState(vendor?.state || "");
   const [city, setCity] = useState(vendor?.city || "");
   const [lat, setLat] = useState(0);
@@ -154,6 +155,7 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
   const getVendorInfo = async () => {
     try {
       let data;
+      console.log("vendorvendorvendor", vendor);
       if (vendor?.id) {
         data = vendor;
       } else {
@@ -201,8 +203,9 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
         setBackground(data.background);
         setCity(data.city);
         setState(data.state);
-        setAddress(data.address);
-        ref.current?.setAddressText(data.address);
+        console.log("data.address", data.address);
+        setAddress(data.address || "");
+        ref.current?.setAddressText(data.address || "");
         setDistance(data.distance ? String(data.distance) : "");
         setVendorKeyList(data.listOfKeys || []);
       }
@@ -422,8 +425,6 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
       setIsAiDescriptionLoading(false);
     }
   }, [vendor, vendorKeyList, toast]);
-
-  console.log("vendor", vendor);
 
   return (
     <KeyboardAwareScrollView
