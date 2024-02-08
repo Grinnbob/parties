@@ -17,6 +17,7 @@ import { Color } from "../../../GlobalStyles";
 import { useRecoilState } from "recoil";
 import { quotesListAtom, selectedQuoteAtom } from "../../../stateManagement";
 import cloneDeep from "lodash/cloneDeep";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const tabs = [
   {
@@ -37,6 +38,7 @@ const tabs = [
 ];
 
 export const AllJobsScreen: React.FC = () => {
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const { navigate } = navigation;
   const [selectedTab, setSelectedTab] = useState(tabs[0]);
@@ -94,7 +96,9 @@ export const AllJobsScreen: React.FC = () => {
         resizeMode="cover"
         source={require("../../../assets/bg11.png")}
       />
-      <View style={styles.header}>
+      <View
+        style={[styles.header, { marginTop: insets.top ? insets.top : 16 }]}
+      >
         <Text style={styles.titleText}>Your Jobs</Text>
       </View>
       <Tabs value={selectedTab.id} tabs={tabs} onChange={handleTabChange} />

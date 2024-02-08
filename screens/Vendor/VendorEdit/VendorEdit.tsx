@@ -84,7 +84,7 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
   const [vendor, setVendor] = useRecoilState(vendorProfileAtom);
   const [services, setServices] = useRecoilState(vendorProfileServiceAtom);
   const [album, setAlbum] = useRecoilState(vendorProfileAlbumAtom);
-  const [selectedMedia] = useRecoilState(selectedMediaAtom);
+  const [selectedMedia, setSelectedMedia] = useRecoilState(selectedMediaAtom);
   const [serviceTypes, setServiceTypes] = useRecoilState(serviceTypesAtom);
   const newAvatarUrl =
     selectedMedia[SelectedMediaEnum.VENDOR_PROFILE_AVATAR]?.[0].node.image.uri;
@@ -339,6 +339,7 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
             profileBackGroundResponse?.updated?.background || background,
           listOfKeys: vendorKeyList,
         });
+        setSelectedMedia({});
         if (isCreate) {
           navigation.navigate("VendorReadySell", { vendorId: res?.data?.id });
         } else {
@@ -441,7 +442,10 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
               ]}
             >
               <TouchableOpacity
-                onPress={() => navigation.pop()}
+                onPress={() => {
+                  setSelectedMedia({});
+                  navigation.pop();
+                }}
                 hitSlop={20}
                 disabled={isCreate}
                 style={styles.backIconContainer}

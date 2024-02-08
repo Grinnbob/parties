@@ -20,6 +20,8 @@ import PasswordScreen from "../screens/Auth/PasswordScreen";
 import SignUpScreen from "../screens/Auth/SignUpScreen";
 import VerifyScreen from "../screens/Auth/VerifyScreen";
 import AccountSettingScreen from "../screens/Auth/AccountSettingScreen";
+import AlbumTypeScreen from "../screens/Vendor/Profile/AlbumTypeScreen";
+import AlbumNavigator from "./AlbumNavigator";
 
 const Stack = createStackNavigator();
 export default (props) => {
@@ -114,6 +116,21 @@ export default (props) => {
         name="SearchOnboardModal"
         component={SearchOnboardModal}
         options={{ headerShown: false, presentation: "modal" }}
+      />
+      <Stack.Screen
+        name="CameraEdit"
+        component={VendorCameraRoll}
+        options={{ headerShown: false, gestureEnabled: false }}
+      />
+      <Stack.Screen
+        name="Album"
+        component={AlbumTypeScreen}
+        options={{ headerShown: false, gestureEnabled: false }}
+      />
+      <Stack.Screen
+        name="AlbumNavigator"
+        component={AlbumNavigator}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

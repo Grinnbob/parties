@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
     fontSize: 16,
   },
   background: {
-    height: "100%",
+    height: "110%",
     position: "absolute",
     right: 0,
     top: Platform.select({ ios: -50, android: 0 }),
@@ -81,6 +81,7 @@ export const styles = StyleSheet.create({
     zIndex: 30,
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
+    paddingBottom: 24,
     paddingHorizontal: 24,
   },
   whiteCircle: {

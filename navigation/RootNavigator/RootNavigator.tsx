@@ -39,8 +39,11 @@ export const RootNavigator: React.FC = () => {
     StateTypes.user.key,
     StateTypes.user.default
   );
+  const [isVendorFetching, setIsVendorFetching] = useState(true);
   const [vendor, setVendor] = useRecoilState(vendorProfileAtom);
   const [vendorEdit, setVendorEdit] = useState(false);
+  const isShowLoadingScreen =
+    !user?.id || isVendorFetching || token === "loading";
 
   useEffect(() => {
     loadApp(setToken, setUser);
@@ -69,9 +72,11 @@ export const RootNavigator: React.FC = () => {
     } else {
       setVendorEdit(false);
     }
+    setIsVendorFetching(false);
   };
 
   const vendorCreate = () => {
+    console.log("vendorCreatevendorCreatevendorCreate");
     return (
       <Stack.Navigator>
         <Stack.Screen
@@ -111,19 +116,6 @@ export const RootNavigator: React.FC = () => {
 
   const selectStack = () => {
     switch (token) {
-      case "loading":
-        return (
-          <View justifyContent={"center"} alignItems={"center"}>
-            <ImageBackground
-              style={{
-                width: layout.window.width,
-                height: layout.window.height,
-              }}
-              resizeMode="cover"
-              source={require("../../assets/rectangle-2.png")}
-            />
-          </View>
-        );
       case "auth":
         return (
           <Stack.Navigator>
@@ -198,7 +190,21 @@ export const RootNavigator: React.FC = () => {
 
   return (
     <NavigationContainer theme={DarkTheme}>
-      {token !== "auth" && vendorEdit ? vendorCreate() : selectStack()}
+      {isShowLoadingScreen && (
+        <View justifyContent={"center"} alignItems={"center"}>
+          <ImageBackground
+            style={{
+              width: layout.window.width,
+              height: layout.window.height,
+            }}
+            resizeMode="cover"
+            source={require("../../assets/rectangle-2.png")}
+          />
+        </View>
+      )}
+      {!isShowLoadingScreen && (
+        <>{token !== "auth" && vendorEdit ? vendorCreate() : selectStack()}</>
+      )}
     </NavigationContainer>
   );
 };
