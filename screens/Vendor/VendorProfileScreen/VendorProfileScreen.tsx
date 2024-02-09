@@ -116,9 +116,11 @@ export const VendorProfileScreen = ({ route }) => {
     if (!vendorProfile?.id) {
       return;
     }
-    Promise.allSettled([getAlbum, getServiceTypes, getServices]).then(() => {
-      setIsLoading(false);
-    });
+    Promise.allSettled([getAlbum(), getServiceTypes(), getServices()]).then(
+      () => {
+        setIsLoading(false);
+      }
+    );
   }, [vendorProfile]);
 
   const { serviceGroups } = useServiceGroups(services.data);

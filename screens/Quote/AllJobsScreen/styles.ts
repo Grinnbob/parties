@@ -10,7 +10,6 @@ export const styles = StyleSheet.create({
   header: {
     display: "flex",
     justifyContent: "space-between",
-    marginTop: 50,
     marginBottom: 24,
     paddingHorizontal: 24,
   },

@@ -11,8 +11,6 @@ import {
   TouchableOpacity,
   ScrollView,
   ImageBackground,
-  KeyboardAvoidingView,
-  Platform,
   ActivityIndicator,
 } from "react-native";
 import apis from "../../../apis";
@@ -58,6 +56,7 @@ import FastImage from "react-native-fast-image";
 import cloneDeep from "lodash/cloneDeep";
 import { Color } from "../../../GlobalStyles";
 import { PastProjectsList } from "../../../components/Moleculs/PastProjectsList";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 type VendorEditProps = {
   navigation: any;
@@ -80,21 +79,22 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
   const toast = useToast();
   const ref = useRef<GooglePlacesAutocompleteRef | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [serviceName, setServiceName] = useState("");
-
   const [vendor, setVendor] = useRecoilState(vendorProfileAtom);
+  const [serviceName, setServiceName] = useState(vendor.name || "");
   const [services, setServices] = useRecoilState(vendorProfileServiceAtom);
   const [album, setAlbum] = useRecoilState(vendorProfileAlbumAtom);
-  const [selectedMedia] = useRecoilState(selectedMediaAtom);
+  const [selectedMedia, setSelectedMedia] = useRecoilState(selectedMediaAtom);
   const [serviceTypes, setServiceTypes] = useRecoilState(serviceTypesAtom);
   const newAvatarUrl =
     selectedMedia[SelectedMediaEnum.VENDOR_PROFILE_AVATAR]?.[0].node.image.uri;
   const newProfileBgUrl =
     selectedMedia[SelectedMediaEnum.VENDOR_PROFILE_BG]?.[0].node.image.uri;
-  const [serviceDescription, setServiceDescription] = useState("");
-  const [avatar, setAvatar] = useState("");
-  const [profileBackground, setProfileBackground] = useState("");
-  const [address, setAddress] = useState("");
+  const [serviceDescription, setServiceDescription] = useState(
+    vendor?.description || ""
+  );
+  const [avatar, setAvatar] = useState(vendor?.avatar || "");
+  const [background, setBackground] = useState(vendor?.background || "");
+  const [address, setAddress] = useState(vendor?.address || "");
   const [state, setState] = useState(vendor?.state || "");
   const [city, setCity] = useState(vendor?.city || "");
   const [lat, setLat] = useState(0);
@@ -155,6 +155,7 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
   const getVendorInfo = async () => {
     try {
       let data;
+      console.log("vendorvendorvendor", vendor);
       if (vendor?.id) {
         data = vendor;
       } else {
@@ -199,11 +200,12 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
         setServiceName(data.name);
         setServiceDescription(data.description);
         setAvatar(data.avatar);
-        setProfileBackground(data.background);
+        setBackground(data.background);
         setCity(data.city);
         setState(data.state);
-        setAddress(data.address);
-        ref.current?.setAddressText(data.address);
+        console.log("data.address", data.address);
+        setAddress(data.address || "");
+        ref.current?.setAddressText(data.address || "");
         setDistance(data.distance ? String(data.distance) : "");
         setVendorKeyList(data.listOfKeys || []);
       }
@@ -244,7 +246,7 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
       let errorMessage = "";
       if (!avatar && !newAvatarUrl) {
         errorMessage = "Please add your avatar";
-      } else if (!profileBackground && !newProfileBgUrl) {
+      } else if (!background && !newProfileBgUrl) {
         errorMessage = "Please add profile background";
       } else if (!serviceName) {
         errorMessage = "Please add Business Name";
@@ -289,8 +291,9 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
 
       const res = await apis.vendor.update(data);
 
+      let avatarResponse;
       if (newAvatarUrl) {
-        const avatarResponse = await apis.vendor.uploadAvatar({
+        avatarResponse = await apis.vendor.uploadAvatar({
           uri: newAvatarUrl,
           id: vendorId,
         });
@@ -303,12 +306,12 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
         }
       }
 
+      let profileBackGroundResponse;
       if (newProfileBgUrl) {
-        const profileBackGroundResponse =
-          await apis.vendor.uploadProfileBackground({
-            uri: newProfileBgUrl,
-            id: vendorId,
-          });
+        profileBackGroundResponse = await apis.vendor.uploadProfileBackground({
+          uri: newProfileBgUrl,
+          id: vendorId,
+        });
         if (profileBackGroundResponse?.updated?.background) {
           FastImage.preload([
             {
@@ -334,8 +337,12 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
       if (res && res.success) {
         setVendor({
           ...data,
+          avatar: avatarResponse?.updated?.avatar || avatar,
+          background:
+            profileBackGroundResponse?.updated?.background || background,
           listOfKeys: vendorKeyList,
         });
+        setSelectedMedia({});
         if (isCreate) {
           navigation.navigate("VendorReadySell", { vendorId: res?.data?.id });
         } else {
@@ -419,237 +426,230 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
     }
   }, [vendor, vendorKeyList, toast]);
 
-  console.log("vendor", vendor);
-
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : null}
+    <KeyboardAwareScrollView
+      style={styles.scrollView}
+      keyboardShouldPersistTaps="handled"
+      bounces={false}
     >
-      <ScrollView
-        style={styles.scrollView}
-        keyboardShouldPersistTaps="handled"
-        bounces={false}
-      >
-        <View style={styles.mainContainer}>
-          {isVendorLoading && <Skeleton />}
-          {!isVendorLoading && (
-            <View>
+      <View style={styles.mainContainer}>
+        {isVendorLoading && <Skeleton />}
+        {!isVendorLoading && (
+          <View>
+            <View
+              style={[
+                styles.header,
+                { paddingTop: insets.top ? insets.top : 16 },
+              ]}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedMedia({});
+                  navigation.pop();
+                }}
+                hitSlop={20}
+                disabled={isCreate}
+                style={styles.backIconContainer}
+              >
+                {!isCreate && <BackIcon />}
+              </TouchableOpacity>
+              <Text style={styles.editPageText}>Edit Page</Text>
+              <TouchableOpacity
+                onPress={handleNext}
+                hitSlop={20}
+                style={styles.backIconContainer}
+              >
+                {isSaving ? (
+                  <ActivityIndicator size={16} color={Color.primaryPink} />
+                ) : (
+                  <Text style={styles.saveText}>Save</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+            <View style={styles.profileBackground}>
+              {newProfileBgUrl ? (
+                <ImageBackground
+                  source={{
+                    uri: newProfileBgUrl,
+                  }}
+                  style={styles.profileBgImageContainer}
+                  imageStyle={styles.profileBgImage}
+                />
+              ) : (
+                <FastImage
+                  source={{
+                    uri: background,
+                  }}
+                  style={styles.profileBgImageContainer}
+                />
+              )}
               <View
-                style={[
-                  styles.header,
-                  { paddingTop: insets.top ? insets.top : 16 },
-                ]}
+                style={{
+                  width: "100%",
+                  alignItems: "center",
+                  position: "absolute",
+                  top: 100,
+                }}
               >
                 <TouchableOpacity
-                  onPress={() => navigation.pop()}
-                  hitSlop={20}
-                  disabled={isCreate}
-                  style={styles.backIconContainer}
+                  onPress={changeProfileBg}
+                  style={styles.avatar}
                 >
-                  {!isCreate && <BackIcon />}
-                </TouchableOpacity>
-                <Text style={styles.editPageText}>Edit Page</Text>
-                <TouchableOpacity
-                  onPress={handleNext}
-                  hitSlop={20}
-                  style={styles.backIconContainer}
-                >
-                  {isSaving ? (
-                    <ActivityIndicator size={16} color={Color.primaryPink} />
-                  ) : (
-                    <Text style={styles.saveText}>Save</Text>
-                  )}
+                  <AddPhotoIcon />
                 </TouchableOpacity>
               </View>
-              <View style={styles.profileBackground}>
-                {newProfileBgUrl ? (
-                  <ImageBackground
-                    source={{
-                      uri: newProfileBgUrl,
-                    }}
-                    style={styles.profileBgImageContainer}
-                    imageStyle={styles.profileBgImage}
+            </View>
+
+            <LinearGradient
+              colors={["#FF077E", "transparent"]}
+              start={{ x: 0, y: 1 }}
+              end={{ x: 0, y: 0 }}
+              style={styles.bgGradient}
+            />
+
+            {avatar || newAvatarUrl ? (
+              <TouchableOpacity
+                style={styles.avatarContainer}
+                onPress={changeAvatar}
+              >
+                {newAvatarUrl ? (
+                  <Image
+                    source={{ uri: newAvatarUrl }}
+                    style={styles.avatarBg}
                   />
                 ) : (
                   <FastImage
                     source={{
-                      uri: profileBackground,
+                      uri: avatar,
                     }}
-                    style={styles.profileBgImageContainer}
+                    style={styles.avatarBg}
                   />
                 )}
-                <View
-                  style={{
-                    width: "100%",
-                    alignItems: "center",
-                    position: "absolute",
-                    top: 100,
-                  }}
-                >
-                  <TouchableOpacity
-                    onPress={changeProfileBg}
-                    style={styles.avatar}
-                  >
-                    <AddPhotoIcon />
-                  </TouchableOpacity>
+
+                <PlusCircle style={styles.avatarPlusIcon} />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.whiteCircle}
+                onPress={changeAvatar}
+              >
+                <AddBusinessIcon />
+              </TouchableOpacity>
+            )}
+
+            <Text style={styles.businessNameText}>
+              {serviceName || "Business Name"}
+            </Text>
+
+            <View style={styles.forms}>
+              <ImageBackground
+                style={styles.background}
+                resizeMode="repeat"
+                source={require("../../../assets/bg7.png")}
+              />
+              <View style={styles.areaInfo}>
+                <Text style={styles.cityText}>
+                  {actualCity || "City"}, {actualState || "State"}
+                </Text>
+                <View style={styles.milesInfo}>
+                  <Text style={styles.cityText}>Service Area:</Text>
+                  <Text style={styles.areaText}>
+                    {" "}
+                    {distance ? distance : "00"} miles
+                  </Text>
                 </View>
               </View>
-
-              <LinearGradient
-                colors={["#FF077E", "transparent"]}
-                start={{ x: 0, y: 1 }}
-                end={{ x: 0, y: 0 }}
-                style={styles.bgGradient}
-              />
-
-              {avatar || newAvatarUrl ? (
-                <TouchableOpacity
-                  style={styles.avatarContainer}
-                  onPress={changeAvatar}
-                >
-                  {newAvatarUrl ? (
-                    <Image
-                      source={{ uri: newAvatarUrl }}
-                      style={styles.avatarBg}
-                    />
-                  ) : (
-                    <FastImage
-                      source={{
-                        uri: avatar,
-                      }}
-                      style={styles.avatarBg}
-                    />
-                  )}
-
-                  <PlusCircle style={styles.avatarPlusIcon} />
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  style={styles.whiteCircle}
-                  onPress={changeAvatar}
-                >
-                  <AddBusinessIcon />
-                </TouchableOpacity>
-              )}
-
-              <Text style={styles.businessNameText}>
-                {serviceName || "Business Name"}
-              </Text>
-
-              <View style={styles.forms}>
-                <ImageBackground
-                  style={styles.background}
-                  resizeMode="repeat"
-                  source={require("../../../assets/bg7.png")}
+              <View style={styles.inputsContainer}>
+                <TextInput
+                  inputProps={{
+                    placeholder: "Business Name",
+                    keyboardType: "default",
+                    onChangeText: setServiceName,
+                    value: serviceName,
+                    maxLength: 45,
+                  }}
                 />
-                <View style={styles.areaInfo}>
-                  <Text style={styles.cityText}>
-                    {actualCity || "City"}, {actualState || "State"}
-                  </Text>
-                  <View style={styles.milesInfo}>
-                    <Text style={styles.cityText}>Service Area:</Text>
-                    <Text style={styles.areaText}>
-                      {" "}
-                      {distance ? distance : "00"} miles
-                    </Text>
-                  </View>
-                </View>
-                <View style={styles.inputsContainer}>
-                  <TextInput
-                    inputProps={{
-                      placeholder: "Business Name",
-                      keyboardType: "default",
-                      onChangeText: setServiceName,
-                      value: serviceName,
-                      maxLength: 45,
-                    }}
-                  />
-                  <ScrollView horizontal={false}>
-                    <ScrollView horizontal={true}>
-                      <LocationAutocomplete
-                        ref={ref}
-                        fetchDetails={true}
-                        placeholder="Location"
-                        styles={{
-                          textInputContainer: {
-                            width: layout.window.width - 48,
-                          },
-                        }}
-                        value={address}
-                        textInputProps={{
-                          onChangeText: setAddress,
-                        }}
-                        onPress={(data, details = null) => {
-                          setAddress(details.formatted_address);
-                          setLat(details?.geometry?.location?.lat);
-                          setLong(details?.geometry?.location?.lng);
-                          setCity(
-                            details?.address_components.find(
-                              (addressComponent) =>
-                                addressComponent.types.includes("locality")
-                            )?.short_name ?? "N/A"
-                          );
-                          setState(
-                            details?.address_components.find(
-                              (addressComponent) =>
-                                addressComponent.types.includes(
-                                  "administrative_area_level_1"
-                                )
-                            )?.short_name ?? "N/A"
-                          );
-                        }}
-                      />
-                    </ScrollView>
+                <ScrollView horizontal={false}>
+                  <ScrollView horizontal={true}>
+                    <LocationAutocomplete
+                      ref={ref}
+                      fetchDetails={true}
+                      placeholder="Location"
+                      styles={{
+                        textInputContainer: {
+                          width: layout.window.width - 48,
+                        },
+                      }}
+                      value={address}
+                      textInputProps={{
+                        onChangeText: setAddress,
+                      }}
+                      onPress={(data, details = null) => {
+                        setAddress(details.formatted_address);
+                        setLat(details?.geometry?.location?.lat);
+                        setLong(details?.geometry?.location?.lng);
+                        setCity(
+                          details?.address_components.find((addressComponent) =>
+                            addressComponent.types.includes("locality")
+                          )?.short_name ?? "N/A"
+                        );
+                        setState(
+                          details?.address_components.find((addressComponent) =>
+                            addressComponent.types.includes(
+                              "administrative_area_level_1"
+                            )
+                          )?.short_name ?? "N/A"
+                        );
+                      }}
+                    />
                   </ScrollView>
+                </ScrollView>
 
-                  <SelectInput
-                    selectedValue={distance}
-                    placeholder="Service Area"
-                    options={serviceAreaOptions}
-                    onValueChange={(itemValue) => setDistance(itemValue)}
-                    arrowIconStyle={styles.serviceAreaIcon}
-                  />
+                <SelectInput
+                  selectedValue={distance}
+                  placeholder="Service Area"
+                  options={serviceAreaOptions}
+                  onValueChange={(itemValue) => setDistance(itemValue)}
+                  arrowIconStyle={styles.serviceAreaIcon}
+                />
 
-                  <ProfileCompleteBanner
-                    albumCompleted={false}
-                    businessDescriptionCompleted={!!serviceDescription?.length}
-                    servicesCompleted={!!services?.length}
-                  />
+                <ProfileCompleteBanner
+                  albumCompleted={false}
+                  businessDescriptionCompleted={!!serviceDescription?.length}
+                  servicesCompleted={!!services?.length}
+                />
 
-                  <SpecialitiesList
-                    keys={vendorKeyList}
-                    onChange={handleKeyChange}
-                    onRemove={handleRemoveKey}
-                  />
+                <SpecialitiesList
+                  keys={vendorKeyList}
+                  onChange={handleKeyChange}
+                  onRemove={handleRemoveKey}
+                />
 
-                  <PastProjectsList data={album.data} canEdit={true} />
+                <PastProjectsList data={album.data} canEdit={true} />
 
-                  <TextInputWithAI
-                    label="Description"
-                    inputProps={{
-                      value: serviceDescription,
-                      onChangeText: (text: string) =>
-                        setServiceDescription(text),
-                      maxLength: 440,
-                    }}
-                    isLoading={isAiDescriptionLoading}
-                    onGeneratePress={generateAiDescription}
-                  />
-                  <ServicesList
-                    label="Service Packages"
-                    services={services.data}
-                    vendorId={vendor.id}
-                    onDelete={handleServiceDeleted}
-                    onEdit={handleEditServiced}
-                    isShowEmptyListPlaceholder={true}
-                  />
-                </View>
+                <TextInputWithAI
+                  label="Description"
+                  inputProps={{
+                    value: serviceDescription,
+                    onChangeText: (text: string) => setServiceDescription(text),
+                    maxLength: 440,
+                  }}
+                  isLoading={isAiDescriptionLoading}
+                  onGeneratePress={generateAiDescription}
+                />
+                <ServicesList
+                  label="Service Packages"
+                  services={services.data}
+                  vendorId={vendor.id}
+                  onDelete={handleServiceDeleted}
+                  onEdit={handleEditServiced}
+                  isShowEmptyListPlaceholder={true}
+                />
               </View>
             </View>
-          )}
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          </View>
+        )}
+      </View>
+    </KeyboardAwareScrollView>
   );
 };

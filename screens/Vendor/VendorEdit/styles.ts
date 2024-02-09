@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import { Color, Padding } from "../../../GlobalStyles";
 import layout from "../../../utils/layout";
 
@@ -18,10 +18,10 @@ export const styles = StyleSheet.create({
     fontSize: 16,
   },
   background: {
-    height: "100%",
+    height: "110%",
     position: "absolute",
     right: 0,
-    top: -50,
+    top: Platform.select({ ios: -50, android: 0 }),
     left: -250,
   },
   addPhoto: {
@@ -81,6 +81,7 @@ export const styles = StyleSheet.create({
     zIndex: 30,
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
+    paddingBottom: 24,
     paddingHorizontal: 24,
   },
   whiteCircle: {
