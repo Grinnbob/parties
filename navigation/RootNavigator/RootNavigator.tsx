@@ -31,183 +31,189 @@ const Stack = createStackNavigator()
 const BottomTab = createBottomTabNavigator()
 
 export const RootNavigator: React.FC = () => {
-    const [token, setToken] = useGlobalState(
-        StateTypes.token.key,
-        StateTypes.token.default
-    )
-    const [user, setUser] = useGlobalState(
-        StateTypes.user.key,
-        StateTypes.user.default
-    )
-    const [vendor, setVendor] = useRecoilState(vendorProfileAtom)
-    const [vendorEdit, setVendorEdit] = useState(false)
+  const [token, setToken] = useGlobalState(
+    StateTypes.token.key,
+    StateTypes.token.default
+  );
+  const [user, setUser] = useGlobalState(
+    StateTypes.user.key,
+    StateTypes.user.default
+  );
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [vendor, setVendor] = useRecoilState(vendorProfileAtom);
+  const [vendorEdit, setVendorEdit] = useState(false);
+  const [isVendorFetching, setIsVendorFetching] = useState(true);
+  const isShowLoadingScreen = !isInitialized || isVendorFetching;
 
-    useEffect(() => {
-        loadApp(setToken, setUser)
-    }, [])
+  useEffect(() => {
+    loadApp(setToken, setUser).then(() => {
+      setIsInitialized(true);
+    });
+  }, []);
 
-    useEffect(() => {
-        if (!user?.id) {
-            return
-        }
-        grabVendor()
-    }, [user])
-
-    const grabVendor = async () => {
-        const res = await apis.vendor.getAll({ userId: user.id })
-
-        const fetchedVendor = res.data[0]
-        if (fetchedVendor) {
-            const vendorResp = await apis.vendor.getById(fetchedVendor.id)
-            setVendor(vendorResp.data)
-        }
-        if (
-            user.role === "vendor" &&
-            (res.data?.length === 0 || !fetchedVendor.profileDone)
-        ) {
-            setVendorEdit(true)
-        } else {
-            setVendorEdit(false)
-        }
+  useEffect(() => {
+    if (isInitialized) {
+      if (!user?.id) {
+        setIsVendorFetching(false);
+        return;
+      } else {
+        grabVendor();
+      }
     }
+  }, [user, isInitialized]);
 
-    const vendorCreate = () => {
-        return (
-            <Stack.Navigator>
-                <Stack.Screen
-                    name="VerifyCreate"
-                    component={VendorEdit}
-                    options={{ headerShown: false }}
-                    initialParams={{ isCreate: true, vendor }}
-                />
-                <Stack.Screen
-                    name="CameraEdit"
-                    component={VendorCameraRoll}
-                    options={{ headerShown: false, gestureEnabled: false }}
-                />
-                <Stack.Screen
-                    name="Album"
-                    component={AlbumTypeScreen}
-                    options={{ headerShown: false, gestureEnabled: false }}
-                />
-                <Stack.Screen
-                    name="AlbumNavigator"
-                    component={AlbumNavigator}
-                    options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                    name="Service"
-                    component={ServicePackageScreen}
-                    options={{ headerShown: false, gestureEnabled: false }}
-                />
-                <Stack.Screen
-                    name="VendorReadySell"
-                    component={VendorReadySell}
-                    options={{ headerShown: false }}
-                />
-            </Stack.Navigator>
-        )
-    }
+  const grabVendor = async () => {
+    try {
+      const res = await apis.vendor.getAll({ userId: user.id });
 
-    const selectStack = () => {
-        switch (token) {
-            case "loading":
-                return (
-                    <View justifyContent={"center"} alignItems={"center"}>
-                        <ImageBackground
-                            style={{
-                                width: layout.window.width,
-                                height: layout.window.height,
-                            }}
-                            resizeMode="cover"
-                            source={require("../../assets/rectangle-2.png")}
-                        />
-                    </View>
-                )
-            case "auth":
-                return (
-                    <Stack.Navigator>
-                        <Stack.Screen
-                            name="auth"
-                            component={AuthNav}
-                            options={{ headerShown: false }}
-                        />
-                    </Stack.Navigator>
-                )
-            case "verify":
-                return (
-                    <Stack.Navigator>
-                        <Stack.Screen
-                            name="verify"
-                            component={VerifyNav}
-                            options={{ headerShown: false }}
-                        />
-                    </Stack.Navigator>
-                )
-            case "vendor":
-                return (
-                    <BottomTab.Navigator
-                        screenOptions={{ headerShown: false }}
-                        tabBarOptions={{
-                            tabStyle: styles.tabStyle,
-                            labelStyle: styles.labelStyle,
-                            activeTintColor: Color.primaryPink,
-                            inactiveTintColor: Color.gray300,
-                            showLabel: true,
-                        }}
-                    >
-                        <BottomTab.Screen
-                            name="Dashboard"
-                            component={VendorDrawerNav}
-                            options={{
-                                tabBarHideOnKeyboard: true,
-                                tabBarIcon: ({ focused }) => {
-                                    return (
-                                        <DashboardIcon
-                                            style={
-                                                focused
-                                                    ? styles.activeIcon
-                                                    : styles.inactiveIcon
-                                            }
-                                        />
-                                    )
-                                },
-                            }}
-                        />
-                        <BottomTab.Screen
-                            name="Quotes"
-                            component={VendorQuotesStackRoutes}
-                            options={{
-                                tabBarHideOnKeyboard: true,
-                                tabBarIcon: ({ focused }) => {
-                                    return (
-                                        <QuotesInactiveIcon
-                                            style={
-                                                focused
-                                                    ? styles.activeIcon
-                                                    : styles.inactiveIcon
-                                            }
-                                        />
-                                    )
-                                },
-                            }}
-                        />
-                    </BottomTab.Navigator>
-                )
-            case "host":
-                return <HostBottomNav />
-            default:
-                return (
-                    <>
-                        <Text>{token}</Text>
-                    </>
-                )
-        }
+      const fetchedVendor = res.data[0];
+      if (fetchedVendor) {
+        const vendorResp = await apis.vendor.getById(fetchedVendor.id);
+        setVendor(vendorResp.data);
+      }
+      if (
+        user.role === "vendor" &&
+        (res.data?.length === 0 || !fetchedVendor.profileDone)
+      ) {
+        setVendorEdit(true);
+      } else {
+        setVendorEdit(false);
+      }
+    } finally {
+      setIsVendorFetching(false);
     }
+  };
 
     return (
-        <NavigationContainer theme={DarkTheme}>
-            {token !== "auth" && vendorEdit ? vendorCreate() : selectStack()}
-        </NavigationContainer>
-    )
-}
+      <Stack.Navigator>
+        <Stack.Screen
+          name="VerifyCreate"
+          component={VendorEdit}
+          options={{ headerShown: false }}
+          initialParams={{ isCreate: true, vendor }}
+        />
+        <Stack.Screen
+          name="CameraEdit"
+          component={VendorCameraRoll}
+          options={{ headerShown: false, gestureEnabled: false }}
+        />
+        <Stack.Screen
+          name="Album"
+          component={AlbumTypeScreen}
+          options={{ headerShown: false, gestureEnabled: false }}
+        />
+        <Stack.Screen
+          name="AlbumNavigator"
+          component={AlbumNavigator}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Service"
+          component={ServicePackageScreen}
+          options={{ headerShown: false, gestureEnabled: false }}
+        />
+        <Stack.Screen
+          name="VendorReadySell"
+          component={VendorReadySell}
+          options={{ headerShown: false }}
+        />
+      </Stack.Navigator>
+    );
+  };
+
+  const selectStack = () => {
+    switch (token) {
+      case "auth":
+        return (
+          <Stack.Navigator>
+            <Stack.Screen
+              name="auth"
+              component={AuthNav}
+              options={{ headerShown: false }}
+            />
+          </Stack.Navigator>
+        );
+      case "verify":
+        return (
+          <Stack.Navigator>
+            <Stack.Screen
+              name="verify"
+              component={VerifyNav}
+              options={{ headerShown: false }}
+            />
+          </Stack.Navigator>
+        );
+      case "vendor":
+        return (
+          <BottomTab.Navigator
+            screenOptions={{ headerShown: false }}
+            tabBarOptions={{
+              tabStyle: styles.tabStyle,
+              labelStyle: styles.labelStyle,
+              activeTintColor: Color.primaryPink,
+              inactiveTintColor: Color.gray300,
+              showLabel: true,
+              keyboardHidesTabBar: true,
+            }}
+          >
+            <BottomTab.Screen
+              name="Dashboard"
+              component={VendorDrawerNav}
+              options={{
+                tabBarHideOnKeyboard: true,
+                tabBarIcon: ({ focused }) => {
+                  return (
+                    <DashboardIcon
+                      style={focused ? styles.activeIcon : styles.inactiveIcon}
+                    />
+                  );
+                },
+              }}
+            />
+            <BottomTab.Screen
+              name="Quotes"
+              component={VendorQuotesStackRoutes}
+              options={{
+                tabBarHideOnKeyboard: true,
+                tabBarIcon: ({ focused }) => {
+                  return (
+                    <QuotesInactiveIcon
+                      style={focused ? styles.activeIcon : styles.inactiveIcon}
+                    />
+                  );
+                },
+              }}
+            />
+          </BottomTab.Navigator>
+        );
+      case "host":
+        return <HostBottomNav />;
+      default:
+        return (
+          <>
+            <Text>{token}</Text>
+          </>
+        );
+    }
+  };
+
+  return (
+    <NavigationContainer theme={DarkTheme}>
+      {isShowLoadingScreen && (
+        <View justifyContent={"center"} alignItems={"center"}>
+          <ImageBackground
+            style={{
+              width: layout.window.width,
+              height: layout.window.height,
+            }}
+            resizeMode="cover"
+            source={require("../../assets/rectangle-2.png")}
+          />
+        </View>
+      )}
+      {!isShowLoadingScreen && (
+        <>{token !== "auth" && vendorEdit ? vendorCreate() : selectStack()}</>
+      )}
+    </NavigationContainer>
+  );
+};
