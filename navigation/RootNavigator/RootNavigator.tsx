@@ -39,43 +39,52 @@ export const RootNavigator: React.FC = () => {
     StateTypes.user.key,
     StateTypes.user.default
   );
-  const [isVendorFetching, setIsVendorFetching] = useState(token !== "auth");
+  const [isInitialized, setIsInitialized] = useState(false);
   const [vendor, setVendor] = useRecoilState(vendorProfileAtom);
   const [vendorEdit, setVendorEdit] = useState(false);
-  const isShowLoadingScreen = isVendorFetching || token === "loading";
+  const [isVendorFetching, setIsVendorFetching] = useState(true);
+  const isShowLoadingScreen = !isInitialized || isVendorFetching;
 
   useEffect(() => {
-    loadApp(setToken, setUser);
+    loadApp(setToken, setUser).then(() => {
+      setIsInitialized(true);
+    });
   }, []);
 
   useEffect(() => {
-    if (!user?.id) {
-      return;
+    if (isInitialized) {
+      if (!user?.id) {
+        setIsVendorFetching(false);
+        return;
+      } else {
+        grabVendor();
+      }
     }
-    grabVendor();
-  }, [user]);
+  }, [user, isInitialized]);
 
   const grabVendor = async () => {
-    const res = await apis.vendor.getAll({ userId: user.id });
+    try {
+      const res = await apis.vendor.getAll({ userId: user.id });
 
-    const fetchedVendor = res.data[0];
-    if (fetchedVendor) {
-      const vendorResp = await apis.vendor.getById(fetchedVendor.id);
-      setVendor(vendorResp.data);
+      const fetchedVendor = res.data[0];
+      if (fetchedVendor) {
+        const vendorResp = await apis.vendor.getById(fetchedVendor.id);
+        setVendor(vendorResp.data);
+      }
+      if (
+        user.role === "vendor" &&
+        (res.data?.length === 0 || !fetchedVendor.profileDone)
+      ) {
+        setVendorEdit(true);
+      } else {
+        setVendorEdit(false);
+      }
+    } finally {
+      setIsVendorFetching(false);
     }
-    if (
-      user.role === "vendor" &&
-      (res.data?.length === 0 || !fetchedVendor.profileDone)
-    ) {
-      setVendorEdit(true);
-    } else {
-      setVendorEdit(false);
-    }
-    setIsVendorFetching(false);
   };
 
   const vendorCreate = () => {
-    console.log("vendorCreatevendorCreatevendorCreate");
     return (
       <Stack.Navigator>
         <Stack.Screen
