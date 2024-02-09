@@ -40,7 +40,7 @@ import {
   SpecialitiesList,
 } from "../../../components/Moleculs";
 import { useRecoilState } from "recoil";
-import { KeyItemModel, PartyModel, ServiceModel } from "../../../models";
+import { KeyItemModel, ServiceModel } from "../../../models";
 import { TextInputWithAI } from "../../../components/Moleculs/TextInputWithAI";
 import {
   keyListAtom,

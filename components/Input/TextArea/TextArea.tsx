@@ -12,6 +12,7 @@ export const TextArea: React.FC<TextAreaProps> = (props) => {
       inputProps={{
         ...styles.root,
         multiline: true,
+        textAlignVertical: "top",
         placeholderTextColor: Color.gray300,
         ...props.inputProps,
       }}

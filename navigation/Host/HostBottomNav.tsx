@@ -1,12 +1,12 @@
-import React from "react"
-import { styles } from "../RootNavigator/styles"
-import { Color } from "../../GlobalStyles"
-import { PartyIcon, ServicesIcon } from "../../components/Icons"
-import { HostMyPartiesStackRoutes } from "../hostMyPartiesStackRoutes"
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import { HostServicesStackNav } from "./HostServicesStackNav"
+import React from "react";
+import { styles } from "../RootNavigator/styles";
+import { Color } from "../../GlobalStyles";
+import { PartyIcon, ServicesIcon } from "../../components/Icons";
+import { HostMyPartiesStackRoutes } from "../hostMyPartiesStackRoutes";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { HostServicesStackNav } from "./HostServicesStackNav";
 
-const BottomTab = createBottomTabNavigator()
+const BottomTab = createBottomTabNavigator();
 export const HostBottomNav: React.FC = (props) => {
   return (
     <BottomTab.Navigator

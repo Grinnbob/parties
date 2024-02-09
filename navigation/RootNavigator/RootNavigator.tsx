@@ -1,34 +1,34 @@
-import React, { useState, useEffect } from "react"
-import { Text, View } from "native-base"
-import { NavigationContainer, DarkTheme } from "@react-navigation/native"
-import { createStackNavigator } from "@react-navigation/stack"
-import AuthNav from "../AuthNavigator"
-import loadApp from "../loadApp"
-import useGlobalState from "../../stateManagement/hook"
-import StateTypes from "../../stateManagement/StateTypes"
-import VendorDrawerNav from "../vendorDrawerNav"
-import VerifyNav from "../VerifyNav"
-import { VendorEdit } from "../../screens/Vendor/VendorEdit"
-import apis from "../../apis"
-import layout from "../../utils/layout"
-import { ImageBackground } from "react-native"
-import VendorCameraRoll from "../../screens/Vendor/Profile/VendorCameraRoll"
-import { VendorQuotesStackRoutes } from "../vendorQuotesStackRoutes"
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import { DashboardIcon } from "../../components/Icons/DashboardIcon"
-import { QuotesInactiveIcon } from "../../components/Icons"
-import { Color } from "../../GlobalStyles"
-import { styles } from "./styles"
-import { HostBottomNav } from "../Host/HostBottomNav"
-import { vendorProfileAtom } from "../../stateManagement"
-import AlbumTypeScreen from "../../screens/Vendor/Profile/AlbumTypeScreen"
-import { useRecoilState } from "recoil"
-import AlbumNavigator from "../AlbumNavigator"
-import { ServicePackageScreen } from "../../screens/ServicePackageScreen"
-import VendorReadySell from "../../screens/Verify/Vendor/VendorReadySell"
+import React, { useState, useEffect } from "react";
+import { Text, View } from "native-base";
+import { NavigationContainer, DarkTheme } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import AuthNav from "../AuthNavigator";
+import loadApp from "../loadApp";
+import useGlobalState from "../../stateManagement/hook";
+import StateTypes from "../../stateManagement/StateTypes";
+import VendorDrawerNav from "../vendorDrawerNav";
+import VerifyNav from "../VerifyNav";
+import { VendorEdit } from "../../screens/Vendor/VendorEdit";
+import apis from "../../apis";
+import layout from "../../utils/layout";
+import { ImageBackground } from "react-native";
+import VendorCameraRoll from "../../screens/Vendor/Profile/VendorCameraRoll";
+import { VendorQuotesStackRoutes } from "../vendorQuotesStackRoutes";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { DashboardIcon } from "../../components/Icons/DashboardIcon";
+import { QuotesInactiveIcon } from "../../components/Icons";
+import { Color } from "../../GlobalStyles";
+import { styles } from "./styles";
+import { HostBottomNav } from "../Host/HostBottomNav";
+import { vendorProfileAtom } from "../../stateManagement";
+import AlbumTypeScreen from "../../screens/Vendor/Profile/AlbumTypeScreen";
+import { useRecoilState } from "recoil";
+import AlbumNavigator from "../AlbumNavigator";
+import { ServicePackageScreen } from "../../screens/ServicePackageScreen";
+import VendorReadySell from "../../screens/Verify/Vendor/VendorReadySell";
 
-const Stack = createStackNavigator()
-const BottomTab = createBottomTabNavigator()
+const Stack = createStackNavigator();
+const BottomTab = createBottomTabNavigator();
 
 export const RootNavigator: React.FC = () => {
   const [token, setToken] = useGlobalState(
@@ -84,6 +84,7 @@ export const RootNavigator: React.FC = () => {
     }
   };
 
+  const vendorCreate = () => {
     return (
       <Stack.Navigator>
         <Stack.Screen

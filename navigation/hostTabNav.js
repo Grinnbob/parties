@@ -1,5 +1,4 @@
-import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import React, { useRef } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../screens/Host/HomeScreen";
 import ServiceSelectScreen from "../screens/Host/ServiceSelectScreen";
@@ -9,6 +8,7 @@ import ServiceDetails from "../screens/Host/ServiceDetail";
 import VendorInfo from "../screens/Host/VendorInfo";
 import { RequestQuoteScreen } from "../screens/Host/RequestQuote";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 // const BottomTab = createBottomTabNavigator();
 
@@ -35,7 +35,35 @@ export default function BottomTabNavigator() {
 
 const HomeStack = createNativeStackNavigator();
 
-function HomeNavigator() {
+function HomeNavigator({ navigation, route }) {
+  const height = useBottomTabBarHeight();
+  const heightRef = useRef(height);
+  React.useLayoutEffect(() => {
+    const routeName = getFocusedRouteNameFromRoute(route);
+    if (routeName === "RequestQuoteScreen") {
+      const options = navigation
+        .getParent()
+        .getParent()
+        .getParent().tabBarStyle;
+      navigation
+        .getParent()
+        .getParent()
+        .getParent()
+        .setOptions({ tabBarStyle: { display: "none", height: 0 } });
+    } else {
+      navigation
+        .getParent()
+        .getParent()
+        .getParent()
+        .setOptions({
+          tabBarStyle: {
+            display: "auto",
+            height: heightRef.current,
+          },
+        });
+    }
+  }, [route, navigation]);
+
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen

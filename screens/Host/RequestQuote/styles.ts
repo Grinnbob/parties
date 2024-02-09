@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { Dimensions, Platform, StyleSheet } from "react-native";
 import { Color } from "../../../GlobalStyles";
 
 export const styles = StyleSheet.create({
@@ -8,8 +8,7 @@ export const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    marginTop: 50,
-    paddingBottom: 40,
+    minHeight: Dimensions.get("window").height,
   },
   noPadding: {
     paddingHorizontal: 0,
@@ -30,6 +29,7 @@ export const styles = StyleSheet.create({
     width: "100%",
   },
   innerContainer: {
+    marginTop: 16,
     paddingHorizontal: 24,
   },
   backLayout: {
