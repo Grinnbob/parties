@@ -27,7 +27,7 @@ const MidGradientButton = ({
     loadingText,
     width,
 }) => {
-    const [isKeyboadVisible, setIsKeyboadVisible] = useState(false)
+    const [isKeyboardVisible, setIsKeyboardVisible] = useState(false)
 
     const formStyle = useMemo(() => {
         return {
@@ -54,47 +54,61 @@ const MidGradientButton = ({
     }, [labelColor])
 
     useEffect(() => {
-        Keyboard.addListener("keyboardDidShow", () => setIsKeyboadVisible(true))
-        Keyboard.addListener("keyboardDidHide", () =>
-            setIsKeyboadVisible(false)
+        const keyboardDidShowListener = Keyboard.addListener(
+            "keyboardDidShow",
+            () => setIsKeyboardVisible(true)
         )
+        const keyboardDidHideListener = Keyboard.addListener(
+            "keyboardDidHide",
+            () => setIsKeyboardVisible(false)
+        )
+
+        return () => {
+            keyboardDidHideListener.remove()
+            keyboardDidShowListener.remove()
+        }
     }, [])
 
-    return !isKeyboadVisible ? (
-        <LinearGradient
-            style={[styles.form, formStyle]}
-            locations={[0, 1]}
-            colors={
-                disabled
-                    ? ["rgba(255, 255, 255, 0.1)", "rgba(255, 255, 255, 0.1)"]
-                    : ["#6c1b9e", "#ff077e"]
-            }
-            useAngle={true}
-            angle={-90}
-        >
-            <TouchableOpacity
-                style={styles.touchableopacity}
-                activeOpacity={0.2}
-                onPress={onPress}
-                disabled={disabled}
-                isLoading={isLoading}
+    return (
+        !isKeyboardVisible && (
+            <LinearGradient
+                style={[styles.form, formStyle]}
+                locations={[0, 1]}
+                colors={
+                    disabled
+                        ? [
+                              "rgba(255, 255, 255, 0.1)",
+                              "rgba(255, 255, 255, 0.1)",
+                          ]
+                        : ["#6c1b9e", "#ff077e"]
+                }
+                useAngle={true}
+                angle={-90}
             >
-                {isLoading ? (
-                    <>
-                        <ActivityIndicator size="small" color="#FFF" />
-                        {loadingText && (
-                            <Text style={[styles.label, styles.loadingText]}>
-                                {loadingText}
-                            </Text>
-                        )}
-                    </>
-                ) : (
-                    <Text style={[styles.label, labelStyle]}>{label}</Text>
-                )}
-            </TouchableOpacity>
-        </LinearGradient>
-    ) : (
-        <></>
+                <TouchableOpacity
+                    style={styles.touchableopacity}
+                    activeOpacity={0.2}
+                    onPress={onPress}
+                    disabled={disabled}
+                    isLoading={isLoading}
+                >
+                    {isLoading ? (
+                        <>
+                            <ActivityIndicator size="small" color="#FFF" />
+                            {loadingText && (
+                                <Text
+                                    style={[styles.label, styles.loadingText]}
+                                >
+                                    {loadingText}
+                                </Text>
+                            )}
+                        </>
+                    ) : (
+                        <Text style={[styles.label, labelStyle]}>{label}</Text>
+                    )}
+                </TouchableOpacity>
+            </LinearGradient>
+        )
     )
 }
 

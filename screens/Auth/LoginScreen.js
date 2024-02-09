@@ -40,7 +40,7 @@ const LoginScreen = () => {
         StateTypes.user.key,
         StateTypes.user.default
     )
-    const [isKeyboadVisible, setIsKeyboadVisible] = useState(false)
+    const [isKeyboardVisible, setIsKeyboardVisible] = useState(false)
 
     const login = async () => {
         try {
@@ -71,10 +71,19 @@ const LoginScreen = () => {
     }
 
     useEffect(() => {
-        Keyboard.addListener("keyboardDidShow", () => setIsKeyboadVisible(true))
-        Keyboard.addListener("keyboardDidHide", () =>
-            setIsKeyboadVisible(false)
+        const keyboardDidShowListener = Keyboard.addListener(
+            "keyboardDidShow",
+            () => setIsKeyboardVisible(true)
         )
+        const keyboardDidHideListener = Keyboard.addListener(
+            "keyboardDidHide",
+            () => setIsKeyboardVisible(false)
+        )
+
+        return () => {
+            keyboardDidHideListener.remove()
+            keyboardDidShowListener.remove()
+        }
     }, [])
 
     return (
@@ -168,7 +177,7 @@ const LoginScreen = () => {
                             formMarginTop="unset"
                             labelColor="#fff"
                         />
-                        {!isKeyboadVisible ? (
+                        {!isKeyboardVisible && (
                             <Pressable
                                 onPress={() =>
                                     navigation.navigate("SignUpScreen")
@@ -186,8 +195,6 @@ const LoginScreen = () => {
                                     <Text style={styles.signIn}>Sign Up</Text>
                                 </Text>
                             </Pressable>
-                        ) : (
-                            <></>
                         )}
                     </View>
                 </View>

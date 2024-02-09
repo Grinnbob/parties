@@ -30,7 +30,7 @@ const SignUpScreen = () => {
     const [emailFree, setEmailFree] = useState(false)
     const [lastName, setLastName] = useState("")
     const [showValidationError, setShowValidationError] = useState(false)
-    const [isKeyboadVisible, setIsKeyboadVisible] = useState(false)
+    const [isKeyboardVisible, setIsKeyboardVisible] = useState(false)
 
     const handleSignUp = async () => {
         try {
@@ -65,10 +65,19 @@ const SignUpScreen = () => {
     }
 
     useEffect(() => {
-        Keyboard.addListener("keyboardDidShow", () => setIsKeyboadVisible(true))
-        Keyboard.addListener("keyboardDidHide", () =>
-            setIsKeyboadVisible(false)
+        const keyboardDidShowListener = Keyboard.addListener(
+            "keyboardDidShow",
+            () => setIsKeyboardVisible(true)
         )
+        const keyboardDidHideListener = Keyboard.addListener(
+            "keyboardDidHide",
+            () => setIsKeyboardVisible(false)
+        )
+
+        return () => {
+            keyboardDidHideListener.remove()
+            keyboardDidShowListener.remove()
+        }
     }, [])
 
     return (
@@ -212,7 +221,7 @@ const SignUpScreen = () => {
                         formMarginTop="unset"
                         labelColor="#FFF"
                     />
-                    {!isKeyboadVisible ? (
+                    {!isKeyboardVisible && (
                         <Pressable
                             onPress={() => navigation.navigate("LoginScreen")}
                         >
@@ -230,8 +239,6 @@ const SignUpScreen = () => {
                                 </Text>
                             </View>
                         </Pressable>
-                    ) : (
-                        <></>
                     )}
                 </View>
             </View>

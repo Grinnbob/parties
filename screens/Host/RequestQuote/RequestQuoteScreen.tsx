@@ -99,7 +99,7 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [parties, setParties] = useState<PartyModel[]>([])
     const [isPartiesLoading, setIsPartiesLoading] = useState(true)
-    const [isKeyboadVisible, setIsKeyboadVisible] = useState(false)
+    const [isKeyboardVisible, setIsKeyboardVisible] = useState(false)
 
     useEffect(() => {
         const getParties = async () => {
@@ -118,9 +118,11 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
     }, [])
 
     useEffect(() => {
-        Keyboard.addListener("keyboardDidShow", () => setIsKeyboadVisible(true))
+        Keyboard.addListener("keyboardDidShow", () =>
+            setIsKeyboardVisible(true)
+        )
         Keyboard.addListener("keyboardDidHide", () =>
-            setIsKeyboadVisible(false)
+            setIsKeyboardVisible(false)
         )
     }, [])
 
@@ -341,7 +343,7 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
                     )}
                 </View>
                 <View style={styles.innerContainer}>
-                    {!isKeyboadVisible ? (
+                    {!isKeyboardVisible ? (
                         <GradientButton
                             text={getSubmitButtonLabel()}
                             disabled={isNextDisabled()}
@@ -354,18 +356,19 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
                         <></>
                     )}
                 </View>
-                {currentStep === RequestQuoteStepEnum.PEOPLE_SELECT && (
-                    <View style={styles.innerContainer}>
-                        <Button
-                            text="Skip"
-                            style={styles.skipButton}
-                            onPress={handleSkipPress}
-                        />
-                        <Text style={styles.skipPartyText}>
-                            You can always add details later in my party
-                        </Text>
-                    </View>
-                )}
+                {currentStep === RequestQuoteStepEnum.PEOPLE_SELECT &&
+                    !isKeyboardVisible && (
+                        <View style={styles.innerContainer}>
+                            <Button
+                                text="Skip"
+                                style={styles.skipButton}
+                                onPress={handleSkipPress}
+                            />
+                            <Text style={styles.skipPartyText}>
+                                You can always add details later in my party
+                            </Text>
+                        </View>
+                    )}
             </View>
         </View>
     )
