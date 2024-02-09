@@ -49,9 +49,7 @@ const VendorReadySell = ({ route }) => {
             paddingRight={5}
             marginBottom={45}
             marginTop={10}
-          >
-            <Close />
-          </HStack>
+          />
           <View style={[styles.titlePosition]}>
             <ReadySell />
           </View>

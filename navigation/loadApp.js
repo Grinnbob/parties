@@ -5,7 +5,9 @@ import * as LocalAuthentication from "expo-local-authentication";
 export default async (setToken, setUser) => {
   try {
     const grabbedUser = await grabUserAndNav(setToken, setUser, true);
-    if (grabbedUser) return;
+    if (grabbedUser) {
+      return;
+    }
     const res = await apis.device.grabAuthToken();
 
     if (res.success) {
@@ -38,6 +40,8 @@ const grabUserAndNav = async (setToken, setUser, shouldNotNav) => {
     setToken(res.data?.isVerified ? res.data.role : "verify");
     return true;
   }
-  if (!shouldNotNav) setToken("auth");
+  if (!shouldNotNav) {
+    setToken("auth");
+  }
   return false;
 };

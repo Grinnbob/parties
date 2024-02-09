@@ -17,6 +17,7 @@ export const HostBottomNav: React.FC = (props) => {
         activeTintColor: Color.primaryPink,
         inactiveTintColor: Color.gray300,
         showLabel: true,
+        keyboardHidesTabBar: true,
       }}
     >
       <BottomTab.Screen

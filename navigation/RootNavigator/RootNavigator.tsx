@@ -39,35 +39,48 @@ export const RootNavigator: React.FC = () => {
     StateTypes.user.key,
     StateTypes.user.default
   );
+  const [isInitialized, setIsInitialized] = useState(false);
   const [vendor, setVendor] = useRecoilState(vendorProfileAtom);
   const [vendorEdit, setVendorEdit] = useState(false);
+  const [isVendorFetching, setIsVendorFetching] = useState(true);
+  const isShowLoadingScreen = !isInitialized || isVendorFetching;
 
   useEffect(() => {
-    loadApp(setToken, setUser);
+    loadApp(setToken, setUser).then(() => {
+      setIsInitialized(true);
+    });
   }, []);
 
   useEffect(() => {
-    if (!user?.id) {
-      return;
+    if (isInitialized) {
+      if (!user?.id) {
+        setIsVendorFetching(false);
+        return;
+      } else {
+        grabVendor();
+      }
     }
-    grabVendor();
-  }, [user]);
+  }, [user, isInitialized]);
 
   const grabVendor = async () => {
-    const res = await apis.vendor.getAll({ userId: user.id });
+    try {
+      const res = await apis.vendor.getAll({ userId: user.id });
 
-    const fetchedVendor = res.data[0];
-    if (fetchedVendor) {
-      const vendorResp = await apis.vendor.getById(fetchedVendor.id);
-      setVendor(vendorResp.data);
-    }
-    if (
-      user.role === "vendor" &&
-      (res.data?.length === 0 || !fetchedVendor.profileDone)
-    ) {
-      setVendorEdit(true);
-    } else {
-      setVendorEdit(false);
+      const fetchedVendor = res.data[0];
+      if (fetchedVendor) {
+        const vendorResp = await apis.vendor.getById(fetchedVendor.id);
+        setVendor(vendorResp.data);
+      }
+      if (
+        user.role === "vendor" &&
+        (res.data?.length === 0 || !fetchedVendor.profileDone)
+      ) {
+        setVendorEdit(true);
+      } else {
+        setVendorEdit(false);
+      }
+    } finally {
+      setIsVendorFetching(false);
     }
   };
 
@@ -111,19 +124,6 @@ export const RootNavigator: React.FC = () => {
 
   const selectStack = () => {
     switch (token) {
-      case "loading":
-        return (
-          <View justifyContent={"center"} alignItems={"center"}>
-            <ImageBackground
-              style={{
-                width: layout.window.width,
-                height: layout.window.height,
-              }}
-              resizeMode="cover"
-              source={require("../../assets/rectangle-2.png")}
-            />
-          </View>
-        );
       case "auth":
         return (
           <Stack.Navigator>
@@ -154,6 +154,7 @@ export const RootNavigator: React.FC = () => {
               activeTintColor: Color.primaryPink,
               inactiveTintColor: Color.gray300,
               showLabel: true,
+              keyboardHidesTabBar: true,
             }}
           >
             <BottomTab.Screen
@@ -197,7 +198,21 @@ export const RootNavigator: React.FC = () => {
 
   return (
     <NavigationContainer theme={DarkTheme}>
-      {token !== "auth" && vendorEdit ? vendorCreate() : selectStack()}
+      {isShowLoadingScreen && (
+        <View justifyContent={"center"} alignItems={"center"}>
+          <ImageBackground
+            style={{
+              width: layout.window.width,
+              height: layout.window.height,
+            }}
+            resizeMode="cover"
+            source={require("../../assets/rectangle-2.png")}
+          />
+        </View>
+      )}
+      {!isShowLoadingScreen && (
+        <>{token !== "auth" && vendorEdit ? vendorCreate() : selectStack()}</>
+      )}
     </NavigationContainer>
   );
 };
