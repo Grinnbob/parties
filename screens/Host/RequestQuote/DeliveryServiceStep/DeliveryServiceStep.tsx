@@ -16,6 +16,7 @@ import { Divider } from "../../../../components/Atoms";
 import { RequestQuote, RequestQuoteStepEnum } from "../RequestQuoteScreen";
 import { useLoadable } from "../../../../hooks";
 import { constantsQuery } from "../../../../stateManagement";
+import { Color } from "../../../../GlobalStyles";
 
 type DeliveryServiceStepProps = {
   quote: RequestQuote;
@@ -124,7 +125,11 @@ export const DeliveryServiceStep: React.FC<DeliveryServiceStepProps> = ({
   return (
     <ScrollView contentContainerStyle={styles.root}>
       {isConstantsLoading ? (
-        <ActivityIndicator size={20} style={styles.activityIndicator} />
+        <ActivityIndicator
+          size={20}
+          style={styles.activityIndicator}
+          color={Color.primaryPink}
+        />
       ) : (
         <>
           <Text style={styles.title}>

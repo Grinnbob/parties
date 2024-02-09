@@ -7,7 +7,8 @@ import dayjs from "dayjs";
 import { CalendarIcon } from "../../Icons";
 import { styles } from "./styles";
 import { AntDesign } from "@expo/vector-icons";
-import { Keyboard } from "react-native";
+import { Keyboard, Text, TouchableOpacity, View } from "react-native";
+import { FormControl } from "native-base";
 
 type DatePickerProps = Partial<TextInputProps> & {
   datePickerProps?: Omit<RNDatePickerProps, "date">;
@@ -31,7 +32,6 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   date,
   error,
 }) => {
-  const inputRef = useRef();
   const isTimePicker = datePickerProps?.mode === "time";
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState(() => {
@@ -73,29 +73,31 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 
   return (
     <>
-      <TextInput
-        formControlProps={formControlProps}
-        inputProps={{
-          ...inputProps,
-          ref: inputRef,
-          value: inputValue,
-          onPressIn: handleOpen,
-          isFocused: isOpen,
-          focusable: false,
-          onTouchStart: Keyboard.dismiss,
-          InputRightElement: isTimePicker ? (
-            <AntDesign
-              name="down"
-              size={15}
-              style={styles.rightElement}
-              onPress={handleOpen}
-            />
-          ) : (
-            <CalendarIcon style={styles.calendarIcon} onPress={handleOpen} />
-          ),
-        }}
-        error={error}
-      />
+      <TouchableOpacity onPress={handleOpen}>
+        <TextInput
+          formControlProps={formControlProps}
+          inputProps={{
+            ...inputProps,
+            value: inputValue,
+            onPressIn: handleOpen,
+            isFocused: isOpen,
+            isReadOnly: true,
+            focusable: false,
+            editable: false,
+            InputRightElement: isTimePicker ? (
+              <AntDesign
+                name="down"
+                size={15}
+                style={styles.rightElement}
+                onPress={handleOpen}
+              />
+            ) : (
+              <CalendarIcon style={styles.calendarIcon} onPress={handleOpen} />
+            ),
+          }}
+          error={error}
+        />
+      </TouchableOpacity>
       <RNDatePicker
         modal={true}
         open={isOpen}
