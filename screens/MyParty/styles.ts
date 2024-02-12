@@ -16,7 +16,6 @@ export const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 50,
     paddingHorizontal: 12,
   },
   titleContainer: {

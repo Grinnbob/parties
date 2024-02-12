@@ -47,6 +47,7 @@ export const styles = StyleSheet.create({
   },
   nextButton: {
     borderRadius: 30,
+    marginBottom: Platform.select({ ios: 44, android: 0 }),
   },
   nextButtonText: {
     fontSize: 16,

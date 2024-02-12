@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../screens/Host/HomeScreen";
 import ServiceSelectScreen from "../screens/Host/ServiceSelectScreen";
@@ -8,7 +8,7 @@ import ServiceDetails from "../screens/Host/ServiceDetail";
 import VendorInfo from "../screens/Host/VendorInfo";
 import { RequestQuoteScreen } from "../screens/Host/RequestQuote";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { Platform } from "react-native";
 
 // const BottomTab = createBottomTabNavigator();
 
@@ -21,13 +21,13 @@ const Stack = createNativeStackNavigator();
 export default function BottomTabNavigator() {
   return (
     <Stack.Navigator
-      initialRouteName="ServiceSelectScreen"
+      initialRouteName="HomeNavigator"
       // tabBar={TabBar}
       screenOptions={({ route }) => ({
         headerShown: false,
       })}
     >
-      <Stack.Screen name="ServiceSelectScreen" component={HomeNavigator} />
+      <Stack.Screen name="HomeNavigator" component={HomeNavigator} />
       {/* <Stack.Screen name="Services" component={ServiceNavigator} /> */}
     </Stack.Navigator>
   );
@@ -36,20 +36,19 @@ export default function BottomTabNavigator() {
 const HomeStack = createNativeStackNavigator();
 
 function HomeNavigator({ navigation, route }) {
-  const height = useBottomTabBarHeight();
-  const heightRef = useRef(height);
   React.useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
     if (routeName === "RequestQuoteScreen") {
-      const options = navigation
-        .getParent()
-        .getParent()
-        .getParent().tabBarStyle;
+      console.log("routeName", routeName);
       navigation
         .getParent()
         .getParent()
         .getParent()
-        .setOptions({ tabBarStyle: { display: "none", height: 0 } });
+        .setOptions({
+          tabBarStyle: {
+            display: "none",
+          },
+        });
     } else {
       navigation
         .getParent()
@@ -58,7 +57,6 @@ function HomeNavigator({ navigation, route }) {
         .setOptions({
           tabBarStyle: {
             display: "auto",
-            height: heightRef.current,
           },
         });
     }

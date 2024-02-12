@@ -26,7 +26,6 @@ export const ServicePackageScreen = ({ navigation, route }) => {
       .find((item) => item.id === service?.serviceTypes?.[0]?.id)
       ?.id?.toString() || ""
   );
-  console.log("serviceTypes", serviceTypes);
   const [price, setPrice] = useState(service?.price?.toString() || "");
   const [rate, setRate] = useState(service?.rate || "");
   const [description, setDescription] = useState(service?.description || "");
@@ -36,12 +35,10 @@ export const ServicePackageScreen = ({ navigation, route }) => {
   const [isNewPhoto, setIsNewPhoto] = useState(false);
   const [isAiDescriptionLoading, setIsAiDescriptionLoading] = useState(false);
 
-  console.log("photo", photo);
   const [vendorProfile, setVendorProfile] = useRecoilState(vendorProfileAtom);
 
   const handlePhotoChange = (url: string) => {
     setIsNewPhoto(true);
-    console.log("url", url);
     setPhoto(url);
   };
 
