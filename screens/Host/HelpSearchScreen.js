@@ -211,7 +211,7 @@ const HelpSearchScreen = () => {
                 renderItem={({ item }) =>
                     debounceValue.length >= 1 ? (
                         <TouchableOpacity
-                            key={item.id}
+                            key={item?.id}
                             style={styles.border}
                             onPress={() => setSearch(item)}
                         >
