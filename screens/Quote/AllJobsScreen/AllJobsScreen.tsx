@@ -28,7 +28,7 @@ const tabs = [
   {
     id: "pending",
     label: "Pending",
-    statuses: [QuoteStatusEnum.ACCEPTED_BY_VENDOR, QuoteStatusEnum.PENDING],
+    statuses: [QuoteStatusEnum.ACCEPTED_BY_VENDOR, QuoteStatusEnum.PENDING, QuoteStatusEnum.ACCEPTED_BY_HOST],
   },
   {
     id: "accepted",
@@ -81,7 +81,7 @@ export const AllJobsScreen: React.FC = () => {
       setIsLoading(false);
     };
     getAllQuotes();
-  }, []);
+  }, [selectedTab]);
 
   const selectedData = useMemo(() => {
     return quotes
