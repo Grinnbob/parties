@@ -36,32 +36,6 @@ export default function BottomTabNavigator() {
 const HomeStack = createNativeStackNavigator();
 
 function HomeNavigator({ navigation, route }) {
-  React.useLayoutEffect(() => {
-    const routeName = getFocusedRouteNameFromRoute(route);
-    if (routeName === "RequestQuoteScreen") {
-      console.log("routeName", routeName);
-      navigation
-        .getParent()
-        .getParent()
-        .getParent()
-        .setOptions({
-          tabBarStyle: {
-            display: "none",
-          },
-        });
-    } else {
-      navigation
-        .getParent()
-        .getParent()
-        .getParent()
-        .setOptions({
-          tabBarStyle: {
-            display: "auto",
-          },
-        });
-    }
-  }, [route, navigation]);
-
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen

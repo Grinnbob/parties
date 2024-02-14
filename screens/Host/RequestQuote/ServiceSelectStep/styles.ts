@@ -48,6 +48,7 @@ export const styles = StyleSheet.create({
     lineHeight: 20,
   },
   serviceContainer: {
+    // flex: 1,
     flexDirection: "column",
     marginTop: 32,
   },

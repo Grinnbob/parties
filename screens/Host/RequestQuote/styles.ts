@@ -7,14 +7,12 @@ export const styles = StyleSheet.create({
     width: "100%",
   },
   content: {
-    flex: 1,
-    minHeight: Dimensions.get("window").height,
+    // flex: 1,
+    flexGrow: 1,
+    minHeight: Dimensions.get("window").height - 100,
   },
   noPadding: {
     paddingHorizontal: 0,
-  },
-  topContent: {
-    flex: 1,
   },
   bgIcon: {
     width: "100%",
@@ -31,6 +29,7 @@ export const styles = StyleSheet.create({
   innerContainer: {
     marginTop: 16,
     paddingHorizontal: 24,
+    marginBottom: 16,
   },
   backLayout: {
     height: 40,
@@ -47,14 +46,10 @@ export const styles = StyleSheet.create({
   },
   nextButton: {
     borderRadius: 30,
-    marginBottom: Platform.select({ ios: 44, android: 0 }),
   },
   nextButtonText: {
     fontSize: 16,
     lineHeight: 22,
-  },
-  skipButton: {
-    marginTop: 16,
   },
   skipPartyText: {
     fontSize: 13,
@@ -63,5 +58,14 @@ export const styles = StyleSheet.create({
     width: "100%",
     textAlign: "center",
     color: Color.gray300,
+  },
+  skipContainer: {
+    marginBottom: 32,
+    paddingHorizontal: 24,
+  },
+  nextContainer: {
+    paddingHorizontal: 24,
+    marginTop: 16,
+    marginBottom: 16,
   },
 });

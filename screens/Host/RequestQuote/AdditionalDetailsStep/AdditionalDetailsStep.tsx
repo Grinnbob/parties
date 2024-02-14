@@ -47,15 +47,17 @@ export const AdditionalDetailsStep: React.FC<AdditionalDetailsStepProps> = ({
         <Text style={[styles.title, styles.detailsText]}>
           Additional Details/Requirements
         </Text>
-        <TextArea
-          inputProps={{
-            ...styles.textArea,
-            value: quote.notes,
-            onChangeText: handleAdditionalDetailsChange,
-            returnKeyType: "done",
-            blurOnSubmit: true,
-          }}
-        />
+        <View style={styles.textAreaContainer}>
+          <TextArea
+            inputProps={{
+              ...styles.textArea,
+              value: quote.notes,
+              onChangeText: handleAdditionalDetailsChange,
+              returnKeyType: "done",
+              blurOnSubmit: true,
+            }}
+          />
+        </View>
       </View>
     </DismissKeyboard>
   );

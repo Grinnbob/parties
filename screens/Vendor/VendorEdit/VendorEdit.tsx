@@ -12,6 +12,7 @@ import {
   ScrollView,
   ImageBackground,
   ActivityIndicator,
+  Dimensions,
 } from "react-native";
 import apis from "../../../apis";
 import { Text, useToast } from "native-base";
@@ -57,6 +58,8 @@ import cloneDeep from "lodash/cloneDeep";
 import { Color } from "../../../GlobalStyles";
 import { PastProjectsList } from "../../../components/Moleculs/PastProjectsList";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+
+const height = Dimensions.get("window").height;
 
 type VendorEditProps = {
   navigation: any;
@@ -400,7 +403,7 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
         });
         return;
       }
-      if (!services.length) {
+      if (!services.data.length) {
         toast.show({
           placement: "top",
           description: `Please created at least one Service`,
@@ -429,8 +432,14 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
   return (
     <KeyboardAwareScrollView
       style={styles.scrollView}
-      keyboardShouldPersistTaps="handled"
       bounces={false}
+      enableOnAndroid={true}
+      extraScrollHeight={200}
+      contentContainerStyle={{
+        flexGrow: 1,
+        minHeight: height,
+      }}
+      keyboardShouldPersistTaps="handled"
     >
       <View style={styles.mainContainer}>
         {isVendorLoading && <Skeleton />}
@@ -569,8 +578,16 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
                     maxLength: 45,
                   }}
                 />
-                <ScrollView horizontal={false}>
-                  <ScrollView horizontal={true}>
+                <ScrollView
+                  horizontal={false}
+                  keyboardShouldPersistTaps="handled"
+                  scrollEnabled={false}
+                >
+                  <ScrollView
+                    horizontal={true}
+                    keyboardShouldPersistTaps="handled"
+                    scrollEnabled={false}
+                  >
                     <LocationAutocomplete
                       ref={ref}
                       fetchDetails={true}
@@ -614,9 +631,9 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
                 />
 
                 <ProfileCompleteBanner
-                  albumCompleted={false}
+                  albumCompleted={!!album?.data?.length}
                   businessDescriptionCompleted={!!serviceDescription?.length}
-                  servicesCompleted={!!services?.length}
+                  servicesCompleted={!!services?.data?.length}
                 />
 
                 <SpecialitiesList

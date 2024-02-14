@@ -66,19 +66,21 @@ export const PeopleSelectStep: React.FC<PeopleSelectStepProps> = ({
         style={styles.rangeSlider}
       />
       <Text style={[styles.title, styles.partyDetailsText]}>Party Details</Text>
-      <TextInput
-        inputProps={{
-          multiline: true,
-          textAlignVertical: "top",
-          placeholder: "Type details about your party here...",
-          placeholderTextColor: Color.gray300,
-          ...styles.textArea,
-          value: quote.party?.description,
-          onChangeText: handleDescriptionChange,
-          returnKeyType: "done",
-          blurOnSubmit: true,
-        }}
-      />
+      <View style={styles.textAreaContainer}>
+        <TextInput
+          inputProps={{
+            multiline: true,
+            textAlignVertical: "top",
+            placeholder: "Type details about your party here...",
+            placeholderTextColor: Color.gray300,
+            ...styles.textArea,
+            value: quote.party?.description,
+            onChangeText: handleDescriptionChange,
+            returnKeyType: "done",
+            blurOnSubmit: true,
+          }}
+        />
+      </View>
     </View>
   );
 };
