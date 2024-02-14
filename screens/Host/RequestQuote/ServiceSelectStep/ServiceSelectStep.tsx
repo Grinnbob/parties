@@ -118,7 +118,7 @@ export const ServiceSelectStep: React.FC<SelectServiceStepProps> = ({
   };
 
   return (
-    <ScrollView style={styles.root} showsVerticalScrollIndicator={false}>
+    <View style={styles.root}>
       <Text style={styles.title}>
         What kind of service you need (select all that apply)
       </Text>
@@ -160,19 +160,39 @@ export const ServiceSelectStep: React.FC<SelectServiceStepProps> = ({
         return (
           <View key={key} style={styles.serviceContainer}>
             <Text style={styles.serviceNameText}>{key}</Text>
-            <FlatList
-              data={serviceGroups[key]}
-              renderItem={renderService}
-              contentContainerStyle={[
+            <View
+              style={[
                 styles.serviceItemsContainer,
                 index === services.length - 1
                   ? styles.lastContainer
                   : undefined,
               ]}
-            />
+            >
+              {serviceGroups[key].map((item) => {
+                return (
+                  <ServiceCard
+                    name={item.name}
+                    description={item.description}
+                    price={item.price}
+                    unit={item.rate}
+                    isSelected={quote.services.includes(item.id)}
+                    style={[
+                      styles.serviceCard,
+                      !!quote.services.length &&
+                      !quote.services.includes(item.id)
+                        ? styles.disabledService
+                        : undefined,
+                    ]}
+                    onPress={() => {
+                      handleSelectService(item.id);
+                    }}
+                  />
+                );
+              })}
+            </View>
           </View>
         );
       })}
-    </ScrollView>
+    </View>
   );
 };

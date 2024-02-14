@@ -18,12 +18,14 @@ export const HostBottomNav: React.FC = (props) => {
         inactiveTintColor: Color.gray300,
         showLabel: true,
         keyboardHidesTabBar: true,
+        tabBarVisible: false,
       }}
     >
       <BottomTab.Screen
         name="Services"
         component={HostServicesStackNav}
         options={{
+          tabBarHideOnKeyboard: true,
           tabBarIcon: ({ focused }) => {
             return (
               <ServicesIcon
@@ -37,6 +39,7 @@ export const HostBottomNav: React.FC = (props) => {
         name="My Party"
         component={HostMyPartiesStackRoutes}
         options={{
+          tabBarHideOnKeyboard: true,
           tabBarIcon: ({ focused }) => {
             return (
               <PartyIcon

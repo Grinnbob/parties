@@ -63,7 +63,7 @@ export const LocationAutocomplete = React.forwardRef<
     <GooglePlacesAutocomplete
       ref={ref}
       {...rest}
-      listUnderlayColor="red"
+      keyboardShouldPersistTaps="always"
       styles={{
         ...fieldStyles,
         textInputContainer: [
@@ -71,6 +71,9 @@ export const LocationAutocomplete = React.forwardRef<
           isFocused ? styles.containerFocused : undefined,
           fieldStyles?.textInputContainer,
         ],
+        description: styles.description,
+        row: styles.listView,
+        // container: styles.listView,
         textInput: [styles.textInput],
       }}
       textInputProps={{
@@ -86,6 +89,8 @@ export const LocationAutocomplete = React.forwardRef<
       fetchDetails={true}
       query={query}
       onFail={(error) => console.error(error)}
+      listHoverColor={Color.primaryPink}
+      listUnderlayColor={Color.primaryPink}
     />
   );
 });

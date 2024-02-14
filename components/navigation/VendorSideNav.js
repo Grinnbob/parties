@@ -288,6 +288,7 @@ const styles = StyleSheet.create({
     borderColor: "rgba(77, 77, 77, 0.5)",
     borderBottomWidth: 1,
     marginBottom: 10,
+    marginTop: 16,
   },
   logout: {
     marginBottom: 30,

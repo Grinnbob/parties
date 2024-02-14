@@ -11,7 +11,7 @@ import VerifyNav from "../VerifyNav";
 import { VendorEdit } from "../../screens/Vendor/VendorEdit";
 import apis from "../../apis";
 import layout from "../../utils/layout";
-import { ImageBackground } from "react-native";
+import { ImageBackground, Platform } from "react-native";
 import VendorCameraRoll from "../../screens/Vendor/Profile/VendorCameraRoll";
 import { VendorQuotesStackRoutes } from "../vendorQuotesStackRoutes";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -161,6 +161,7 @@ export const RootNavigator: React.FC = () => {
               name="Dashboard"
               component={VendorDrawerNav}
               options={{
+                tabBarHideOnKeyboard: true,
                 tabBarIcon: ({ focused }) => {
                   return (
                     <DashboardIcon
@@ -174,6 +175,7 @@ export const RootNavigator: React.FC = () => {
               name="Quotes"
               component={VendorQuotesStackRoutes}
               options={{
+                tabBarHideOnKeyboard: true,
                 tabBarIcon: ({ focused }) => {
                   return (
                     <QuotesInactiveIcon

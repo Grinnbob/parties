@@ -1,5 +1,4 @@
 import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../screens/Host/HomeScreen";
 import ServiceSelectScreen from "../screens/Host/ServiceSelectScreen";
@@ -9,6 +8,7 @@ import ServiceDetails from "../screens/Host/ServiceDetail";
 import VendorInfo from "../screens/Host/VendorInfo";
 import { RequestQuoteScreen } from "../screens/Host/RequestQuote";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+import { Platform } from "react-native";
 
 // const BottomTab = createBottomTabNavigator();
 
@@ -21,13 +21,13 @@ const Stack = createNativeStackNavigator();
 export default function BottomTabNavigator() {
   return (
     <Stack.Navigator
-      initialRouteName="ServiceSelectScreen"
+      initialRouteName="HomeNavigator"
       // tabBar={TabBar}
       screenOptions={({ route }) => ({
         headerShown: false,
       })}
     >
-      <Stack.Screen name="ServiceSelectScreen" component={HomeNavigator} />
+      <Stack.Screen name="HomeNavigator" component={HomeNavigator} />
       {/* <Stack.Screen name="Services" component={ServiceNavigator} /> */}
     </Stack.Navigator>
   );
@@ -35,7 +35,7 @@ export default function BottomTabNavigator() {
 
 const HomeStack = createNativeStackNavigator();
 
-function HomeNavigator() {
+function HomeNavigator({ navigation, route }) {
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen

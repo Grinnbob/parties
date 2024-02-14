@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Image,
   StyleSheet,
   View,
   Pressable,
   TouchableOpacity,
+  Keyboard,
 } from "react-native";
 import { Text, useToast, VStack } from "native-base";
 import { useNavigation } from "@react-navigation/native";
@@ -24,6 +25,7 @@ import loadApp from "../../navigation/loadApp";
 import LabelInput from "../../components/Input/LabelInput";
 import PasswordInput from "../../components/Input/PasswordInput";
 import DismissKeyboard from "../../layouts/DismissKeyboard";
+import { useKeyboard } from "../../hooks/useKeyboard";
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -39,6 +41,7 @@ const LoginScreen = () => {
     StateTypes.user.key,
     StateTypes.user.default
   );
+  const isKeyboardVisible = useKeyboard();
 
   const login = async () => {
     try {
@@ -155,17 +158,19 @@ const LoginScreen = () => {
               formMarginTop="unset"
               labelColor="#fff"
             />
-            <Pressable onPress={() => navigation.navigate("SignUpScreen")}>
-              <Text style={styles.alreadyHaveAnContainer}>
-                <Text style={styles.alreadyHaveAnAccount}>
-                  <Text style={styles.alreadyHaveAn}>
-                    Already have an account?
+            {!isKeyboardVisible && (
+              <Pressable onPress={() => navigation.navigate("SignUpScreen")}>
+                <Text style={styles.alreadyHaveAnContainer}>
+                  <Text style={styles.alreadyHaveAnAccount}>
+                    <Text style={styles.alreadyHaveAn}>
+                      Already have an account?
+                    </Text>
+                    <Text style={styles.textTypo}>{` `}</Text>
                   </Text>
-                  <Text style={styles.textTypo}>{` `}</Text>
+                  <Text style={styles.signIn}>Sign Up</Text>
                 </Text>
-                <Text style={styles.signIn}>Sign Up</Text>
-              </Text>
-            </Pressable>
+              </Pressable>
+            )}
           </View>
         </View>
       </View>

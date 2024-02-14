@@ -2,7 +2,6 @@ import * as React from "react";
 import {
   Image,
   StyleSheet,
-  Pressable,
   Text,
   TouchableOpacity,
   View,
@@ -263,6 +262,7 @@ const styles = StyleSheet.create({
     borderStyle: "solid",
     borderColor: "rgba(77, 77, 77, 0.5)",
     borderBottomWidth: 1,
+    marginTop: 16,
     marginBottom: 10,
   },
   logout: {

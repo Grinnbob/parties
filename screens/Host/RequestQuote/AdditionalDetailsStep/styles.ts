@@ -1,9 +1,9 @@
 import { Dimensions, StyleSheet } from "react-native";
 import { Color } from "../../../../GlobalStyles";
-const width = Dimensions.get("screen").width;
 
 export const styles = StyleSheet.create({
   root: {
+    flex: 1,
     flexDirection: "column",
     paddingHorizontal: 24,
   },
@@ -15,6 +15,9 @@ export const styles = StyleSheet.create({
   },
   detailsText: {
     marginTop: 40,
+  },
+  textAreaContainer: {
+    minHeight: 350,
   },
   textArea: {
     marginTop: 4,

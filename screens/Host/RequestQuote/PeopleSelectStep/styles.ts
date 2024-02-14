@@ -4,6 +4,7 @@ const width = Dimensions.get("window").width;
 
 export const styles = StyleSheet.create({
   root: {
+    // flex: 1,
     flexDirection: "column",
     paddingHorizontal: 24,
   },
@@ -20,6 +21,9 @@ export const styles = StyleSheet.create({
   },
   partyDetailsText: {
     marginTop: 32,
+  },
+  textAreaContainer: {
+    height: 260,
   },
   textArea: {
     marginTop: 4,

@@ -3,7 +3,9 @@ import { styles } from "./styles";
 import {
   Image,
   ImageBackground,
+  Keyboard,
   Pressable,
+  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -25,6 +27,9 @@ import { PartyModel, ServiceModel, VendorModel } from "../../../models";
 import { useToast } from "native-base";
 import { useRecoilRefresher_UNSTABLE } from "recoil";
 import { myPartiesQuery } from "../../../stateManagement";
+import { useKeyboard } from "../../../hooks/useKeyboard";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export type NewParty = {
   id?: number | string;
@@ -79,11 +84,13 @@ type RequestQuoteScreenProps = {
 export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
   route,
 }) => {
+  const insets = useSafeAreaInsets();
   const refreshMyParties = useRecoilRefresher_UNSTABLE(myPartiesQuery);
   const navigation = useNavigation();
   const toast = useToast();
   const [currentStep, setCurrentStep] = useState(
-    RequestQuoteStepEnum.PARTY_SELECT
+    RequestQuoteStepEnum.ADDITIONAL_DETAILS
+    // RequestQuoteStepEnum.SERVICE_SELECT
   );
   const [quote, setQuote] = useState<RequestQuote>({
     party: {
@@ -245,96 +252,96 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
   };
 
   return (
-    <View style={styles.screen}>
+    <KeyboardAwareScrollView
+      bounces={false}
+      keyboardShouldPersistTaps="handled"
+      enableOnAndroid={true}
+      extraScrollHeight={
+        currentStep === RequestQuoteStepEnum.PARTY_CREATE ? 200 : 50
+      }
+      contentContainerStyle={[
+        styles.content,
+        {
+          paddingBottom: insets.bottom ? insets.bottom : 16,
+          paddingTop: insets.top ? insets.top : 16,
+        },
+      ]}
+    >
       <ImageBackground
         style={styles.bgIcon}
         resizeMode="cover"
         source={require("../../../assets/bg11.png")}
       />
-
-      <View style={styles.content}>
-        <View style={styles.topContent}>
-          <View style={styles.innerContainer}>
-            <View style={styles.header}>
-              <Pressable
-                style={[
-                  styles.backLayout,
-                  currentStep === RequestQuoteStepEnum.FINISH
-                    ? styles.hidden
-                    : undefined,
-                ]}
-                onPress={handleBackPress}
-              >
-                <Image
-                  resizeMode="cover"
-                  source={require("../../../assets/vector14.png")}
-                />
-              </Pressable>
-              {currentStep !== RequestQuoteStepEnum.PARTY_SELECT && (
-                <TouchableOpacity onPress={handleCancelPress}>
-                  <AntDesign name="close" size={20} style={styles.closeIcon} />
-                </TouchableOpacity>
-              )}
-            </View>
-            {currentStep !== RequestQuoteStepEnum.FINISH && (
-              <ProgressBar
-                style={styles.progressBar}
-                value={progressBarValue}
-              />
-            )}
-          </View>
-          {currentStep === RequestQuoteStepEnum.PARTY_SELECT && (
-            <SelectPartyStep
-              quote={quote}
-              setQuote={setQuote}
-              parties={parties}
-              isPartiesLoading={isPartiesLoading}
+      <View style={styles.innerContainer}>
+        <View style={styles.header}>
+          <Pressable
+            style={[
+              styles.backLayout,
+              currentStep === RequestQuoteStepEnum.FINISH
+                ? styles.hidden
+                : undefined,
+            ]}
+            onPress={handleBackPress}
+          >
+            <Image
+              resizeMode="cover"
+              source={require("../../../assets/vector14.png")}
             />
-          )}
-          {currentStep === RequestQuoteStepEnum.PARTY_CREATE && (
-            <CreatePartyStep quote={quote} setQuote={setQuote} />
-          )}
-          {currentStep === RequestQuoteStepEnum.PEOPLE_SELECT && (
-            <PeopleSelectStep quote={quote} setQuote={setQuote} />
-          )}
-          {currentStep === RequestQuoteStepEnum.SERVICE_SELECT && (
-            <ServiceSelectStep
-              quote={quote}
-              setQuote={setQuote}
-              services={services}
-            />
-          )}
-          {currentStep === RequestQuoteStepEnum.ADDITIONAL_DETAILS && (
-            <AdditionalDetailsStep quote={quote} setQuote={setQuote} />
-          )}
-          {currentStep === RequestQuoteStepEnum.DELIVERY_SERVICE && (
-            <DeliveryServiceStep quote={quote} setQuote={setQuote} />
-          )}
-          {currentStep === RequestQuoteStepEnum.FINISH && <FinishStep />}
+          </Pressable>
+          <TouchableOpacity onPress={handleCancelPress}>
+            <AntDesign name="close" size={20} style={styles.closeIcon} />
+          </TouchableOpacity>
         </View>
-        <View style={styles.innerContainer}>
-          <GradientButton
-            text={getSubmitButtonLabel()}
-            disabled={isNextDisabled()}
-            onPress={handleNextPress}
-            style={styles.nextButton}
-            textStyle={styles.nextButtonText}
-            loading={isSubmitting}
-          />
-        </View>
-        {currentStep === RequestQuoteStepEnum.PEOPLE_SELECT && (
-          <View style={styles.innerContainer}>
-            <Button
-              text="Skip"
-              style={styles.skipButton}
-              onPress={handleSkipPress}
-            />
-            <Text style={styles.skipPartyText}>
-              You can always add details later in my party
-            </Text>
-          </View>
+        {currentStep !== RequestQuoteStepEnum.FINISH && (
+          <ProgressBar style={styles.progressBar} value={progressBarValue} />
         )}
       </View>
-    </View>
+      {currentStep === RequestQuoteStepEnum.PARTY_SELECT && (
+        <SelectPartyStep
+          quote={quote}
+          setQuote={setQuote}
+          parties={parties}
+          isPartiesLoading={isPartiesLoading}
+        />
+      )}
+      {currentStep === RequestQuoteStepEnum.PARTY_CREATE && (
+        <CreatePartyStep quote={quote} setQuote={setQuote} />
+      )}
+      {currentStep === RequestQuoteStepEnum.PEOPLE_SELECT && (
+        <PeopleSelectStep quote={quote} setQuote={setQuote} />
+      )}
+      {currentStep === RequestQuoteStepEnum.SERVICE_SELECT && (
+        <ServiceSelectStep
+          quote={quote}
+          setQuote={setQuote}
+          services={services}
+        />
+      )}
+      {currentStep === RequestQuoteStepEnum.ADDITIONAL_DETAILS && (
+        <AdditionalDetailsStep quote={quote} setQuote={setQuote} />
+      )}
+      {currentStep === RequestQuoteStepEnum.DELIVERY_SERVICE && (
+        <DeliveryServiceStep quote={quote} setQuote={setQuote} />
+      )}
+      {currentStep === RequestQuoteStepEnum.FINISH && <FinishStep />}
+      <View style={styles.nextContainer}>
+        <GradientButton
+          text={getSubmitButtonLabel()}
+          disabled={isNextDisabled()}
+          onPress={handleNextPress}
+          style={styles.nextButton}
+          textStyle={styles.nextButtonText}
+          loading={isSubmitting}
+        />
+      </View>
+      {currentStep === RequestQuoteStepEnum.PEOPLE_SELECT && (
+        <View style={styles.skipContainer}>
+          <Button text="Skip" onPress={handleSkipPress} />
+          <Text style={styles.skipPartyText}>
+            You can always add details later in my party
+          </Text>
+        </View>
+      )}
+    </KeyboardAwareScrollView>
   );
 };

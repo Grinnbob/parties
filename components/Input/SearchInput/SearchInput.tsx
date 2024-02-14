@@ -48,7 +48,11 @@ export const SearchInput: React.FC<SearchInputProps> = (props) => {
         InputRightElement={
           <View style={styles.rightIcon}>
             {loading && (
-              <ActivityIndicator style={styles.activityIndicator} size={10} />
+              <ActivityIndicator
+                style={styles.activityIndicator}
+                size={14}
+                color={Color.textMainWhite}
+              />
             )}
             {value?.length > 0 ? (
               <Pressable onPress={handleCancelPress}>

@@ -37,7 +37,11 @@ export const PhotoInput: React.FC<PhotoInputProps> = ({
       onChange(
         selectedMedia[SelectedMediaEnum.PHOTO_INPUT]?.[0]?.node.image.uri
       );
-      setSelectedMedia({});
+      setSelectedMedia((prevState) => {
+        const newState = { ...prevState };
+        delete newState[SelectedMediaEnum.PHOTO_INPUT];
+        return newState;
+      });
     }
   }, [selectedMedia[SelectedMediaEnum.PHOTO_INPUT], onChange]);
 

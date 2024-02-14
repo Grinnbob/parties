@@ -14,8 +14,10 @@ import { PartyCard } from "./PartyCard";
 import { myPartiesQuery, partySearchFilterAtom } from "../../stateManagement";
 import { useLoadable } from "../../hooks";
 import { useRecoilState } from "recoil";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export const MyPartyScreen: React.FC = () => {
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState("");
   const debounceSearchText = useDebounce(searchText);
@@ -39,7 +41,9 @@ export const MyPartyScreen: React.FC = () => {
         resizeMode="cover"
         source={require("../../assets/bg8.png")}
       />
-      <View style={styles.header}>
+      <View
+        style={[styles.header, { marginTop: insets.top ? insets.top : 16 }]}
+      >
         <View style={styles.hiddenElem}></View>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>My Parties</Text>

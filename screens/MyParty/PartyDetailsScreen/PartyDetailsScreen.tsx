@@ -10,6 +10,7 @@ import useGlobalState from "../../../stateManagement/hook";
 import StateTypes from "../../../stateManagement/StateTypes";
 import apis from "../../../apis";
 import { PartyInfo } from "../../../components/Moleculs";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type PartyDetailsScreenProps = {
   route: {
@@ -22,6 +23,7 @@ type PartyDetailsScreenProps = {
 export const PartyDetailsScreen: React.FC<PartyDetailsScreenProps> = ({
   route,
 }) => {
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const { push } = navigation;
   const [isMessagePressed, setIsMessagedPressed] = useState(false);
@@ -92,7 +94,12 @@ export const PartyDetailsScreen: React.FC<PartyDetailsScreenProps> = ({
               style={styles.notFoundImageIcon}
             />
           </View>
-          <View style={styles.headerInnerContainer}>
+          <View
+            style={[
+              styles.headerInnerContainer,
+              { marginTop: insets.top ? insets.top : 16 },
+            ]}
+          >
             <TouchableOpacity style={styles.backButtonContainer}>
               <BackButton />
             </TouchableOpacity>
