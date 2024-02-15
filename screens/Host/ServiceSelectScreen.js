@@ -1,17 +1,14 @@
-import React, { useState, useEffect } from "react"
+import React, { useEffect } from "react"
 import {
-    Image,
     StyleSheet,
     View,
     ScrollView,
     ImageBackground,
     FlatList,
     Pressable,
-    TextInput,
 } from "react-native"
 import LinearGradient from "react-native-linear-gradient"
 import {
-    FontSize,
     Color,
     FontFamily,
     Padding,
@@ -20,34 +17,17 @@ import {
 import { useNavigation } from "@react-navigation/core"
 import HorizontalBar from "../../assets/horizontalbar.svg"
 import { HStack, Text } from "native-base"
-
 import MagnifyGlass from "../../assets/magnifyGlassSearch.svg"
 import Filter from "../../assets/filter.svg"
-
-const services = [
-    {
-        id: 1,
-        name: "Party Decorations",
-        asset: require("../../assets/img4.png"),
-    },
-    {
-        id: 2,
-        name: "Food & Beverages",
-        asset: require("../../assets/img5.png"),
-    },
-    { id: 3, name: "Performers", asset: require("../../assets/img6.png") },
-    { id: 4, name: "Music", asset: require("../../assets/img7.png") },
-    { id: 5, name: "Rentals", asset: require("../../assets/img8.png") },
-    {
-        id: 6,
-        name: "Cleaning Service",
-        asset: require("../../assets/img9.png"),
-    },
-]
+import {
+    serviceTypesAtom,
+  } from "../../stateManagement";
+import { useRecoilState } from "recoil";
+import apis from "../../apis";
 
 const VendorProfileScreen = () => {
     const { navigate, toggleDrawer } = useNavigation()
-    const [venue, setVenue] = useState([])
+    const [serviceTypes, setServiceTypes] = useRecoilState(serviceTypesAtom);
 
     // const grabVendor = async () => {
     //   const res = await apis.vendor.getAll({ service: "Venue" });
@@ -58,6 +38,26 @@ const VendorProfileScreen = () => {
     // useEffect(() => {
     //   grabVendor();
     // }, []);
+
+    useEffect(() => {
+        getServiceTypes();
+    }, []);
+
+    const getServiceTypes = async () => {
+        try {
+            if (serviceTypes.isFetched) {
+                return;
+            }
+            const res = await apis.serviceType.getAll();
+
+            setServiceTypes({
+                isFetched: true,
+                data: res.data,
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const renderItem = ({ item }) => {
         return (
@@ -194,7 +194,7 @@ const VendorProfileScreen = () => {
                         }}
                     >
                         <FlatList
-                            data={services}
+                            data={serviceTypes?.data?.map(item => ({...item, asset: {uri: item.image}, name: item.title}))}
                             renderItem={renderItem}
                             numColumns={2}
                         />
