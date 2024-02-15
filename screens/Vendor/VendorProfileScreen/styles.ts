@@ -139,6 +139,7 @@ export const styles = StyleSheet.create({
   tagsContainer: {
     flexDirection: "row",
     gap: 8,
+    flexWrap: "wrap",
   },
   businessType: {
     marginTop: 20,

@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useEffect, useMemo } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { Dimensions, Platform, ScrollView, Text, View } from "react-native";
 import { styles } from "./styles";
 import { RequestQuote, RequestQuoteStepEnum } from "../RequestQuoteScreen";
 import { TextInput } from "../../../../components/Input";
@@ -9,9 +9,9 @@ import {
   GooglePlaceData,
   GooglePlaceDetail,
 } from "react-native-google-places-autocomplete";
-import { Party } from "../SelectPartyStep";
 import dayjs from "dayjs";
-import DismissKeyboard from "../../../../layouts/DismissKeyboard";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+const height = Dimensions.get("window").height;
 
 type CreatePartyStepProps = {
   quote: RequestQuote;
@@ -29,7 +29,7 @@ export const CreatePartyStep: React.FC<CreatePartyStepProps> = ({
         party: {
           ...prevState.party,
           [key]: val,
-        } as Party,
+        },
       };
     });
   };
@@ -80,17 +80,19 @@ export const CreatePartyStep: React.FC<CreatePartyStepProps> = ({
   }, [isValid]);
 
   return (
-    <DismissKeyboard>
+    <KeyboardAwareScrollView
+      keyboardShouldPersistTaps="handled"
+      bounces={false}
+      enableOnAndroid={true}
+      extraScrollHeight={200}
+      contentContainerStyle={{ flexGrow: 1, minHeight: height - 300 }}
+    >
       <View style={styles.root}>
         <Text style={styles.title}>Create Your Party!</Text>
         <Text style={styles.subTitle}>
           After you created your party you can start to book for party services!
         </Text>
-        <ScrollView
-          contentContainerStyle={styles.inputsContainer}
-          keyboardShouldPersistTaps="handled"
-          horizontal={false}
-        >
+        <View style={styles.inputsContainer}>
           <TextInput
             inputProps={{
               value: quote.party?.name,
@@ -156,8 +158,8 @@ export const CreatePartyStep: React.FC<CreatePartyStepProps> = ({
               handleFieldChange("street", detail?.formatted_address || "");
             }}
           />
-        </ScrollView>
+        </View>
       </View>
-    </DismissKeyboard>
+    </KeyboardAwareScrollView>
   );
 };

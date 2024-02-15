@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Pressable,
   Platform,
+  Keyboard,
 } from "react-native";
 import { VStack, Input, Divider, Text, useToast } from "native-base";
 import LabelInput from "../../components/Input/LabelInput";
@@ -18,6 +19,7 @@ import Email from "../../assets/email.svg";
 import Person from "../../assets/onboard/profilecircle.svg";
 import apis from "../../apis";
 import DismissKeyboard from "../../layouts/DismissKeyboard";
+import { useKeyboard } from "../../hooks/useKeyboard";
 
 const SignUpScreen = () => {
   const navigation = useNavigation();
@@ -29,6 +31,7 @@ const SignUpScreen = () => {
   const [emailFree, setEmailFree] = useState(false);
   const [lastName, setLastName] = useState("");
   const [showValidationError, setShowValidationError] = useState(false);
+  const isKeyboardVisible = useKeyboard();
 
   const handleSignUp = async () => {
     try {
@@ -64,7 +67,10 @@ const SignUpScreen = () => {
 
   return (
     <DismissKeyboard
-      keyboardVerticalOffset={Platform.select({ ios: -120, android: -70 })}
+      keyboardVerticalOffset={Platform.select({
+        ios: -120,
+        android: -70,
+      })}
     >
       <View style={styles.signupscreen}>
         {/* <View style={[styles.alertmodalbg, styles.alertmodalbgLayout]} /> */}
@@ -84,7 +90,8 @@ const SignUpScreen = () => {
             <View style={styles.titlePosition}>
               <Text style={styles.title1}>Welcome</Text>
               <Text style={[styles.title2, styles.titleLayout]}>
-                Create an account for exclusive access to {"\n"}party planning!
+                Create an account for exclusive access to {"\n"}
+                party planning!
               </Text>
             </View>
             <VStack px={4}>
@@ -171,7 +178,13 @@ const SignUpScreen = () => {
             </VStack>
           </View>
         </View>
-        <View style={{ width: "100%", alignItems: "center", marginBottom: 30 }}>
+        <View
+          style={{
+            width: "100%",
+            alignItems: "center",
+            marginBottom: 30,
+          }}
+        >
           <MidGradientButton
             onPress={handleSignUp}
             isLoading={isLoading}
@@ -184,19 +197,21 @@ const SignUpScreen = () => {
             formMarginTop="unset"
             labelColor="#FFF"
           />
-          <Pressable onPress={() => navigation.navigate("LoginScreen")}>
-            <View style={styles.buttons}>
-              <Text style={styles.alreadyHaveAnContainer}>
-                <Text style={styles.alreadyHaveAnAccount}>
-                  <Text style={styles.title2Typo}>
-                    Already have an account?
+          {!isKeyboardVisible && (
+            <Pressable onPress={() => navigation.navigate("LoginScreen")}>
+              <View style={styles.buttons}>
+                <Text style={styles.alreadyHaveAnContainer}>
+                  <Text style={styles.alreadyHaveAnAccount}>
+                    <Text style={styles.title2Typo}>
+                      Already have an account?
+                    </Text>
+                    <Text style={styles.textTypo}>{` `}</Text>
                   </Text>
-                  <Text style={styles.textTypo}>{` `}</Text>
+                  <Text style={styles.signIn}>Sign In</Text>
                 </Text>
-                <Text style={styles.signIn}>Sign In</Text>
-              </Text>
-            </View>
-          </Pressable>
+              </View>
+            </Pressable>
+          )}
         </View>
       </View>
     </DismissKeyboard>

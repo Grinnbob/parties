@@ -36,4 +36,11 @@ export const styles = StyleSheet.create({
     paddingRight: 24,
     flexDirection: "row",
   },
+  description: {
+    color: Color.textMainWhite,
+  },
+  listView: {
+    color: Color.textMainWhite,
+    backgroundColor: Color.primaryGrey,
+  },
 });

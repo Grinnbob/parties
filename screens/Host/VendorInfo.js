@@ -1,689 +1,367 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react";
 import {
-    Image,
-    StyleSheet,
-    View,
-    ScrollView,
-    ImageBackground,
-    FlatList,
-    Linking,
-} from "react-native"
-import { Pressable, VStack, Text } from "native-base"
-import LinearGradient from "react-native-linear-gradient"
-import {
-    FontSize,
-    Color,
-    FontFamily,
-    Padding,
-    Border,
-} from "../../GlobalStyles"
-import apis from "../../apis"
-import { GradientButton } from "../../components/Atoms"
-import { useLoadable } from "../../hooks"
-import { serviceTypesQuery } from "../../stateManagement/atoms"
+  Image,
+  StyleSheet,
+  View,
+  ScrollView,
+  ImageBackground,
+  TouchableOpacity,
+} from "react-native";
+import { Text } from "native-base";
+import LinearGradient from "react-native-linear-gradient";
+import { Color, Padding } from "../../GlobalStyles";
+import apis from "../../apis";
+import { GradientButton, IconBg } from "../../components/Atoms";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { BackIcon } from "../../components/Icons";
+import FastImage from "react-native-fast-image";
+import { Skeleton } from "../Vendor/VendorProfileScreen/Skeleton";
+import { ServicesList, SpecialitiesList } from "../../components/Moleculs";
+import { PastProjectsList } from "../../components/Moleculs/PastProjectsList";
+import { useServiceGroups } from "../../hooks/useServiceGroups";
 
 const VendorInfo = ({ route, navigation }) => {
-    const [vendorProfile, setVendorProfile] = useState()
-    const [services, setServices] = useState([])
-    const [backgroundLink, setBackgroundLink] = useState("")
+  const [vendorProfile, setVendorProfile] = useState();
+  const [services, setServices] = useState([]);
+  const [album, setAlbum] = useState([]);
+  const insets = useSafeAreaInsets();
+  const [isLoading, setIsLoading] = useState(true);
 
-    const handleCall = () => {
-        Linking.openURL(`tel:${vendorProfile.phoneNumber.replace(/\D/g, "")}`)
+  const getServices = async () => {
+    const res = await apis.service.getAll({ vendorId: vendorProfile?.id });
+    setServices(res.data);
+  };
+
+  const getAlbum = async () => {
+    try {
+      const res = await apis.album.getAll({ vendorId: vendorProfile?.id });
+
+      if (res && res.data) {
+        setAlbum({
+          isFetched: true,
+          data: res.data,
+        });
+      }
+    } catch (error) {
+      console.log(error);
     }
+  };
 
-    const getServices = async () => {
-        const res = await apis.service.getAll({ vendorId: vendorProfile?.id })
-        setServices(res.data)
+  const getVendor = async () => {
+    try {
+      const resp = await apis.vendor.getAll({ userId: vendorProfile.id });
+      if (resp.data?.[0]) {
+        setVendorProfile(resp.data[0]);
+      }
+    } catch (error) {
+      console.log(error);
     }
+  };
 
-    const getBackground = async () => {
-        try {
-            const res = await apis.document.getAll({
-                vendorId: vendorProfile?.id,
-            })
-
-            setBackgroundLink(res.data[0].link)
-        } catch (error) {
-            console.log(error)
-        }
+  useEffect(() => {
+    console.log("routerouteroute", route);
+    if (route && route?.params?.params.id !== vendorProfile?.id) {
+      setVendorProfile(route?.params?.params);
     }
+  }, [route, vendorProfile]);
 
-    useEffect(() => {
-        if (route) {
-            setVendorProfile(route?.params?.params)
-        }
-    }, [route])
-
-    useEffect(() => {
-        if (vendorProfile?.id) {
-            getServices()
-            getBackground()
-        }
-    }, [vendorProfile])
-
-    const handleQuoteYourParty = () => {
-        navigation.navigate("RequestQuoteScreen", {
-            vendor: vendorProfile,
-            services,
-        })
+  useEffect(() => {
+    if (vendorProfile?.id) {
+      Promise.allSettled([getAlbum(), getServices(), getVendor()]).then(() => {
+        setIsLoading(false);
+      });
     }
+  }, [vendorProfile]);
 
-    return (
-        <ScrollView
-            style={{ backgroundColor: "#000", minHeight: "100%" }}
-            contentContainerStyle={{ paddingBottom: 100 }}
-            showsVerticalScrollIndicator={false}
+  const { serviceGroups } = useServiceGroups(services);
+
+  const handleQuoteYourParty = () => {
+    navigation.navigate("RequestQuoteScreen", {
+      vendor: vendorProfile,
+      services,
+    });
+  };
+
+  console.log("vendorProfile", vendorProfile);
+
+  return (
+    <ScrollView
+      style={styles.scrollView}
+      keyboardShouldPersistTaps="handled"
+      bounces={false}
+    >
+      <View style={styles.mainContainer}>
+        <View
+          style={[
+            styles.header,
+            {
+              paddingTop: insets.top ? insets.top : 16,
+            },
+          ]}
         >
-            <View
-                style={[styles.vendorprofilescreen, styles.progressIconLayout]}
-            >
-                <ImageBackground
-                    style={[
-                        styles.vendorprofilescreenChild,
-                        styles.topnavigationContentLayout,
-                    ]}
-                    resizeMode="cover"
-                    source={{ uri: backgroundLink ? backgroundLink : "/" }}
-                >
-                    <View
-                        style={{
-                            height: 300,
-                            width: "100%",
-                            padding: 10,
-                        }}
-                    >
-                        <View
-                            style={{
-                                flexDirection: "row",
-                                justifyContent: "space-between",
-                                marginTop: 50,
-                            }}
-                        >
-                            <View style={{ flexDirection: "row" }}>
-                                <Pressable onPress={() => navigation.pop()}>
-                                    <Image
-                                        style={styles.backIcon}
-                                        resizeMode="cover"
-                                        source={require("../../assets/back3.png")}
-                                    />
-                                </Pressable>
-                                <View
-                                    style={{
-                                        width: 20,
-                                        height: 20,
-                                    }}
-                                ></View>
-                            </View>
-                            {/* <View style={{ flexDirection: "row" }}>
-                <Pressable
-                  style={{ alignItems: "center", justifyContent: "center" }}
-                >
-                  <Heart />
-                </Pressable>
-                <Pressable
-                  style={{
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginLeft: 10,
-                  }}
-                >
-                  <Dots />
-                </Pressable>
-              </View> */}
-                        </View>
-                    </View>
+          <IconBg style={styles.headerIcon}>
+            <TouchableOpacity onPress={() => navigation.pop()} hitSlop={20}>
+              <BackIcon />
+            </TouchableOpacity>
+          </IconBg>
+        </View>
+        <View style={styles.profileBackground}>
+          <FastImage
+            source={{
+              uri: vendorProfile?.background || "",
+            }}
+            style={styles.profileBgImageContainer}
+          />
+        </View>
+        <LinearGradient
+          colors={["#FF077E", "transparent"]}
+          start={{ x: 0, y: 1 }}
+          end={{ x: 0, y: 0 }}
+          style={styles.bgGradient}
+        />
+        <View style={styles.avatarContainer}>
+          <FastImage
+            source={{
+              uri: vendorProfile?.avatar || "",
+            }}
+            style={styles.avatarBg}
+          />
+        </View>
 
-                    <View style={{ alignItems: "center" }}>
-                        <Text
-                            style={[styles.titlemain, styles.descriptionTypo]}
-                        >
-                            {vendorProfile?.name}
-                        </Text>
+        {!!vendorProfile?.name && (
+          <Text style={styles.businessNameText}>{vendorProfile.name}</Text>
+        )}
+
+        <View style={styles.forms}>
+          <ImageBackground
+            style={styles.background}
+            resizeMode="repeat"
+            source={require("../../assets/bg7.png")}
+          />
+          {isLoading ? (
+            <Skeleton />
+          ) : (
+            <>
+              <View style={styles.areaInfo}>
+                {(vendorProfile?.city || vendorProfile?.state) && (
+                  <Text style={styles.cityText}>
+                    {vendorProfile?.city} {vendorProfile?.state}
+                  </Text>
+                )}
+                {!!vendorProfile?.distance && (
+                  <>
+                    <View style={styles.milesInfo}>
+                      <Text style={styles.cityText}>Service Area: </Text>
+                      <Text style={styles.areaText}>
+                        {vendorProfile?.distance
+                          ? vendorProfile.distance
+                          : "00"}{" "}
+                        miles
+                      </Text>
                     </View>
-                </ImageBackground>
-                <LinearGradient
-                    style={styles.vendorDesc}
-                    locations={[0, 1]}
-                    colors={["#000", "#000"]}
-                    useAngle={true}
-                    angle={180}
-                >
-                    {/* <View style={styles.user}>
-            <View style={styles.title4}>
-              <View style={styles.starsParent}>
-                <View style={styles.stars}>
-                  <Image
-                    style={styles.vectorIconLayout}
-                    resizeMode="cover"
-                    source={require("../../assets/vector9.png")}
-                  />
-                  <Image
-                    style={[styles.vectorIcon1, styles.vectorIconLayout]}
-                    resizeMode="cover"
-                    source={require("../../assets/vector10.png")}
-                  />
-                  <Image
-                    style={[styles.vectorIcon1, styles.vectorIconLayout]}
-                    resizeMode="cover"
-                    source={require("../../assets/vector11.png")}
-                  />
-                  <Image
-                    style={[styles.vectorIcon1, styles.vectorIconLayout]}
-                    resizeMode="cover"
-                    source={require("../../assets/vector12.png")}
-                  />
-                  <Image
-                    style={[styles.vectorIcon1, styles.vectorIconLayout]}
-                    resizeMode="cover"
-                    source={require("../../assets/vector13.png")}
-                  />
-                </View>
-                <Text style={[styles.text, styles.textLayout]}>4.1</Text>
+                  </>
+                )}
               </View>
-              <Text style={[styles.totalServiced0, styles.youClr]}>
-                Serviced {count} parties
-              </Text>
-            </View>
-            <Export />
-          </View> */}
-
-                    <View style={[styles.desc, styles.descBorder]}>
-                        <Text
-                            style={[styles.description, styles.descriptionTypo]}
-                        >
-                            Vendor Description
-                        </Text>
-                        <Text
-                            style={[
-                                styles.iProvideFood,
-                                styles.iProvideFoodTypo,
-                            ]}
-                        >
-                            {vendorProfile?.description}
-                        </Text>
-                    </View>
-                    <GradientButton
-                        text="Quote Your Party"
-                        onPress={handleQuoteYourParty}
-                        textStyle={styles.quoteYourPartyText}
-                        disabled={!vendorProfile}
-                    />
-                    <FlatList
-                        horizontal={false}
-                        data={services}
-                        ListHeaderComponent={
-                            <VStack
-                                flexDirection={"row"}
-                                justifyContent={"space-between"}
-                                paddingVertical={14}
-                            >
-                                <Text
-                                    color="#FFF"
-                                    fontSize={16}
-                                    fontWeight={"700"}
-                                >
-                                    Service Package
-                                </Text>
-                                <Text
-                                    color="#8A8A8A"
-                                    fontSize={12}
-                                    fontWeight={"300"}
-                                >
-                                    Flexible Payments
-                                </Text>
-                            </VStack>
-                        }
-                        renderItem={({ item }) => (
-                            <>
-                                <Pressable
-                                    style={{
-                                        width: "100%",
-                                        height: 150,
-                                        borderRadius: 16,
-                                        borderWidth: 1,
-                                        borderColor: "#FFF",
-                                        marginRight: 10,
-                                        marginBottom: 15,
-                                    }}
-                                >
-                                    <View
-                                        style={{
-                                            flexDirection: "row",
-                                        }}
-                                    >
-                                        <View
-                                            style={{
-                                                backgroundColor: "#323232",
-                                                borderTopLeftRadius: 16,
-                                                height: 50,
-                                                width: "40%",
-                                                paddingLeft: 15,
-                                            }}
-                                        >
-                                            <Text
-                                                style={{
-                                                    color: "#FFF",
-                                                    fontSize: 10,
-                                                    paddingTop: 5,
-                                                }}
-                                            >
-                                                Starting at
-                                            </Text>
-                                            <Text
-                                                style={{
-                                                    color: "#FFF",
-                                                    fontSize: 10,
-                                                }}
-                                            >
-                                                ${item.price}/ {item.rate}
-                                            </Text>
-                                        </View>
-                                        <View
-                                            style={{
-                                                backgroundColor: "#FF077E",
-                                                borderTopRightRadius: 16,
-                                                height: 50,
-                                                width: "60%",
-                                            }}
-                                        >
-                                            <Text
-                                                style={{
-                                                    color: "#FFF",
-                                                    paddingTop: 5,
-                                                    paddingLeft: 5,
-                                                    fontWeight: "700",
-                                                }}
-                                                numberOfLines={2}
-                                                ellipsizeMode={"tail"}
-                                            >
-                                                {item.name}
-                                            </Text>
-                                        </View>
-                                    </View>
-                                    <Text
-                                        style={{
-                                            color: "#FFF",
-                                            marginTop: 5,
-                                            marginLeft: 25,
-                                        }}
-                                        numberOfLines={2}
-                                        ellipsizeMode={"tail"}
-                                    >
-                                        {item.description}
-                                    </Text>
-                                </Pressable>
-                            </>
-                        )}
-                        ListEmptyComponent={
-                            <Text style={[styles.youHaventAdd, styles.youClr]}>
-                                No service available
-                            </Text>
-                        }
-                    />
-                    {/* <FlatList
-            horizontal={false}
-            data={partyRental}
-            ListHeaderComponent={
-              <VStack
-                flexDirection={"row"}
-                justifyContent={"space-between"}
-                paddingVertical={14}
-              >
-                <Text color="#FFF" fontSize={16} fontWeight={"700"}>
-                  Party Rentals
-                </Text>
-                <Text color="#8A8A8A" fontSize={12} fontWeight={"300"}>
-                  Flexible Payments
-                </Text>
-              </VStack>
-            }
-            renderItem={({ item }) => (
-              <>
-                <Pressable
-                  style={{
-                    width: "100%",
-                    height: 150,
-                    borderRadius: 16,
-                    borderWidth: 1,
-                    borderColor: "#FFF",
-                    marginRight: 10,
-                    marginBottom: 15,
-                  }}
-                >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                    }}
-                  >
-                    <View
-                      style={{
-                        backgroundColor: "#323232",
-                        borderTopLeftRadius: 16,
-                        height: 45,
-                        width: "40%",
-                        paddingLeft: 15,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: "#FFF",
-                          fontSize: 10,
-                          paddingTop: 5,
-                        }}
-                      >
-                        Starting at
-                      </Text>
-                      <Text style={{ color: "#FFF", fontSize: 10 }}>
-                        ${item.price}/ {item.rate}
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        backgroundColor: "#FF077E",
-                        borderTopRightRadius: 16,
-                        height: 45,
-                        width: "60%",
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: "#FFF",
-                          paddingTop: 5,
-                          paddingLeft: 5,
-                          fontWeight: "700",
-                        }}
-                        numberOfLines={2}
-                        ellipsizeMode={"tail"}
-                      >
-                        {item.name}
-                      </Text>
+              <View style={[styles.sectionsContainer, styles.businessType]}>
+                <GradientButton
+                  text="Quote Your Party"
+                  onPress={handleQuoteYourParty}
+                  textStyle={styles.quoteYourPartyText}
+                  disabled={!vendorProfile}
+                />
+                {!!Object.keys(serviceGroups).length && (
+                  <View style={styles.sectionContainer}>
+                    <Text style={styles.sectionTitle}>Business Type</Text>
+                    <View style={styles.tagsContainer}>
+                      {Object.keys(serviceGroups).map((name) => {
+                        return (
+                          <GradientButton
+                            key={name}
+                            text={name}
+                            style={styles.gradientTag}
+                          />
+                        );
+                      })}
                     </View>
                   </View>
-                  <Text
-                    style={{
-                      color: "#FFF",
-                      marginTop: 5,
-                      marginLeft: 25,
-                    }}
-                    numberOfLines={2}
-                    ellipsizeMode={"tail"}
-                  >
-                    {item.description}
-                  </Text>
-                </Pressable>
-              </>
-            )}
-            ListEmptyComponent={
-              <Text style={[styles.youHaventAdd, styles.youClr]}>
-                No service available
-              </Text>
-            }
-          /> */}
-                    {/* <FlatList
-            horizontal={false}
-            data={bartend}
-            ListHeaderComponent={
-              <VStack
-                flexDirection={"row"}
-                justifyContent={"space-between"}
-                paddingVertical={14}
-              >
-                <Text color="#FFF" fontSize={16} fontWeight={"700"}>
-                  Bartend
-                </Text>
-                <Text color="#8A8A8A" fontSize={12} fontWeight={"300"}>
-                  Flexible Payments
-                </Text>
-              </VStack>
-            }
-            renderItem={({ item }) => (
-              <>
-                <Pressable
-                  style={{
-                    width: "100%",
-                    height: 150,
-                    borderRadius: 16,
-                    borderWidth: 1,
-                    borderColor: "#FFF",
-                    marginRight: 10,
-                    marginBottom: 15,
-                  }}
-                >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                    }}
-                  >
-                    <View
-                      style={{
-                        backgroundColor: "#323232",
-                        borderTopLeftRadius: 16,
-                        height: 45,
-                        width: "40%",
-                        paddingLeft: 15,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: "#FFF",
-                          fontSize: 10,
-                          paddingTop: 5,
-                        }}
-                      >
-                        Starting at
-                      </Text>
-                      <Text style={{ color: "#FFF", fontSize: 10 }}>
-                        ${item.price}/ {item.rate}
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        backgroundColor: "#FF077E",
-                        borderTopRightRadius: 16,
-                        height: 45,
-                        width: "60%",
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: "#FFF",
-                          paddingTop: 5,
-                          paddingLeft: 5,
-                          fontWeight: "700",
-                        }}
-                        numberOfLines={2}
-                        ellipsizeMode={"tail"}
-                      >
-                        {item.name}
-                      </Text>
-                    </View>
+                )}
+                {!!vendorProfile?.listOfKeys?.length && (
+                  <SpecialitiesList
+                    label="Specialties"
+                    keys={vendorProfile?.listOfKeys}
+                  />
+                )}
+                {!!album.data.length && <PastProjectsList data={album.data} />}
+                {!!vendorProfile.description && (
+                  <View style={styles.sectionContainer}>
+                    <Text style={styles.sectionTitle}>Description</Text>
+                    <Text style={styles.descriptionText}>
+                      {vendorProfile.description || "-"}
+                    </Text>
                   </View>
-                  <Text
-                    style={{
-                      color: "#FFF",
-                      marginTop: 5,
-                      marginLeft: 25,
-                    }}
-                    numberOfLines={2}
-                    ellipsizeMode={"tail"}
-                  >
-                    {item.description}
-                  </Text>
-                </Pressable>
-              </>
-            )}
-            ListEmptyComponent={
-              <Text style={[styles.youHaventAdd, styles.youClr]}>
-                No service available
-              </Text>
-            }
-          /> */}
-                </LinearGradient>
-            </View>
-        </ScrollView>
-    )
-}
+                )}
+                {!!services.data?.length && (
+                  <ServicesList
+                    label="Service Packages"
+                    services={services}
+                    vendorId={vendorProfile?.id}
+                  />
+                )}
+              </View>
+            </>
+          )}
+        </View>
+      </View>
+    </ScrollView>
+  );
+};
 
 const styles = StyleSheet.create({
-    progressIconLayout: {
-        width: "100%",
-        overflow: "hidden",
-    },
-    topnavigationContentLayout: {
-        width: "100%",
-        position: "absolute",
-    },
-    descBorder: {
-        paddingVertical: Padding.p_5xl,
-    },
-    descriptionTypo: {
-        fontWeight: "700",
-        color: Color.labelColorDarkPrimary,
-    },
-    iProvideFoodTypo: {
-        color: "#CDCCCD",
-        fontFamily: FontFamily.typographyBodyMediumLight,
-        fontWeight: "300",
-        textAlign: "left",
-        lineHeight: 20,
-        fontSize: 14,
-    },
-    textLayout: {
-        lineHeight: 21,
-        color: Color.labelColorDarkPrimary,
-    },
-    foodComboSpaceBlock: {
-        paddingVertical: Padding.p_5xs,
-        paddingHorizontal: Padding.p_xs,
-        backgroundColor: "rgba(255, 7, 126, 0.5)",
-        borderRadius: Border.br_81xl,
-        flexDirection: "row",
-        alignItems: "center",
-    },
-    youClr: {
-        color: Color.primaryAlmostGrey,
-        marginTop: 10,
-    },
-    vectorIconLayout: {
-        height: 11,
-        width: 11,
-    },
-    bgIcon: {
-        width: "100%",
-        height: "100%",
-        left: 0,
-        position: "absolute",
-    },
-    vendorprofilescreenChild: {
-        height: 400,
-        left: 0,
-        top: 0,
-    },
-    title: {
-        paddingBottom: Padding.p_base,
-    },
-    title4: {
-        flexDirection: "column",
-        alignItems: "flex-start",
-        marginRight: 95,
-    },
-    description: {
-        lineHeight: 24,
-        fontSize: 16,
-        textAlign: "left",
-    },
-    iProvideFood: {
-        width: 329,
-        marginTop: 16,
-    },
-    desc: {
-        paddingVertical: Padding.p_5xl,
-        marginTop: 24,
-    },
-    foodBeverage: {
-        fontFamily: FontFamily.typographyBodyMediumLight,
-        fontWeight: "300",
-        lineHeight: 21,
-        textAlign: "left",
-        fontSize: FontSize.typographyBodyMediumBold_size,
-    },
-    partyRentals: {
-        marginLeft: 8,
-    },
-    label: {
-        textAlign: "center",
-        fontFamily: FontFamily.typographyBodyMediumRegular,
-    },
-    vendorDesc: {
-        marginTop: 340,
-        borderTopLeftRadius: Border.br_13xl,
-        borderTopRightRadius: Border.br_13xl,
-        shadowColor: "rgba(27, 27, 27, 0.16)",
-        shadowRadius: 16,
-        // elevation: 16,
-        paddingTop: Padding.p_61xl,
-        paddingBottom: Padding.p_5xl,
-        backgroundColor: Color.appColorGradient,
-        paddingHorizontal: Padding.p_5xl,
-        shadowOpacity: 1,
-        shadowOffset: {
-            width: 0,
-            height: 8,
-        },
-        width: "100%",
-        zIndex: 10,
-    },
-    titlemain: {
-        fontSize: 20,
-        lineHeight: 28,
-        textAlign: "center",
-    },
-    vectorIcon1: {
-        marginLeft: 3.82,
-    },
-    stars: {
-        flexDirection: "row",
-        alignItems: "center",
-    },
-    text: {
-        top: -3,
-        left: 80,
-        fontSize: 14,
-        textAlign: "center",
-        fontFamily: FontFamily.sFProDisplayRegular,
-        position: "absolute",
-    },
-    starsParent: {
-        width: 114,
-        height: 16,
-    },
-    totalServiced0: {
-        fontSize: 14,
-        fontWeight: "300",
-        lineHeight: 14,
-        color: "#8A8A8A",
-    },
-    user: {
-        width: "100%",
-        alignItems: "flex-start",
-        marginTop: 20,
-        flexDirection: "row",
-        justifyContent: "flex-end",
-    },
-    backIcon: {
-        width: 19,
-        marginLeft: 5,
-        height: 14,
-    },
-    vendorprofilescreen: {
-        height: "100%",
-        overflow: "hidden",
-        flex: 1,
-    },
-    quoteYourPartyText: {
-        fontSize: 16,
-        lineHeight: 22,
-    },
-})
+  scrollView: {
+    backgroundColor: "#000",
+    width: "100%",
+  },
+  mainContainer: {
+    flex: 1,
+    justifyContent: "space-between",
+  },
+  header: {
+    position: "absolute",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingBottom: Padding.p_base,
+    paddingHorizontal: 16,
+    zIndex: 10,
+    left: 0,
+    right: 0,
+  },
+  headerIcon: { width: 40, height: 40 },
+  iconLayout: {
+    height: 32,
+    width: 32,
+  },
+  bgIcon: {
+    width: "100%",
+    height: "100%",
+    left: 0,
+    position: "absolute",
+  },
+  profileBackground: {
+    width: "100%",
+    height: 400,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+  },
+  profileBgImageContainer: {
+    width: "100%",
+    height: 400,
+  },
+  bgGradient: {
+    zIndex: 20,
+    top: 200,
+    height: 200,
+    width: "100%",
+    position: "absolute",
+  },
+  avatarContainer: {
+    width: 76,
+    height: 76,
+    borderRadius: 100,
+    zIndex: 40,
+    bottom: 100,
+    marginLeft: 24,
+    // backgroundColor: Color.textMainWhite,
+  },
+  avatarBg: {
+    width: 76,
+    height: 76,
+    borderRadius: 100,
+  },
+  businessNameText: {
+    fontSize: 20,
+    lineHeight: 28,
+    color: Color.textMainWhite,
+    fontWeight: "bold",
+    zIndex: 40,
+    bottom: 172,
+    marginLeft: 114,
+  },
+  forms: {
+    backgroundColor: "black",
+    width: "100%",
+    marginTop: -170,
+    zIndex: 30,
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+    paddingHorizontal: 24,
+  },
+  background: {
+    height: "120%",
+    position: "absolute",
+    right: 0,
+    top: -10,
+    left: -250,
+  },
+  areaInfo: {
+    flexDirection: "column",
+    marginTop: 8,
+    marginBottom: 24,
+    marginLeft: 90,
+  },
+  milesInfo: {
+    flexDirection: "row",
+  },
+  cityText: {
+    fontSize: 16,
+    lineHeight: 24,
+    color: Color.textMainWhite,
+  },
+  areaText: {
+    fontSize: 16,
+    lineHeight: 24,
+    fontWeight: "700",
+    color: Color.textMainWhite,
+  },
+  sectionsContainer: {
+    flexDirection: "column",
+    gap: 40,
+    flex: 1,
+    paddingBottom: 48,
+  },
+  sectionContainer: {
+    flexDirection: "column",
+    gap: 16,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    lineHeight: 24,
+    fontWeight: "700",
+    color: Color.textMainWhite,
+  },
+  descriptionText: {
+    fontSize: 15,
+    lineHeight: 22,
+    color: "#CECDCE",
+  },
+  tagsContainer: {
+    flexDirection: "row",
+    gap: 8,
+    flexWrap: "wrap",
+  },
+  businessType: {
+    marginTop: 20,
+  },
+  gradientTag: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    minHeight: 32,
+  },
+  quoteYourPartyText: {
+    fontSize: 16,
+    lineHeight: 22,
+  },
+});
 
-export default VendorInfo
+export default VendorInfo;

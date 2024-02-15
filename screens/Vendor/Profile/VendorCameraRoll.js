@@ -88,6 +88,8 @@ const VendorCameraRoll = ({ route, navigation }) => {
     );
   };
 
+  const isDoneDisabled = !selection?.length;
+
   return (
     <>
       <UploadModal
@@ -107,11 +109,14 @@ const VendorCameraRoll = ({ route, navigation }) => {
             <TopNavigationContent
               title={"Upload photos & videos"}
               RightComponent={
-                <Pressable onPress={handleDone}>
+                <Pressable onPress={handleDone} disabled={isDoneDisabled}>
                   <Text
                     color={"#FFF"}
                     fontWeight={"700"}
-                    style={styles.doneButton}
+                    style={[
+                      styles.doneButton,
+                      { opacity: isDoneDisabled ? 0.5 : 1 },
+                    ]}
                   >
                     Done
                   </Text>

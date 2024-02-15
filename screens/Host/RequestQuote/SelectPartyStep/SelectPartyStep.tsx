@@ -1,10 +1,4 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { Dispatch, SetStateAction, useEffect, useMemo } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -26,6 +20,7 @@ import {
   RequestQuoteStepEnum,
 } from "../RequestQuoteScreen";
 import { PartyModel } from "../../../../models";
+import { Color } from "../../../../GlobalStyles";
 
 type SelectPartyStepProps = {
   quote: RequestQuote;
@@ -105,7 +100,11 @@ export const SelectPartyStep: React.FC<SelectPartyStepProps> = ({
   return (
     <View style={styles.root}>
       {isPartiesLoading ? (
-        <ActivityIndicator size={20} style={styles.activityIndicator} />
+        <ActivityIndicator
+          size={20}
+          style={styles.activityIndicator}
+          color={Color.primaryPink}
+        />
       ) : (
         <>
           <Text style={styles.newPartyText}>Is this for a new party?</Text>
