@@ -3,7 +3,7 @@ import { ServiceModel } from "../models";
 
 export const useServiceGroups = (services: ServiceModel[]) => {
   const serviceGroups = useMemo(() => {
-    const result: Record<string, Array<ServiceModel>> = {};
+    const result: Record<string, Array<ServiceModel>> = {};    
 
     services.forEach((service) => {
       if (!service.serviceTypes.length) {
