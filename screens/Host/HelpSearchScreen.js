@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from 'react';
 import {
   Image,
   StyleSheet,
@@ -6,58 +6,61 @@ import {
   Pressable,
   FlatList,
   TouchableOpacity,
-} from "react-native";
-import { Text, VStack } from "native-base";
-import { Color } from "../../GlobalStyles";
-import { useNavigation } from "@react-navigation/core";
-import SearchBar from "../../components/Input/SearchBar";
-import apis from "../../apis";
-import useGlobalState from "../../stateManagement/hook";
-import StateTypes from "../../stateManagement/StateTypes";
-import types from "../../stateManagement/types";
-import Close from "../../assets/closeSearch.svg";
+} from 'react-native';
+import {Text, VStack} from 'native-base';
+import {Color} from '../../GlobalStyles';
+import {useNavigation} from '@react-navigation/core';
+import SearchBar from '../../components/Input/SearchBar';
+import apis from '../../apis';
+import useGlobalState from '../../stateManagement/hook';
+import StateTypes from '../../stateManagement/StateTypes';
+import types from '../../stateManagement/types';
+import Close from '../../assets/closeSearch.svg';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const HelpSearchScreen = () => {
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation();
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [searchResult, setSearchResult] = useState([]);
   const [recentResult, setRecentResult] = useState([]);
-  const [debounceValue, setDebounceValue] = useState("");
+  const [debounceValue, setDebounceValue] = useState('');
   const [searchList, setSearchList] = useGlobalState(
     types.albumType.searchList.key,
-    types.albumType.searchList.default
+    types.albumType.searchList.default,
   );
   const [user, setUser] = useGlobalState(
     StateTypes.user.key,
-    StateTypes.user.default
+    StateTypes.user.default,
   );
 
-  const setSearch = async (item) => {
+  const setSearch = async item => {
     try {
       const result = await apis.recentSearch.create({
         name: item,
         userId: user.id,
       });
 
-      const selectedItem = searchResult.find((res) => res.name === item);
-      navigation.navigate("VendorInfo", { params: selectedItem });
+      // const selectedItem = searchResult.find(res => res.name === item);
+      // navigation.navigate('VendorInfo', {params: selectedItem});
 
-      setSearchList((searchList) => [...searchList, result.data]);
-      setSearchTerm("");
+      setSearchList(searchList => [...searchList, result.data]);
+      setSearchTerm(item);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const viewRecentSearch = async (recent) => {
-    const selectedItem = searchResult.find((res) => res.name === recent?.name);
-    navigation.navigate("VendorInfo", { params: selectedItem });
+  const viewRecentSearch = async recent => {
+    console.log('recent', recent);
+    setSearchTerm('');
+    navigation.navigate('VendorInfo', {params: recent});
   };
 
   const grabRecentSearch = async () => {
     try {
-      const res = await apis.recentSearch.getAll({ userId: user.id });
+      const res = await apis.recentSearch.getAll({userId: user.id});
 
       if (res && res.success) {
         setRecentResult(res.data);
@@ -77,10 +80,10 @@ const HelpSearchScreen = () => {
   };
 
   const handleCancel = () => {
-    setSearchTerm("");
+    setSearchTerm('');
   };
 
-  const onDebounce = async (txt) => {
+  const onDebounce = async txt => {
     try {
       setIsLoading(true);
 
@@ -101,11 +104,15 @@ const HelpSearchScreen = () => {
   }, [searchTerm]);
 
   return (
-    <View style={styles.helpsearchscreen}>
+    <View
+      style={[
+        styles.helpsearchscreen,
+        {paddingTop: insets.top ? insets.top : 16},
+      ]}>
       <Image
         style={styles.bgIcon}
         resizeMode="cover"
-        source={require("../../assets/bg21.png")}
+        source={require('../../assets/bg21.png')}
       />
       <View style={[styles.alertmodalbg, styles.alertmodalbgLayout]} />
       <View style={styles.topnavigationContent}>
@@ -113,27 +120,26 @@ const HelpSearchScreen = () => {
           <Image
             style={styles.vectorIcon}
             resizeMode="cover"
-            source={require("../../assets/vector14.png")}
+            source={require('../../assets/vector14.png')}
           />
         </Pressable>
         <View style={styles.title2}>
           <Text style={styles.title3}>What Can We Help You With</Text>
         </View>
-        <View style={{ width: 40, height: 40 }}></View>
+        <View style={{width: 40, height: 40}}></View>
       </View>
       <View
         style={{
-          backgroundColor: "rgba(255, 255, 255, 0.08)",
+          backgroundColor: 'rgba(255, 255, 255, 0.08)',
           borderRadius: 100,
           marginHorizontal: 10,
           marginTop: 10,
           marginBottom: 10,
-        }}
-      >
+        }}>
         <SearchBar
           placeholder="Search"
-          placeholderTextColor={"#8A8A8A"}
-          onChangeText={(text) => setSearchTerm(text)}
+          placeholderTextColor={'#8A8A8A'}
+          onChangeText={text => setSearchTerm(text)}
           value={searchTerm}
           onDebounce={onDebounce}
           onCancel={handleCancel}
@@ -144,7 +150,7 @@ const HelpSearchScreen = () => {
       </View>
 
       <FlatList
-        data={searchResult.map((item) => item.name)}
+        data={searchResult}
         ListHeaderComponent={
           debounceValue.length >= 1 ? (
             <View />
@@ -154,29 +160,26 @@ const HelpSearchScreen = () => {
                 flexDirection="row"
                 justifyContent="space-between"
                 paddingHorizontal={13}
-                marginTop={5}
-              >
-                <Text color={"#FFF"} fontSize={16}>
+                marginTop={5}>
+                <Text color={'#FFF'} fontSize={16}>
                   Recent search
                 </Text>
                 <Pressable
                   style={{
-                    backgroundColor: "rgba(255, 7, 126, 0.30)",
+                    backgroundColor: 'rgba(255, 7, 126, 0.30)',
                     borderRadius: 100,
                     paddingHorizontal: 8,
                     paddingVertical: 4,
-                    justifyContent: "center",
-                    flexDirection: "row",
-                    alignItems: "center",
+                    justifyContent: 'center',
+                    flexDirection: 'row',
+                    alignItems: 'center',
                   }}
-                  onPress={removeRecentSearch}
-                >
+                  onPress={removeRecentSearch}>
                   <Text
-                    color={"#FFF"}
-                    fontWeight={"300"}
+                    color={'#FFF'}
+                    fontWeight={'300'}
                     fontSize={12}
-                    marginRight={2}
-                  >
+                    marginRight={2}>
                     Clear
                   </Text>
                   <Close />
@@ -194,14 +197,13 @@ const HelpSearchScreen = () => {
             </VStack>
           )
         }
-        renderItem={({ item }) =>
+        renderItem={({item}) =>
           debounceValue.length >= 1 ? (
             <TouchableOpacity
-              key={item?.id}
+              key={item?.id || item}
               style={styles.border}
-              onPress={() => setSearch(item)}
-            >
-              <Text style={styles.searchTerm}>{item}</Text>
+              onPress={() => setSearch(item)}>
+              <Text style={styles.searchTerm}>{item}12323</Text>
             </TouchableOpacity>
           ) : (
             <View />
@@ -237,60 +239,59 @@ const styles = StyleSheet.create({
     width: 665,
     height: 1193,
     left: 0,
-    position: "absolute",
+    position: 'absolute',
   },
   left: {
-    alignItems: "center",
-    flexDirection: "row",
+    alignItems: 'center',
+    flexDirection: 'row',
   },
   searchTerm: {
-    color: "#8A8A8A",
+    color: '#8A8A8A',
     marginBottom: 5,
-    fontWeight: "400",
+    fontWeight: '400',
     fontSize: 14,
     lineHeight: 21,
     marginLeft: 5,
   },
   noResultsText: {
-    textAlign: "center",
+    textAlign: 'center',
   },
   vectorIcon: {
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   title3: {
     fontSize: 18,
     lineHeight: 25,
-    fontWeight: "700",
-    textAlign: "center",
+    fontWeight: '700',
+    textAlign: 'center',
     color: Color.labelColorDarkPrimary,
   },
   title2: {
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "center",
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   topnavigationContent: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 30,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   helpsearchscreen: {
     backgroundColor: Color.labelColorLightPrimary,
-    width: "100%",
-    height: 812,
-    overflow: "hidden",
+    width: '100%',
+    // height: 812,
+    overflow: 'hidden',
     flex: 1,
   },
   alertmodalbg: {
     backgroundColor: Color.primarySoBlack,
     left: 0,
     top: 0,
-    height: "100%",
-    overflow: "hidden",
+    height: '100%',
+    overflow: 'hidden',
   },
   alertmodalbgLayout: {
-    width: "100%",
-    position: "absolute",
+    width: '100%',
+    position: 'absolute',
   },
 });
 

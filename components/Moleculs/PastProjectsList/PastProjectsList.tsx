@@ -1,11 +1,11 @@
-import React, { useMemo } from "react";
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
-import { styles } from "./styles";
-import { useNavigation } from "@react-navigation/native";
-import FastImage from "react-native-fast-image";
-import { CameraPlusIcon } from "../../Icons";
-import { Color } from "../../../GlobalStyles";
-import { VendorAlbumModel } from "../../../models";
+import React, {useMemo} from 'react';
+import {FlatList, Text, TouchableOpacity, View} from 'react-native';
+import {styles} from './styles';
+import {useNavigation} from '@react-navigation/native';
+import FastImage from 'react-native-fast-image';
+import {CameraPlusIcon} from '../../Icons';
+import {Color} from '../../../GlobalStyles';
+import {VendorAlbumModel} from '../../../models';
 
 type PastProjectsListProps = {
   label?: string;
@@ -14,11 +14,11 @@ type PastProjectsListProps = {
 };
 
 export const PastProjectsList: React.FC<PastProjectsListProps> = ({
-  label = "Past Projects",
+  label = 'Past Projects',
   data,
   canEdit,
 }) => {
-  const { navigate } = useNavigation();
+  const navigation = useNavigation();
 
   const actualData = useMemo(() => {
     if (canEdit) {
@@ -36,13 +36,12 @@ export const PastProjectsList: React.FC<PastProjectsListProps> = ({
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.imagesContainer}
         bounces={false}
-        renderItem={({ item }) => {
+        renderItem={({item}) => {
           if (!item?.name) {
             return (
               <TouchableOpacity
-                onPress={() => navigate("Album")}
-                style={styles.addContainer}
-              >
+                onPress={() => navigation.push('Album')}
+                style={styles.addContainer}>
                 <View style={styles.addBg} />
                 <CameraPlusIcon
                   color={Color.primaryPink}
@@ -58,7 +57,7 @@ export const PastProjectsList: React.FC<PastProjectsListProps> = ({
             <View style={styles.imageContainer}>
               <TouchableOpacity>
                 <FastImage
-                  source={{ uri: item.documents[0]?.link || "" }}
+                  source={{uri: item.documents[0]?.link || ''}}
                   style={styles.image}
                   resizeMode="cover"
                 />
@@ -66,8 +65,7 @@ export const PastProjectsList: React.FC<PastProjectsListProps> = ({
               <Text
                 style={styles.name}
                 numberOfLines={2}
-                ellipsizeMode={"tail"}
-              >
+                ellipsizeMode={'tail'}>
                 {item.name}
               </Text>
             </View>

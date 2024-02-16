@@ -1,41 +1,43 @@
-import React, { useState, useEffect } from "react";
-import { Image, StyleSheet, Text, View, Pressable } from "react-native";
+import React, {useState, useEffect} from 'react';
+import {Image, StyleSheet, Text, View, Pressable} from 'react-native';
 import {
   Padding,
   FontFamily,
   Color,
   FontSize,
   Border,
-} from "../../../GlobalStyles";
-import GradientSelection from "./component/GradientSelection";
-import useGlobalState from "../../../stateManagement/hook";
-import types from "../../../stateManagement/types";
+} from '../../../GlobalStyles';
+import GradientSelection from './component/GradientSelection';
+import useGlobalState from '../../../stateManagement/hook';
+import types from '../../../stateManagement/types';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const selections = [
-  { id: 1, title: "Latest Post" },
-  { id: 2, title: "New Years Eve Party" },
-  { id: 3, title: "Christmas" },
-  { id: 4, title: "Thanksgiving" },
-  { id: 5, title: "Valentine's Day" },
-  { id: 6, title: "Memorial Day" },
-  { id: 7, title: "Independence Day" },
-  { id: 8, title: "Labor Day" },
-  { id: 9, title: "Martin Luther King Jr.Day" },
+  {id: 1, title: 'Latest Post'},
+  {id: 2, title: 'New Years Eve Party'},
+  {id: 3, title: 'Christmas'},
+  {id: 4, title: 'Thanksgiving'},
+  {id: 5, title: "Valentine's Day"},
+  {id: 6, title: 'Memorial Day'},
+  {id: 7, title: 'Independence Day'},
+  {id: 8, title: 'Labor Day'},
+  {id: 9, title: 'Martin Luther King Jr.Day'},
 ];
 
-const HolidayThemeScreen = ({ route, navigation }) => {
-  const [selected, setSelected] = useState("");
+const HolidayThemeScreen = ({route, navigation}) => {
+  const insets = useSafeAreaInsets();
+  const [selected, setSelected] = useState('');
   const [selectedOption, setSelectedOption] = useGlobalState(
     types.albumType.albumtype.default,
-    types.albumType.albumtype.key
+    types.albumType.albumtype.key,
   );
 
-  const handlePressOut = (select) => {
+  const handlePressOut = select => {
     if (select) {
       setSelected(select.id);
       setSelectedOption(select.title);
       setTimeout(() => {
-        navigation.navigate("Photo");
+        navigation.navigate('Photo');
       }, 1000);
     }
   };
@@ -45,15 +47,19 @@ const HolidayThemeScreen = ({ route, navigation }) => {
       <Image
         style={[styles.bgIcon, styles.bgIconPosition]}
         resizeMode="cover"
-        source={require("../../../assets/bg16.png")}
+        source={require('../../../assets/bg16.png')}
       />
-      <View style={styles.topnavigationContentPosition}>
+      <View
+        style={[
+          styles.topnavigationContentPosition,
+          {paddingTop: insets.top ? insets.top : 16},
+        ]}>
         <View style={[styles.leftAccessory1, styles.header]}>
           <Pressable onPress={() => navigation.pop()}>
             <Image
               style={styles.backIcon1Layout}
               resizeMode="cover"
-              source={require("../../../assets/back.png")}
+              source={require('../../../assets/back.png')}
             />
           </Pressable>
         </View>
@@ -86,24 +92,23 @@ const HolidayThemeScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   bgIconPosition: {
     left: 0,
-    position: "absolute",
+    position: 'absolute',
   },
   topnavigationContentPosition: {
-    width: "100%",
-    flexDirection: "row",
-    marginTop: 30,
+    width: '100%',
+    flexDirection: 'row',
   },
   container: {
     marginTop: 200,
   },
   titleTypo1: {
     fontFamily: FontFamily.typographyBodySmallBold,
-    fontWeight: "700",
+    fontWeight: '700',
     color: Color.labelColorDarkPrimary,
   },
   header: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   backIcon1Layout: {
     height: 40,
@@ -112,24 +117,24 @@ const styles = StyleSheet.create({
   },
   bgIcon: {
     top: 0,
-    width: "100%",
+    width: '100%',
     height: 891,
   },
   title1: {
-    textAlign: "center",
+    textAlign: 'center',
     color: Color.labelColorDarkPrimary,
     fontFamily: FontFamily.typographyBodyMediumRegular,
     fontSize: FontSize.size_mini,
   },
   title: {
-    borderColor: "#232323",
+    borderColor: '#232323',
     paddingHorizontal: 0,
     paddingVertical: Padding.p_5xl,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     width: 375,
     borderBottomWidth: 1,
-    borderStyle: "solid",
+    borderStyle: 'solid',
     left: 0,
   },
   iconsaxlinearhambergermenu: {
@@ -139,12 +144,12 @@ const styles = StyleSheet.create({
     width: 17,
     height: 12,
     marginLeft: 5,
-    display: "none",
+    display: 'none',
   },
   leftAccessory: {
     paddingLeft: Padding.p_5xl,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingBottom: Padding.p_4xs,
     paddingRight: Padding.p_4xs,
     paddingTop: Padding.p_4xs,
@@ -159,13 +164,13 @@ const styles = StyleSheet.create({
   title6: {
     fontSize: 18,
     lineHeight: 25,
-    textAlign: "center",
+    textAlign: 'center',
   },
   holidaythemscreene: {
     backgroundColor: Color.labelColorLightPrimary,
-    width: "100%",
-    height: "100%",
-    overflow: "hidden",
+    width: '100%',
+    height: '100%',
+    overflow: 'hidden',
     flex: 1,
   },
 });

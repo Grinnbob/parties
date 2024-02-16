@@ -1,9 +1,9 @@
-import React from "react";
-import { Text, StyleSheet, View, Pressable } from "react-native";
-import { Color, FontFamily } from "../GlobalStyles";
-import { useNavigation } from "@react-navigation/core";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Back from "../assets/back.svg";
+import React from 'react';
+import {Text, StyleSheet, View, Pressable} from 'react-native';
+import {Color, FontFamily} from '../GlobalStyles';
+import {useNavigation} from '@react-navigation/core';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import Back from '../assets/back.svg';
 
 const TopNavigationContent = ({
   title,
@@ -17,14 +17,12 @@ const TopNavigationContent = ({
     <View
       style={{
         ...styles.topnavigationContent,
-        marginTop: insets.top ? insets.top : 16,
-      }}
-    >
+        paddingTop: insets.top ? insets.top : 16,
+      }}>
       <Pressable
         onPress={LeftComponent ? LeftComponent : () => navigation.pop()}
-        style={{ marginLeft: 10, ...backStyle }}
-        hitSlop={20}
-      >
+        style={{marginLeft: 10, ...backStyle}}
+        hitSlop={20}>
         <Back />
       </Pressable>
       <View style={styles.title}>
@@ -33,7 +31,7 @@ const TopNavigationContent = ({
       {RightComponent ? (
         RightComponent
       ) : (
-        <View style={{ width: 30, height: 30 }}></View>
+        <View style={{width: 30, height: 30}}></View>
       )}
     </View>
   );
@@ -41,25 +39,25 @@ const TopNavigationContent = ({
 
 const styles = StyleSheet.create({
   leftAccessory: {
-    alignItems: "center",
+    alignItems: 'center',
   },
   title1: {
     fontSize: 18,
     lineHeight: 28,
-    fontWeight: "700",
+    fontWeight: '700',
     fontFamily: FontFamily.typographyBodySmallBold,
     color: Color.labelColorDarkPrimary,
-    textAlign: "center",
+    textAlign: 'center',
     bottom: 7,
   },
   title: {
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
   },
   topnavigationContent: {
-    justifyContent: "space-between",
-    flexDirection: "row",
+    justifyContent: 'space-between',
+    flexDirection: 'row',
     marginBottom: 20,
   },
 });

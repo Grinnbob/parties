@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from 'react';
 import {
   Image,
   Text,
@@ -8,32 +8,32 @@ import {
   Share,
   ImageBackground,
   Alert,
-} from "react-native";
-import LinearGradient from "react-native-linear-gradient";
-import apis from "../../../apis";
-import { useNavigation } from "@react-navigation/core";
-import FastImage from "react-native-fast-image";
-import { GradientButton, IconBg } from "../../../components/Atoms";
+} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import apis from '../../../apis';
+import {useNavigation} from '@react-navigation/core';
+import FastImage from 'react-native-fast-image';
+import {GradientButton, IconBg} from '../../../components/Atoms';
 import {
   serviceTypesAtom,
   vendorProfileAlbumAtom,
   vendorProfileAtom,
   vendorProfileServiceAtom,
-} from "../../../stateManagement";
-import { useRecoilState } from "recoil";
-import { styles } from "./styles";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { PencilIcon, ShareNetworkIcon } from "../../../components/Icons";
-import { Color } from "../../../GlobalStyles";
-import { ServicesList, SpecialitiesList } from "../../../components/Moleculs";
-import { useServiceGroups } from "../../../hooks/useServiceGroups";
-import { Skeleton } from "./Skeleton";
-import { PastProjectsList } from "../../../components/Moleculs/PastProjectsList";
+} from '../../../stateManagement';
+import {useRecoilState} from 'recoil';
+import {styles} from './styles';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {PencilIcon, ShareNetworkIcon} from '../../../components/Icons';
+import {Color} from '../../../GlobalStyles';
+import {ServicesList, SpecialitiesList} from '../../../components/Moleculs';
+import {useServiceGroups} from '../../../hooks/useServiceGroups';
+import {Skeleton} from './Skeleton';
+import {PastProjectsList} from '../../../components/Moleculs/PastProjectsList';
 
-export const VendorProfileScreen = ({ route }) => {
+export const VendorProfileScreen = ({route}) => {
   const insets = useSafeAreaInsets();
 
-  const { navigate, push, toggleDrawer } = useNavigation();
+  const {push, toggleDrawer} = useNavigation();
   const [serviceTypes, setServiceTypes] = useRecoilState(serviceTypesAtom);
   const [vendorProfile, setVendorProfile] = useRecoilState(vendorProfileAtom);
   const [services, setServices] = useRecoilState(vendorProfileServiceAtom);
@@ -43,7 +43,7 @@ export const VendorProfileScreen = ({ route }) => {
   const onShare = async () => {
     try {
       const result = await Share.share({
-        message: "Check out my profile on the app PartyFavor",
+        message: 'Check out my profile on the app PartyFavor',
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
@@ -80,7 +80,7 @@ export const VendorProfileScreen = ({ route }) => {
       if (album.isFetched) {
         return;
       }
-      const res = await apis.album.getAll({ vendorId: vendorProfile.id });
+      const res = await apis.album.getAll({vendorId: vendorProfile.id});
 
       if (res && res.data) {
         setAlbum({
@@ -98,7 +98,7 @@ export const VendorProfileScreen = ({ route }) => {
       if (services.isFetched) {
         return;
       }
-      const res = await apis.service.getAll({ vendorId: vendorProfile.id });
+      const res = await apis.service.getAll({vendorId: vendorProfile.id});
       if (res && res.data) {
         setServices(() => {
           return {
@@ -108,7 +108,7 @@ export const VendorProfileScreen = ({ route }) => {
         });
       }
     } catch (error) {
-      console.log("getServicesError", error);
+      console.log('getServicesError', error);
     }
   };
 
@@ -119,18 +119,17 @@ export const VendorProfileScreen = ({ route }) => {
     Promise.allSettled([getAlbum(), getServiceTypes(), getServices()]).then(
       () => {
         setIsLoading(false);
-      }
+      },
     );
   }, [vendorProfile]);
 
-  const { serviceGroups } = useServiceGroups(services.data);
+  const {serviceGroups} = useServiceGroups(services.data);
 
   return (
     <ScrollView
       style={styles.scrollView}
       keyboardShouldPersistTaps="handled"
-      bounces={false}
-    >
+      bounces={false}>
       <View style={styles.mainContainer}>
         <View
           style={[
@@ -138,18 +137,17 @@ export const VendorProfileScreen = ({ route }) => {
             {
               paddingTop: insets.top ? insets.top : 16,
             },
-          ]}
-        >
+          ]}>
           <IconBg style={styles.headerIcon}>
             <TouchableOpacity onPress={toggleDrawer} hitSlop={20}>
               <Image
                 resizeMode="cover"
-                source={require("../../../assets/iconsaxlinearhambergermenu1.png")}
+                source={require('../../../assets/iconsaxlinearhambergermenu1.png')}
               />
             </TouchableOpacity>
           </IconBg>
-          <View style={{ flexDirection: "row", gap: 8 }}>
-            <TouchableOpacity onPress={() => push("Edit")}>
+          <View style={{flexDirection: 'row', gap: 8}}>
+            <TouchableOpacity onPress={() => push('Edit')}>
               <IconBg style={styles.headerIcon}>
                 <PencilIcon width={24} color={Color.textMainWhite} />
               </IconBg>
@@ -158,7 +156,7 @@ export const VendorProfileScreen = ({ route }) => {
               <IconBg style={styles.headerIcon}>
                 <ShareNetworkIcon
                   width={24}
-                  style={{ marginRight: 2 }}
+                  style={{marginRight: 2}}
                   color={Color.textMainWhite}
                 />
               </IconBg>
@@ -168,21 +166,21 @@ export const VendorProfileScreen = ({ route }) => {
         <View style={styles.profileBackground}>
           <FastImage
             source={{
-              uri: vendorProfile?.background || "",
+              uri: vendorProfile?.background || '',
             }}
             style={styles.profileBgImageContainer}
           />
         </View>
         <LinearGradient
-          colors={["#FF077E", "transparent"]}
-          start={{ x: 0, y: 1 }}
-          end={{ x: 0, y: 0 }}
+          colors={['#FF077E', 'transparent']}
+          start={{x: 0, y: 1}}
+          end={{x: 0, y: 0}}
           style={styles.bgGradient}
         />
         <View style={styles.avatarContainer}>
           <FastImage
             source={{
-              uri: vendorProfile?.avatar || "",
+              uri: vendorProfile?.avatar || '',
             }}
             style={styles.avatarBg}
           />
@@ -196,7 +194,7 @@ export const VendorProfileScreen = ({ route }) => {
           <ImageBackground
             style={styles.background}
             resizeMode="repeat"
-            source={require("../../../assets/bg7.png")}
+            source={require('../../../assets/bg7.png')}
           />
           {isLoading ? (
             <Skeleton />
@@ -215,7 +213,7 @@ export const VendorProfileScreen = ({ route }) => {
                       <Text style={styles.areaText}>
                         {vendorProfile?.distance
                           ? vendorProfile.distance
-                          : "00"}{" "}
+                          : '00'}{' '}
                         miles
                       </Text>
                     </View>
@@ -227,7 +225,7 @@ export const VendorProfileScreen = ({ route }) => {
                   <View style={styles.sectionContainer}>
                     <Text style={styles.sectionTitle}>Business Type</Text>
                     <View style={styles.tagsContainer}>
-                      {Object.keys(serviceGroups).map((name) => {
+                      {Object.keys(serviceGroups).map(name => {
                         return (
                           <GradientButton
                             key={name}
@@ -244,7 +242,7 @@ export const VendorProfileScreen = ({ route }) => {
                 <View style={styles.sectionContainer}>
                   <Text style={styles.sectionTitle}>Description</Text>
                   <Text style={styles.descriptionText}>
-                    {vendorProfile.description || "-"}
+                    {vendorProfile.description || '-'}
                   </Text>
                 </View>
                 {!!services.data?.length && (
