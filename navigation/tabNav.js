@@ -1,20 +1,21 @@
-import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import VendorHomeScreen from "../screens/Vendor/VendorHomeScreen";
-import { VendorProfileScreen } from "../screens/Vendor/VendorProfileScreen/VendorProfileScreen";
-import AlbumTypeScreen from "../screens/Vendor/Profile/AlbumTypeScreen";
-import BottomNavContainer from "../components/navigation/CustomBottomTabBar";
-import Notifications from "../screens/Vendor/Notifications";
-import { ServicePackageScreen } from "../screens/ServicePackageScreen";
-import HolidayThemeScreen from "../screens/Vendor/Profile/HolidayThemeScreen";
-import Quotes from "../screens/Vendor/Quotes";
-import Services from "../screens/Vendor/Services";
-import PhotoAlbumScreen from "../screens/Vendor/Profile/PhotoAlbumScreen";
-import HelpSearchScreen from "../screens/Host/HelpSearchScreen";
-import VendorCameraRoll from "../screens/Vendor/Profile/VendorCameraRoll";
-import { VendorEdit } from "../screens/Vendor/VendorEdit";
-import SearchVendorEditModal from "../components/Modal/SearchVendorEditModal";
+import React from 'react';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import VendorHomeScreen from '../screens/Vendor/VendorHomeScreen';
+import {VendorProfileScreen} from '../screens/Vendor/VendorProfileScreen/VendorProfileScreen';
+import AlbumTypeScreen from '../screens/Vendor/Profile/AlbumTypeScreen';
+import BottomNavContainer from '../components/navigation/CustomBottomTabBar';
+import Notifications from '../screens/Vendor/Notifications';
+import {ServicePackageScreen} from '../screens/ServicePackageScreen';
+import HolidayThemeScreen from '../screens/Vendor/Profile/HolidayThemeScreen';
+import Quotes from '../screens/Vendor/Quotes';
+import Services from '../screens/Vendor/Services';
+import PhotoAlbumScreen from '../screens/Vendor/Profile/PhotoAlbumScreen';
+import HelpSearchScreen from '../screens/Host/HelpSearchScreen';
+import VendorCameraRoll from '../screens/Vendor/Profile/VendorCameraRoll';
+import {VendorEdit} from '../screens/Vendor/VendorEdit';
+import SearchVendorEditModal from '../components/Modal/SearchVendorEditModal';
+import AlbumNavigator from './AlbumNavigator';
 
 // const BottomTab = createBottomTabNavigator();
 
@@ -29,10 +30,9 @@ export default function BottomTabNavigator() {
     <Stack.Navigator
       // initialRouteName="Dashboard"
       // tabBar={TabBar}
-      screenOptions={({ route }) => ({
+      screenOptions={({route}) => ({
         headerShown: false,
-      })}
-    >
+      })}>
       {/* <Stack.Screen name="Dashboard" component={DashboardNavigator} /> */}
       {/* <Stack.Screen name="Services" component={ServiceNavigator} />
       <Stack.Screen name="Quotes" component={QuoteNavigator} /> */}
@@ -53,12 +53,12 @@ function DashboardNavigator() {
       <DashboardStack.Screen
         name="Dashboard"
         component={VendorHomeScreen}
-        options={{ headerShown: false, gestureEnabled: false }}
+        options={{headerShown: false, gestureEnabled: false}}
       />
       <DashboardStack.Screen
         name="Help"
         component={HelpSearchScreen}
-        options={{ headerShown: false, gestureEnabled: false }}
+        options={{headerShown: false, gestureEnabled: false}}
       />
     </DashboardStack.Navigator>
   );
@@ -72,7 +72,7 @@ function ServiceNavigator() {
       <ServiceStack.Screen
         name="Services"
         component={Services}
-        options={{ headerShown: false, gestureEnabled: false }}
+        options={{headerShown: false, gestureEnabled: false}}
       />
     </ServiceStack.Navigator>
   );
@@ -86,7 +86,7 @@ function QuoteNavigator() {
       <QuoteStack.Screen
         name="Quotes"
         component={Quotes}
-        options={{ headerShown: false, gestureEnabled: false }}
+        options={{headerShown: false, gestureEnabled: false}}
       />
     </QuoteStack.Navigator>
   );
@@ -100,27 +100,27 @@ function CalendarNavigator() {
       <CalendarStack.Screen
         name="Profile"
         component={VendorProfileScreen}
-        options={{ headerShown: false, gestureEnabled: false }}
+        options={{headerShown: false, gestureEnabled: false}}
       />
       <CalendarStack.Screen
         name="Album"
         component={AlbumTypeScreen}
-        options={{ headerShown: false, gestureEnabled: false }}
+        options={{headerShown: false, gestureEnabled: false}}
       />
       <CalendarStack.Screen
         name="Edit"
         component={VendorEdit}
-        options={{ headerShown: false, gestureEnabled: false }}
+        options={{headerShown: false, gestureEnabled: false}}
       />
       <CalendarStack.Screen
         name="Service"
         component={ServicePackageScreen}
-        options={{ headerShown: false, gestureEnabled: false }}
+        options={{headerShown: false, gestureEnabled: false}}
       />
       <CalendarStack.Screen
         name="CameraEdit"
         component={VendorCameraRoll}
-        options={{ headerShown: false, gestureEnabled: false }}
+        options={{headerShown: false, gestureEnabled: false}}
       />
       <CalendarStack.Screen
         name="SearchModal"
@@ -128,8 +128,13 @@ function CalendarNavigator() {
         options={{
           headerShown: false,
           // gestureEnabled: true,
-          presentation: "modal",
+          presentation: 'modal',
         }}
+      />
+      <CalendarStack.Screen
+        name="AlbumNavigator"
+        component={AlbumNavigator}
+        options={{headerShown: false}}
       />
     </CalendarStack.Navigator>
   );
@@ -143,7 +148,7 @@ function NotificationNavigator() {
       <NotificationStack.Screen
         name="Notification"
         component={Notifications}
-        options={{ headerShown: false, gestureEnabled: false }}
+        options={{headerShown: false, gestureEnabled: false}}
       />
     </NotificationStack.Navigator>
   );

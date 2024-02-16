@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 import {
   Image,
   StyleSheet,
@@ -6,11 +6,12 @@ import {
   View,
   Modal,
   TouchableOpacity,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { FontSize, FontFamily, Color, Border, Padding } from "../GlobalStyles";
+  Pressable,
+} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {FontSize, FontFamily, Color, Padding} from '../GlobalStyles';
 
-const ServicePackageModal = ({ modalVisible, setModalVisible }) => {
+const ServicePackageModal = ({modalVisible, setModalVisible}) => {
   const navigation = useNavigation();
 
   const serviceAdded = () => {
@@ -23,15 +24,16 @@ const ServicePackageModal = ({ modalVisible, setModalVisible }) => {
       animationType="slide"
       transparent={true}
       visible={modalVisible}
-      onRequestClose={serviceAdded}
-    >
-      <View style={[styles.alertmodal, styles.alertmodalLayout]}>
+      onRequestClose={serviceAdded}>
+      <Pressable
+        style={[styles.alertmodal, styles.alertmodalLayout]}
+        onPress={serviceAdded}>
         <View style={[styles.alert, styles.alertFlexBox]}>
           <View style={[styles.content, styles.alertFlexBox]}>
             <Image
               style={styles.icon}
               resizeMode="cover"
-              source={require("../assets/icon.png")}
+              source={require('../assets/icon.png')}
             />
             <View style={[styles.titleParent, styles.alertFlexBox]}>
               <Text style={styles.title}>Service Package Added!</Text>
@@ -44,50 +46,49 @@ const ServicePackageModal = ({ modalVisible, setModalVisible }) => {
             <TouchableOpacity
               style={styles.vector}
               activeOpacity={0.2}
-              onPress={serviceAdded}
-            >
+              onPress={serviceAdded}>
               <Image
                 style={[styles.icon1, styles.iconLayout]}
                 resizeMode="cover"
-                source={require("../assets/vector1.png")}
+                source={require('../assets/vector1.png')}
               />
             </TouchableOpacity>
             <Image
               style={[styles.vectorIcon, styles.iconLayout]}
               resizeMode="cover"
-              source={require("../assets/vector2.png")}
+              source={require('../assets/vector2.png')}
             />
           </View>
         </View>
-      </View>
+      </Pressable>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
   alertFlexBox: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   alertmodalLayout: {
-    width: "100%",
-    position: "absolute",
+    width: '100%',
+    position: 'absolute',
   },
   alertmodal: {
     backgroundColor: Color.gray_900,
     paddingHorizontal: Padding.p_13xl,
     paddingTop: Padding.p_13xl,
     paddingBottom: Padding.p_109xl,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     left: 0,
     top: 0,
-    height: "100%",
+    height: '100%',
   },
   iconLayout: {
-    maxHeight: "100%",
-    maxWidth: "100%",
-    overflow: "hidden",
+    maxHeight: '100%',
+    maxWidth: '100%',
+    overflow: 'hidden',
   },
   icon: {
     width: 43,
@@ -96,51 +97,51 @@ const styles = StyleSheet.create({
   title: {
     fontSize: FontSize.typographyHeadingMedium_size,
     lineHeight: 22,
-    fontWeight: "700",
+    fontWeight: '700',
     fontFamily: FontFamily.typographyBodySmallBold,
     color: Color.primarySoBlack,
-    width: "100%",
-    textAlign: "center",
+    width: '100%',
+    textAlign: 'center',
   },
   title1: {
     fontSize: 12,
     lineHeight: 17,
-    fontWeight: "300",
+    fontWeight: '300',
     fontFamily: FontFamily.typographyBodyMediumLight,
-    color: "#8A8A8A",
+    color: '#8A8A8A',
     width: 235,
     marginTop: 8,
-    textAlign: "center",
+    textAlign: 'center',
   },
   titleParent: {
     marginTop: 24,
   },
   content: {
-    alignSelf: "stretch",
+    alignSelf: 'stretch',
     zIndex: 0,
   },
   icon1: {
-    height: "100%",
-    width: "100%",
+    height: '100%',
+    width: '100%',
     opacity: 0.2,
   },
   vector: {
-    left: "5.21%",
-    top: "5.21%",
-    right: "5.21%",
-    bottom: "5.21%",
-    width: "89.58%",
-    height: "89.58%",
-    position: "absolute",
+    left: '5.21%',
+    top: '5.21%',
+    right: '5.21%',
+    bottom: '5.21%',
+    width: '89.58%',
+    height: '89.58%',
+    position: 'absolute',
   },
   vectorIcon: {
-    height: "29.82%",
-    width: "29.82%",
-    top: "35.09%",
-    right: "35.09%",
-    bottom: "35.09%",
-    left: "35.09%",
-    position: "absolute",
+    height: '29.82%',
+    width: '29.82%',
+    top: '35.09%',
+    right: '35.09%',
+    bottom: '35.09%',
+    left: '35.09%',
+    position: 'absolute',
   },
   iconsaxlinearclosecircle: {
     top: 8,
@@ -148,13 +149,13 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     zIndex: 1,
-    overflow: "hidden",
-    position: "absolute",
+    overflow: 'hidden',
+    position: 'absolute',
   },
   alert: {
     borderRadius: 20,
     backgroundColor: Color.labelColorDarkPrimary,
-    shadowColor: "rgba(27, 27, 27, 0.16)",
+    shadowColor: 'rgba(27, 27, 27, 0.16)',
     shadowOffset: {
       width: 0,
       height: 8,
@@ -162,8 +163,8 @@ const styles = StyleSheet.create({
     shadowRadius: 16,
     elevation: 16,
     shadowOpacity: 1,
-    borderStyle: "solid",
-    borderColor: "#fff",
+    borderStyle: 'solid',
+    borderColor: '#fff',
     borderWidth: 1,
     width: 327,
     paddingHorizontal: Padding.p_5xl,

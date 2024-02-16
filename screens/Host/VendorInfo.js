@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from 'react';
 import {
   Image,
   StyleSheet,
@@ -6,21 +6,21 @@ import {
   ScrollView,
   ImageBackground,
   TouchableOpacity,
-} from "react-native";
-import { Text } from "native-base";
-import LinearGradient from "react-native-linear-gradient";
-import { Color, Padding } from "../../GlobalStyles";
-import apis from "../../apis";
-import { GradientButton, IconBg } from "../../components/Atoms";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { BackIcon } from "../../components/Icons";
-import FastImage from "react-native-fast-image";
-import { Skeleton } from "../Vendor/VendorProfileScreen/Skeleton";
-import { ServicesList, SpecialitiesList } from "../../components/Moleculs";
-import { PastProjectsList } from "../../components/Moleculs/PastProjectsList";
-import { useServiceGroups } from "../../hooks/useServiceGroups";
+} from 'react-native';
+import {Text} from 'native-base';
+import LinearGradient from 'react-native-linear-gradient';
+import {Color, Padding} from '../../GlobalStyles';
+import apis from '../../apis';
+import {GradientButton, IconBg} from '../../components/Atoms';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {BackIcon} from '../../components/Icons';
+import FastImage from 'react-native-fast-image';
+import {Skeleton} from '../Vendor/VendorProfileScreen/Skeleton';
+import {ServicesList, SpecialitiesList} from '../../components/Moleculs';
+import {PastProjectsList} from '../../components/Moleculs/PastProjectsList';
+import {useServiceGroups} from '../../hooks/useServiceGroups';
 
-const VendorInfo = ({ route, navigation }) => {
+const VendorInfo = ({route, navigation}) => {
   const [vendorProfile, setVendorProfile] = useState();
   const [services, setServices] = useState([]);
   const [album, setAlbum] = useState([]);
@@ -28,13 +28,13 @@ const VendorInfo = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const getServices = async () => {
-    const res = await apis.service.getAll({ vendorId: vendorProfile?.id });
+    const res = await apis.service.getAll({vendorId: vendorProfile?.id});
     setServices(res.data);
   };
 
   const getAlbum = async () => {
     try {
-      const res = await apis.album.getAll({ vendorId: vendorProfile?.id });
+      const res = await apis.album.getAll({vendorId: vendorProfile?.id});
 
       if (res && res.data) {
         setAlbum({
@@ -49,7 +49,9 @@ const VendorInfo = ({ route, navigation }) => {
 
   const getVendor = async () => {
     try {
-      const resp = await apis.vendor.getAll({ userId: vendorProfile.id });
+      console.log('vendorProfile.id}', vendorProfile.id);
+      const resp = await apis.vendor.getAll({userId: vendorProfile.id});
+      console.log('resp', resp);
       if (resp.data?.[0]) {
         setVendorProfile(resp.data[0]);
       }
@@ -59,7 +61,7 @@ const VendorInfo = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-    console.log("routerouteroute", route);
+    console.log('routerouteroute', route);
     if (route && route?.params?.params.id !== vendorProfile?.id) {
       setVendorProfile(route?.params?.params);
     }
@@ -73,23 +75,22 @@ const VendorInfo = ({ route, navigation }) => {
     }
   }, [vendorProfile]);
 
-  const { serviceGroups } = useServiceGroups(services);
+  const {serviceGroups} = useServiceGroups(services);
 
   const handleQuoteYourParty = () => {
-    navigation.navigate("RequestQuoteScreen", {
+    navigation.navigate('RequestQuoteScreen', {
       vendor: vendorProfile,
       services,
     });
   };
 
-  console.log("vendorProfile", vendorProfile);
+  console.log('vendorProfile', vendorProfile);
 
   return (
     <ScrollView
       style={styles.scrollView}
       keyboardShouldPersistTaps="handled"
-      bounces={false}
-    >
+      bounces={false}>
       <View style={styles.mainContainer}>
         <View
           style={[
@@ -97,8 +98,7 @@ const VendorInfo = ({ route, navigation }) => {
             {
               paddingTop: insets.top ? insets.top : 16,
             },
-          ]}
-        >
+          ]}>
           <IconBg style={styles.headerIcon}>
             <TouchableOpacity onPress={() => navigation.pop()} hitSlop={20}>
               <BackIcon />
@@ -108,21 +108,21 @@ const VendorInfo = ({ route, navigation }) => {
         <View style={styles.profileBackground}>
           <FastImage
             source={{
-              uri: vendorProfile?.background || "",
+              uri: vendorProfile?.background || '',
             }}
             style={styles.profileBgImageContainer}
           />
         </View>
         <LinearGradient
-          colors={["#FF077E", "transparent"]}
-          start={{ x: 0, y: 1 }}
-          end={{ x: 0, y: 0 }}
+          colors={['#FF077E', 'transparent']}
+          start={{x: 0, y: 1}}
+          end={{x: 0, y: 0}}
           style={styles.bgGradient}
         />
         <View style={styles.avatarContainer}>
           <FastImage
             source={{
-              uri: vendorProfile?.avatar || "",
+              uri: vendorProfile?.avatar || '',
             }}
             style={styles.avatarBg}
           />
@@ -136,7 +136,7 @@ const VendorInfo = ({ route, navigation }) => {
           <ImageBackground
             style={styles.background}
             resizeMode="repeat"
-            source={require("../../assets/bg7.png")}
+            source={require('../../assets/bg7.png')}
           />
           {isLoading ? (
             <Skeleton />
@@ -155,7 +155,7 @@ const VendorInfo = ({ route, navigation }) => {
                       <Text style={styles.areaText}>
                         {vendorProfile?.distance
                           ? vendorProfile.distance
-                          : "00"}{" "}
+                          : '00'}{' '}
                         miles
                       </Text>
                     </View>
@@ -173,7 +173,7 @@ const VendorInfo = ({ route, navigation }) => {
                   <View style={styles.sectionContainer}>
                     <Text style={styles.sectionTitle}>Business Type</Text>
                     <View style={styles.tagsContainer}>
-                      {Object.keys(serviceGroups).map((name) => {
+                      {Object.keys(serviceGroups).map(name => {
                         return (
                           <GradientButton
                             key={name}
@@ -196,7 +196,7 @@ const VendorInfo = ({ route, navigation }) => {
                   <View style={styles.sectionContainer}>
                     <Text style={styles.sectionTitle}>Description</Text>
                     <Text style={styles.descriptionText}>
-                      {vendorProfile.description || "-"}
+                      {vendorProfile.description || '-'}
                     </Text>
                   </View>
                 )}
@@ -218,52 +218,52 @@ const VendorInfo = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   scrollView: {
-    backgroundColor: "#000",
-    width: "100%",
+    backgroundColor: '#000',
+    width: '100%',
   },
   mainContainer: {
     flex: 1,
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
   },
   header: {
-    position: "absolute",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    position: 'absolute',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingBottom: Padding.p_base,
     paddingHorizontal: 16,
     zIndex: 10,
     left: 0,
     right: 0,
   },
-  headerIcon: { width: 40, height: 40 },
+  headerIcon: {width: 40, height: 40},
   iconLayout: {
     height: 32,
     width: 32,
   },
   bgIcon: {
-    width: "100%",
-    height: "100%",
+    width: '100%',
+    height: '100%',
     left: 0,
-    position: "absolute",
+    position: 'absolute',
   },
   profileBackground: {
-    width: "100%",
+    width: '100%',
     height: 400,
-    alignItems: "center",
-    justifyContent: "center",
-    position: "relative",
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
   },
   profileBgImageContainer: {
-    width: "100%",
+    width: '100%',
     height: 400,
   },
   bgGradient: {
     zIndex: 20,
     top: 200,
     height: 200,
-    width: "100%",
-    position: "absolute",
+    width: '100%',
+    position: 'absolute',
   },
   avatarContainer: {
     width: 76,
@@ -283,14 +283,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 28,
     color: Color.textMainWhite,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     zIndex: 40,
     bottom: 172,
     marginLeft: 114,
   },
   forms: {
-    backgroundColor: "black",
-    width: "100%",
+    backgroundColor: 'black',
+    width: '100%',
     marginTop: -170,
     zIndex: 30,
     borderTopLeftRadius: 32,
@@ -298,20 +298,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   background: {
-    height: "120%",
-    position: "absolute",
+    height: '120%',
+    position: 'absolute',
     right: 0,
     top: -10,
     left: -250,
   },
   areaInfo: {
-    flexDirection: "column",
+    flexDirection: 'column',
     marginTop: 8,
     marginBottom: 24,
     marginLeft: 90,
   },
   milesInfo: {
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   cityText: {
     fontSize: 16,
@@ -321,34 +321,34 @@ const styles = StyleSheet.create({
   areaText: {
     fontSize: 16,
     lineHeight: 24,
-    fontWeight: "700",
+    fontWeight: '700',
     color: Color.textMainWhite,
   },
   sectionsContainer: {
-    flexDirection: "column",
+    flexDirection: 'column',
     gap: 40,
     flex: 1,
     paddingBottom: 48,
   },
   sectionContainer: {
-    flexDirection: "column",
+    flexDirection: 'column',
     gap: 16,
   },
   sectionTitle: {
     fontSize: 16,
     lineHeight: 24,
-    fontWeight: "700",
+    fontWeight: '700',
     color: Color.textMainWhite,
   },
   descriptionText: {
     fontSize: 15,
     lineHeight: 22,
-    color: "#CECDCE",
+    color: '#CECDCE',
   },
   tagsContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: 8,
-    flexWrap: "wrap",
+    flexWrap: 'wrap',
   },
   businessType: {
     marginTop: 20,
