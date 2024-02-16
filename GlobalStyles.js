@@ -63,6 +63,8 @@ export const Color = {
   gray300: "#8A8A8A",
   firebrick: "#cf2a2a",
   primaryPink: "#FF077E",
+  gradient: "rgba(255, 185, 221, 0.06)",
+  border: "rgba(255, 0, 132, 0.46)"
 };
 /* Paddings */
 export const Padding = {
