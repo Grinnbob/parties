@@ -382,7 +382,7 @@ const PhotoAlbumScreen = ({route, navigation}) => {
 
 const styles = StyleSheet.create({
   formBg: {
-    backgroundColor: Color.appColorGradient,
+    backgroundColor: Color.gradient,
     justifyContent: 'center',
   },
   labelLayout: {
@@ -417,12 +417,12 @@ const styles = StyleSheet.create({
   },
   form1Border: {
     marginTop: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
+    borderWidth: 0.5,
     borderStyle: 'solid',
-    backgroundColor: Color.gray_700,
     borderRadius: Border.br_5xs,
     width: '100%',
+    backgroundColor: Color.gradient,
+    borderColor: Color.border,
   },
   viewSpaceBlock: {
     paddingVertical: Padding.p_9xs,
@@ -457,13 +457,13 @@ const styles = StyleSheet.create({
     shadowRadius: 15,
     elevation: 15,
     shadowOpacity: 1,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
+    borderWidth: 0.5,
     paddingVertical: Padding.p_xs,
     alignItems: 'center',
     paddingHorizontal: Padding.p_5xl,
     flexDirection: 'row',
-    backgroundColor: Color.appColorGradient,
+    backgroundColor: Color.gradient,
+    borderColor: Color.border,
     marginTop: 10,
   },
   title1: {
@@ -493,11 +493,11 @@ const styles = StyleSheet.create({
   images: {
     height: 200,
     marginTop: 24,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
+    borderWidth: 0.5,
     borderStyle: 'solid',
-    backgroundColor: Color.gray_700,
     borderRadius: Border.br_5xs,
+    backgroundColor: Color.gradient,
+    borderColor: Color.border,
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
@@ -540,7 +540,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Padding.p_xs,
     borderRadius: Border.br_81xl,
     alignSelf: 'stretch',
-    backgroundColor: Color.appColorGradient,
+    backgroundColor: Color.gradient,
     justifyContent: 'center',
   },
   view3: {
