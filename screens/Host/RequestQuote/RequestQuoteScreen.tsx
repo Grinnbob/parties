@@ -89,8 +89,7 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
   const navigation = useNavigation();
   const toast = useToast();
   const [currentStep, setCurrentStep] = useState(
-    RequestQuoteStepEnum.ADDITIONAL_DETAILS
-    // RequestQuoteStepEnum.SERVICE_SELECT
+    RequestQuoteStepEnum.PARTY_SELECT
   );
   const [quote, setQuote] = useState<RequestQuote>({
     party: {
