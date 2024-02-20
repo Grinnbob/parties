@@ -8,16 +8,17 @@
  * @format
  */
 
-import React, { useEffect } from "react";
-import { View } from "react-native";
-import { RecoilRoot } from "recoil";
-import Wrapper from "./theme/Wrapper";
-import { RootNavigator } from "./navigation/RootNavigator";
-import TestFairy from "react-native-testfairy";
-import Config from "react-native-config";
-import { ActionSheetProvider } from "@expo/react-native-action-sheet";
-import { SocketProvider } from "./components/Chat";
-import { MenuProvider } from "react-native-popup-menu";
+import React, {useEffect} from 'react';
+import {View} from 'react-native';
+import {RecoilRoot} from 'recoil';
+import Wrapper from './theme/Wrapper';
+import {RootNavigator} from './navigation/RootNavigator';
+import TestFairy from 'react-native-testfairy';
+import Config from 'react-native-config';
+import {ActionSheetProvider} from '@expo/react-native-action-sheet';
+import {SocketProvider} from './components/Chat';
+import {MenuProvider} from 'react-native-popup-menu';
+import {StripeProvider} from '@stripe/stripe-react-native';
 
 const App = () => {
   useEffect(() => {
@@ -28,13 +29,16 @@ const App = () => {
       <View
         style={{
           flex: 1,
-        }}
-      >
+        }}>
         <Wrapper>
           <RecoilRoot>
             <ActionSheetProvider>
               <SocketProvider>
-                <RootNavigator />
+                <StripeProvider
+                  publishableKey={Config.STRIPE_PUBLISHABLE_KEY}
+                  merchantIdentifier={Config.STRIPE_MERCHANT_IDENTIFIER}>
+                  <RootNavigator />
+                </StripeProvider>
               </SocketProvider>
             </ActionSheetProvider>
           </RecoilRoot>
