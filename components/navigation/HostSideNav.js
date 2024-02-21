@@ -15,6 +15,12 @@ import { FontFamily, FontSize, Padding, Color } from "../../GlobalStyles";
 import useGlobalState from "../../stateManagement/hook";
 import StateTypes from "../../stateManagement/StateTypes";
 import apis from "../../apis";
+import { useRecoilState } from "recoil";
+import {
+  vendorProfileServiceAtom,
+  vendorProfileAlbumAtom,
+  vendorProfileAtom,
+} from "../../stateManagement";
 
 const HostSideNav = ({}) => {
   const { toggleDrawer, navigate } = useNavigation();
@@ -26,6 +32,9 @@ const HostSideNav = ({}) => {
     StateTypes.user.key,
     StateTypes.user.default
   );
+  const [, setAlbum] = useRecoilState(vendorProfileAlbumAtom);
+  const [, setService] = useRecoilState(vendorProfileServiceAtom);
+  const [, setProfile] = useRecoilState(vendorProfileAtom);
 
   const switchToVendor = async () => {
     try {
@@ -37,6 +46,15 @@ const HostSideNav = ({}) => {
 
   const logout = async () => {
     await apis.device.deleteById(setToken);
+    setAlbum({
+      isFetched: false,
+      data: [],
+    });
+    setService({
+      isFetched: false,
+      data: [],
+    });
+    setProfile({});
   };
 
   return (

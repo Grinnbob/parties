@@ -107,6 +107,10 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
   );
   const [isVendorLoading, setIsVendorLoading] = useState(!vendor?.id);
   const [isAiDescriptionLoading, setIsAiDescriptionLoading] = useState(false);
+  const [, setToken] = useGlobalState(
+    StateTypes.token.key,
+    StateTypes.token.default
+  );
 
   const handleServiceDeleted = useCallback(
     (service: ServiceModel) => {
@@ -452,15 +456,27 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
               ]}
             >
               <TouchableOpacity
-                onPress={() => {
-                  setSelectedMedia({});
-                  navigation.pop();
+                onPress={async () => {
+                  if (!isCreate) {
+                    setSelectedMedia({});
+                    navigation.pop();
+                  } else {
+                    await apis.device.deleteById(setToken);
+                    setAlbum({
+                      isFetched: false,
+                      data: [],
+                    });
+                    setServices({
+                      isFetched: false,
+                      data: [],
+                    });
+                    setVendor({});
+                  }
                 }}
                 hitSlop={20}
-                disabled={isCreate}
                 style={styles.backIconContainer}
               >
-                {!isCreate && <BackIcon />}
+                <BackIcon />
               </TouchableOpacity>
               <Text style={styles.editPageText}>Edit Page</Text>
               <TouchableOpacity
