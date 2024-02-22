@@ -34,11 +34,11 @@ const App = () => {
           <RecoilRoot>
             <ActionSheetProvider>
               <SocketProvider>
-                {/* <StripeProvider
+                <StripeProvider
                   publishableKey={Config.STRIPE_PUBLISHABLE_KEY}
-                  merchantIdentifier={Config.STRIPE_MERCHANT_IDENTIFIER}> */}
+                  merchantIdentifier={Config.STRIPE_MERCHANT_IDENTIFIER}>
                   <RootNavigator />
-                {/* </StripeProvider> */}
+                </StripeProvider>
               </SocketProvider>
             </ActionSheetProvider>
           </RecoilRoot>
