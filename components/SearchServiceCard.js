@@ -35,11 +35,16 @@ const SearchServiceCard = ({
 
   const getBackground = async () => {
     try {
-      const res = await apis.document.getAll({
-        vendorId: vendor?.id,
-      });
+      let background = vendor?.background;
+      if (!background) {
+        const res = await apis.document.getAll({
+          vendorId: vendor?.id,
+        });
 
-      setBackgroundLink(res.data[0].link);
+        background = res?.data[0]?.link;
+      }
+
+      setBackgroundLink(background);
     } catch (error) {
       console.log(error);
     }
