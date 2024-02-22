@@ -192,6 +192,25 @@ const AccountSettingScreen = ({ route }) => {
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
+                    marginBottom: 5,
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      fontWeight: "500",
+                      color: password?.length >= 8 ? "#FFFFFF" : "#8A8A8A",
+                    }}
+                  >
+                    Password length must be 8 characters at least
+                  </Text>
+                  {password?.length >= 8 ? <Check /> : <></>}
+                </VStack>
+                <VStack
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
                   }}
                 >
                   <Text
