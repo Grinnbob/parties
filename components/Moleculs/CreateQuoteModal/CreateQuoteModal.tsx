@@ -3,7 +3,6 @@ import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import ReactNativeModal from "react-native-modal";
 import { styles } from "./styles";
 import { AntDesign } from "@expo/vector-icons";
-import { GradientButton } from "../../Atoms";
 import { SelectInput, TextInput } from "../../Input";
 import { useLoadable } from "../../../hooks";
 import {
@@ -18,6 +17,8 @@ import dayjs from "dayjs";
 import { useRecoilState } from "recoil";
 import { useToast } from "native-base";
 import { QuoteModel, QuoteStatusEnum } from "../../../models";
+import MidGradientButton from "../../../components/MidGradientButton";
+
 
 type Quote = {
   price: string;
@@ -219,14 +220,21 @@ export const CreateQuoteModal: React.FC<CreateQuoteModalProps> = ({
               )}
             </View>
           </View>
-          <GradientButton
-            text="Submit"
+          <MidGradientButton
+            label="Submit"
             disabled={
               !quote.remainder || !quote.downPayment || Number(quote.price) <= 0
             }
-            textStyle={styles.submitButtonText}
-            loading={isLoading}
+            isLoading={isLoading}
             onPress={handleSubmit}
+            formPosition="unset"
+            formTop="unset"
+            formLeft="unset"
+            formBackgroundColor="unset"
+            formMarginTop="unset"
+            labelColor="#fff"
+            loadingText="Loading..."
+            width="unset"
           />
         </View>
       </ReactNativeModal>
