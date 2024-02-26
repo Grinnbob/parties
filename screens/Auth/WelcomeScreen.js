@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import MidGradientButton from "../../components/MidGradientButton";
-import { Padding, Color, FontFamily, FontSize } from "../../GlobalStyles";
+import { Color, FontFamily, FontSize } from "../../GlobalStyles";
 import Layout from "../../utils/layout";
 
 const WelcomeScreen = () => {
