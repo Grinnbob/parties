@@ -74,7 +74,7 @@ const VendorReadySell = ({ route }) => {
       <View style={{ width: "100%", alignItems: "center", marginBottom: 30 }}>
         <MidGradientButton
           onPress={onNext}
-          label="Add service package"
+          label="Go to my service profile page"
           formPosition="Next"
           formTop="unset"
           formLeft="unset"
