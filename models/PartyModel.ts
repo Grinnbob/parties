@@ -14,4 +14,5 @@ export type PartyModel = {
   point?: [number, number];
   attendingMin: number;
   attendingMax: number;
+  image?: string;
 };

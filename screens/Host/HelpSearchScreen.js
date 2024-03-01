@@ -49,15 +49,21 @@ const HelpSearchScreen = () => {
 
   useEffect(() => {
     const grabAllVendor = async () => {
+      if (!debounceSearchText) {
+        setVendorList([]);
+        return;
+      }
       try {
         setIsLoading(true);
         const res = await apis.vendor.getSearchResults({
           search: debounceSearchText,
         });
 
-        apis.recentSearch.create({name: debounceSearchText}).then(() => {
-          grabRecentSearch();
-        });
+        if (recentResult?.[0]?.name !== debounceSearchText) {
+          apis.recentSearch.create({name: debounceSearchText}).then(() => {
+            grabRecentSearch();
+          });
+        }
 
         setVendorList(res.data);
         setIsLoading(false);
@@ -71,6 +77,8 @@ const HelpSearchScreen = () => {
   const handleSearchTextChange = str => {
     setSearchText(str);
   };
+
+  console.log('recentResult', recentResult);
 
   return (
     <View

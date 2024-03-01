@@ -1,26 +1,17 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { ImageBackground, TouchableOpacity, View } from "react-native";
-import { styles } from "./styles";
-import { useNavigation } from "@react-navigation/native";
-import { Divider, GradientButton, Tabs } from "../../../components/Atoms";
-import { CreateQuoteModal } from "../../../components/Moleculs/CreateQuoteModal/CreateQuoteModal";
-import { DenyQuoteModal, PartyInfo } from "../../../components/Moleculs";
-import {
-  ConversationModel,
-  QuoteModel,
-  QuoteStatusEnum,
-} from "../../../models";
-import { NotFoundImageIcon } from "../../../components/Icons";
-import { BackButton } from "../../../components/navigation/BackButton";
-import apis from "../../../apis";
-import { useRecoilState } from "recoil";
-import { selectedQuoteAtom } from "../../../stateManagement";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {ImageBackground, TouchableOpacity, View} from 'react-native';
+import {styles} from './styles';
+import {useNavigation} from '@react-navigation/native';
+import {Divider, GradientButton, Tabs} from '../../../components/Atoms';
+import {CreateQuoteModal} from '../../../components/Moleculs/CreateQuoteModal/CreateQuoteModal';
+import {DenyQuoteModal, PartyInfo} from '../../../components/Moleculs';
+import {ConversationModel, QuoteModel, QuoteStatusEnum} from '../../../models';
+import {NotFoundImageIcon} from '../../../components/Icons';
+import {BackButton} from '../../../components/navigation/BackButton';
+import apis from '../../../apis';
+import {useRecoilState} from 'recoil';
+import {selectedQuoteAtom} from '../../../stateManagement';
+import FastImage from 'react-native-fast-image';
 
 type PartyDetailsScreenProps = {
   route: {
@@ -30,19 +21,19 @@ type PartyDetailsScreenProps = {
   };
 };
 
-export const EventScreen: React.FC<PartyDetailsScreenProps> = ({ route }) => {
+export const EventScreen: React.FC<PartyDetailsScreenProps> = ({route}) => {
   const navigation = useNavigation();
-  const { push } = navigation;
+  const {push} = navigation;
   const [isMessagePressed, setIsMessagedPressed] = useState(false);
   const tabs = useMemo(() => {
     return [
       {
-        id: "eventDetails",
-        label: "Event Details",
+        id: 'eventDetails',
+        label: 'Event Details',
       },
       {
-        id: "messages",
-        label: "Messages",
+        id: 'messages',
+        label: 'Messages',
         loading: isMessagePressed,
       },
     ];
@@ -50,29 +41,29 @@ export const EventScreen: React.FC<PartyDetailsScreenProps> = ({ route }) => {
   const [selectedTab, setSelectedTab] = useState(tabs[0].id);
   const [isConversationLoading, setIsConversationLoading] = useState(true);
   const [conversation, setConversation] = useState<ConversationModel | null>(
-    null
+    null,
   );
   const [isDenyModalOpen, setIsDenyModalOpen] = useState(false);
   const [isCreateQuoteModalOpen, setIsCreateQuoteModalOpen] = useState(false);
 
   const toggleDenyModal = useCallback(() => {
-    setIsDenyModalOpen((prevState) => {
+    setIsDenyModalOpen(prevState => {
       return !prevState;
     });
   }, []);
 
   const toggleQuoteModal = useCallback(() => {
-    setIsCreateQuoteModalOpen((prevState) => {
+    setIsCreateQuoteModalOpen(prevState => {
       return !prevState;
     });
   }, []);
 
   const isInitialized = useRef(false);
   const [selectedQuote] = useRecoilState(selectedQuoteAtom);
-  const { party } = selectedQuote as QuoteModel;
+  const {party} = selectedQuote as QuoteModel;
 
   useEffect(() => {
-    if (!isInitialized.current && selectedQuote?.status === "new") {
+    if (!isInitialized.current && selectedQuote?.status === 'new') {
       isInitialized.current = true;
       apis.quote.changeStatus(selectedQuote?.id!, QuoteStatusEnum.PENDING);
     }
@@ -81,7 +72,7 @@ export const EventScreen: React.FC<PartyDetailsScreenProps> = ({ route }) => {
   const handleTabChange = (id: string) => {
     if (id === tabs[1].id) {
       if (!isConversationLoading) {
-        push("EventMessageScreen", {
+        push('EventMessageScreen', {
           conversationId: conversation?.id,
         });
         return;
@@ -98,7 +89,7 @@ export const EventScreen: React.FC<PartyDetailsScreenProps> = ({ route }) => {
 
   useEffect(() => {
     if (conversation?.id && isMessagePressed) {
-      push("EventMessageScreen", {
+      push('EventMessageScreen', {
         conversationId: conversation?.id,
       });
       setIsMessagedPressed(false);
@@ -125,16 +116,26 @@ export const EventScreen: React.FC<PartyDetailsScreenProps> = ({ route }) => {
       <ImageBackground
         style={styles.bgIcon}
         resizeMode="cover"
-        source={require("../../../assets/bg11.png")}
+        source={require('../../../assets/bg11.png')}
       />
       <View style={styles.container}>
         <View style={styles.header}>
           <View style={styles.partyImageNotFound}>
-            <NotFoundImageIcon
-              width="120"
-              height="120"
-              style={styles.notFoundImageIcon}
-            />
+            {party.image ? (
+              <FastImage
+                source={{
+                  uri: party?.image,
+                }}
+                style={styles.image}
+                resizeMode="cover"
+              />
+            ) : (
+              <NotFoundImageIcon
+                width="120"
+                height="120"
+                style={styles.notFoundImageIcon}
+              />
+            )}
           </View>
           <View style={styles.headerInnerContainer}>
             <TouchableOpacity style={styles.backButtonContainer}>
@@ -145,7 +146,7 @@ export const EventScreen: React.FC<PartyDetailsScreenProps> = ({ route }) => {
         <Tabs value={selectedTab} tabs={tabs} onChange={handleTabChange} />
         <Divider />
         <View style={styles.content}>
-          {selectedTab === "eventDetails" && (
+          {selectedTab === 'eventDetails' && (
             <>
               <PartyInfo party={party} />
               {(selectedQuote?.status === QuoteStatusEnum.NEW ||

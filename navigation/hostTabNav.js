@@ -1,14 +1,12 @@
-import React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeScreen from "../screens/Host/HomeScreen";
-import ServiceSelectScreen from "../screens/Host/ServiceSelectScreen";
-import BottomNavContainer from "../components/navigation/CustomBottomTabBar";
-import HelpSearchScreen from "../screens/Host/HelpSearchScreen";
-import ServiceDetails from "../screens/Host/ServiceDetail";
-import VendorInfo from "../screens/Host/VendorInfo";
-import { RequestQuoteScreen } from "../screens/Host/RequestQuote";
-import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
-import { Platform } from "react-native";
+import React from 'react';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import HomeScreen from '../screens/Host/HomeScreen';
+import ServiceSelectScreen from '../screens/Host/ServiceSelectScreen';
+import HelpSearchScreen from '../screens/Host/HelpSearchScreen';
+import ServiceDetails from '../screens/Host/ServiceDetail';
+import VendorInfo from '../screens/Host/VendorInfo';
+import {RequestQuoteScreen} from '../screens/Host/RequestQuote';
+import VendorCameraRoll from '../screens/Vendor/Profile/VendorCameraRoll';
 
 // const BottomTab = createBottomTabNavigator();
 
@@ -23,10 +21,9 @@ export default function BottomTabNavigator() {
     <Stack.Navigator
       initialRouteName="HomeNavigator"
       // tabBar={TabBar}
-      screenOptions={({ route }) => ({
+      screenOptions={({route}) => ({
         headerShown: false,
-      })}
-    >
+      })}>
       <Stack.Screen name="HomeNavigator" component={HomeNavigator} />
       {/* <Stack.Screen name="Services" component={ServiceNavigator} /> */}
     </Stack.Navigator>
@@ -35,38 +32,43 @@ export default function BottomTabNavigator() {
 
 const HomeStack = createNativeStackNavigator();
 
-function HomeNavigator({ navigation, route }) {
+function HomeNavigator({navigation, route}) {
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen
         name="ServiceSelectScreen"
         component={ServiceSelectScreen}
-        options={{ headerShown: false, gestureEnabled: false }}
+        options={{headerShown: false, gestureEnabled: false}}
       />
       <HomeStack.Screen
         name="HomeScreen"
         component={HomeScreen}
-        options={{ headerShown: false, gestureEnabled: false }}
+        options={{headerShown: false, gestureEnabled: false}}
       />
       <HomeStack.Screen
         name="HelpSearchScreen"
         component={HelpSearchScreen}
-        options={{ headerShown: false, gestureEnabled: false }}
+        options={{headerShown: false, gestureEnabled: false}}
       />
       <HomeStack.Screen
         name="ServiceDetails"
         component={ServiceDetails}
-        options={{ headerShown: false, gestureEnabled: false }}
+        options={{headerShown: false, gestureEnabled: false}}
       />
       <HomeStack.Screen
         name="VendorInfo"
         component={VendorInfo}
-        options={{ headerShown: false, gestureEnabled: false }}
+        options={{headerShown: false, gestureEnabled: false}}
       />
       <HomeStack.Screen
         name="RequestQuoteScreen"
         component={RequestQuoteScreen}
-        options={{ headerShown: false, gestureEnabled: false }}
+        options={{headerShown: false, gestureEnabled: false}}
+      />
+      <HomeStack.Screen
+        name="CameraEdit"
+        component={VendorCameraRoll}
+        options={{headerShown: false, gestureEnabled: false}}
       />
     </HomeStack.Navigator>
   );
@@ -80,7 +82,7 @@ function ServiceNavigator() {
       <ServiceStack.Screen
         name="Services"
         component={Services}
-        options={{ headerShown: false, gestureEnabled: false }}
+        options={{headerShown: false, gestureEnabled: false}}
       />
     </ServiceStack.Navigator>
   );
@@ -94,7 +96,7 @@ function QuoteNavigator() {
       <QuoteStack.Screen
         name="Quotes"
         component={Quotes}
-        options={{ headerShown: false, gestureEnabled: false }}
+        options={{headerShown: false, gestureEnabled: false}}
       />
     </QuoteStack.Navigator>
   );
@@ -108,27 +110,27 @@ function CalendarNavigator() {
       <CalendarStack.Screen
         name="Calendar"
         component={VendorProfileScreen}
-        options={{ headerShown: false, gestureEnabled: false }}
+        options={{headerShown: false, gestureEnabled: false}}
       />
       <CalendarStack.Screen
         name="Service"
         component={ServicePackageScreen}
-        options={{ headerShown: false, gestureEnabled: false }}
+        options={{headerShown: false, gestureEnabled: false}}
       />
       <CalendarStack.Screen
         name="Album"
         component={AlbumTypeScreen}
-        options={{ headerShown: false, gestureEnabled: false }}
+        options={{headerShown: false, gestureEnabled: false}}
       />
       <CalendarStack.Screen
         name="Holiday"
         component={HolidayThemeScreen}
-        options={{ headerShown: false, gestureEnabled: false }}
+        options={{headerShown: false, gestureEnabled: false}}
       />
       <CalendarStack.Screen
         name="Photo"
         component={PhotoAlbumScreen}
-        options={{ headerShown: false, gestureEnabled: false }}
+        options={{headerShown: false, gestureEnabled: false}}
       />
     </CalendarStack.Navigator>
   );
@@ -142,7 +144,7 @@ function NotificationNavigator() {
       <NotificationStack.Screen
         name="Notification"
         component={Notifications}
-        options={{ headerShown: false, gestureEnabled: false }}
+        options={{headerShown: false, gestureEnabled: false}}
       />
     </NotificationStack.Navigator>
   );

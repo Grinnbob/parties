@@ -1,39 +1,39 @@
-import { StyleSheet } from "react-native";
-import { Border, Color } from "../../../GlobalStyles";
+import {StyleSheet} from 'react-native';
+import {Border, Color} from '../../../GlobalStyles';
 
 export const styles = StyleSheet.create({
   root: {
     padding: 10,
-    flexDirection: "column",
+    flexDirection: 'column',
     borderRadius: 24,
-    backgroundColor: "#000000B2",
+    backgroundColor: '#000000B2',
   },
   imageContainer: {
     height: 128,
-    width: "100%",
-    position: "relative",
+    width: '100%',
+    position: 'relative',
   },
   dateContainer: {
     paddingHorizontal: 8,
     paddingVertical: 6,
-    position: "absolute",
+    position: 'absolute',
     top: 8,
     left: 6,
     zIndex: 100,
-    backgroundColor: "rgba(0, 0, 0, 0.70)",
+    backgroundColor: 'rgba(0, 0, 0, 0.70)',
     borderRadius: 8,
   },
-  partyImage: { width: "100%", resizeMode: "cover", borderRadius: 18 },
+  partyImage: {width: '100%', resizeMode: 'cover', borderRadius: 18},
   partyImageNotFound: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     height: 128,
     maxHeight: 128,
-    width: "100%",
-    resizeMode: "cover",
+    width: '100%',
+    resizeMode: 'cover',
     borderRadius: Border.br_5xs,
-    overflow: "hidden",
+    overflow: 'hidden',
     backgroundColor: Color.gray300,
   },
   notFoundIcon: {
@@ -44,12 +44,12 @@ export const styles = StyleSheet.create({
     lineHeight: 16,
     color: Color.textMainWhite,
     borderRadius: 8,
-    textTransform: "uppercase",
+    textTransform: 'uppercase',
   },
   descriptionContainer: {
     paddingVertical: 9,
     paddingHorizontal: 12,
-    flexDirection: "column",
+    flexDirection: 'column',
   },
   partyNameText: {
     fontSize: 14,
@@ -61,5 +61,9 @@ export const styles = StyleSheet.create({
     lineHeight: 16,
     color: Color.gray300,
     marginTop: 4,
+  },
+  image: {
+    width: '100%',
+    height: 128,
   },
 });
