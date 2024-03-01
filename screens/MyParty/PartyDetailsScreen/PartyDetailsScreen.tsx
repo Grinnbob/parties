@@ -1,16 +1,15 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { ImageBackground, TouchableOpacity, View } from "react-native";
-import { styles } from "./styles";
-import { Tabs } from "../../../components/Atoms";
-import { useNavigation } from "@react-navigation/native";
-import { BackButton } from "../../../components/navigation/BackButton";
-import { ConversationModel, PartyModel } from "../../../models";
-import { NotFoundImageIcon } from "../../../components/Icons";
-import useGlobalState from "../../../stateManagement/hook";
-import StateTypes from "../../../stateManagement/StateTypes";
-import apis from "../../../apis";
-import { PartyInfo } from "../../../components/Moleculs";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import React, {useEffect, useMemo, useState} from 'react';
+import {ImageBackground, TouchableOpacity, View} from 'react-native';
+import {styles} from './styles';
+import {Tabs} from '../../../components/Atoms';
+import {useNavigation} from '@react-navigation/native';
+import {BackButton} from '../../../components/navigation/BackButton';
+import {ConversationModel, PartyModel} from '../../../models';
+import {NotFoundImageIcon} from '../../../components/Icons';
+import apis from '../../../apis';
+import {PartyInfo} from '../../../components/Moleculs';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import FastImage from 'react-native-fast-image';
 
 type PartyDetailsScreenProps = {
   route: {
@@ -25,28 +24,28 @@ export const PartyDetailsScreen: React.FC<PartyDetailsScreenProps> = ({
 }) => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
-  const { push } = navigation;
+  const {push} = navigation;
   const [isMessagePressed, setIsMessagedPressed] = useState(false);
   const tabs = useMemo(() => {
     return [
       {
-        id: "eventDetails",
-        label: "Event Details",
+        id: 'eventDetails',
+        label: 'Event Details',
       },
       {
-        id: "messages",
-        label: "Messages",
+        id: 'messages',
+        label: 'Messages',
         loading: isMessagePressed,
       },
     ];
   }, [isMessagePressed]);
   const [selectedTab, setSelectedTab] = useState(tabs[0].id);
   const [conversation, setConversation] = useState<ConversationModel | null>(
-    null
+    null,
   );
   const [isConversationLoading, setIsConversationLoading] = useState(true);
 
-  const { party } = route.params;
+  const {party} = route.params;
 
   useEffect(() => {
     const getConversationId = async () => {
@@ -62,7 +61,7 @@ export const PartyDetailsScreen: React.FC<PartyDetailsScreenProps> = ({
   const handleTabChange = (id: string) => {
     if (id === tabs[1].id) {
       if (!isConversationLoading) {
-        push("PartyMessageScreen", {
+        push('PartyMessageScreen', {
           party,
           conversationId: conversation?.id,
         });
@@ -83,23 +82,32 @@ export const PartyDetailsScreen: React.FC<PartyDetailsScreenProps> = ({
       <ImageBackground
         style={styles.bgIcon}
         resizeMode="cover"
-        source={require("../../../assets/bg11.png")}
+        source={require('../../../assets/bg11.png')}
       />
       <View style={styles.container}>
         <View style={styles.header}>
           <View style={styles.partyImageNotFound}>
-            <NotFoundImageIcon
-              width="120"
-              height="120"
-              style={styles.notFoundImageIcon}
-            />
+            {party.image ? (
+              <FastImage
+                source={{
+                  uri: party?.image,
+                }}
+                style={styles.image}
+                resizeMode="cover"
+              />
+            ) : (
+              <NotFoundImageIcon
+                width="120"
+                height="120"
+                style={styles.notFoundImageIcon}
+              />
+            )}
           </View>
           <View
             style={[
               styles.headerInnerContainer,
-              { marginTop: insets.top ? insets.top : 16 },
-            ]}
-          >
+              {marginTop: insets.top ? insets.top : 16},
+            ]}>
             <TouchableOpacity style={styles.backButtonContainer}>
               <BackButton />
             </TouchableOpacity>
@@ -112,8 +120,7 @@ export const PartyDetailsScreen: React.FC<PartyDetailsScreenProps> = ({
               styles.eventDetailsContainer,
               styles.tabContainer,
               tabs[0].id === selectedTab ? styles.visibleTab : undefined,
-            ]}
-          >
+            ]}>
             <PartyInfo party={party} />
           </View>
         </View>

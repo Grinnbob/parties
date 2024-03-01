@@ -1,6 +1,6 @@
-import * as API from "../base";
-import { QuoteModel } from "../../models";
-const Base = "quote";
+import * as API from '../base';
+import {QuoteModel} from '../../models';
+const Base = 'quote';
 
 export const create = async (data: {
   assembling: string;
@@ -14,7 +14,7 @@ export const create = async (data: {
   return response;
 };
 
-export const getAll = async (params: { userId?: number }) => {
+export const getAll = async (params: {userId?: number}) => {
   const urlSearchParams = new URLSearchParams();
   Object.keys(params).forEach((key: string) => {
     urlSearchParams.append(key, String(params[key as keyof typeof params]));
@@ -30,7 +30,7 @@ export const getMy = async () => {
 
 export const changeStatus = async (
   id: number,
-  status: QuoteModel["status"]
+  status: QuoteModel['status'],
 ) => {
   const response = await API.putApi(`${Base}/${id}`, {
     status,
@@ -42,13 +42,13 @@ export const approveQuote = async (
   id: number,
   data: Pick<
     QuoteModel,
-    | "due"
-    | "downpayment"
-    | "paymentOption"
-    | "price"
-    | "status"
-    | "cancellationTerm"
-  >
+    | 'due'
+    | 'downpayment'
+    | 'paymentOption'
+    | 'price'
+    | 'status'
+    | 'cancellationTerm'
+  >,
 ) => {
   const response = await API.putApi(`${Base}/${id}`, data);
   return response;

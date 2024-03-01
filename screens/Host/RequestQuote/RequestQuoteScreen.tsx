@@ -1,35 +1,34 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { styles } from "./styles";
+import React, {useEffect, useMemo, useState} from 'react';
+import {styles} from './styles';
 import {
   Image,
   ImageBackground,
-  Keyboard,
   Pressable,
-  ScrollView,
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { GradientButton, ProgressBar } from "../../../components/Atoms";
-import { SelectPartyStep } from "./SelectPartyStep";
-import { CreatePartyStep } from "./CreatePartyStep";
-import { AntDesign } from "@expo/vector-icons";
-import { PeopleSelectStep } from "./PeopleSelectStep";
-import { Button } from "../../../components/Atoms";
-import { ServiceSelectStep } from "./ServiceSelectStep";
-import { AdditionalDetailsStep } from "./AdditionalDetailsStep";
-import { DeliveryServiceStep } from "./DeliveryServiceStep";
-import { FinishStep } from "./FinishStep";
-import apis from "../../../apis";
-import dayjs from "dayjs";
-import { PartyModel, ServiceModel, VendorModel } from "../../../models";
-import { useToast } from "native-base";
-import { useRecoilRefresher_UNSTABLE } from "recoil";
-import { myPartiesQuery } from "../../../stateManagement";
-import { useKeyboard } from "../../../hooks/useKeyboard";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {GradientButton, ProgressBar} from '../../../components/Atoms';
+import {SelectPartyStep} from './SelectPartyStep';
+import {CreatePartyStep} from './CreatePartyStep';
+import {AntDesign} from '@expo/vector-icons';
+import {PeopleSelectStep} from './PeopleSelectStep';
+import {Button} from '../../../components/Atoms';
+import {ServiceSelectStep} from './ServiceSelectStep';
+import {AdditionalDetailsStep} from './AdditionalDetailsStep';
+import {DeliveryServiceStep} from './DeliveryServiceStep';
+import {FinishStep} from './FinishStep';
+import apis from '../../../apis';
+import dayjs from 'dayjs';
+import {PartyModel, ServiceModel, VendorModel} from '../../../models';
+import {useToast} from 'native-base';
+import {useRecoilRefresher_UNSTABLE} from 'recoil';
+import {myPartiesQuery, SelectedMedia} from '../../../stateManagement';
+import uuid from 'react-native-uuid';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import FastImage from 'react-native-fast-image';
 
 export type NewParty = {
   id?: number | string;
@@ -45,6 +44,7 @@ export type NewParty = {
   zip?: string;
   point?: [number, number];
   peopleRange?: [number, number];
+  image?: Array<SelectedMedia>;
 };
 
 export type RequestQuote = {
@@ -53,7 +53,7 @@ export type RequestQuote = {
   notes?: string;
   shipment?: string;
   assembling?: string;
-  selectedSpecialties: ServiceModel["serviceTypes"];
+  selectedSpecialties: ServiceModel['serviceTypes'];
   steps: {
     [key in RequestQuoteStepEnum]?: {
       isValid: boolean;
@@ -89,12 +89,12 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
   const navigation = useNavigation();
   const toast = useToast();
   const [currentStep, setCurrentStep] = useState(
-    RequestQuoteStepEnum.PARTY_SELECT
+    RequestQuoteStepEnum.PARTY_SELECT,
   );
   const [quote, setQuote] = useState<RequestQuote>({
     party: {
       id: undefined,
-      name: "",
+      name: '',
       peopleRange: [30, 50],
     },
     services: [],
@@ -121,7 +121,7 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
     getParties();
   }, []);
 
-  const { vendor, services } = route?.params;
+  const {vendor, services} = route?.params;
   const isNextDisabled = () => {
     if (currentStep === RequestQuoteStepEnum.FINISH) {
       return false;
@@ -131,7 +131,7 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
 
   const handleNextPress = async () => {
     if (currentStep === RequestQuoteStepEnum.PARTY_SELECT) {
-      if (quote.party?.id !== "") {
+      if (quote.party?.id !== '') {
         setCurrentStep(RequestQuoteStepEnum.SERVICE_SELECT);
         return;
       }
@@ -139,12 +139,14 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
     if (currentStep === RequestQuoteStepEnum.DELIVERY_SERVICE) {
       try {
         setIsSubmitting(true);
-        let partyId;
-        if (quote.party?.id === "") {
+        let partyId: number;
+        let partyImageResponse;
+
+        if (quote.party?.id === '') {
           const party = await apis.party.create({
             name: quote.party.name!,
-            startDate: dayjs(quote.party.startDate).format("YYYY-MM-DD"),
-            endDate: dayjs(quote.party.endDate).format("YYYY-MM-DD"),
+            startDate: dayjs(quote.party.startDate).format('YYYY-MM-DD'),
+            endDate: dayjs(quote.party.endDate).format('YYYY-MM-DD'),
             startTime: quote.party.startTime,
             endTime: quote.party.endTime,
             description: quote.party.description,
@@ -153,14 +155,29 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
           });
           if (!party.success) {
             toast.show({
-              description: "Something went wrong. Please try again.",
+              description: 'Something went wrong. Please try again.',
             });
             return;
           }
           partyId = party.data.id;
+
+          if (quote.party?.image) {
+            partyImageResponse = await apis.party.uploadPartyImage({
+              uri: quote.party.image[0].node.image.uri,
+              id: partyId,
+            });
+            if (partyImageResponse?.updated?.image) {
+              FastImage.preload([
+                {
+                  uri: partyImageResponse?.updated?.image,
+                },
+              ]);
+            }
+          }
         } else {
           partyId = quote.party?.id;
         }
+
         const response = await apis.quote.create({
           assembling: quote.assembling!,
           shipment: quote.shipment!,
@@ -172,7 +189,7 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
         refreshMyParties();
         if (!response.success) {
           toast.show({
-            description: "Something went wrong. Please try again.",
+            description: 'Something went wrong. Please try again.',
           });
           return;
         }
@@ -190,7 +207,7 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
 
   const handleBackPress = () => {
     if (currentStep === RequestQuoteStepEnum.SERVICE_SELECT) {
-      if (quote?.party?.id === "") {
+      if (quote?.party?.id === '') {
         setCurrentStep(RequestQuoteStepEnum.PEOPLE_SELECT);
       } else {
         setCurrentStep(RequestQuoteStepEnum.PARTY_SELECT);
@@ -236,14 +253,14 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
 
   const getSubmitButtonLabel = () => {
     if (currentStep === RequestQuoteStepEnum.DELIVERY_SERVICE) {
-      return "Submit Request";
+      return 'Submit Request';
     }
 
     if (currentStep === RequestQuoteStepEnum.FINISH) {
-      return "Sounds Great!";
+      return 'Sounds Great!';
     }
 
-    return "Next";
+    return 'Next';
   };
 
   const handleSkipPress = () => {
@@ -264,12 +281,11 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
           paddingBottom: insets.bottom ? insets.bottom : 16,
           paddingTop: insets.top ? insets.top : 16,
         },
-      ]}
-    >
+      ]}>
       <ImageBackground
         style={styles.bgIcon}
         resizeMode="cover"
-        source={require("../../../assets/bg11.png")}
+        source={require('../../../assets/bg11.png')}
       />
       <View style={styles.innerContainer}>
         <View style={styles.header}>
@@ -280,11 +296,10 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
                 ? styles.hidden
                 : undefined,
             ]}
-            onPress={handleBackPress}
-          >
+            onPress={handleBackPress}>
             <Image
               resizeMode="cover"
-              source={require("../../../assets/vector14.png")}
+              source={require('../../../assets/vector14.png')}
             />
           </Pressable>
           <TouchableOpacity onPress={handleCancelPress}>

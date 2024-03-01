@@ -1,61 +1,29 @@
 import React, {useState, useEffect} from 'react';
-import {
-  Image,
-  StyleSheet,
-  View,
-  Pressable,
-  FlatList,
-  TouchableOpacity,
-} from 'react-native';
+import {Image, StyleSheet, View, Pressable, FlatList} from 'react-native';
 import {Text, VStack} from 'native-base';
 import {Color} from '../../GlobalStyles';
 import {useNavigation} from '@react-navigation/core';
-import SearchBar from '../../components/Input/SearchBar';
 import apis from '../../apis';
 import useGlobalState from '../../stateManagement/hook';
 import StateTypes from '../../stateManagement/StateTypes';
-import types from '../../stateManagement/types';
 import Close from '../../assets/closeSearch.svg';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import useDebounce from '../../utils/useDebounce';
+import {SearchInput} from '../../components/Input/SearchInput';
+import {VendorCard} from '../../components/VendorCard';
 
 const HelpSearchScreen = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchText, setSearchText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [searchResult, setSearchResult] = useState([]);
   const [recentResult, setRecentResult] = useState([]);
-  const [debounceValue, setDebounceValue] = useState('');
-  const [searchList, setSearchList] = useGlobalState(
-    types.albumType.searchList.key,
-    types.albumType.searchList.default,
-  );
-  const [user, setUser] = useGlobalState(
-    StateTypes.user.key,
-    StateTypes.user.default,
-  );
-
-  const setSearch = async item => {
-    try {
-      const result = await apis.recentSearch.create({
-        name: item,
-        userId: user.id,
-      });
-
-      // const selectedItem = searchResult.find(res => res.name === item);
-      // navigation.navigate('VendorInfo', {params: selectedItem});
-
-      setSearchList(searchList => [...searchList, result.data]);
-      setSearchTerm(item);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const debounceSearchText = useDebounce(searchText);
+  const [vendorList, setVendorList] = useState([]);
+  const [user] = useGlobalState(StateTypes.user.key, StateTypes.user.default);
 
   const viewRecentSearch = async recent => {
-    console.log('recent', recent);
-    setSearchTerm('');
-    navigation.navigate('VendorInfo', {params: recent});
+    setSearchText(recent.name);
   };
 
   const grabRecentSearch = async () => {
@@ -79,29 +47,38 @@ const HelpSearchScreen = () => {
     }
   };
 
-  const handleCancel = () => {
-    setSearchTerm('');
-  };
-
-  const onDebounce = async txt => {
-    try {
-      setIsLoading(true);
-
-      const res = await apis.vendor.getAllSearch(txt);
-
-      if (res?.success) {
-        setSearchResult(res.data);
-      }
-      setDebounceValue(txt);
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
-    grabRecentSearch();
-  }, [searchTerm]);
+    const grabAllVendor = async () => {
+      if (!debounceSearchText) {
+        setVendorList([]);
+        return;
+      }
+      try {
+        setIsLoading(true);
+        const res = await apis.vendor.getSearchResults({
+          search: debounceSearchText,
+        });
+
+        if (recentResult?.[0]?.name !== debounceSearchText) {
+          apis.recentSearch.create({name: debounceSearchText}).then(() => {
+            grabRecentSearch();
+          });
+        }
+
+        setVendorList(res.data);
+        setIsLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    grabAllVendor();
+  }, [debounceSearchText]);
+
+  const handleSearchTextChange = str => {
+    setSearchText(str);
+  };
+
+  console.log('recentResult', recentResult);
 
   return (
     <View
@@ -128,38 +105,36 @@ const HelpSearchScreen = () => {
         </View>
         <View style={{width: 40, height: 40}}></View>
       </View>
-      <View
-        style={{
-          backgroundColor: 'rgba(255, 255, 255, 0.08)',
-          borderRadius: 100,
-          marginHorizontal: 10,
-          marginTop: 10,
+      <SearchInput
+        value={searchText}
+        onChangeText={handleSearchTextChange}
+        containerStyle={{
+          marginTop: 4,
+          paddingHorizontal: 24,
           marginBottom: 10,
-        }}>
-        <SearchBar
-          placeholder="Search"
-          placeholderTextColor={'#8A8A8A'}
-          onChangeText={text => setSearchTerm(text)}
-          value={searchTerm}
-          onDebounce={onDebounce}
-          onCancel={handleCancel}
-          cancelEnabled={searchTerm.length}
-          delay={1000}
-          mt={0}
-        />
-      </View>
+        }}
+        loading={isLoading}
+      />
 
       <FlatList
-        data={searchResult}
+        data={vendorList}
+        style={{flex: 1}}
+        contentContainerStyle={{
+          flexGrow: 1,
+          paddingHorizontal: 24,
+          gap: 16,
+          marginTop: 8,
+          paddingBottom: 48,
+        }}
         ListHeaderComponent={
-          debounceValue.length >= 1 ? (
+          debounceSearchText.length >= 1 ? (
             <View />
           ) : (
             <VStack>
               <VStack
                 flexDirection="row"
                 justifyContent="space-between"
-                paddingHorizontal={13}
+                paddingHorizontal={24}
                 marginTop={5}>
                 <Text color={'#FFF'} fontSize={16}>
                   Recent search
@@ -185,8 +160,8 @@ const HelpSearchScreen = () => {
                   <Close />
                 </Pressable>
               </VStack>
-              <VStack mt={5} ml={2}>
-                {recentResult.map((recent, i) => {
+              <VStack mt={3} ml={4}>
+                {recentResult.slice(0, 5).map((recent, i) => {
                   return (
                     <Pressable key={i} onPress={() => viewRecentSearch(recent)}>
                       <Text style={styles.searchTerm}>{recent.name}</Text>
@@ -197,20 +172,19 @@ const HelpSearchScreen = () => {
             </VStack>
           )
         }
-        renderItem={({item}) =>
-          debounceValue.length >= 1 ? (
-            <TouchableOpacity
-              key={item?.id || item}
-              style={styles.border}
-              onPress={() => setSearch(item)}>
-              <Text style={styles.searchTerm}>{item}12323</Text>
-            </TouchableOpacity>
+        renderItem={({item}) => {
+          return debounceSearchText.length >= 1 ? (
+            <VendorCard
+              name={item.name}
+              background={item.background}
+              vendor={item}
+            />
           ) : (
             <View />
-          )
-        }
+          );
+        }}
         ListEmptyComponent={() =>
-          debounceValue.length ? (
+          debounceSearchText.length ? (
             <Text style={[styles.searchTerm, styles.noResultsText]}>
               No result found
             </Text>
@@ -274,6 +248,7 @@ const styles = StyleSheet.create({
   topnavigationContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingHorizontal: 12,
   },
   helpsearchscreen: {
     backgroundColor: Color.labelColorLightPrimary,

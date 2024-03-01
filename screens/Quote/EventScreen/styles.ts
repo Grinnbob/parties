@@ -1,46 +1,50 @@
-import { StyleSheet } from "react-native";
-import { Color, Padding } from "../../../GlobalStyles";
+import {StyleSheet} from 'react-native';
+import {Color, Padding} from '../../../GlobalStyles';
 
 export const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    height: "100%",
-    width: "100%",
+    height: '100%',
+    width: '100%',
   },
   bgIcon: {
-    width: "100%",
-    height: "100%",
+    width: '100%',
+    height: '100%',
     flex: 1,
-    position: "absolute",
+    position: 'absolute',
   },
   container: {
     flex: 1,
-    flexDirection: "column",
-    justifyContent: "flex-start",
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
   },
   partyImageNotFound: {
     height: 300,
-    width: "100%",
-    position: "absolute",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: Color.gray300,
+  },
+  image: {
+    height: 300,
+    width: '100%',
   },
   notFoundImageIcon: {
     color: Color.textMainWhite,
   },
   header: {
     height: 300,
-    position: "relative",
+    position: 'relative',
   },
   headerInnerContainer: {
-    display: "flex",
-    justifyContent: "space-between",
+    display: 'flex',
+    justifyContent: 'space-between',
     marginTop: 60,
     paddingHorizontal: Padding.p_5xl,
   },
   backButtonContainer: {
-    backgroundColor: "rgba(0, 0, 0, 0.70)",
+    backgroundColor: 'rgba(0, 0, 0, 0.70)',
     padding: 8,
     borderRadius: 100,
     width: 44,
@@ -52,7 +56,7 @@ export const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: Padding.p_5xl,
-    justifyContent: "flex-start",
+    justifyContent: 'flex-start',
     marginTop: 12,
     gap: 24,
   },
@@ -63,12 +67,12 @@ export const styles = StyleSheet.create({
     marginVertical: 0,
   },
   actionsContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    alignContent: "flex-start",
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignContent: 'flex-start',
   },
   actionButtonContainer: {
-    width: "50%",
+    width: '50%',
   },
   leftButton: {
     borderRadius: 8,
