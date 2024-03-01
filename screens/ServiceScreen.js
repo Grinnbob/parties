@@ -1,9 +1,9 @@
-import * as React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
-import LinearGradient from "react-native-linear-gradient";
-import SearchServiceCard from "../components/SearchServiceCard";
-import BottomTab from "../components/BottomTab";
-import { Padding, Color, Border, FontFamily, FontSize } from "../GlobalStyles";
+import * as React from 'react';
+import {Image, StyleSheet, Text, View} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import {VendorCard} from '../components/VendorCard';
+import BottomTab from '../components/BottomTab';
+import {Padding, Color, Border, FontFamily, FontSize} from '../GlobalStyles';
 
 const ServiceScreen = () => {
   return (
@@ -11,7 +11,7 @@ const ServiceScreen = () => {
       <Image
         style={styles.bgIcon}
         resizeMode="cover"
-        source={require("../assets/bg8.png")}
+        source={require('../assets/bg8.png')}
       />
       <View style={styles.container}>
         <View style={[styles.search, styles.searchSpaceBlock]}>
@@ -19,7 +19,7 @@ const ServiceScreen = () => {
             <Image
               style={styles.magnifyingglassIconLayout}
               resizeMode="cover"
-              source={require("../assets/magnifyingglass1.png")}
+              source={require('../assets/magnifyingglass1.png')}
             />
             <Text style={[styles.title, styles.titleTypo]}>Tacos</Text>
           </View>
@@ -30,7 +30,7 @@ const ServiceScreen = () => {
             <Image
               style={styles.magnifyingglassIconLayout}
               resizeMode="cover"
-              source={require("../assets/magnifyingglass1.png")}
+              source={require('../assets/magnifyingglass1.png')}
             />
           </View>
           <Image
@@ -39,7 +39,7 @@ const ServiceScreen = () => {
               styles.magnifyingglassIconLayout,
             ]}
             resizeMode="cover"
-            source={require("../assets/iconsaxlinearsetting4.png")}
+            source={require('../assets/iconsaxlinearsetting4.png')}
           />
         </View>
         <View style={styles.subNav}>
@@ -48,7 +48,7 @@ const ServiceScreen = () => {
               <Image
                 style={styles.vectorIcon}
                 resizeMode="cover"
-                source={require("../assets/vector3.png")}
+                source={require('../assets/vector3.png')}
               />
             </View>
             <View style={[styles.linksChild, styles.link1Border]} />
@@ -56,10 +56,9 @@ const ServiceScreen = () => {
               <LinearGradient
                 style={[styles.link, styles.linkFlexBox]}
                 locations={[0, 1]}
-                colors={["#6c1b9e", "#ff077e"]}
+                colors={['#6c1b9e', '#ff077e']}
                 useAngle={true}
-                angle={-90}
-              >
+                angle={-90}>
                 <View style={styles.iconLayout}>
                   <View style={styles.square} />
                 </View>
@@ -101,19 +100,19 @@ const ServiceScreen = () => {
           </View>
         </View>
         <View style={styles.container1}>
-          <SearchServiceCard
-            imgBg={require("../assets/imgbg.png")}
+          <VendorCard
+            imgBg={require('../assets/imgbg.png')}
             manuelsRentals="Manuel’s Rentals"
           />
-          <SearchServiceCard
+          <VendorCard
             cardsMarginTop={16}
-            imgBg={require("../assets/imgbg1.png")}
+            imgBg={require('../assets/imgbg1.png')}
             manuelsRentals="Vendor’s name"
             btnShadowOffset="unset"
           />
-          <SearchServiceCard
+          <VendorCard
             cardsMarginTop={16}
-            imgBg={require("../assets/imgbg2.png")}
+            imgBg={require('../assets/imgbg2.png')}
             manuelsRentals="Vendor’s name"
             btnShadowOffset="unset"
           />
@@ -126,12 +125,12 @@ const ServiceScreen = () => {
           <Image
             style={[styles.iconsaxlinearhambergermenu, styles.backIconLayout]}
             resizeMode="cover"
-            source={require("../assets/iconsaxlinearhambergermenu.png")}
+            source={require('../assets/iconsaxlinearhambergermenu.png')}
           />
           <Image
             style={styles.backIconLayout}
             resizeMode="cover"
-            source={require("../assets/back.png")}
+            source={require('../assets/back.png')}
           />
         </View>
         <View style={styles.title2}>
@@ -149,37 +148,37 @@ const styles = StyleSheet.create({
   searchSpaceBlock: {
     paddingVertical: Padding.p_xs,
     backgroundColor: Color.gray_300,
-    flexDirection: "row",
+    flexDirection: 'row',
     width: 330,
     borderRadius: Border.br_81xl,
-    alignItems: "center",
+    alignItems: 'center',
     paddingHorizontal: Padding.p_5xl,
   },
   titleTypo: {
     fontFamily: FontFamily.typographyBodyMediumLight,
-    fontWeight: "300",
+    fontWeight: '300',
   },
   magnifyingglassIconLayout: {
     height: 24,
     width: 24,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   linkFlexBox: {
     height: 34,
-    justifyContent: "center",
-    flexDirection: "row",
-    alignItems: "center",
+    justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   link1Border: {
-    borderColor: "#232323",
-    borderStyle: "solid",
+    borderColor: '#232323',
+    borderStyle: 'solid',
     marginLeft: 8,
   },
   iconLayout: {
     height: 19,
     width: 19,
-    display: "none",
-    overflow: "hidden",
+    display: 'none',
+    overflow: 'hidden',
   },
   labelClr: {
     color: Color.primaryAlmostGrey,
@@ -187,7 +186,7 @@ const styles = StyleSheet.create({
   },
   label3Typo: {
     fontFamily: FontFamily.typographyBodyMediumRegular,
-    textAlign: "center",
+    textAlign: 'center',
   },
   header: {
     paddingBottom: Padding.p_4xs,
@@ -195,9 +194,9 @@ const styles = StyleSheet.create({
     width: 130,
     height: 42,
     top: 7,
-    flexDirection: "row",
-    alignItems: "center",
-    position: "absolute",
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'absolute',
   },
   backIconLayout: {
     marginLeft: 5,
@@ -209,22 +208,22 @@ const styles = StyleSheet.create({
     width: 665,
     height: 1052,
     left: 0,
-    position: "absolute",
+    position: 'absolute',
   },
   title: {
     marginLeft: 8,
-    textAlign: "left",
+    textAlign: 'left',
     color: Color.labelColorDarkPrimary,
     lineHeight: 20,
     fontSize: FontSize.typographyBodyMediumBold_size,
-    fontWeight: "300",
+    fontWeight: '300',
   },
   left: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   search: {
-    shadowColor: "rgba(27, 27, 27, 0.16)",
+    shadowColor: 'rgba(27, 27, 27, 0.16)',
     shadowOffset: {
       width: 0,
       height: 8,
@@ -235,22 +234,22 @@ const styles = StyleSheet.create({
   },
   title1: {
     fontSize: FontSize.size_mini,
-    textAlign: "left",
+    textAlign: 'left',
     color: Color.labelColorDarkPrimary,
   },
   left1: {
-    justifyContent: "space-between",
-    flexDirection: "row",
-    alignItems: "center",
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
     flex: 1,
   },
   iconsaxlinearsetting4: {
-    display: "none",
+    display: 'none',
     marginLeft: 8,
   },
   search1: {
     marginTop: 16,
-    display: "none",
+    display: 'none',
   },
   vectorIcon: {
     height: 21,
@@ -265,27 +264,27 @@ const styles = StyleSheet.create({
   linksChild: {
     borderRightWidth: 1,
     width: 1,
-    alignSelf: "stretch",
+    alignSelf: 'stretch',
   },
   square: {
-    height: "100%",
-    top: "0%",
-    right: "0%",
-    bottom: "0%",
-    left: "0%",
+    height: '100%',
+    top: '0%',
+    right: '0%',
+    bottom: '0%',
+    left: '0%',
     borderRadius: 3,
     backgroundColor: Color.primary500Main,
     opacity: 0.2,
-    position: "absolute",
-    width: "100%",
+    position: 'absolute',
+    width: '100%',
   },
   label: {
-    textAlign: "center",
+    textAlign: 'center',
     marginLeft: 8,
     color: Color.labelColorDarkPrimary,
     lineHeight: 20,
     fontSize: FontSize.typographyBodyMediumBold_size,
-    fontWeight: "300",
+    fontWeight: '300',
   },
   iconRight: {
     marginLeft: 8,
@@ -296,12 +295,12 @@ const styles = StyleSheet.create({
     backgroundColor: Color.appColorGradient,
     borderRadius: Border.br_81xl,
     height: 34,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   label1: {
-    textAlign: "center",
+    textAlign: 'center',
     fontFamily: FontFamily.typographyBodyMediumLight,
-    fontWeight: "300",
+    fontWeight: '300',
     lineHeight: 20,
     fontSize: FontSize.typographyBodyMediumBold_size,
   },
@@ -309,13 +308,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: Padding.p_xs,
     height: 34,
-    justifyContent: "center",
-    flexDirection: "row",
-    alignItems: "center",
+    justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: Padding.p_5xs,
-    borderStyle: "solid",
+    borderStyle: 'solid',
     borderRadius: Border.br_81xl,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   label3: {
     color: Color.primaryAlmostGrey,
@@ -325,32 +324,32 @@ const styles = StyleSheet.create({
   links1: {
     paddingLeft: Padding.p_5xs,
     marginLeft: 8,
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   links: {
-    flexDirection: "row",
+    flexDirection: 'row',
     width: 330,
-    alignItems: "center",
+    alignItems: 'center',
   },
   subNav: {
     paddingHorizontal: 0,
-    justifyContent: "center",
+    justifyContent: 'center',
     paddingVertical: Padding.p_5xs,
-    alignSelf: "stretch",
+    alignSelf: 'stretch',
     marginTop: 16,
   },
   container1: {
-    alignSelf: "stretch",
+    alignSelf: 'stretch',
     marginTop: 16,
   },
   container: {
     top: 108,
     paddingVertical: 0,
-    alignItems: "center",
+    alignItems: 'center',
     paddingHorizontal: Padding.p_5xl,
     width: 375,
     left: 0,
-    position: "absolute",
+    position: 'absolute',
   },
   leftTitle: {
     fontSize: FontSize.textLargeBold_size,
@@ -358,14 +357,14 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     fontFamily: FontFamily.bodyRegular,
     color: Color.defaultSystemBlueLight,
-    display: "none",
-    textAlign: "left",
-    alignItems: "center",
+    display: 'none',
+    textAlign: 'left',
+    alignItems: 'center',
     flex: 1,
   },
   iconsaxlinearhambergermenu: {
-    display: "none",
-    overflow: "hidden",
+    display: 'none',
+    overflow: 'hidden',
   },
   leftAccessory: {
     paddingLeft: Padding.p_base,
@@ -375,9 +374,9 @@ const styles = StyleSheet.create({
   title3: {
     fontSize: FontSize.typographyHeadingLarge_size,
     lineHeight: 25,
-    fontWeight: "700",
+    fontWeight: '700',
     fontFamily: FontFamily.typographyBodySmallBold,
-    textAlign: "center",
+    textAlign: 'center',
     color: Color.labelColorDarkPrimary,
   },
   title2: {
@@ -385,10 +384,10 @@ const styles = StyleSheet.create({
     width: 49,
     height: 42,
     top: 7,
-    justifyContent: "center",
-    flexDirection: "row",
-    alignItems: "center",
-    position: "absolute",
+    justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'absolute',
   },
   title4: {
     fontSize: FontSize.typographyHeadingMedium_size,
@@ -399,22 +398,22 @@ const styles = StyleSheet.create({
     left: 245,
     paddingLeft: Padding.p_4xs,
     paddingRight: Padding.p_5xl,
-    justifyContent: "flex-end",
-    display: "none",
+    justifyContent: 'flex-end',
+    display: 'none',
   },
   topnavigationContent: {
     marginLeft: -187.5,
     top: 44,
-    left: "50%",
+    left: '50%',
     height: 56,
     width: 375,
-    position: "absolute",
+    position: 'absolute',
   },
   servicescreen: {
     backgroundColor: Color.primarySoBlack,
     height: 877,
-    overflow: "hidden",
-    width: "100%",
+    overflow: 'hidden',
+    width: '100%',
     flex: 1,
   },
 });
