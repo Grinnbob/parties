@@ -2,6 +2,7 @@
 
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
+#import <React/RCTLinkingManager.h>
 
 
 #import <react/config/ReactNativeConfig.h>
@@ -23,6 +24,13 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 
+}
+
+- (BOOL)application:(UIApplication *)application
+   openURL:(NSURL *)url
+   options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
+{
+  return [RCTLinkingManager application:application openURL:url options:options];
 }
 
 /// This method controls whether the `concurrentRoot`feature of React18 is turned on or off.
