@@ -1,8 +1,8 @@
-import React, { useState, createContext, useRef, useEffect } from "react";
-import io, { Socket } from "socket.io-client";
-import Config from "react-native-config";
-import { getAUTH_TOKEN } from "../../apis/base";
-import { ChatMessageModel } from "../../models/ChatMessageModel";
+import React, {useState, createContext, useRef, useEffect} from 'react';
+import io, {Socket} from 'socket.io-client';
+import Config from 'react-native-config';
+import {getAUTH_TOKEN} from '../../apis/base';
+import {ChatMessageModel} from '../../models/ChatMessageModel';
 type SocketResponse = {
   success: boolean;
   message: string;
@@ -49,7 +49,7 @@ type SocketProviderProps = {
 const withTimeout = (
   onSuccess: (...params: any[]) => void,
   onTimeout: (...params: any[]) => void,
-  timeout: number
+  timeout: number,
 ) => {
   let called = false;
 
@@ -69,7 +69,7 @@ const withTimeout = (
 
 const MESSAGE_TIMEOUT = 15000;
 
-export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
+export const SocketProvider: React.FC<SocketProviderProps> = ({children}) => {
   const socket = useRef<Socket | null>(null);
   const chatSocket = useRef<Socket | null>(null);
   const [receivedMessage, setReceivedMessage] =
@@ -91,42 +91,46 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     chatSocket.current = io(`${Config.BE_URL_BASE}/chat`, {
       autoConnect: false,
 
-      auth: { token: getAUTH_TOKEN() },
+      auth: {token: getAUTH_TOKEN()},
     });
 
     addChatSocketListeners();
     chatSocket.current.connect();
-    chatSocket.current.emit("create", data);
-    chatSocket.current.emit("read", data);
-    chatSocket.current.emit("connection", data);
+    chatSocket.current.emit('create', data);
+    chatSocket.current.emit('read', data);
+    chatSocket.current.emit('connection', data);
   };
 
   const addChatSocketListeners = () => {
     if (!chatSocket.current) {
       return;
     }
-    chatSocket.current.on("receive_text", (message: ChatMessageModel) => {
-      setReceivedMessage((prev) => message);
+    chatSocket.current.on('receive_text', (message: ChatMessageModel) => {
+      setReceivedMessage(prev => message);
     });
 
-    chatSocket.current.on("receive_image", (message: ChatMessageModel) => {
-      setReceivedMessage((prev) => message);
+    chatSocket.current.on('receive_quote', (message: ChatMessageModel) => {
+      setReceivedMessage(prev => message);
     });
 
-    chatSocket.current.on("enter", (message) => {
+    chatSocket.current.on('receive_image', (message: ChatMessageModel) => {
+      setReceivedMessage(prev => message);
+    });
+
+    chatSocket.current.on('enter', message => {
       setIsMuted(message.muted);
     });
 
-    chatSocket.current.on("connect", () => {
-      console.log("Chat connected!");
+    chatSocket.current.on('connect', () => {
+      console.log('Chat connected!');
     });
 
     // chatSocket.current.on("isTyping", (data) => {
     //   setIsTyping(data.typing);
     // });
 
-    chatSocket.current.on("disconnect", (err) => {
-      console.log("Chat disconnected!");
+    chatSocket.current.on('disconnect', err => {
+      console.log('Chat disconnected!');
     });
   };
 
@@ -136,7 +140,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     message: string;
   }) => {
     if (!chatSocket.current) {
-      console.log("no socket");
+      console.log('no socket');
       return;
     }
 
@@ -146,21 +150,21 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         return;
       }
       chatSocket.current.emit(
-        "text_message",
+        'text_message',
         data,
         withTimeout(
-          (response: { data: ChatMessageModel; success: boolean }) => {
-            console.log("socket response", response);
+          (response: {data: ChatMessageModel; success: boolean}) => {
+            console.log('socket response', response);
             if (response?.success) {
               resolve(response.data);
             }
             reject(null);
           },
           () => {
-            reject("timeout");
+            reject('timeout');
           },
-          MESSAGE_TIMEOUT
-        )
+          MESSAGE_TIMEOUT,
+        ),
       );
     });
   };
@@ -169,7 +173,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     if (!chatSocket.current) {
       return;
     }
-    chatSocket.current.emit("enter", data, (response: SocketResponse) => {
+    chatSocket.current.emit('enter', data, (response: SocketResponse) => {
       if (response && response.success) {
         setIsMuted(response.muted);
         return response.message;
@@ -191,21 +195,21 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         return;
       }
       chatSocket.current.emit(
-        "image_message",
+        'image_message',
         data,
         withTimeout(
-          (response: { data: ChatMessageModel; success: boolean }) => {
-            console.log("socket response", response);
+          (response: {data: ChatMessageModel; success: boolean}) => {
+            console.log('socket response', response);
             if (response?.success) {
               resolve(response.data);
             }
             reject(null);
           },
           () => {
-            reject("timeout");
+            reject('timeout');
           },
-          MESSAGE_TIMEOUT
-        )
+          MESSAGE_TIMEOUT,
+        ),
       );
     });
   };

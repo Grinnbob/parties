@@ -24,6 +24,7 @@ const App = () => {
   useEffect(() => {
     TestFairy.begin(Config.TEST_FAIRY_KEY);
   }, []);
+
   return (
     <MenuProvider>
       <View
