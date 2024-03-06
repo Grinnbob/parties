@@ -33,3 +33,4 @@ export * from './TrashIcon';
 export * from './PencilIcon';
 export * from './ShareNetworkIcon';
 export * from './CameraAddIcon';
+export * from './CardIcon';
