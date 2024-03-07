@@ -5,10 +5,14 @@ import {WebView} from 'react-native-webview';
 import Config from 'react-native-config';
 import apis from '../../../apis';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {Color} from '../../../GlobalStyles';
+import TopNavigationContent from '../../../components/TopNavigationContent';
+import {useNavigation} from '@react-navigation/core';
 
 export const PaymentMethod: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation();
 
   useEffect(() => {
     apis.user
@@ -25,9 +29,14 @@ export const PaymentMethod: React.FC = () => {
     <View
       style={{
         flex: 1,
-        backgroundColor: '#FFFFFF',
-        marginTop: insets.top ? insets.top : 16,
       }}>
+      <TopNavigationContent
+        title="Payment Method"
+        backStyle={{marginLeft: 20}}
+        onBackPress={() => {
+          navigation.toggleDrawer();
+        }}
+      />
       {loading && (
         <View
           style={{
