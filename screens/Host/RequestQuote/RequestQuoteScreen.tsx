@@ -43,7 +43,7 @@ export type NewParty = {
   zip?: string;
   point?: [number, number];
   peopleRange?: [number, number];
-  image?: Array<SelectedMedia>;
+  image?: string;
 };
 
 export type RequestQuote = {
@@ -162,7 +162,7 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
 
           if (quote.party?.image) {
             partyImageResponse = await apis.party.uploadPartyImage({
-              uri: quote.party.image[0].node.image.uri,
+              uri: quote.party.image,
               id: partyId,
             });
             if (partyImageResponse?.updated?.image) {

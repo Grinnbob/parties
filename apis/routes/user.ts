@@ -72,3 +72,11 @@ export const onboardEnd = async () => {
   const response = await API.getApi(`${Base}/onboardFinish`);
   return response;
 };
+
+export const payToVendor = async (params: {
+  amount: number;
+  vendorId: number;
+}) => {
+  const response = await API.postApi(`${Base}/pay`, params);
+  return response;
+};

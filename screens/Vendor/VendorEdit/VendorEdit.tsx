@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useMemo,
-  useCallback,
-} from "react";
+import React, {useState, useEffect, useRef, useMemo, useCallback} from 'react';
 import {
   Image,
   View,
@@ -13,53 +7,52 @@ import {
   ImageBackground,
   ActivityIndicator,
   Dimensions,
-} from "react-native";
-import apis from "../../../apis";
-import { Text, useToast } from "native-base";
-import useGlobalState from "../../../stateManagement/hook";
-import StateTypes from "../../../stateManagement/StateTypes";
-import { GooglePlacesAutocompleteRef } from "react-native-google-places-autocomplete";
-import { Skeleton } from "./Skeleton";
+} from 'react-native';
+import apis from '../../../apis';
+import {Text, useToast} from 'native-base';
+import useGlobalState from '../../../stateManagement/hook';
+import StateTypes from '../../../stateManagement/StateTypes';
+import {GooglePlacesAutocompleteRef} from 'react-native-google-places-autocomplete';
+import {Skeleton} from './Skeleton';
 import {
   AddBusinessIcon,
   AddPhotoIcon,
   BackIcon,
   PlusCircle,
-} from "../../../components/Icons";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import LinearGradient from "react-native-linear-gradient";
+} from '../../../components/Icons';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import LinearGradient from 'react-native-linear-gradient';
 import {
   LocationAutocomplete,
   SelectInput,
   TextInput,
-} from "../../../components/Input";
-import layout from "../../../utils/layout";
+} from '../../../components/Input';
+import layout from '../../../utils/layout';
 import {
   MAX_SPECIALITIES_KEY_COUNT,
   ProfileCompleteBanner,
   ServicesList,
   SpecialitiesList,
-} from "../../../components/Moleculs";
-import { useRecoilState } from "recoil";
-import { KeyItemModel, ServiceModel } from "../../../models";
-import { TextInputWithAI } from "../../../components/Moleculs/TextInputWithAI";
+} from '../../../components/Moleculs';
+import {useRecoilState} from 'recoil';
+import {KeyItemModel, ServiceModel} from '../../../models';
+import {TextInputWithAI} from '../../../components/Moleculs/TextInputWithAI';
 import {
   keyListAtom,
-  selectedMediaAtom,
   vendorProfileServiceAtom,
-  SelectedMediaEnum,
   vendorProfileAlbumAtom,
   vendorProfileAtom,
   serviceTypesAtom,
-} from "../../../stateManagement";
-import { styles } from "./styles";
-import FastImage from "react-native-fast-image";
-import cloneDeep from "lodash/cloneDeep";
-import { Color } from "../../../GlobalStyles";
-import { PastProjectsList } from "../../../components/Moleculs/PastProjectsList";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+} from '../../../stateManagement';
+import {styles} from './styles';
+import FastImage from 'react-native-fast-image';
+import cloneDeep from 'lodash/cloneDeep';
+import {Color} from '../../../GlobalStyles';
+import {PastProjectsList} from '../../../components/Moleculs/PastProjectsList';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {useImageSelect} from '../../../hooks/useImageSelect';
 
-const height = Dimensions.get("window").height;
+const height = Dimensions.get('window').height;
 
 type VendorEditProps = {
   navigation: any;
@@ -70,55 +63,50 @@ type VendorEditProps = {
   };
 };
 
-export const VendorEdit: React.FC<VendorEditProps> = ({
-  navigation,
-  route,
-}) => {
+export const VendorEdit: React.FC<VendorEditProps> = ({navigation, route}) => {
   const isCreate = !!route.params?.isCreate;
   const insets = useSafeAreaInsets();
   const [user] = useGlobalState(StateTypes.user.key, StateTypes.user.default);
   const [vendorKeyList, setVendorKeyList] = useRecoilState(keyListAtom);
 
+  const {selectImage} = useImageSelect();
   const toast = useToast();
   const ref = useRef<GooglePlacesAutocompleteRef | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [vendor, setVendor] = useRecoilState(vendorProfileAtom);
-  const [serviceName, setServiceName] = useState(vendor.name || "");
+  const [serviceName, setServiceName] = useState(vendor.name || '');
   const [services, setServices] = useRecoilState(vendorProfileServiceAtom);
   const [album, setAlbum] = useRecoilState(vendorProfileAlbumAtom);
-  const [selectedMedia, setSelectedMedia] = useRecoilState(selectedMediaAtom);
   const [serviceTypes, setServiceTypes] = useRecoilState(serviceTypesAtom);
-  const newAvatarUrl =
-    selectedMedia[SelectedMediaEnum.VENDOR_PROFILE_AVATAR]?.[0].node.image.uri;
-  const newProfileBgUrl =
-    selectedMedia[SelectedMediaEnum.VENDOR_PROFILE_BG]?.[0].node.image.uri;
+  const [newAvatarUrl, setNewAvatarUrl] = useState('');
+  const [newProfileBgUrl, setNewProfileBgUrl] = useState('');
   const [serviceDescription, setServiceDescription] = useState(
-    vendor?.description || ""
+    vendor?.description || '',
   );
-  const [avatar, setAvatar] = useState(vendor?.avatar || "");
-  const [background, setBackground] = useState(vendor?.background || "");
-  const [address, setAddress] = useState(vendor?.address || "");
-  const [state, setState] = useState(vendor?.state || "");
-  const [city, setCity] = useState(vendor?.city || "");
+  const [avatar, setAvatar] = useState(vendor?.avatar || '');
+  const [background, setBackground] = useState(vendor?.background || '');
+  const [address, setAddress] = useState(vendor?.address || '');
+  const [state, setState] = useState(vendor?.state || '');
+  const [city, setCity] = useState(vendor?.city || '');
   const [lat, setLat] = useState(0);
   const [long, setLong] = useState(0);
   const [distance, setDistance] = useState(
-    vendor?.distance ? String(vendor?.distance) : ""
+    vendor?.distance ? String(vendor?.distance) : '',
   );
   const [isVendorLoading, setIsVendorLoading] = useState(!vendor?.id);
   const [isAiDescriptionLoading, setIsAiDescriptionLoading] = useState(false);
   const [, setToken] = useGlobalState(
     StateTypes.token.key,
-    StateTypes.token.default
+    StateTypes.token.default,
   );
 
   const handleServiceDeleted = useCallback(
     (service: ServiceModel) => {
-      const index = services.data.findIndex((item) => item.id === service.id);
+      const index = services.data.findIndex(item => item.id === service.id);
       if (index >= 0) {
         const newServices = [...services.data];
         newServices.splice(index, 1);
-        setServices((prevState) => {
+        setServices(prevState => {
           return {
             ...prevState,
             data: newServices,
@@ -126,23 +114,23 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
         });
       }
     },
-    [services]
+    [services],
   );
 
   const handleEditServiced = useCallback(
     (service: ServiceModel) => {
-      const index = services.data.findIndex((item) => item.id === service.id);
+      const index = services.data.findIndex(item => item.id === service.id);
       if (index >= 0) {
         const newServices = cloneDeep(services.data);
         newServices[index] = service;
-        setServices((prevState) => {
+        setServices(prevState => {
           return {
             ...prevState,
             data: newServices,
           };
         });
       } else {
-        setServices((prevState) => {
+        setServices(prevState => {
           return {
             ...prevState,
             data: [...prevState.data, service],
@@ -150,7 +138,7 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
         });
       }
     },
-    [services]
+    [services],
   );
 
   useEffect(() => {
@@ -162,17 +150,17 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
   const getVendorInfo = async () => {
     try {
       let data;
-      console.log("vendorvendorvendor", vendor);
+      console.log('vendorvendorvendor', vendor);
       if (vendor?.id) {
         data = vendor;
       } else {
-        const resp = await apis.vendor.getAll({ userId: user.id });
+        const resp = await apis.vendor.getAll({userId: user.id});
         if (resp.data?.[0]) {
           data = resp.data[0];
         }
       }
       if (!album.isFetched) {
-        const res = await apis.album.getAll({ vendorId: data.id });
+        const res = await apis.album.getAll({vendorId: data.id});
 
         if (res && res.data) {
           setAlbum({
@@ -183,7 +171,7 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
       }
 
       if (!services.isFetched) {
-        const res = await apis.service.getAll({ vendorId: data.id });
+        const res = await apis.service.getAll({vendorId: data.id});
         if (res && res.data) {
           setServices(() => {
             return {
@@ -210,10 +198,10 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
         setBackground(data.background);
         setCity(data.city);
         setState(data.state);
-        console.log("data.address", data.address);
-        setAddress(data.address || "");
-        ref.current?.setAddressText(data.address || "");
-        setDistance(data.distance ? String(data.distance) : "");
+        console.log('data.address', data.address);
+        setAddress(data.address || '');
+        ref.current?.setAddressText(data.address || '');
+        setDistance(data.distance ? String(data.distance) : '');
         setVendorKeyList(data.listOfKeys || []);
       }
     } catch (error) {
@@ -236,40 +224,42 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
     setVendorKeyList(keys);
   };
 
-  const changeAvatar = () => {
-    navigation.push("CameraEdit", {
-      key: SelectedMediaEnum.VENDOR_PROFILE_AVATAR,
-    });
+  const changeAvatar = async () => {
+    const image = await selectImage();
+    if (image?.assets?.[0]?.uri) {
+      setNewAvatarUrl(image.assets?.[0].uri);
+    }
   };
 
-  const changeProfileBg = () => {
-    navigation.push("CameraEdit", {
-      key: SelectedMediaEnum.VENDOR_PROFILE_BG,
-    });
+  const changeProfileBg = async () => {
+    const image = await selectImage();
+    if (image?.assets?.[0]?.uri) {
+      setNewProfileBgUrl(image.assets?.[0].uri);
+    }
   };
 
   const handleNext = async () => {
     try {
-      let errorMessage = "";
+      let errorMessage = '';
       if (!avatar && !newAvatarUrl) {
-        errorMessage = "Please add your avatar";
+        errorMessage = 'Please add your avatar';
       } else if (!background && !newProfileBgUrl) {
-        errorMessage = "Please add profile background";
+        errorMessage = 'Please add profile background';
       } else if (!serviceName) {
-        errorMessage = "Please add Business Name";
+        errorMessage = 'Please add Business Name';
       } else if (!address) {
-        errorMessage = "Please add Address";
+        errorMessage = 'Please add Address';
       } else if (!distance) {
-        errorMessage = "Please select Service Area";
+        errorMessage = 'Please select Service Area';
       } else if (vendorKeyList.length < MAX_SPECIALITIES_KEY_COUNT) {
-        errorMessage = "Please add at least 5 Specialities";
+        errorMessage = 'Please add at least 5 Specialities';
       } else if (!serviceDescription) {
-        errorMessage = "Please add Description";
+        errorMessage = 'Please add Description';
       }
 
       if (errorMessage) {
         toast.show({
-          placement: "top",
+          placement: 'top',
           description: errorMessage,
         });
         return;
@@ -292,7 +282,7 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
         state: state,
         address: address,
         distance: distance,
-        point: { type: "Point", coordinates: [long, lat] },
+        point: {type: 'Point', coordinates: [long, lat]},
         profileDone: true,
       };
 
@@ -335,7 +325,7 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
 
       if (res && res.success === false) {
         toast.show({
-          placement: "top",
+          placement: 'top',
           description: res.message,
         });
       }
@@ -349,20 +339,19 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
             profileBackGroundResponse?.updated?.background || background,
           listOfKeys: vendorKeyList,
         });
-        setSelectedMedia({});
         if (isCreate) {
-          navigation.navigate("VendorReadySell", { vendorId: res?.data?.id });
+          navigation.navigate('VendorReadySell', {vendorId: res?.data?.id});
         } else {
           toast.show({
-            placement: "top",
-            description: "Information updated successfully!",
+            placement: 'top',
+            description: 'Information updated successfully!',
           });
           navigation.pop();
         }
       }
     } catch (error) {
       toast.show({
-        placement: "top",
+        placement: 'top',
         description: error,
       });
     }
@@ -373,27 +362,27 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
 
   const serviceAreaOptions = useMemo(() => {
     const getLabel = (miles: number) => {
-      return `${miles} miles${actualCity ? ` from ${actualCity}` : ""}${
-        actualState ? ` , ${actualState}` : ""
+      return `${miles} miles${actualCity ? ` from ${actualCity}` : ''}${
+        actualState ? ` , ${actualState}` : ''
       }`;
     };
 
     return [
       {
         label: getLabel(20),
-        value: "20",
+        value: '20',
       },
       {
         label: getLabel(30),
-        value: "30",
+        value: '30',
       },
       {
         label: getLabel(40),
-        value: "40",
+        value: '40',
       },
       {
         label: getLabel(50),
-        value: "50",
+        value: '50',
       },
     ];
   }, [actualCity, actualState]);
@@ -402,14 +391,14 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
     try {
       if (vendorKeyList.length < MAX_SPECIALITIES_KEY_COUNT) {
         toast.show({
-          placement: "top",
+          placement: 'top',
           description: `Please enter at ${MAX_SPECIALITIES_KEY_COUNT} Specialities`,
         });
         return;
       }
       if (!services.data.length) {
         toast.show({
-          placement: "top",
+          placement: 'top',
           description: `Please created at least one Service`,
         });
         return;
@@ -417,15 +406,15 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
       setIsAiDescriptionLoading(true);
       const response = await apis.vendor.generateAiDescription({
         id: vendor.id,
-        keys: vendorKeyList.map((item) => item.name),
+        keys: vendorKeyList.map(item => item.name),
       });
-      console.log("generateAiDescription", response.data.choices);
+      console.log('generateAiDescription', response.data.choices);
       if (response.success && !!response.data.choices?.[0]?.message?.content) {
         setServiceDescription(response.data.choices?.[0]?.message?.content);
       } else {
         toast.show({
-          placement: "top",
-          description: "AI not available now",
+          placement: 'top',
+          description: 'AI not available now',
         });
       }
     } finally {
@@ -443,8 +432,7 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
         flexGrow: 1,
         minHeight: height,
       }}
-      keyboardShouldPersistTaps="handled"
-    >
+      keyboardShouldPersistTaps="handled">
       <View style={styles.mainContainer}>
         {isVendorLoading && <Skeleton />}
         {!isVendorLoading && (
@@ -452,13 +440,11 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
             <View
               style={[
                 styles.header,
-                { paddingTop: insets.top ? insets.top : 16 },
-              ]}
-            >
+                {paddingTop: insets.top ? insets.top : 16},
+              ]}>
               <TouchableOpacity
                 onPress={async () => {
                   if (!isCreate) {
-                    setSelectedMedia({});
                     navigation.pop();
                   } else {
                     await apis.device.deleteById(setToken);
@@ -474,16 +460,14 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
                   }
                 }}
                 hitSlop={20}
-                style={styles.backIconContainer}
-              >
+                style={styles.backIconContainer}>
                 <BackIcon />
               </TouchableOpacity>
               <Text style={styles.editPageText}>Edit Page</Text>
               <TouchableOpacity
                 onPress={handleNext}
                 hitSlop={20}
-                style={styles.backIconContainer}
-              >
+                style={styles.backIconContainer}>
                 {isSaving ? (
                   <ActivityIndicator size={16} color={Color.primaryPink} />
                 ) : (
@@ -510,38 +494,32 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
               )}
               <View
                 style={{
-                  width: "100%",
-                  alignItems: "center",
-                  position: "absolute",
+                  width: '100%',
+                  alignItems: 'center',
+                  position: 'absolute',
                   top: 100,
-                }}
-              >
+                }}>
                 <TouchableOpacity
                   onPress={changeProfileBg}
-                  style={styles.avatar}
-                >
+                  style={styles.avatar}>
                   <AddPhotoIcon />
                 </TouchableOpacity>
               </View>
             </View>
 
             <LinearGradient
-              colors={["#FF077E", "transparent"]}
-              start={{ x: 0, y: 1 }}
-              end={{ x: 0, y: 0 }}
+              colors={['#FF077E', 'transparent']}
+              start={{x: 0, y: 1}}
+              end={{x: 0, y: 0}}
               style={styles.bgGradient}
             />
 
             {avatar || newAvatarUrl ? (
               <TouchableOpacity
                 style={styles.avatarContainer}
-                onPress={changeAvatar}
-              >
+                onPress={changeAvatar}>
                 {newAvatarUrl ? (
-                  <Image
-                    source={{ uri: newAvatarUrl }}
-                    style={styles.avatarBg}
-                  />
+                  <Image source={{uri: newAvatarUrl}} style={styles.avatarBg} />
                 ) : (
                   <FastImage
                     source={{
@@ -556,39 +534,38 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
             ) : (
               <TouchableOpacity
                 style={styles.whiteCircle}
-                onPress={changeAvatar}
-              >
+                onPress={changeAvatar}>
                 <AddBusinessIcon />
               </TouchableOpacity>
             )}
 
             <Text style={styles.businessNameText}>
-              {serviceName || "Business Name"}
+              {serviceName || 'Business Name'}
             </Text>
 
             <View style={styles.forms}>
               <ImageBackground
                 style={styles.background}
                 resizeMode="repeat"
-                source={require("../../../assets/bg7.png")}
+                source={require('../../../assets/bg7.png')}
               />
               <View style={styles.areaInfo}>
                 <Text style={styles.cityText}>
-                  {actualCity || "City"}, {actualState || "State"}
+                  {actualCity || 'City'}, {actualState || 'State'}
                 </Text>
                 <View style={styles.milesInfo}>
                   <Text style={styles.cityText}>Service Area:</Text>
                   <Text style={styles.areaText}>
-                    {" "}
-                    {distance ? distance : "00"} miles
+                    {' '}
+                    {distance ? distance : '00'} miles
                   </Text>
                 </View>
               </View>
               <View style={styles.inputsContainer}>
                 <TextInput
                   inputProps={{
-                    placeholder: "Business Name",
-                    keyboardType: "default",
+                    placeholder: 'Business Name',
+                    keyboardType: 'default',
                     onChangeText: setServiceName,
                     value: serviceName,
                     maxLength: 45,
@@ -597,13 +574,11 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
                 <ScrollView
                   horizontal={false}
                   keyboardShouldPersistTaps="handled"
-                  scrollEnabled={false}
-                >
+                  scrollEnabled={false}>
                   <ScrollView
                     horizontal={true}
                     keyboardShouldPersistTaps="handled"
-                    scrollEnabled={false}
-                  >
+                    scrollEnabled={false}>
                     <LocationAutocomplete
                       ref={ref}
                       fetchDetails={true}
@@ -622,16 +597,16 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
                         setLat(details?.geometry?.location?.lat);
                         setLong(details?.geometry?.location?.lng);
                         setCity(
-                          details?.address_components.find((addressComponent) =>
-                            addressComponent.types.includes("locality")
-                          )?.short_name ?? "N/A"
+                          details?.address_components.find(addressComponent =>
+                            addressComponent.types.includes('locality'),
+                          )?.short_name ?? 'N/A',
                         );
                         setState(
-                          details?.address_components.find((addressComponent) =>
+                          details?.address_components.find(addressComponent =>
                             addressComponent.types.includes(
-                              "administrative_area_level_1"
-                            )
-                          )?.short_name ?? "N/A"
+                              'administrative_area_level_1',
+                            ),
+                          )?.short_name ?? 'N/A',
                         );
                       }}
                     />
@@ -642,7 +617,7 @@ export const VendorEdit: React.FC<VendorEditProps> = ({
                   selectedValue={distance}
                   placeholder="Service Area"
                   options={serviceAreaOptions}
-                  onValueChange={(itemValue) => setDistance(itemValue)}
+                  onValueChange={itemValue => setDistance(itemValue)}
                   arrowIconStyle={styles.serviceAreaIcon}
                 />
 

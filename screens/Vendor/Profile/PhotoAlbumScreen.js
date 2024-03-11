@@ -32,9 +32,11 @@ import PlusWhite from '../../../assets/plus.svg';
 import {useRecoilState} from 'recoil';
 import {vendorProfileAlbumAtom} from '../../../stateManagement';
 import FastImage from 'react-native-fast-image';
+import {useImageSelect} from '../../../hooks/useImageSelect';
 
 const PhotoAlbumScreen = ({route, navigation}) => {
   const toast = useToast();
+  const {selectImage} = useImageSelect();
   const [albumName, setAlbumName] = useState('');
   const [vendorInfo, setVendorInfo] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -64,10 +66,8 @@ const PhotoAlbumScreen = ({route, navigation}) => {
     setSearchEditList(removed);
   };
 
-  const handleRemoveImage = async image => {
-    const removed = selectedPhoto.filter(
-      (item, i) => item?.node?.image?.uri !== image?.node?.image?.uri,
-    );
+  const handleRemoveImage = async uri => {
+    const removed = selectedPhoto.filter(item => item !== uri);
     setSelectedPhoto(removed);
   };
 
@@ -100,8 +100,11 @@ const PhotoAlbumScreen = ({route, navigation}) => {
     );
   };
 
-  const handleCameraRoll = () => {
-    navigation.navigate('Camera', {success: true});
+  const handleCameraRoll = async () => {
+    const image = await selectImage();
+    if (image?.assets?.[0]?.uri) {
+      setSelectedPhoto([image?.assets?.[0]?.uri]);
+    }
   };
 
   const SelectButton = () => {
@@ -142,7 +145,7 @@ const PhotoAlbumScreen = ({route, navigation}) => {
 
       for (const el of selectedPhoto) {
         const document = await apis.document.create({
-          uri: el?.node?.image?.uri,
+          uri: uri,
           type: selectedOption,
           albumId: res.data.id,
         });
@@ -159,8 +162,6 @@ const PhotoAlbumScreen = ({route, navigation}) => {
           });
         }
       }
-
-      console.log('searchEditList', searchEditList);
 
       await apis.joinAlbumKey.createMulti({
         list: searchEditList,
@@ -245,10 +246,8 @@ const PhotoAlbumScreen = ({route, navigation}) => {
                 flexWrap: 'wrap',
                 alignItems: 'center',
               }}>
-              {selectedPhoto.map((item, i) => (
-                <Pressable
-                  onPress={() => handleRemoveImage(item)}
-                  key={item.node.image.uri}>
+              {selectedPhoto.map((uri, i) => (
+                <Pressable onPress={() => handleRemoveImage(uri)} key={uri}>
                   <View>
                     <CloseCircle
                       style={{
@@ -258,10 +257,7 @@ const PhotoAlbumScreen = ({route, navigation}) => {
                         left: 78,
                       }}
                     />
-                    <Image
-                      source={{uri: item.node.image.uri}}
-                      style={styles.photo}
-                    />
+                    <Image source={{uri}} style={styles.photo} />
                   </View>
                 </Pressable>
               ))}

@@ -16,7 +16,6 @@ import {
   GooglePlaceDetail,
 } from 'react-native-google-places-autocomplete';
 import dayjs from 'dayjs';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import LinearGradient from 'react-native-linear-gradient';
 import {CameraAddIcon, TrashIcon} from '../../../../components/Icons';
 import {Color} from '../../../../GlobalStyles';
@@ -27,6 +26,7 @@ import {
 } from '../../../../stateManagement';
 import {useRecoilState} from 'recoil';
 import {IconBg} from '../../../../components/Atoms';
+import {useImageSelect} from '../../../../hooks/useImageSelect';
 const height = Dimensions.get('window').height;
 
 type CreatePartyStepProps = {
@@ -40,6 +40,7 @@ export const CreatePartyStep: React.FC<CreatePartyStepProps> = ({
 }) => {
   const [selectedMedia, setSelectedMedia] = useRecoilState(selectedMediaAtom);
   const navigation = useNavigation();
+  const {selectImage} = useImageSelect();
   const handleFieldChange = (key: string, val?: unknown) => {
     setQuote(prevState => {
       return {
@@ -97,28 +98,21 @@ export const CreatePartyStep: React.FC<CreatePartyStepProps> = ({
     });
   }, [isValid]);
 
-  const handleNavigateMedia = () => {
-    navigation.push('CameraEdit', {key: SelectedMediaEnum.QUOTE_PARTY_PHOTO});
-  };
-
-  useEffect(() => {
-    if (selectedMedia[SelectedMediaEnum.QUOTE_PARTY_PHOTO]) {
+  const handleNavigateMedia = async () => {
+    const image = await selectImage();
+    console.log('image', image);
+    if (image) {
       setQuote(prevState => {
         return {
           ...prevState,
           party: {
             ...prevState.party,
-            image: selectedMedia[SelectedMediaEnum.QUOTE_PARTY_PHOTO],
+            image: image.assets?.[0]?.uri,
           },
         } as RequestQuote;
       });
-      setSelectedMedia(prevState => {
-        const newState = {...prevState};
-        delete newState[SelectedMediaEnum.QUOTE_PARTY_PHOTO];
-        return newState;
-      });
     }
-  }, [selectedMedia[SelectedMediaEnum.QUOTE_PARTY_PHOTO]]);
+  };
 
   const handleClearPhoto = () => {
     setQuote(prevState => {
@@ -143,11 +137,7 @@ export const CreatePartyStep: React.FC<CreatePartyStepProps> = ({
           onPress={handleNavigateMedia}
           style={styles.imageContainer}>
           <ImageBackground
-            source={
-              quote.party?.image[0].node.image.uri
-                ? {uri: quote.party?.image[0].node.image.uri}
-                : undefined
-            }
+            source={quote.party?.image ? {uri: quote.party.image} : undefined}
             style={{position: 'absolute', width: '100%', height: '100%'}}
             imageStyle={{borderRadius: 8}}
           />
