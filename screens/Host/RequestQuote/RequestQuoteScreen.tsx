@@ -25,7 +25,6 @@ import {PartyModel, ServiceModel, VendorModel} from '../../../models';
 import {useToast} from 'native-base';
 import {useRecoilRefresher_UNSTABLE} from 'recoil';
 import {myPartiesQuery, SelectedMedia} from '../../../stateManagement';
-import uuid from 'react-native-uuid';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import FastImage from 'react-native-fast-image';
