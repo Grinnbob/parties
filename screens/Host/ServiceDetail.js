@@ -128,7 +128,11 @@ const ServiceDetails = ({route}) => {
       <FlatList
         data={vendorList}
         renderItem={({item}) => (
-          <VendorCard name={item.name} imgBg={item.background} vendor={item} />
+          <VendorCard
+            name={item.name}
+            background={item.background}
+            vendor={item}
+          />
         )}
         contentContainerStyle={{
           margin: 20,
