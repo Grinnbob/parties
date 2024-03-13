@@ -10,9 +10,11 @@ const TopNavigationContent = ({
   RightComponent,
   backStyle,
   LeftComponent,
+  onBackPress,
 }) => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
+
   return (
     <View
       style={{
@@ -20,7 +22,11 @@ const TopNavigationContent = ({
         paddingTop: insets.top ? insets.top : 16,
       }}>
       <Pressable
-        onPress={LeftComponent ? LeftComponent : () => navigation.pop()}
+        onPress={
+          LeftComponent
+            ? LeftComponent
+            : () => (onBackPress ? onBackPress() : navigation.pop())
+        }
         style={{marginLeft: 10, ...backStyle}}
         hitSlop={20}>
         <Back />
@@ -58,7 +64,7 @@ const styles = StyleSheet.create({
   topnavigationContent: {
     justifyContent: 'space-between',
     flexDirection: 'row',
-    marginBottom: 20,
+    marginBottom: 16,
   },
 });
 

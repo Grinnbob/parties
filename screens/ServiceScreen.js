@@ -101,7 +101,7 @@ const ServiceScreen = () => {
         </View>
         <View style={styles.container1}>
           <VendorCard
-            imgBg={require('../assets/imgbg.png')}
+            background={require('../assets/imgbg.png')}
             manuelsRentals="Manuel’s Rentals"
           />
           <VendorCard

@@ -4,31 +4,32 @@ import React, {
   useCallback,
   useMemo,
   useState,
-} from "react";
-import { Text, View } from "react-native";
-import { styles } from "./styles";
+} from 'react';
+import {Text, View} from 'react-native';
+import {styles} from './styles';
 import {
   CalendarIcon,
   ClockIcon,
   GuestsIcon,
   LocationIcon,
   PersonIcon,
-} from "../../Icons";
-import { ChatMessageModel, QuoteStatusEnum } from "../../../models";
-import dayjs from "dayjs";
-import { Button, GradientButton } from "../../Atoms";
-import { DenyQuoteModal } from "../../Moleculs";
-import { CreateQuoteModal } from "../../Moleculs/CreateQuoteModal/CreateQuoteModal";
-import { Message } from "../Message/Message";
-import FastImage from "react-native-fast-image";
-import { Color } from "../../../GlobalStyles";
-import useGlobalState from "../../../stateManagement/hook";
-import StateTypes from "../../../stateManagement/StateTypes";
-import { GhostButton } from "../../GhostButton";
-import { ConfirmationModal } from "../../Moleculs/ConfirmationModal";
-import apis from "../../../apis";
-import { useToast } from "native-base";
-import { QuoteInfo } from "./QuoteInfo";
+} from '../../Icons';
+import {ChatMessageModel, QuoteStatusEnum} from '../../../models';
+import dayjs from 'dayjs';
+import {Button, GradientButton} from '../../Atoms';
+import {DenyQuoteModal} from '../../Moleculs';
+import {CreateQuoteModal} from '../../Moleculs/CreateQuoteModal/CreateQuoteModal';
+import {Message} from '../Message/Message';
+import FastImage from 'react-native-fast-image';
+import {Color} from '../../../GlobalStyles';
+import useGlobalState from '../../../stateManagement/hook';
+import StateTypes from '../../../stateManagement/StateTypes';
+import {GhostButton} from '../../GhostButton';
+import {ConfirmationModal} from '../../Moleculs/ConfirmationModal';
+import apis from '../../../apis';
+import {useToast} from 'native-base';
+import {QuoteInfo} from './QuoteInfo';
+import {usePayment} from './hooks/use-payment';
 
 type QuoteMessageProps = {
   chatMessage: ChatMessageModel;
@@ -41,11 +42,12 @@ export const QuoteMessage: React.FC<QuoteMessageProps> = ({
   isMe,
   setMessages,
 }) => {
+  const {isLoading: isPaymentLoading, fetchPaymentSheetParams} = usePayment();
   const toast = useToast();
-  const { party, quote } = chatMessage;
+  const {party, quote} = chatMessage;
   const startDate = useMemo(() => {
-    const start = dayjs(party?.startDate).format("MM/DD/YYYY");
-    const end = dayjs(party?.endDate).format("MM/DD/YYYY");
+    const start = dayjs(party?.startDate).format('MM/DD/YYYY');
+    const end = dayjs(party?.endDate).format('MM/DD/YYYY');
 
     return start === end ? start : `${start} - ${end}`;
   }, [party]);
@@ -61,28 +63,32 @@ export const QuoteMessage: React.FC<QuoteMessageProps> = ({
     useState(false);
 
   const toggleDenyVendorModal = useCallback(() => {
-    setIsDenyVendorModalOpen((prevState) => {
+    setIsDenyVendorModalOpen(prevState => {
       return !prevState;
     });
   }, []);
 
   const toggleDenyHostModal = useCallback(() => {
-    setIsDenyHostModalOpen((prevState) => {
+    setIsDenyHostModalOpen(prevState => {
       return !prevState;
     });
   }, []);
 
   const toggleQuoteModal = useCallback(() => {
-    setIsCreateQuoteModalOpen((prevState) => {
+    setIsCreateQuoteModalOpen(prevState => {
       return !prevState;
     });
   }, []);
 
   const toggleAcceptHostQuoteModal = useCallback(() => {
+    // fetchPaymentSheetParams(
+    //   (quote?.price! * quote?.downpayment!) / 100,
+    //   quote?.vendorId!,
+    // );
     if (isAcceptHostQuoteModalLoading) {
       return;
     }
-    setIsAcceptHostQuoteModalOpen((prevState) => {
+    setIsAcceptHostQuoteModalOpen(prevState => {
       return !prevState;
     });
   }, [isAcceptHostQuoteModalLoading]);
@@ -91,19 +97,19 @@ export const QuoteMessage: React.FC<QuoteMessageProps> = ({
     setIsAcceptHostQuoteModalLoading(true);
     const response = await apis.quote.changeStatus(
       quote?.id!,
-      QuoteStatusEnum.ACCEPTED_BY_HOST
+      QuoteStatusEnum.ACCEPTED_BY_HOST,
     );
     setIsAcceptHostQuoteModalLoading(false);
     toggleAcceptHostQuoteModal();
     if (!response.success) {
       toast.show({
-        placement: "top",
-        description: "Something went wrong. Please try again.",
+        placement: 'top',
+        description: 'Something went wrong. Please try again.',
       });
     } else {
-      setMessages((prevState) => {
+      setMessages(prevState => {
         const newState = prevState.slice();
-        const message = newState.find((item) => item.id === chatMessage.id);
+        const message = newState.find(item => item.id === chatMessage.id);
         if (message?.quote) {
           message.quote.status = QuoteStatusEnum.ACCEPTED_BY_HOST;
         }
@@ -117,19 +123,19 @@ export const QuoteMessage: React.FC<QuoteMessageProps> = ({
     setIsDenyHostQuoteModalLoading(true);
     const response = await apis.quote.changeStatus(
       quote?.id!,
-      QuoteStatusEnum.DENIED_BY_HOST
+      QuoteStatusEnum.DENIED_BY_HOST,
     );
     setIsDenyHostQuoteModalLoading(false);
     toggleDenyHostModal();
     if (!response.success) {
       toast.show({
-        placement: "top",
-        description: "Something went wrong. Please try again.",
+        placement: 'top',
+        description: 'Something went wrong. Please try again.',
       });
     } else {
-      setMessages((prevState) => {
+      setMessages(prevState => {
         const newState = prevState.slice();
-        const message = newState.find((item) => item.id === chatMessage.id);
+        const message = newState.find(item => item.id === chatMessage.id);
         if (message?.quote) {
           message.quote.status = QuoteStatusEnum.DENIED_BY_HOST;
         }
@@ -143,15 +149,15 @@ export const QuoteMessage: React.FC<QuoteMessageProps> = ({
 
   const handleAccept = useCallback(() => {
     if (chatMessage.quoteId) {
-      setMessages((prevState) => {
+      setMessages(prevState => {
         const newState = [...prevState];
         const index = newState.findIndex(
-          (item) => item.quoteId === chatMessage.quoteId
+          item => item.quoteId === chatMessage.quoteId,
         );
 
         if (index >= 0 && newState[index]?.quote?.status) {
           // @ts-expect-error ignore
-          newState[index].quote.status = "accepted";
+          newState[index].quote.status = 'accepted';
         }
 
         return newState;
@@ -165,9 +171,9 @@ export const QuoteMessage: React.FC<QuoteMessageProps> = ({
   ) {
     let getTitle = () => {
       if (quote?.status === QuoteStatusEnum.DENIED_BY_HOST) {
-        return "Offer rejected";
+        return 'Offer rejected';
       } else {
-        return "Offer accepted";
+        return 'Offer accepted';
       }
     };
     return (
@@ -205,16 +211,16 @@ export const QuoteMessage: React.FC<QuoteMessageProps> = ({
                         Would you like to book this vendor?
                       </Text>
                       <GradientButton
-                        colors={["#FF077E", "#FF077E"]}
+                        colors={['#FF077E', '#FF077E']}
                         style={styles.acceptButton}
                         textStyle={styles.acceptButtonText}
                         text="Yes, book this vendor!"
                         onPress={toggleAcceptHostQuoteModal}
+                        loading={isPaymentLoading}
                       />
                       <GhostButton
                         style={styles.declineButton}
-                        onPress={toggleDenyHostModal}
-                      >
+                        onPress={toggleDenyHostModal}>
                         <Text style={styles.declineText}>Decline Offer</Text>
                       </GhostButton>
                     </View>
@@ -260,8 +266,8 @@ export const QuoteMessage: React.FC<QuoteMessageProps> = ({
               <View style={styles.partyItemRowInfo}>
                 <ClockIcon style={styles.icon} />
                 <Text style={styles.contentText}>
-                  {dayjs(party?.startTime).format("h:mm A")} -{" "}
-                  {dayjs(party?.endTime).format("h:mm A")}
+                  {dayjs(party?.startTime).format('h:mm A')} -{' '}
+                  {dayjs(party?.endTime).format('h:mm A')}
                 </Text>
               </View>
               {!!party?.street && (
@@ -307,7 +313,7 @@ export const QuoteMessage: React.FC<QuoteMessageProps> = ({
                 <FastImage
                   style={styles.image}
                   resizeMode="cover"
-                  source={{ uri: user?.avatar }}
+                  source={{uri: user?.avatar}}
                 />
               ) : (
                 <PersonIcon width={32} height={32} fill={Color.primaryPink} />

@@ -1,5 +1,5 @@
-import * as API from "../base";
-const Base = "user";
+import * as API from '../base';
+const Base = 'user';
 interface USER {
   id: string;
 }
@@ -29,7 +29,7 @@ export const getSelf = async () => {
 };
 
 export const deleteById = async (id: string) => {
-  console.log("deleteById", deleteById);
+  console.log('deleteById', deleteById);
   const response = await API.deleteApi(`${Base}/${id}`);
   return response;
 };
@@ -51,8 +51,8 @@ export const getAll = async (query: any = {}) => {
 };
 
 export const UploadAvatar = async (data: AVATAR) => {
-  const { uri, id } = data;
-  const uploadRes = await API.imageApi("avatar", id, uri);
+  const {uri, id} = data;
+  const uploadRes = await API.imageApi('avatar', id, uri);
   if (uploadRes.success) {
     const avatarBody = {
       avatar: uploadRes?.data?.key,
@@ -61,4 +61,22 @@ export const UploadAvatar = async (data: AVATAR) => {
     const response = await API.putApi(`${Base}/${id}`, avatarBody);
     return response;
   }
+};
+
+export const onboardStart = async () => {
+  const response = await API.getApi(`${Base}/onboardStart`);
+  return response;
+};
+
+export const onboardEnd = async () => {
+  const response = await API.getApi(`${Base}/onboardFinish`);
+  return response;
+};
+
+export const payToVendor = async (params: {
+  amount: number;
+  vendorId: number;
+}) => {
+  const response = await API.postApi(`${Base}/pay`, params);
+  return response;
 };

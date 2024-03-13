@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 import {
   Image,
   StyleSheet,
@@ -9,30 +9,31 @@ import {
   ImageBackground,
   ScrollView,
   SafeAreaView,
-} from "react-native";
-import MenuCard from "../../components/MenuCard";
-import { FontFamily, FontSize, Padding, Color } from "../../GlobalStyles";
-import { useNavigation } from "@react-navigation/core";
-import apis from "../../apis";
-import useGlobalState from "../../stateManagement/hook";
-import StateTypes from "../../stateManagement/StateTypes";
-import loadApp from "../../navigation/loadApp";
-import { useRecoilState } from "recoil";
+} from 'react-native';
+import MenuCard from '../../components/MenuCard';
+import {FontFamily, FontSize, Padding, Color} from '../../GlobalStyles';
+import {useNavigation} from '@react-navigation/core';
+import apis from '../../apis';
+import useGlobalState from '../../stateManagement/hook';
+import StateTypes from '../../stateManagement/StateTypes';
+import loadApp from '../../navigation/loadApp';
+import {useRecoilState} from 'recoil';
 import {
   vendorProfileServiceAtom,
   vendorProfileAlbumAtom,
   vendorProfileAtom,
-} from "../../stateManagement";
+} from '../../stateManagement';
+import {CardIcon} from '../Icons';
 
 const VendorSideNav = () => {
-  const { navigate, toggleDrawer, closeDrawer } = useNavigation();
+  const {navigate, toggleDrawer, closeDrawer} = useNavigation();
   const [token, setToken] = useGlobalState(
     StateTypes.token.key,
-    StateTypes.token.default
+    StateTypes.token.default,
   );
   const [user, setUser] = useGlobalState(
     StateTypes.user.key,
-    StateTypes.user.default
+    StateTypes.user.default,
   );
   const [, setAlbum] = useRecoilState(vendorProfileAlbumAtom);
   const [, setService] = useRecoilState(vendorProfileServiceAtom);
@@ -40,7 +41,7 @@ const VendorSideNav = () => {
 
   const switchToHost = async () => {
     try {
-      setToken("host");
+      setToken('host');
     } catch (error) {
       console.log(error);
     }
@@ -61,33 +62,31 @@ const VendorSideNav = () => {
 
   return (
     <ScrollView
-      style={{ backgroundColor: "#000" }}
-      contentContainerStyle={styles.root}
-    >
+      style={{backgroundColor: '#000'}}
+      contentContainerStyle={styles.root}>
       <ImageBackground
         style={styles.bgIcon}
         resizeMode="cover"
-        source={require("../../assets/bg11.png")}
+        source={require('../../assets/bg11.png')}
       />
       <SafeAreaView style={styles.safeAreaView}>
         <View
           style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
+            flexDirection: 'row',
+            justifyContent: 'space-between',
             marginTop: 18,
-          }}
-        >
-          <TouchableOpacity onPress={() => navigate("Calendar")}>
+          }}>
+          <TouchableOpacity onPress={() => navigate('Calendar')}>
             <Image
               style={styles.backIconLayout}
               resizeMode="cover"
-              source={require("../../assets/back.png")}
+              source={require('../../assets/back.png')}
             />
           </TouchableOpacity>
           <View style={styles.title}>
             <Text style={styles.title1}>Settings</Text>
           </View>
-          <View style={{ width: 30, height: 30 }}></View>
+          <View style={{width: 30, height: 30}}></View>
         </View>
         <View style={styles.divider} />
         <View style={styles.settings}>
@@ -119,11 +118,21 @@ const VendorSideNav = () => {
             <TouchableOpacity
               style={styles.touchableopacity}
               activeOpacity={0.2}
-              onPress={() => navigate("EditAccount")}
-            >
+              onPress={() => navigate('EditAccount')}>
               <MenuCard
-                icon={require("../../assets/iconsaxlinearuser.png")}
+                icon={require('../../assets/iconsaxlinearuser.png')}
                 title="Account settings"
+                propWidth={327}
+                propAlignSelf="unset"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.touchableopacity}
+              activeOpacity={0.2}
+              onPress={() => navigate('PaymentMethod')}>
+              <MenuCard
+                icon={<CardIcon color={Color.primaryPink} />}
+                title="Payment method"
                 propWidth={327}
                 propAlignSelf="unset"
               />
@@ -144,10 +153,9 @@ const VendorSideNav = () => {
             <TouchableOpacity
               style={styles.touchableopacity}
               activeOpacity={0.2}
-              onPress={() => navigate("FAQ")}
-            >
+              onPress={() => navigate('FAQ')}>
               <MenuCard
-                icon={require("../../assets/question.png")}
+                icon={require('../../assets/question.png')}
                 title="FAQ"
                 propWidth={327}
                 propAlignSelf="unset"
@@ -157,10 +165,9 @@ const VendorSideNav = () => {
             <TouchableOpacity
               style={styles.touchableopacity}
               activeOpacity={0.2}
-              onPress={() => navigate("Term")}
-            >
+              onPress={() => navigate('Term')}>
               <MenuCard
-                icon={require("../../assets/iconsaxlineardocumenttext.png")}
+                icon={require('../../assets/iconsaxlineardocumenttext.png')}
                 title="Terms & Policy"
                 propWidth={327}
                 propAlignSelf="unset"
@@ -169,10 +176,9 @@ const VendorSideNav = () => {
             <TouchableOpacity
               style={styles.touchableopacity}
               activeOpacity={0.2}
-              onPress={() => navigate("Privacy")}
-            >
+              onPress={() => navigate('Privacy')}>
               <MenuCard
-                icon={require("../../assets/iconsaxlinearshieldtick.png")}
+                icon={require('../../assets/iconsaxlinearshieldtick.png')}
                 title="Privacy Policy"
                 propWidth={327}
                 propAlignSelf="unset"
@@ -182,10 +188,9 @@ const VendorSideNav = () => {
             <TouchableOpacity
               style={styles.touchableopacity}
               activeOpacity={0.2}
-              onPress={() => navigate("Report")}
-            >
+              onPress={() => navigate('Report')}>
               <MenuCard
-                icon={require("../../assets/iconsaxlinearflag.png")}
+                icon={require('../../assets/iconsaxlinearflag.png')}
                 title="Report problem"
                 propWidth={327}
                 propAlignSelf="unset"
@@ -195,10 +200,9 @@ const VendorSideNav = () => {
             <TouchableOpacity
               style={styles.touchableopacity}
               activeOpacity={0.2}
-              onPress={switchToHost}
-            >
+              onPress={switchToHost}>
               <MenuCard
-                icon={require("../../assets/iconsaxlineararrangehorizontalcircle.png")}
+                icon={require('../../assets/iconsaxlineararrangehorizontalcircle.png')}
                 title="Switch to host"
                 propWidth={327}
                 propAlignSelf="unset"
@@ -208,11 +212,10 @@ const VendorSideNav = () => {
           <TouchableOpacity
             style={[styles.touchableopacity, styles.logout]}
             activeOpacity={0.2}
-            onPress={logout}
-          >
+            onPress={logout}>
             <MenuCard
               propMarginTop="unset"
-              icon={require("../../assets/iconsaxlinearlogoutcurve.png")}
+              icon={require('../../assets/iconsaxlinearlogoutcurve.png')}
               title="Log out"
               propWidth="unset"
               propAlignSelf="stretch"
@@ -242,30 +245,30 @@ const styles = StyleSheet.create({
     width: 40,
   },
   bgIcon: {
-    width: "100%",
-    height: "100%",
-    position: "absolute",
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
   },
   iconsaxlineardocumenttext: {
     width: 20,
     height: 20,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   termsPolicy: {
     marginLeft: 16,
-    textAlign: "left",
+    textAlign: 'left',
     color: Color.labelColorDarkPrimary,
   },
   touchableopacity: {
     width: 327,
     paddingHorizontal: 0,
     paddingVertical: 5,
-    alignItems: "center",
-    flexDirection: "row",
+    alignItems: 'center',
+    flexDirection: 'row',
   },
   settings: {
     paddingHorizontal: Padding.p_5xl,
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
     // height: "100%",
     flex: 1,
     marginTop: 20,
@@ -276,34 +279,34 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     fontFamily: FontFamily.bodyRegular,
     color: Color.defaultSystemBlueLight,
-    display: "none",
-    textAlign: "left",
-    alignItems: "center",
+    display: 'none',
+    textAlign: 'left',
+    alignItems: 'center',
     flex: 1,
   },
   iconsaxlinearhambergermenu: {
-    display: "none",
-    overflow: "hidden",
+    display: 'none',
+    overflow: 'hidden',
   },
   title1: {
     fontSize: 18,
     lineHeight: 25,
-    fontWeight: "700",
+    fontWeight: '700',
     fontFamily: FontFamily.typographyBodySmallBold,
-    textAlign: "center",
+    textAlign: 'center',
     color: Color.labelColorDarkPrimary,
   },
   title: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title2: {
     color: Color.appColorPerfectPink,
-    textAlign: "center",
+    textAlign: 'center',
   },
   divider: {
-    borderStyle: "solid",
-    borderColor: "rgba(77, 77, 77, 0.5)",
+    borderStyle: 'solid',
+    borderColor: 'rgba(77, 77, 77, 0.5)',
     borderBottomWidth: 1,
     marginBottom: 10,
     marginTop: 16,
