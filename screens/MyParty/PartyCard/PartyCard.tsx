@@ -3,8 +3,7 @@ import {Text, View} from 'react-native';
 import {PartyModel} from '../../../models';
 import {styles} from './styles';
 import dayjs from 'dayjs';
-import {NotFoundImageIcon} from '../../../components/Icons';
-import FastImage from 'react-native-fast-image';
+import {ProgressiveImage} from '../../../components/Atoms/ProgressiveImage';
 type PartyCardProps = {
   party: PartyModel;
 };
@@ -18,22 +17,14 @@ export const PartyCard: React.FC<PartyCardProps> = ({party}) => {
             {dayjs(party.startDate).format('MMM DD YYYY')}
           </Text>
         </View>
-        <View style={styles.partyImageNotFound}>
-          {party.image ? (
-            <FastImage
-              source={{
-                uri: party?.image,
-              }}
-              style={styles.image}
-              resizeMode="cover"
-            />
-          ) : (
-            <NotFoundImageIcon
-              width="80"
-              height="80"
-              style={styles.notFoundIcon}
-            />
-          )}
+        <View style={styles.partyImageContainer}>
+          <ProgressiveImage
+            source={{
+              uri: party?.image,
+            }}
+            style={styles.image}
+            resizeMode="cover"
+          />
         </View>
       </View>
       <View style={styles.descriptionContainer}>

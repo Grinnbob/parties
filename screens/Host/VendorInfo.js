@@ -14,11 +14,12 @@ import apis from '../../apis';
 import {GradientButton, IconBg} from '../../components/Atoms';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {BackIcon} from '../../components/Icons';
-import FastImage from 'react-native-fast-image';
 import {Skeleton} from '../Vendor/VendorProfileScreen/Skeleton';
 import {ServicesList, SpecialitiesList} from '../../components/Moleculs';
 import {PastProjectsList} from '../../components/Moleculs/PastProjectsList';
 import {useServiceGroups} from '../../hooks/useServiceGroups';
+import {ProgressiveImage} from '../../components/Atoms/ProgressiveImage';
+import {Skeleton as RBSkeleton} from 'native-base';
 
 const VendorInfo = ({route, navigation}) => {
   const [vendorProfile, setVendorProfile] = useState();
@@ -106,7 +107,7 @@ const VendorInfo = ({route, navigation}) => {
           </IconBg>
         </View>
         <View style={styles.profileBackground}>
-          <FastImage
+          <ProgressiveImage
             source={{
               uri: vendorProfile?.background || '',
             }}
@@ -120,11 +121,14 @@ const VendorInfo = ({route, navigation}) => {
           style={styles.bgGradient}
         />
         <View style={styles.avatarContainer}>
-          <FastImage
+          <ProgressiveImage
             source={{
               uri: vendorProfile?.avatar || '',
             }}
             style={styles.avatarBg}
+            indicator={() => {
+              return <RBSkeleton width={76} height={76} borderRadius={50} />;
+            }}
           />
         </View>
 

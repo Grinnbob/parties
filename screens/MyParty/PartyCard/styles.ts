@@ -24,7 +24,7 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
   },
   partyImage: {width: '100%', resizeMode: 'cover', borderRadius: 18},
-  partyImageNotFound: {
+  partyImageContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',

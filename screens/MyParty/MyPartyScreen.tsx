@@ -1,25 +1,21 @@
-import React, { useEffect, useState } from "react";
-import {
-  FlatList,
-  ImageBackground,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { styles } from "./styles";
-import { SearchInput } from "../../components/Input/SearchInput";
-import { Text } from "native-base";
-import useDebounce from "../../utils/useDebounce";
-import { useNavigation } from "@react-navigation/core";
-import { PartyCard } from "./PartyCard";
-import { myPartiesQuery, partySearchFilterAtom } from "../../stateManagement";
-import { useLoadable } from "../../hooks";
-import { useRecoilState } from "recoil";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {FlatList, ImageBackground, TouchableOpacity, View} from 'react-native';
+import {styles} from './styles';
+import {SearchInput} from '../../components/Input/SearchInput';
+import {Text} from 'native-base';
+import useDebounce from '../../utils/useDebounce';
+import {useNavigation} from '@react-navigation/core';
+import {PartyCard} from './PartyCard';
+import {myPartiesQuery, partySearchFilterAtom} from '../../stateManagement';
+import {useLoadable} from '../../hooks';
+import {useRecoilState} from 'recoil';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {PartyModel} from '../../models';
 
 export const MyPartyScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState('');
   const debounceSearchText = useDebounce(searchText);
   const [, setMyPartiesFilter] = useRecoilState(partySearchFilterAtom);
   const [partyList, isPartyListLoading] = useLoadable(myPartiesQuery);
@@ -34,16 +30,42 @@ export const MyPartyScreen: React.FC = () => {
     });
   }, [debounceSearchText]);
 
+  const renderParty = useCallback(
+    ({item}: {item: PartyModel}) => (
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('PartyDetailsScreen', {
+            party: item,
+          });
+        }}>
+        <PartyCard party={item} />
+      </TouchableOpacity>
+    ),
+    [navigation],
+  );
+
+  const listEmptyComponent = useMemo(() => {
+    return isPartyListLoading ? (
+      <></>
+    ) : (
+      <View style={styles.noResultsContainer}>
+        <Text style={styles.noResultsText}>No results found</Text>
+      </View>
+    );
+  }, [isPartyListLoading]);
+
+  const keyExtractor = useCallback((item: PartyModel) => {
+    return String(item.id);
+  }, []);
+
   return (
     <View style={styles.screen}>
       <ImageBackground
         style={styles.bgIcon}
         resizeMode="cover"
-        source={require("../../assets/bg8.png")}
+        source={require('../../assets/bg8.png')}
       />
-      <View
-        style={[styles.header, { marginTop: insets.top ? insets.top : 16 }]}
-      >
+      <View style={[styles.header, {marginTop: insets.top ? insets.top : 16}]}>
         <View style={styles.hiddenElem}></View>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>My Parties</Text>
@@ -59,27 +81,10 @@ export const MyPartyScreen: React.FC = () => {
         <FlatList
           data={partyList}
           showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("PartyDetailsScreen", {
-                  party: item,
-                });
-              }}
-            >
-              <PartyCard party={item} />
-            </TouchableOpacity>
-          )}
+          keyExtractor={keyExtractor}
+          renderItem={renderParty}
           contentContainerStyle={styles.flatList}
-          ListEmptyComponent={
-            isPartyListLoading ? (
-              <></>
-            ) : (
-              <View style={styles.noResultsContainer}>
-                <Text style={styles.noResultsText}>No results found</Text>
-              </View>
-            )
-          }
+          ListEmptyComponent={listEmptyComponent}
         />
       </View>
     </View>

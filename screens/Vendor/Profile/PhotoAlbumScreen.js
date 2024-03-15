@@ -145,7 +145,7 @@ const PhotoAlbumScreen = ({route, navigation}) => {
 
       for (const el of selectedPhoto) {
         const document = await apis.document.create({
-          uri: uri,
+          uri: el,
           type: selectedOption,
           albumId: res.data.id,
         });
@@ -177,13 +177,18 @@ const PhotoAlbumScreen = ({route, navigation}) => {
         });
       }
 
-      if (res && res.success === false) {
+      if (res?.success === false) {
         toast.show({
           placement: 'top',
           description: res.message,
         });
-        setIsLoading(false);
+      } else {
+        toast.show({
+          placement: 'top',
+          description: 'Past project added',
+        });
       }
+      setIsLoading(false);
 
       if (res && res.success) {
         setIsLoading(false);

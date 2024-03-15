@@ -12,6 +12,7 @@ import apis from '../../../apis';
 import {useRecoilState} from 'recoil';
 import {selectedQuoteAtom} from '../../../stateManagement';
 import FastImage from 'react-native-fast-image';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 type PartyDetailsScreenProps = {
   route: {
@@ -22,6 +23,7 @@ type PartyDetailsScreenProps = {
 };
 
 export const EventScreen: React.FC<PartyDetailsScreenProps> = ({route}) => {
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const {push} = navigation;
   const [isMessagePressed, setIsMessagedPressed] = useState(false);
@@ -137,7 +139,11 @@ export const EventScreen: React.FC<PartyDetailsScreenProps> = ({route}) => {
               />
             )}
           </View>
-          <View style={styles.headerInnerContainer}>
+          <View
+            style={[
+              styles.headerInnerContainer,
+              {paddingTop: insets.top ? insets.top : 16},
+            ]}>
             <TouchableOpacity style={styles.backButtonContainer}>
               <BackButton onPress={handleBackPress} />
             </TouchableOpacity>

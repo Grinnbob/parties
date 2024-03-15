@@ -1,37 +1,37 @@
-import { Dimensions, StyleSheet } from "react-native";
-import { Color } from "../../../../GlobalStyles";
+import {Dimensions, StyleSheet} from 'react-native';
+import {Color} from '../../../../GlobalStyles';
 
 export const styles = StyleSheet.create({
   root: {
-    position: "relative",
+    position: 'relative',
     borderWidth: 1,
     borderRadius: 16,
     borderColor: Color.textMainWhite,
   },
   header: {
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   priceContainer: {
-    flexDirection: "column",
-    backgroundColor: "#323232",
+    flexDirection: 'column',
+    backgroundColor: '#323232',
     borderTopLeftRadius: 16,
     paddingVertical: 8,
     paddingHorizontal: 16,
-    width: "40%",
+    width: '40%',
   },
   startAtText: {
     color: Color.textMainWhite,
-    fontWeight: "300",
+    fontWeight: '300',
     fontSize: 12,
     lineHeight: 15,
   },
   priceValueContainer: {
     marginTop: 4,
-    alignItems: "flex-end",
-    justifyContent: "flex-end",
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
   },
   priceText: {
-    fontWeight: "700",
+    fontWeight: '700',
     fontSize: 16,
     lineHeight: 19,
     color: Color.textMainWhite,
@@ -42,17 +42,17 @@ export const styles = StyleSheet.create({
     color: Color.textMainWhite,
   },
   nameContainer: {
-    width: "60%",
-    justifyContent: "flex-end",
-    alignItems: "flex-start",
+    width: '60%',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-start',
     paddingVertical: 6,
     paddingHorizontal: 16,
     borderTopRightRadius: 16,
-    position: "relative",
+    position: 'relative',
   },
   nameText: {
     color: Color.textMainWhite,
-    fontWeight: "700",
+    fontWeight: '700',
     fontSize: 16,
     lineHeight: 19,
   },
@@ -65,29 +65,30 @@ export const styles = StyleSheet.create({
   },
   descriptionText: {
     color: Color.textMainWhite,
-    textAlign: "left",
+    textAlign: 'left',
     fontSize: 14,
     lineHeight: 21,
   },
   checkIcon: {
-    position: "absolute",
+    position: 'absolute',
     left: -13,
     width: 26,
     height: 26,
-    top: "43%",
+    top: '43%',
   },
   image: {
     height: 142,
-    marginTop: -16,
-    marginBottom: 16,
-    marginHorizontal: 16,
+    width: '100%',
+    paddingBottom: 16,
+    paddingHorizontal: 16,
+    overflow: 'hidden',
   },
   moreVertIconContainer: {
-    position: "absolute",
+    position: 'absolute',
     right: 8,
     top: 4,
     padding: 8,
   },
-  menuOption: { flexDirection: "row", gap: 8, alignItems: "center" },
-  menuText: { fontSize: 16, lineHeight: 24 },
+  menuOption: {flexDirection: 'row', gap: 8, alignItems: 'center'},
+  menuText: {fontSize: 16, lineHeight: 24},
 });

@@ -1,22 +1,17 @@
-import React, { useCallback, useState } from "react";
-import {
-  StyleProp,
-  Text,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from "react-native";
-import { styles } from "./styles";
-import LinearGradient from "react-native-linear-gradient";
+import React, {useCallback, useState} from 'react';
+import {StyleProp, Text, TouchableOpacity, View, ViewStyle} from 'react-native';
+import {styles} from './styles';
+import LinearGradient from 'react-native-linear-gradient';
 import {
   CheckCircleIcon,
   MoreVertIcon,
   PencilIcon,
   TrashIcon,
-} from "../../../Icons";
-import FastImage, { FastImageProps } from "react-native-fast-image";
-import { Color } from "../../../../GlobalStyles";
-import { Menu } from "../../../Atoms/Menu";
+} from '../../../Icons';
+import {FastImageProps} from 'react-native-fast-image';
+import {Color} from '../../../../GlobalStyles';
+import {Menu} from '../../../Atoms/Menu';
+import {ProgressiveImage} from '../../../Atoms/ProgressiveImage';
 
 type ServiceCardProps = {
   name: string;
@@ -49,7 +44,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
   const [isMenuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = useCallback(() => {
-    setMenuOpen((prevState) => {
+    setMenuOpen(prevState => {
       return !prevState;
     });
   }, []);
@@ -68,8 +63,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
     <TouchableOpacity
       style={[styles.root, style]}
       onPress={onPress}
-      disabled={disabled || !onPress}
-    >
+      disabled={disabled || !onPress}>
       <View style={styles.header}>
         <View style={styles.priceContainer}>
           <Text style={styles.startAtText}>Starting at</Text>
@@ -81,17 +75,15 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
         <LinearGradient
           style={styles.nameContainer}
           locations={[0, 1]}
-          colors={["#ff077e", "#ff077e"]}
+          colors={['#ff077e', '#ff077e']}
           useAngle={true}
-          angle={-90}
-        >
+          angle={-90}>
           <Text style={styles.nameText}>{name}</Text>
           {!!actions && (
             <>
               <TouchableOpacity
                 style={styles.moreVertIconContainer}
-                onPress={toggleMenu}
-              >
+                onPress={toggleMenu}>
                 <MoreVertIcon color={Color.textMainWhite} />
               </TouchableOpacity>
               <Menu
@@ -105,9 +97,8 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
                         <Text
                           style={[
                             styles.menuText,
-                            { color: Color.textMainWhite },
-                          ]}
-                        >
+                            {color: Color.textMainWhite},
+                          ]}>
                           Edit
                         </Text>
                       </View>
@@ -126,9 +117,8 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
                         <Text
                           style={[
                             styles.menuText,
-                            { color: Color.labelColorLightPrimary },
-                          ]}
-                        >
+                            {color: Color.labelColorLightPrimary},
+                          ]}>
                           Delete
                         </Text>
                       </View>
@@ -144,9 +134,9 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
       <View style={styles.descriptionContainer}>
         <Text style={styles.descriptionText}>{description}</Text>
       </View>
-      {!!image && (
-        <FastImage
-          resizeMode="contain"
+      {!!image?.source && (
+        <ProgressiveImage
+          resizeMode="cover"
           {...image}
           style={[styles.image, image?.style]}
         />

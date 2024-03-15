@@ -40,7 +40,6 @@ export const styles = StyleSheet.create({
   headerInnerContainer: {
     display: 'flex',
     justifyContent: 'space-between',
-    marginTop: 60,
     paddingHorizontal: Padding.p_5xl,
   },
   backButtonContainer: {
