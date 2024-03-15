@@ -5,6 +5,7 @@ import {Color, FontFamily, FontSize, Padding} from '../GlobalStyles';
 import {useNavigation} from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import {NotFoundImageIcon} from './Icons';
+import {ProgressiveImage} from './Atoms/ProgressiveImage';
 
 const getStyleValue = (key, value) => {
   if (value === undefined) return;
@@ -32,29 +33,22 @@ export const VendorCard = ({
 
   return (
     <View style={[styles.cards, cardsStyle]}>
-      {background ? (
-        <FastImage
-          style={styles.imgBgIcon}
+      <View
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: 'grey',
+          width: '100%',
+          height: 134,
+          borderRadius: 18,
+          overflow: 'hidden',
+        }}>
+        <ProgressiveImage
+          style={styles.imgBg}
           resizeMode="cover"
           source={{uri: background}}
         />
-      ) : (
-        <View
-          style={{
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: 'grey',
-            width: '100%',
-            height: 134,
-            borderRadius: 18,
-          }}>
-          <NotFoundImageIcon
-            width="80"
-            height="80"
-            style={styles.notFoundIcon}
-          />
-        </View>
-      )}
+      </View>
       {/* <View style={styles.priceWrapper}>
           <View style={[styles.price]}>
             <Text style={[styles.food, styles.miFlexBox]}>{service}</Text>
@@ -114,10 +108,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 8,
   },
-  imgBgIcon: {
-    borderRadius: 18,
+  imgBg: {
+    width: '100%',
     height: 134,
-    padding: 8,
+    borderRadius: 18,
   },
   manuelsRentals: {
     fontSize: FontSize.typographyBodyMediumBold_size,

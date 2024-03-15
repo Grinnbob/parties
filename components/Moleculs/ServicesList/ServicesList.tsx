@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import { FlatList, ListRenderItemInfo, Text, View } from "react-native";
-import { styles } from "./styles";
-import { AddButton } from "../../Atoms/AddButton";
-import { ServiceModel } from "../../../models";
-import { useNavigation } from "@react-navigation/native";
-import { useServiceGroups } from "../../../hooks/useServiceGroups";
-import { ServiceCard } from "./ServiceCard";
-import { ConfirmationModal } from "../ConfirmationModal";
-import apis from "../../../apis";
-import { useToast } from "native-base";
+import React, {useState} from 'react';
+import {FlatList, ListRenderItemInfo, Text, View} from 'react-native';
+import {styles} from './styles';
+import {AddButton} from '../../Atoms/AddButton';
+import {ServiceModel} from '../../../models';
+import {useNavigation} from '@react-navigation/native';
+import {useServiceGroups} from '../../../hooks/useServiceGroups';
+import {ServiceCard} from './ServiceCard';
+import {ConfirmationModal} from '../ConfirmationModal';
+import apis from '../../../apis';
+import {useToast} from 'native-base';
 
 type ServicesListProps = {
   label: string;
@@ -31,17 +31,17 @@ export const ServicesList: React.FC<ServicesListProps> = ({
   const navigation = useNavigation();
   const [isDeleting, setIsDeleting] = useState(false);
   const [serviceToDelete, setServiceToDelete] = useState<ServiceModel | null>(
-    null
+    null,
   );
   const handleAddPress = () => {
-    navigation.push("Service", {
+    navigation.push('Service', {
       vendorId: vendorId,
       onEdit,
     });
   };
 
   const handleEditPress = (service: ServiceModel) => {
-    navigation.push("Service", {
+    navigation.push('Service', {
       vendorId: vendorId,
       service,
       onEdit,
@@ -59,12 +59,12 @@ export const ServicesList: React.FC<ServicesListProps> = ({
         const res = await apis.service.deleteById(String(serviceToDelete.id));
         if (res?.success === false) {
           toast.show({
-            placement: "top",
+            placement: 'top',
             description: res.message,
           });
         } else {
           toast.show({
-            placement: "top",
+            placement: 'top',
             description: `${serviceToDelete.name} was removed`,
           });
           onDelete?.(serviceToDelete);
@@ -80,7 +80,7 @@ export const ServicesList: React.FC<ServicesListProps> = ({
     setServiceToDelete(null);
   };
 
-  const { serviceGroups } = useServiceGroups(services);
+  const {serviceGroups} = useServiceGroups(services);
 
   const renderService = (element: ListRenderItemInfo<ServiceModel>) => {
     const actions = {
@@ -107,9 +107,7 @@ export const ServicesList: React.FC<ServicesListProps> = ({
         price={element.item.price}
         unit={element.item.rate}
         image={
-          element.item.image
-            ? { source: { uri: element.item.image }, resizeMode: "cover" }
-            : undefined
+          element.item.image ? {source: {uri: element.item.image}} : undefined
         }
         actions={Object.keys(actions).length ? actions : undefined}
       />
@@ -150,7 +148,7 @@ export const ServicesList: React.FC<ServicesListProps> = ({
             unit="person"
             disabled={true}
             image={{
-              source: require("../../../assets/service-default-image.png"),
+              source: require('../../../assets/service-default-image.png'),
             }}
           />
         )}

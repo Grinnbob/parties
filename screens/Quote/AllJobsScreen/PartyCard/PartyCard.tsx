@@ -1,10 +1,11 @@
 import React from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
 import {styles} from './styles';
-import {NotFoundImageIcon, RightArrowIcon} from '../../../../components/Icons';
+import {RightArrowIcon} from '../../../../components/Icons';
 import {PartyModel} from '../../../../models';
 import dayjs from 'dayjs';
-import FastImage from 'react-native-fast-image';
+import {ProgressiveImage} from '../../../../components/Atoms/ProgressiveImage';
+import {Skeleton} from 'native-base';
 
 const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -24,26 +25,24 @@ export const PartyCard: React.FC<PartyCardProps> = ({
   price,
   onPress,
 }) => {
-  console.log('party', party);
   return (
     <TouchableOpacity style={styles.root} onPress={onPress}>
       <View style={styles.partyContainer}>
         <View style={styles.partyImageNotFound}>
-          {party?.image ? (
-            <FastImage
-              source={{
-                uri: party?.image,
-              }}
-              style={styles.image}
-              resizeMode="cover"
-            />
-          ) : (
-            <NotFoundImageIcon
-              width="24"
-              height="24"
-              style={styles.notFoundIcon}
-            />
-          )}
+          <ProgressiveImage
+            source={{
+              uri: party?.image,
+            }}
+            style={styles.image}
+            resizeMode="cover"
+            notFoundIconProps={{
+              width: 24,
+              height: 24,
+            }}
+            indicator={() => {
+              return <Skeleton width={12} height={12} borderRadius={50} />;
+            }}
+          />
         </View>
         <View style={styles.partyInnerContainer}>
           <Text style={styles.titleText}>{party.name}</Text>
