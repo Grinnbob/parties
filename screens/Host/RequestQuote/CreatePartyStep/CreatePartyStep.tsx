@@ -100,7 +100,6 @@ export const CreatePartyStep: React.FC<CreatePartyStepProps> = ({
 
   const handleNavigateMedia = async () => {
     const image = await selectImage();
-    console.log('image', image);
     if (image) {
       setQuote(prevState => {
         return {

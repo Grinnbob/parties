@@ -88,7 +88,7 @@ export const ProgressiveImage: FC<
         },
         style,
       ]}>
-      {isError || !rest?.source?.uri ? (
+      {isError || !rest?.source ? (
         <NotFoundImageIcon {...notFoundProps} {...notFoundIconProps} />
       ) : (
         memorizedImage

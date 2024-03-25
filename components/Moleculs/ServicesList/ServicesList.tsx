@@ -147,6 +147,7 @@ export const ServicesList: React.FC<ServicesListProps> = ({
             price={1}
             unit="person"
             disabled={true}
+            imageStyle={{height: 214}}
             image={{
               source: require('../../../assets/service-default-image.png'),
             }}
