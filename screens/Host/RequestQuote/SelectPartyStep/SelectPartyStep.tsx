@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useMemo } from "react";
+import React, {Dispatch, SetStateAction, useEffect, useMemo} from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -6,21 +6,21 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import dayjs from "dayjs";
-import { styles } from "./styles";
+} from 'react-native';
+import dayjs from 'dayjs';
+import {styles} from './styles';
 import {
   CheckCircleIcon,
   UncheckedCircleIcon,
-} from "../../../../components/Icons";
-import { Divider } from "../../../../components/Atoms";
+} from '../../../../components/Icons';
+import {Divider} from '../../../../components/Atoms';
 import {
   NewParty,
   RequestQuote,
   RequestQuoteStepEnum,
-} from "../RequestQuoteScreen";
-import { PartyModel } from "../../../../models";
-import { Color } from "../../../../GlobalStyles";
+} from '../RequestQuoteScreen';
+import {PartyModel} from '../../../../models';
+import {Color} from '../../../../GlobalStyles';
 
 type SelectPartyStepProps = {
   quote: RequestQuote;
@@ -39,14 +39,14 @@ export const SelectPartyStep: React.FC<SelectPartyStepProps> = ({
     return [
       ...parties,
       {
-        id: "",
-        name: "",
+        id: '',
+        name: '',
       } as unknown as PartyModel,
     ];
   }, [parties]);
 
   const handleSelectParty = (party: PartyModel) => {
-    setQuote((prevState) => {
+    setQuote(prevState => {
       return {
         ...prevState,
         party: party as unknown as NewParty,
@@ -57,12 +57,12 @@ export const SelectPartyStep: React.FC<SelectPartyStepProps> = ({
   const isValid = quote?.party?.id !== undefined;
 
   useEffect(() => {
-    setQuote((prevState) => {
+    setQuote(prevState => {
       return {
         ...prevState,
         steps: {
           ...prevState.steps,
-          [RequestQuoteStepEnum.PARTY_SELECT]: { isValid },
+          [RequestQuoteStepEnum.PARTY_SELECT]: {isValid},
         },
       } as RequestQuote;
     });
@@ -75,15 +75,14 @@ export const SelectPartyStep: React.FC<SelectPartyStepProps> = ({
           onPress={() => {
             handleSelectParty(element.item);
           }}
-          style={styles.partyItem}
-        >
+          style={styles.partyItem}>
           <Text style={styles.partyText}>
-            {element.item.name ? element.item.name : "New Party"}
+            {element.item.name ? element.item.name : 'New Party'}
           </Text>
           {!!element.item.startDate && (
             <Text style={styles.partyText}>
-              {" "}
-              {dayjs(element.item.startDate).format("MMM dd,YYYY")}
+              {' '}
+              {dayjs(element.item.startDate).format('MMM dd,YYYY')}
             </Text>
           )}
           {element.item.id === quote?.party?.id ? (
@@ -107,8 +106,7 @@ export const SelectPartyStep: React.FC<SelectPartyStepProps> = ({
         />
       ) : (
         <>
-          <Text style={styles.newPartyText}>Is this for a new party?</Text>
-          <Text style={styles.existingPartyText}>OR an existing party?</Text>
+          <Text style={styles.newPartyText}>A new or existing party?</Text>
           <FlatList
             data={actualParties}
             renderItem={renderParty}

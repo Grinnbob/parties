@@ -8,7 +8,7 @@ import {
   PencilIcon,
   TrashIcon,
 } from '../../../Icons';
-import {FastImageProps} from 'react-native-fast-image';
+import {FastImageProps, ImageStyle} from 'react-native-fast-image';
 import {Color} from '../../../../GlobalStyles';
 import {Menu} from '../../../Atoms/Menu';
 import {ProgressiveImage} from '../../../Atoms/ProgressiveImage';
@@ -19,6 +19,7 @@ type ServiceCardProps = {
   price: number;
   unit: string;
   style?: StyleProp<ViewStyle>;
+  imageStyle?: StyleProp<ImageStyle>;
   isSelected?: boolean;
   onPress?: () => void;
   disabled?: boolean;
@@ -38,6 +39,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
   isSelected,
   onPress,
   disabled,
+  imageStyle,
   image,
   actions,
 }) => {
@@ -138,7 +140,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
         <ProgressiveImage
           resizeMode="cover"
           {...image}
-          style={[styles.image, image?.style]}
+          style={[styles.image, image?.style, imageStyle]}
         />
       )}
       {isSelected && <CheckCircleIcon style={styles.checkIcon} />}

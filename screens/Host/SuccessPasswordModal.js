@@ -6,7 +6,7 @@ import Delete from '../../assets/deletecircle.svg';
 
 export default ({navigation, route}) => {
   const handleNavigation = () => {
-    if (route.params.screen) {
+    if (route?.params?.screen) {
       navigation.navigate(route.params.screen);
     } else {
       navigation.navigate('UpdateUser', {success: true});

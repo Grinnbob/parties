@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 import {
   Image,
   StyleSheet,
@@ -7,28 +7,28 @@ import {
   TouchableOpacity,
   Pressable,
   ImageBackground,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import MidGradientButton from "../../../components/MidGradientButton";
-import { FontSize, Padding, FontFamily, Color } from "../../../GlobalStyles";
-import ReadySell from "../../../assets/readysell.svg";
-import Store from "../../../assets/Storefront.svg";
-import Check from "../../../assets/onboard/checkgreen.svg";
-import { HStack } from "native-base";
-import loadApp from "../../../navigation/loadApp";
-import StateTypes from "../../../stateManagement/StateTypes";
-import useGlobalState from "../../../stateManagement/hook";
-import Close from "../../../assets/x.svg";
+} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import MidGradientButton from '../../../components/MidGradientButton';
+import {FontSize, Padding, FontFamily, Color} from '../../../GlobalStyles';
+import ReadySell from '../../../assets/readysell.svg';
+import Store from '../../../assets/Storefront.svg';
+import Check from '../../../assets/onboard/checkgreen.svg';
+import {HStack} from 'native-base';
+import loadApp from '../../../navigation/loadApp';
+import StateTypes from '../../../stateManagement/StateTypes';
+import useGlobalState from '../../../stateManagement/hook';
+import Close from '../../../assets/x.svg';
 
-const VendorReadySell = ({ route }) => {
+const VendorReadySell = ({route}) => {
   const navigation = useNavigation();
   const [token, setToken] = useGlobalState(
     StateTypes.token.key,
-    StateTypes.token.default
+    StateTypes.token.default,
   );
   const [user, setUser] = useGlobalState(
     StateTypes.user.key,
-    StateTypes.user.default
+    StateTypes.user.default,
   );
 
   const onNext = async () => {
@@ -40,9 +40,9 @@ const VendorReadySell = ({ route }) => {
       <ImageBackground
         style={[styles.background, styles.bgIconPosition]}
         resizeMode="cover"
-        source={require("../../../assets/bg16.png")}
+        source={require('../../../assets/bg16.png')}
       />
-      <View style={{ flex: 1, justifyContent: "space-between" }}>
+      <View style={{flex: 1, justifyContent: 'space-between'}}>
         <View>
           <HStack
             justifyContent="flex-end"
@@ -56,22 +56,29 @@ const VendorReadySell = ({ route }) => {
           <View style={styles.titlePosition}>
             <Text style={styles.title1}>You are ready to sell!</Text>
             <Text style={[styles.title2, styles.titleLayout]}>
-              You have successfully created {"\n"} your service profile page!
+              You have successfully created {'\n'} your service profile page!
             </Text>
           </View>
-          <HStack style={{ justifyContent: "center" }}>
-            <View style={styles.formsicon}>
-              <Store />
-              <Check style={{ marginTop: 27 }} />
-            </View>
-            <View style={styles.forms}>
-              <Text style={styles.formbold}>What's Next</Text>
-              <Text style={styles.formgrey}>Find upcoming parties</Text>
+          <HStack
+            style={{
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <View>
+              <View style={styles.formsicon}>
+                <Store style={{position: 'relative', right: 10}} />
+                <Text style={styles.formbold}>What's Next</Text>
+              </View>
+              <View style={styles.forms}>
+                <Check />
+                <Text style={styles.formgrey}>Find upcoming parties</Text>
+              </View>
             </View>
           </HStack>
         </View>
       </View>
-      <View style={{ width: "100%", alignItems: "center", marginBottom: 30 }}>
+      <View style={{width: '100%', alignItems: 'center', marginBottom: 30}}>
         <MidGradientButton
           onPress={onNext}
           label="Go to my service profile page"
@@ -89,20 +96,20 @@ const VendorReadySell = ({ route }) => {
 
 const styles = StyleSheet.create({
   alertmodalbgLayout: {
-    width: "100%",
-    position: "absolute",
+    width: '100%',
+    position: 'absolute',
   },
   background: {
-    width: "100%",
-    height: "100%",
+    width: '100%',
+    height: '100%',
   },
   bgIconPosition: {
     left: 0,
-    position: "absolute",
+    position: 'absolute',
   },
   titlePosition: {
-    width: "100%",
-    alignItems: "center",
+    width: '100%',
+    alignItems: 'center',
   },
   titleLayout: {
     lineHeight: 22,
@@ -111,8 +118,8 @@ const styles = StyleSheet.create({
   header: {
     paddingBottom: Padding.p_4xs,
     marginTop: 30,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   backIconLayout: {
     marginLeft: 5,
@@ -123,54 +130,59 @@ const styles = StyleSheet.create({
     backgroundColor: Color.primarySoBlack,
     left: 0,
     top: 0,
-    height: "100%",
-    overflow: "hidden",
+    height: '100%',
+    overflow: 'hidden',
   },
   divider: {
     height: 1,
-    width: "100%",
+    width: '100%',
     backgroundColor: Color.primaryAlmostGrey,
   },
   form: {
     marginTop: 10,
     marginBottom: 20,
-    color: "#FFF",
+    color: '#FFF',
   },
   formgrey: {
-    marginTop: 10,
-    marginBottom: 20,
-    color: "#8A8A8A",
+    color: '#8A8A8A',
+    marginLeft: 20,
   },
   formbold: {
-    marginTop: 10,
-    marginBottom: 20,
-    color: "#FFF",
-    fontWeight: "700",
+    color: '#FFF',
+    fontWeight: '700',
   },
   forms: {
-    alignItems: "flex-start",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    gap: 16,
     padding: 10,
+    minWidth: 220,
   },
   formsicon: {
-    alignItems: "center",
+    alignItems: 'center',
+    justifyContent: 'flex-start',
     padding: 10,
+    flexDirection: 'row',
+    gap: 16,
+    minWidth: 220,
   },
   title1: {
     fontSize: 30,
-    textAlign: "center",
-    fontWeight: "700",
+    textAlign: 'center',
+    fontWeight: '700',
     color: Color.labelColorDarkPrimary,
     marginTop: 30,
   },
   title2: {
-    alignSelf: "stretch",
+    alignSelf: 'stretch',
     marginTop: 8,
     marginBottom: 20,
-    textAlign: "center",
+    textAlign: 'center',
     fontFamily: FontFamily.typographyBodyMediumLight,
-    fontWeight: "400",
+    fontWeight: '400',
     fontSize: 15,
-    color: "#8A8A8A",
+    color: '#8A8A8A',
   },
   leftAccessory: {
     paddingLeft: 10,
@@ -178,8 +190,8 @@ const styles = StyleSheet.create({
   },
   signupscreen: {
     backgroundColor: Color.labelColorLightPrimary,
-    width: "100%",
-    overflow: "hidden",
+    width: '100%',
+    overflow: 'hidden',
     flex: 1,
   },
 });

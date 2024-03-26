@@ -4,20 +4,20 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
-} from "react";
+} from 'react';
 import {
   FlatList,
   ListRenderItemInfo,
   ScrollView,
   Text,
   View,
-} from "react-native";
-import { styles } from "./styles";
-import { RequestQuote, RequestQuoteStepEnum } from "../RequestQuoteScreen";
-import { ServiceCard } from "../../../../components/Moleculs";
-import { Button, GradientButton } from "../../../../components/Atoms";
-import { ServiceModel } from "../../../../models";
-import { useServiceGroups } from "../../../../hooks/useServiceGroups";
+} from 'react-native';
+import {styles} from './styles';
+import {RequestQuote, RequestQuoteStepEnum} from '../RequestQuoteScreen';
+import {ServiceCard} from '../../../../components/Moleculs';
+import {Button, GradientButton} from '../../../../components/Atoms';
+import {ServiceModel} from '../../../../models';
+import {useServiceGroups} from '../../../../hooks/useServiceGroups';
 
 type SelectServiceStepProps = {
   quote: RequestQuote;
@@ -31,12 +31,12 @@ export const ServiceSelectStep: React.FC<SelectServiceStepProps> = ({
   services,
 }) => {
   const handleSelectService = useCallback((id: number) => {
-    setQuote((prevState) => {
+    setQuote(prevState => {
       const isIncluded = prevState.services.includes(id);
       return {
         ...prevState,
         services: isIncluded
-          ? prevState.services.filter((item) => item !== id)
+          ? prevState.services.filter(item => item !== id)
           : [...prevState.services, id],
       };
     });
@@ -45,12 +45,12 @@ export const ServiceSelectStep: React.FC<SelectServiceStepProps> = ({
   const isValid = !!quote.services.length;
 
   useEffect(() => {
-    setQuote((prevState) => {
+    setQuote(prevState => {
       return {
         ...prevState,
         steps: {
           ...prevState.steps,
-          [RequestQuoteStepEnum.SERVICE_SELECT]: { isValid },
+          [RequestQuoteStepEnum.SERVICE_SELECT]: {isValid},
         },
       } as RequestQuote;
     });
@@ -78,36 +78,36 @@ export const ServiceSelectStep: React.FC<SelectServiceStepProps> = ({
   };
 
   const specialties = useMemo(() => {
-    let result: ServiceModel["serviceTypes"] = [];
-    services.forEach((item) => {
+    let result: ServiceModel['serviceTypes'] = [];
+    services.forEach(item => {
       result = [...result, ...item.serviceTypes];
     });
-    const key = "id";
-    return [...new Map(result.map((item) => [item[key], item])).values()];
+    const key = 'id';
+    return [...new Map(result.map(item => [item[key], item])).values()];
   }, [services]);
 
   const filteredServices = useMemo(() => {
     if (quote.selectedSpecialties?.length) {
-      const selectedIds = quote.selectedSpecialties.map((item) => item.id);
-      return services.filter((service) => {
-        return !!service.serviceTypes.find((type) =>
-          selectedIds.includes(type.id)
+      const selectedIds = quote.selectedSpecialties.map(item => item.id);
+      return services.filter(service => {
+        return !!service.serviceTypes.find(type =>
+          selectedIds.includes(type.id),
         );
       });
     }
     return services;
   }, [services, quote.selectedSpecialties]);
 
-  const { serviceGroups } = useServiceGroups(filteredServices);
+  const {serviceGroups} = useServiceGroups(filteredServices);
 
   const handleSelectSpecialty = (
-    item: ServiceModel["serviceTypes"][number],
-    isSelected: boolean
+    item: ServiceModel['serviceTypes'][number],
+    isSelected: boolean,
   ) => {
-    setQuote((prevState) => {
+    setQuote(prevState => {
       const newVal = isSelected
         ? quote.selectedSpecialties.filter(
-            (specialty) => specialty.id !== specialty.id
+            specialty => specialty.id !== specialty.id,
           )
         : [...quote.selectedSpecialties, item];
       return {
@@ -119,15 +119,13 @@ export const ServiceSelectStep: React.FC<SelectServiceStepProps> = ({
 
   return (
     <View style={styles.root}>
-      <Text style={styles.title}>
-        What kind of service you need (select all that apply)
-      </Text>
+      <Text style={styles.title}>What kind of services do you need?</Text>
       <View style={styles.tagsContainer}>
         <Text style={styles.vendorText}>Vendor Specialties</Text>
         <View style={styles.tagsInnerContainer}>
-          {specialties.map((item) => {
+          {specialties.map(item => {
             const isSelected = !!quote.selectedSpecialties.find(
-              (specialty) => specialty.id === item.id
+              specialty => specialty.id === item.id,
             );
             if (isSelected) {
               return (
@@ -166,9 +164,8 @@ export const ServiceSelectStep: React.FC<SelectServiceStepProps> = ({
                 index === services.length - 1
                   ? styles.lastContainer
                   : undefined,
-              ]}
-            >
-              {serviceGroups[key].map((item) => {
+              ]}>
+              {serviceGroups[key].map(item => {
                 return (
                   <ServiceCard
                     name={item.name}
