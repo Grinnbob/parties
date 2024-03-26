@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useMemo } from "react";
+import React, {Dispatch, SetStateAction, useEffect, useMemo} from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -6,17 +6,17 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
-} from "react-native";
-import { styles } from "./styles";
+} from 'react-native';
+import {styles} from './styles';
 import {
   CheckCircleIcon,
   UncheckedCircleIcon,
-} from "../../../../components/Icons";
-import { Divider } from "../../../../components/Atoms";
-import { RequestQuote, RequestQuoteStepEnum } from "../RequestQuoteScreen";
-import { useLoadable } from "../../../../hooks";
-import { constantsQuery } from "../../../../stateManagement";
-import { Color } from "../../../../GlobalStyles";
+} from '../../../../components/Icons';
+import {Divider} from '../../../../components/Atoms';
+import {RequestQuote, RequestQuoteStepEnum} from '../RequestQuoteScreen';
+import {useLoadable} from '../../../../hooks';
+import {constantsQuery} from '../../../../stateManagement';
+import {Color} from '../../../../GlobalStyles';
 
 type DeliveryServiceStepProps = {
   quote: RequestQuote;
@@ -45,7 +45,7 @@ export const DeliveryServiceStep: React.FC<DeliveryServiceStepProps> = ({
   }, [constants]);
 
   const handleDeliveryServiceSelect = (id: string) => {
-    setQuote((prevState) => {
+    setQuote(prevState => {
       return {
         ...prevState,
         shipment: id,
@@ -54,7 +54,7 @@ export const DeliveryServiceStep: React.FC<DeliveryServiceStepProps> = ({
   };
 
   const handleBreakDownServiceSelect = (id: string) => {
-    setQuote((prevState) => {
+    setQuote(prevState => {
       return {
         ...prevState,
         assembling: id,
@@ -65,19 +65,19 @@ export const DeliveryServiceStep: React.FC<DeliveryServiceStepProps> = ({
   const isValid = !!quote.assembling && !!quote.shipment;
 
   useEffect(() => {
-    setQuote((prevState) => {
+    setQuote(prevState => {
       return {
         ...prevState,
         steps: {
           ...prevState.steps,
-          [RequestQuoteStepEnum.DELIVERY_SERVICE]: { isValid },
+          [RequestQuoteStepEnum.DELIVERY_SERVICE]: {isValid},
         },
       } as RequestQuote;
     });
   }, [isValid]);
 
   const renderDeliveryListItem = (
-    element: ListRenderItemInfo<(typeof deliveryServiceOptions)[number]>
+    element: ListRenderItemInfo<(typeof deliveryServiceOptions)[number]>,
   ) => {
     return (
       <>
@@ -85,8 +85,7 @@ export const DeliveryServiceStep: React.FC<DeliveryServiceStepProps> = ({
           onPress={() => {
             handleDeliveryServiceSelect(element.item.id);
           }}
-          style={styles.listItem}
-        >
+          style={styles.listItem}>
           <Text style={styles.listItemText}>{element.item.text}</Text>
           {element.item.id === quote.shipment ? (
             <CheckCircleIcon />
@@ -100,7 +99,7 @@ export const DeliveryServiceStep: React.FC<DeliveryServiceStepProps> = ({
   };
 
   const renderBreakDownServiceListItem = (
-    element: ListRenderItemInfo<(typeof deliveryServiceOptions)[number]>
+    element: ListRenderItemInfo<(typeof deliveryServiceOptions)[number]>,
   ) => {
     return (
       <>
@@ -108,8 +107,7 @@ export const DeliveryServiceStep: React.FC<DeliveryServiceStepProps> = ({
           onPress={() => {
             handleBreakDownServiceSelect(element.item.id);
           }}
-          style={styles.listItem}
-        >
+          style={styles.listItem}>
           <Text style={styles.listItemText}>{element.item.text}</Text>
           {element.item.id === quote.assembling ? (
             <CheckCircleIcon />
@@ -132,16 +130,14 @@ export const DeliveryServiceStep: React.FC<DeliveryServiceStepProps> = ({
         />
       ) : (
         <>
-          <Text style={styles.title}>
-            Do you need delivery OR pickup service?
-          </Text>
+          <Text style={styles.title}>Delivery or pickup services?</Text>
           <FlatList
             data={deliveryServiceOptions}
             renderItem={renderDeliveryListItem}
             contentContainerStyle={styles.listItemContainer}
           />
           <Text style={[styles.title, styles.breakDownText]}>
-            Do you need setup and breakdown service?
+            Do you need setup and breakdown services?
           </Text>
           <FlatList
             data={breakDownServiceOptions}

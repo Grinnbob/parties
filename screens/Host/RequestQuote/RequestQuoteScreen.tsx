@@ -24,7 +24,7 @@ import dayjs from 'dayjs';
 import {PartyModel, ServiceModel, VendorModel} from '../../../models';
 import {useToast} from 'native-base';
 import {useRecoilRefresher_UNSTABLE} from 'recoil';
-import {myPartiesQuery, SelectedMedia} from '../../../stateManagement';
+import {myPartiesQuery} from '../../../stateManagement';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import FastImage from 'react-native-fast-image';
@@ -256,7 +256,15 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
     }
 
     if (currentStep === RequestQuoteStepEnum.FINISH) {
-      return 'Sounds Great!';
+      return 'Finish';
+    }
+
+    if (currentStep === RequestQuoteStepEnum.PARTY_SELECT) {
+      return 'Select';
+    }
+
+    if (currentStep === RequestQuoteStepEnum.PEOPLE_SELECT) {
+      return 'Select Theme';
     }
 
     return 'Next';
@@ -349,10 +357,8 @@ export const RequestQuoteScreen: React.FC<RequestQuoteScreenProps> = ({
       </View>
       {currentStep === RequestQuoteStepEnum.PEOPLE_SELECT && (
         <View style={styles.skipContainer}>
-          <Button text="Skip" onPress={handleSkipPress} />
-          <Text style={styles.skipPartyText}>
-            You can always add details later in my party
-          </Text>
+          <Button text="Custom Party" onPress={handleSkipPress} />
+          <Text style={styles.skipPartyText}>You can add details later</Text>
         </View>
       )}
     </KeyboardAwareScrollView>

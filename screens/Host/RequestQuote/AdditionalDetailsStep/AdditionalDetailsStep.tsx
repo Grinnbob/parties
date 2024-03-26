@@ -1,9 +1,9 @@
-import React, { Dispatch, SetStateAction, useCallback, useEffect } from "react";
-import { Text, View } from "react-native";
-import { styles } from "./styles";
-import { RequestQuote, RequestQuoteStepEnum } from "../RequestQuoteScreen";
-import { TextArea } from "../../../../components/Input/TextArea";
-import DismissKeyboard from "../../../../layouts/DismissKeyboard";
+import React, {Dispatch, SetStateAction, useCallback, useEffect} from 'react';
+import {Text, View} from 'react-native';
+import {styles} from './styles';
+import {RequestQuote, RequestQuoteStepEnum} from '../RequestQuoteScreen';
+import {TextArea} from '../../../../components/Input/TextArea';
+import DismissKeyboard from '../../../../layouts/DismissKeyboard';
 
 type AdditionalDetailsStepProps = {
   quote: RequestQuote;
@@ -15,7 +15,7 @@ export const AdditionalDetailsStep: React.FC<AdditionalDetailsStepProps> = ({
   setQuote,
 }) => {
   const handleAdditionalDetailsChange = useCallback((text: string) => {
-    setQuote((prevState) => {
+    setQuote(prevState => {
       return {
         ...prevState,
         notes: text,
@@ -26,12 +26,12 @@ export const AdditionalDetailsStep: React.FC<AdditionalDetailsStepProps> = ({
   const isValid = true;
 
   useEffect(() => {
-    setQuote((prevState) => {
+    setQuote(prevState => {
       return {
         ...prevState,
         steps: {
           ...prevState.steps,
-          [RequestQuoteStepEnum.ADDITIONAL_DETAILS]: { isValid },
+          [RequestQuoteStepEnum.ADDITIONAL_DETAILS]: {isValid},
         },
       } as RequestQuote;
     });
@@ -40,12 +40,9 @@ export const AdditionalDetailsStep: React.FC<AdditionalDetailsStepProps> = ({
   return (
     <DismissKeyboard>
       <View style={styles.root}>
-        <Text style={styles.title}>
-          Is there anything else we should know? Anything you’re looking for in
-          particular?
-        </Text>
+        <Text style={styles.title}>Is there anything else we should know?</Text>
         <Text style={[styles.title, styles.detailsText]}>
-          Additional Details/Requirements
+          Additional Requirements
         </Text>
         <View style={styles.textAreaContainer}>
           <TextArea
@@ -53,7 +50,7 @@ export const AdditionalDetailsStep: React.FC<AdditionalDetailsStepProps> = ({
               ...styles.textArea,
               value: quote.notes,
               onChangeText: handleAdditionalDetailsChange,
-              returnKeyType: "done",
+              returnKeyType: 'done',
               blurOnSubmit: true,
             }}
           />

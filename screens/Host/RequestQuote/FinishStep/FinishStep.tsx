@@ -1,7 +1,7 @@
-import React from "react";
-import { Text, View } from "react-native";
-import { styles } from "./styles";
-import { RequestSendIcon } from "../../../../components/Icons";
+import React from 'react';
+import {Text, View} from 'react-native';
+import {styles} from './styles';
+import {RequestSendIcon} from '../../../../components/Icons';
 
 export const FinishStep: React.FC = () => {
   return (
@@ -11,7 +11,7 @@ export const FinishStep: React.FC = () => {
         <Text style={styles.title}>Your request has been sent!</Text>
         <View style={styles.textContainer}>
           <View style={styles.textInnerContainer}>
-            <Text style={styles.subTitle}>What Next</Text>
+            <Text style={styles.subTitle}>What Next?</Text>
             <View style={styles.textItem}>
               <Text style={styles.round}>&#9679;</Text>
               <Text style={styles.text}>
@@ -21,7 +21,7 @@ export const FinishStep: React.FC = () => {
             <View style={styles.textItem}>
               <Text style={styles.round}>&#9679;</Text>
               <Text style={styles.text}>
-                Accept services that’s right for you
+                Please review and accept the services that are right for you
               </Text>
             </View>
           </View>

@@ -1,10 +1,10 @@
-import React, { Dispatch, SetStateAction, useEffect } from "react";
-import { Text, View } from "react-native";
-import { styles } from "./styles";
-import { RequestQuote, RequestQuoteStepEnum } from "../RequestQuoteScreen";
-import { RangeSlider } from "../../../../components/Atoms";
-import { TextInput } from "../../../../components/Input";
-import { Color } from "../../../../GlobalStyles";
+import React, {Dispatch, SetStateAction, useEffect} from 'react';
+import {Text, View} from 'react-native';
+import {styles} from './styles';
+import {RequestQuote, RequestQuoteStepEnum} from '../RequestQuoteScreen';
+import {RangeSlider} from '../../../../components/Atoms';
+import {TextInput} from '../../../../components/Input';
+import {Color} from '../../../../GlobalStyles';
 
 type PeopleSelectStepProps = {
   quote: RequestQuote;
@@ -16,7 +16,7 @@ export const PeopleSelectStep: React.FC<PeopleSelectStepProps> = ({
   setQuote,
 }) => {
   const handleSliderValueChange = (val: [number, number]) => {
-    setQuote((prevState) => {
+    setQuote(prevState => {
       return {
         ...prevState,
         party: {
@@ -30,19 +30,19 @@ export const PeopleSelectStep: React.FC<PeopleSelectStepProps> = ({
   const isValid = true;
 
   useEffect(() => {
-    setQuote((prevState) => {
+    setQuote(prevState => {
       return {
         ...prevState,
         steps: {
           ...prevState.steps,
-          [RequestQuoteStepEnum.PEOPLE_SELECT]: { isValid },
+          [RequestQuoteStepEnum.PEOPLE_SELECT]: {isValid},
         },
       } as RequestQuote;
     });
   }, [isValid]);
 
   const handleDescriptionChange = (text: string) => {
-    setQuote((prevState) => {
+    setQuote(prevState => {
       return {
         ...prevState,
         party: {
@@ -55,7 +55,7 @@ export const PeopleSelectStep: React.FC<PeopleSelectStepProps> = ({
 
   return (
     <View style={styles.root}>
-      <Text style={styles.title}>How many guest are expected to attend?</Text>
+      <Text style={styles.title}>How many guests are expected?</Text>
       <RangeSlider
         low={quote.party?.peopleRange?.[0] || 30}
         high={quote.party?.peopleRange?.[1] || 50}
@@ -70,13 +70,13 @@ export const PeopleSelectStep: React.FC<PeopleSelectStepProps> = ({
         <TextInput
           inputProps={{
             multiline: true,
-            textAlignVertical: "top",
-            placeholder: "Type details about your party here...",
+            textAlignVertical: 'top',
+            placeholder: 'Type details about your party here...',
             placeholderTextColor: Color.gray300,
             ...styles.textArea,
             value: quote.party?.description,
             onChangeText: handleDescriptionChange,
-            returnKeyType: "done",
+            returnKeyType: 'done',
             blurOnSubmit: true,
           }}
         />
