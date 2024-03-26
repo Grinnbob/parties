@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import {
-  Image,
   StyleSheet,
   View,
   ScrollView,
@@ -22,7 +21,7 @@ import {ProgressiveImage} from '../../components/Atoms/ProgressiveImage';
 import {Skeleton as RBSkeleton} from 'native-base';
 
 const VendorInfo = ({route, navigation}) => {
-  const [vendorProfile, setVendorProfile] = useState();
+  const [vendorProfile, setVendorProfile] = useState(route?.params?.params);
   const [services, setServices] = useState([]);
   const [album, setAlbum] = useState([]);
   const insets = useSafeAreaInsets();
@@ -48,33 +47,13 @@ const VendorInfo = ({route, navigation}) => {
     }
   };
 
-  const getVendor = async () => {
-    try {
-      console.log('vendorProfile.id}', vendorProfile.id);
-      const resp = await apis.vendor.getAll({userId: vendorProfile.id});
-      console.log('resp', resp);
-      if (resp.data?.[0]) {
-        setVendorProfile(resp.data[0]);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    console.log('routerouteroute', route);
-    if (route && route?.params?.params.id !== vendorProfile?.id) {
-      setVendorProfile(route?.params?.params);
-    }
-  }, [route, vendorProfile]);
-
   useEffect(() => {
     if (vendorProfile?.id) {
-      Promise.allSettled([getAlbum(), getServices(), getVendor()]).then(() => {
+      Promise.allSettled([getAlbum(), getServices()]).then(() => {
         setIsLoading(false);
       });
     }
-  }, [vendorProfile]);
+  }, []);
 
   const {serviceGroups} = useServiceGroups(services);
 
@@ -84,8 +63,6 @@ const VendorInfo = ({route, navigation}) => {
       services,
     });
   };
-
-  console.log('vendorProfile', vendorProfile);
 
   return (
     <ScrollView
