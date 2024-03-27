@@ -37,6 +37,7 @@ export const VendorProfileScreen = ({route}) => {
   const {push, toggleDrawer} = useNavigation();
   const [serviceTypes, setServiceTypes] = useRecoilState(serviceTypesAtom);
   const [vendorProfile, setVendorProfile] = useRecoilState(vendorProfileAtom);
+  console.log('vendorProfile', vendorProfile);
   const [services, setServices] = useRecoilState(vendorProfileServiceAtom);
   const [album, setAlbum] = useRecoilState(vendorProfileAlbumAtom);
   const [isLoading, setIsLoading] = useState(true);
@@ -165,12 +166,14 @@ export const VendorProfileScreen = ({route}) => {
           </View>
         </View>
         <View style={styles.profileBackground}>
-          <ProgressiveImage
-            source={{
-              uri: vendorProfile?.background || '',
-            }}
-            style={styles.profileBgImageContainer}
-          />
+          {vendorProfile?.id && (
+            <ProgressiveImage
+              source={{
+                uri: vendorProfile?.background || '',
+              }}
+              style={styles.profileBgImageContainer}
+            />
+          )}
         </View>
         <LinearGradient
           colors={['#FF077E', 'transparent']}
@@ -179,15 +182,17 @@ export const VendorProfileScreen = ({route}) => {
           style={styles.bgGradient}
         />
         <View style={styles.avatarContainer}>
-          <ProgressiveImage
-            source={{
-              uri: vendorProfile?.avatar || '',
-            }}
-            style={styles.avatarBg}
-            indicator={() => {
-              return <RBSkeleton width={76} height={76} borderRadius={50} />;
-            }}
-          />
+          {vendorProfile?.id && (
+            <ProgressiveImage
+              source={{
+                uri: vendorProfile?.avatar || '',
+              }}
+              style={styles.avatarBg}
+              indicator={() => {
+                return <RBSkeleton width={76} height={76} borderRadius={50} />;
+              }}
+            />
+          )}
         </View>
 
         {!!vendorProfile?.name && (
