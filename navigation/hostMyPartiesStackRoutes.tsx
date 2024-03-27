@@ -1,10 +1,11 @@
-import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
-import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { MyPartyScreen } from "../screens/MyParty";
-import { PartyDetailsScreen } from "../screens/MyParty/PartyDetailsScreen";
-import { PartyMessageScreen } from "../screens/MyParty/PartyMessageScreen";
+import React from 'react';
+import {createStackNavigator} from '@react-navigation/stack';
+import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
+import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
+import {MyPartyScreen} from '../screens/MyParty';
+import {PartyDetailsScreen} from '../screens/MyParty/PartyDetailsScreen';
+import {PartyMessageScreen} from '../screens/MyParty/PartyMessageScreen';
+import {ChatSelectScreen} from '../screens/MyParty/ChatSelectScreen';
 
 export type VendorQuotesStackParamList = {
   MyPartyScreen: undefined;
@@ -20,18 +21,17 @@ export const HostMyPartiesStackRoutes: React.FC<Props> = ({
 }) => {
   React.useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
-    if (routeName === "PartyDetailsScreen") {
-      navigation.setOptions({ tabBarStyle: { display: "none" } });
+    if (routeName === 'PartyDetailsScreen') {
+      navigation.setOptions({tabBarStyle: {display: 'none'}});
     } else {
-      navigation.setOptions({ tabBarStyle: { display: "flex" } });
+      navigation.setOptions({tabBarStyle: {display: 'flex'}});
     }
   }, [navigation, route]);
 
   return (
     <Stack.Navigator
-      screenOptions={{ headerShown: false }}
-      initialRouteName="MyPartyScreen"
-    >
+      screenOptions={{headerShown: false}}
+      initialRouteName="MyPartyScreen">
       <Stack.Screen
         name="MyPartyScreen"
         component={MyPartyScreen}
@@ -49,6 +49,13 @@ export const HostMyPartiesStackRoutes: React.FC<Props> = ({
       <Stack.Screen
         name="PartyMessageScreen"
         component={PartyMessageScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="ChatSelectScreen"
+        component={ChatSelectScreen}
         options={{
           headerShown: false,
         }}

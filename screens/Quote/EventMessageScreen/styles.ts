@@ -47,4 +47,7 @@ export const styles = StyleSheet.create({
     height: 24,
     width: 24,
   },
+  divider: {
+    marginBottom: 0,
+  },
 });

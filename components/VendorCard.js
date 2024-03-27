@@ -17,6 +17,8 @@ export const VendorCard = ({
   name,
   btnShadowOffset,
   vendor,
+  actionText = 'View Services',
+  onActionPress,
 }) => {
   const {navigate} = useNavigation();
   const cardsStyle = useMemo(() => {
@@ -72,8 +74,13 @@ export const VendorCard = ({
           colors={['#6c1b9e', '#ff077e']}
           useAngle={true}
           angle={-90}>
-          <Pressable onPress={() => navigate('VendorInfo', {params: vendor})}>
-            <Text style={styles.viewServices}>View Services</Text>
+          <Pressable
+            onPress={() =>
+              onActionPress
+                ? onActionPress()
+                : navigate('VendorInfo', {params: vendor})
+            }>
+            <Text style={styles.viewServices}>{actionText}</Text>
           </Pressable>
         </LinearGradient>
       </View>

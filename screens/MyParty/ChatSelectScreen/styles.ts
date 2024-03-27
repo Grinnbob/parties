@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {Color, FontFamily, FontSize, Padding} from '../../../GlobalStyles';
+import {Color, FontSize} from '../../../GlobalStyles';
 
 export const styles = StyleSheet.create({
   screen: {
@@ -49,5 +49,12 @@ export const styles = StyleSheet.create({
   },
   divider: {
     marginBottom: 0,
+  },
+  scrollView: {
+    flexGrow: 1,
+    paddingHorizontal: 24,
+    gap: 16,
+    marginTop: 8,
+    paddingBottom: 48,
   },
 });

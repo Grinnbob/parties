@@ -35,7 +35,7 @@ export const ServicePackageScreen = ({navigation, route}) => {
   const [isNewPhoto, setIsNewPhoto] = useState(false);
   const [isAiDescriptionLoading, setIsAiDescriptionLoading] = useState(false);
 
-  const [vendorProfile, setVendorProfile] = useRecoilState(vendorProfileAtom);
+  const [vendorProfile] = useRecoilState(vendorProfileAtom);
 
   const handlePhotoChange = (url: string) => {
     setIsNewPhoto(true);

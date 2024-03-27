@@ -2,6 +2,7 @@ export type VendorModel = {
   userId: number | null;
   address: string | null;
   avatar: string;
+  background: string;
   city: string;
   completed: number;
   createdAt: string;
@@ -14,7 +15,7 @@ export type VendorModel = {
   lng: number;
   name: string;
   phoneNumber: string;
-  point: { coordinates: [number, number]; type: "Point" };
+  point: {coordinates: [number, number]; type: 'Point'};
   request: number;
   sales: number;
   state: string;
