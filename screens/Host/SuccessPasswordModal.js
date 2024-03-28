@@ -9,7 +9,7 @@ export default ({navigation, route}) => {
     if (route?.params?.screen) {
       navigation.navigate(route.params.screen);
     } else {
-      navigation.navigate('UpdateUser', {success: true});
+      navigation.navigate('EditAccount', {success: true});
     }
   };
 

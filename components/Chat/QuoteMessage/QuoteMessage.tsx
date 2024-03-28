@@ -307,7 +307,7 @@ export const QuoteMessage: React.FC<QuoteMessageProps> = ({
                   onPress={toggleQuoteModal}
                 />
                 <Button
-                  text="Denny Request"
+                  text="Deny Request"
                   onPress={toggleDenyVendorModal}
                   style={styles.denyRequestButton}
                 />
