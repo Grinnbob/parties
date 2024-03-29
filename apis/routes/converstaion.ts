@@ -12,8 +12,8 @@ export const getByPartyId = async (params: {partyId: number}) => {
   return response;
 };
 
-export const getAllByPartyId = async (partyId: number) => {
-  let url = `${Base}/all/${partyId}`;
+export const getAll = async (partyId: number, quoteId?: number) => {
+  let url = `${Base}/all/${partyId}${quoteId ? `/${quoteId}` : ''}`;
   const response = await API.getApi(url);
 
   return response;

@@ -10,7 +10,6 @@ import apis from '../../../apis';
 import {PartyInfo} from '../../../components/Moleculs';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import FastImage from 'react-native-fast-image';
-import {getAllByPartyId, getByPartyId} from '../../../apis/routes/converstaion';
 
 type PartyDetailsScreenProps = {
   route: {
@@ -50,7 +49,7 @@ export const PartyDetailsScreen: React.FC<PartyDetailsScreenProps> = ({
 
   useEffect(() => {
     const getConversations = async () => {
-      const response = await apis.conversation.getAllByPartyId(party.id);
+      const response = await apis.conversation.getAll(party.id);
       setConversations(response.data);
       setIsConversationLoading(false);
     };

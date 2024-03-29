@@ -100,9 +100,10 @@ export const EventScreen: React.FC<PartyDetailsScreenProps> = ({route}) => {
 
   useEffect(() => {
     const getConversationId = async () => {
-      const response = await apis.conversation.getByPartyId({
-        partyId: party.id,
-      });
+      const response = await apis.conversation.getAll(
+        party.id,
+        selectedQuote?.id,
+      );
       setConversation(response.data[0]);
       setIsConversationLoading(false);
     };
