@@ -1,40 +1,40 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   View,
   ScrollView,
   Text,
   TouchableOpacity,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import MidGradientButton from "../../../components/MidGradientButton";
+} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import MidGradientButton from '../../../components/MidGradientButton';
 import {
   FontFamily,
   FontSize,
   Color,
   Padding,
   Border,
-} from "../../../GlobalStyles";
-import { useToast } from "native-base";
-import SelectTagLayout from "../../../components/Onboard/SelectTagLayout";
-import Holiday from "../../../assets/onboard/holiday.svg";
-import Birthday from "../../../assets/onboard/birthday.svg";
-import Sports from "../../../assets/onboard/sports.svg";
-import Games from "../../../assets/onboard/games.svg";
-import Food from "../../../assets/onboard/food.svg";
-import Clubs from "../../../assets/onboard/clubs.svg";
-import Hikes from "../../../assets/onboard/hikes.svg";
-import Cinema from "../../../assets/onboard/cinema.svg";
-import Wellness from "../../../assets/onboard/wellness.svg";
-import apis from "../../../apis";
-import useGlobalState from "../../../stateManagement/hook";
-import StateTypes from "../../../stateManagement/StateTypes";
-import loadApp from "../../../navigation/loadApp";
-import { GhostButton } from "../../../components/GhostButton";
+} from '../../../GlobalStyles';
+import {useToast} from 'native-base';
+import SelectTagLayout from '../../../components/Onboard/SelectTagLayout';
+import Holiday from '../../../assets/onboard/holiday.svg';
+import Birthday from '../../../assets/onboard/birthday.svg';
+import Sports from '../../../assets/onboard/sports.svg';
+import Games from '../../../assets/onboard/games.svg';
+import Food from '../../../assets/onboard/food.svg';
+import Clubs from '../../../assets/onboard/clubs.svg';
+import Hikes from '../../../assets/onboard/hikes.svg';
+import Cinema from '../../../assets/onboard/cinema.svg';
+import Wellness from '../../../assets/onboard/wellness.svg';
+import apis from '../../../apis';
+import useGlobalState from '../../../stateManagement/hook';
+import StateTypes from '../../../stateManagement/StateTypes';
+import loadApp from '../../../navigation/loadApp';
+import {GhostButton} from '../../../components/GhostButton';
 
 const HOLIDAY_SELECTION = {
   id: 1,
-  title: "Holidays",
+  title: 'Holidays',
   asset: <Holiday />,
 };
 
@@ -42,42 +42,42 @@ const selections = [
   HOLIDAY_SELECTION,
   {
     id: 2,
-    title: "Birthday",
+    title: 'Birthday',
     asset: <Birthday />,
   },
   {
     id: 3,
-    title: "Sports",
+    title: 'Sports',
     asset: <Sports />,
   },
   {
     id: 4,
-    title: "Games",
+    title: 'Games',
     asset: <Games />,
   },
   {
     id: 5,
-    title: "Food",
+    title: 'Food',
     asset: <Food />,
   },
   {
     id: 6,
-    title: "Clubs",
+    title: 'Clubs',
     asset: <Clubs />,
   },
   {
     id: 7,
-    title: "Hikes",
+    title: 'Hikes',
     asset: <Hikes />,
   },
   {
     id: 8,
-    title: "Cinema",
+    title: 'Cinema',
     asset: <Cinema />,
   },
   {
     id: 9,
-    title: "Wellness",
+    title: 'Wellness',
     asset: <Wellness />,
   },
 ];
@@ -92,16 +92,16 @@ const OnboardSelectScreen = () => {
 
   const [token, setToken] = useGlobalState(
     StateTypes.token.key,
-    StateTypes.token.default
+    StateTypes.token.default,
   );
   const [user, setUser] = useGlobalState(
     StateTypes.user.key,
-    StateTypes.user.default
+    StateTypes.user.default,
   );
 
   const [selectedTiles, setSelectedTiles] = useGlobalState(
     StateTypes.selectedTiles.key,
-    StateTypes.selectedTiles.default
+    StateTypes.selectedTiles.default,
   );
 
   const loadMainApp = async () => {
@@ -113,14 +113,14 @@ const OnboardSelectScreen = () => {
 
   const handleSelectionNext = async () => {
     try {
-      if (tags.find((item) => item.id === HOLIDAY_SELECTION.id)) {
-        navigation.navigate("OnboardHolidaySelect");
+      if (tags.find(item => item.id === HOLIDAY_SELECTION.id)) {
+        navigation.navigate('OnboardHolidaySelect');
         return;
       }
       setIsLoading(true);
       const res = await apis.joinUserCategory.createMulti({
         userId: user.id,
-        tags: tags.map((item) => {
+        tags: tags.map(item => {
           return {
             id: item.id,
             title: item.title,
@@ -129,7 +129,7 @@ const OnboardSelectScreen = () => {
       });
       if (res && res.success === false) {
         toast.show({
-          placement: "top",
+          placement: 'top',
           description: res.message,
         });
         setIsLoading(false);
@@ -141,7 +141,7 @@ const OnboardSelectScreen = () => {
       }
     } catch (error) {
       toast.show({
-        placement: "top",
+        placement: 'top',
         description: error,
       });
     }
@@ -150,7 +150,7 @@ const OnboardSelectScreen = () => {
   const grabPartyType = async () => {
     try {
       const res = await apis.partyType.getAll();
-      console.log("RES", res.data);
+      console.log('RES', res.data);
       setPartyType(res.data);
     } catch (error) {
       console.log(error);
@@ -169,7 +169,7 @@ const OnboardSelectScreen = () => {
     <View style={[styles.onboardselectscreen, styles.alertmodalbgLayout1]}>
       <View style={[styles.alertmodalbg, styles.alertmodalbgLayout]} />
 
-      <View style={{ flex: 1, justifyContent: "space-around" }}>
+      <View style={{flex: 1, justifyContent: 'space-around'}}>
         <View>
           <View style={styles.title2}>
             <Text style={[styles.title3, styles.titleClr]}>
@@ -184,7 +184,7 @@ const OnboardSelectScreen = () => {
               Do you host any of these types of parties?
             </Text>
           </View>
-          <ScrollView style={{ minHeight: "60%" }}>
+          <ScrollView style={{minHeight: '60%'}}>
             <View style={[styles.container, styles.buttonsPosition]}>
               <SelectTagLayout data={selections} />
             </View>
@@ -203,16 +203,15 @@ const OnboardSelectScreen = () => {
             labelColor="#fff"
             disabled={!selectedTiles.length}
           />
-          {/*<View style={styles.form}>*/}
-          {/*  <GhostButton*/}
-          {/*    isLoading={isAppLoading}*/}
-          {/*    onPress={async () => {*/}
-          {/*      await loadMainApp();*/}
-          {/*    }}*/}
-          {/*  >*/}
-          {/*    <Text style={[styles.skip, styles.skipTypo]}>Skip</Text>*/}
-          {/*  </GhostButton>*/}
-          {/*</View>*/}
+          <View style={styles.form}>
+            <GhostButton
+              isLoading={isAppLoading}
+              onPress={async () => {
+                await loadMainApp();
+              }}>
+              <Text style={[styles.skip, styles.skipTypo]}>Skip</Text>
+            </GhostButton>
+          </View>
         </View>
       </View>
     </View>
@@ -221,20 +220,20 @@ const OnboardSelectScreen = () => {
 
 const styles = StyleSheet.create({
   alertmodalbgLayout1: {
-    overflow: "hidden",
-    height: "100%",
+    overflow: 'hidden',
+    height: '100%',
   },
   bgIconPosition: {
     top: 0,
     left: 0,
   },
   alertmodalbgLayout: {
-    width: "100%",
-    position: "absolute",
+    width: '100%',
+    position: 'absolute',
   },
   buttonsPosition: {
-    width: "100%",
-    alignItems: "center",
+    width: '100%',
+    alignItems: 'center',
   },
   skipTypo: {
     fontFamily: FontFamily.typographyBodyMediumRegular,
@@ -243,17 +242,17 @@ const styles = StyleSheet.create({
   },
   titleClr: {
     color: Color.labelColorDarkPrimary,
-    textAlign: "center",
+    textAlign: 'center',
   },
   header: {
     paddingBottom: Padding.p_4xs,
     paddingTop: Padding.p_4xs,
     width: 130,
-    display: "none",
+    display: 'none',
     height: 42,
     marginTop: -21,
-    alignItems: "center",
-    flexDirection: "row",
+    alignItems: 'center',
+    flexDirection: 'row',
   },
   backIconLayout: {
     width: 40,
@@ -264,16 +263,16 @@ const styles = StyleSheet.create({
     backgroundColor: Color.labelColorLightPrimary,
     left: 0,
     top: 0,
-    overflow: "hidden",
-    height: "100%",
+    overflow: 'hidden',
+    height: '100%',
   },
   skip: {
     color: Color.primaryAlmostGrey,
-    textAlign: "center",
+    textAlign: 'center',
   },
   form: {
     borderRadius: Border.br_11xl,
-    shadowColor: "rgba(0, 0, 0, 0.15)",
+    shadowColor: 'rgba(0, 0, 0, 0.15)',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -283,18 +282,18 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     paddingHorizontal: Padding.p_5xl,
     paddingVertical: Padding.p_xs,
-    justifyContent: "center",
+    justifyContent: 'center',
     height: 40,
-    alignItems: "center",
-    flexDirection: "row",
+    alignItems: 'center',
+    flexDirection: 'row',
     width: 327,
   },
   buttons: {
-    alignItems: "center",
+    alignItems: 'center',
   },
   party01: {
-    flexDirection: "row",
-    overflow: "hidden",
+    flexDirection: 'row',
+    overflow: 'hidden',
   },
   container: {
     marginTop: 30,
@@ -305,7 +304,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.typographyHeadingMedium_size,
   },
   title: {
-    alignItems: "center",
+    alignItems: 'center',
     marginTop: 20,
   },
   leftTitle: {
@@ -313,34 +312,34 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     fontFamily: FontFamily.bodyRegular,
     color: Color.defaultSystemBlueLight,
-    textAlign: "left",
+    textAlign: 'left',
     fontSize: FontSize.textLargeBold_size,
-    display: "none",
-    alignItems: "center",
+    display: 'none',
+    alignItems: 'center',
     flex: 1,
   },
   iconsaxlineararrowleft2: {
     width: 18,
     marginLeft: 5,
-    display: "none",
+    display: 'none',
     height: 24,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   backIcon: {
-    display: "none",
+    display: 'none',
   },
   leftAccessory: {
     paddingLeft: Padding.p_base,
     paddingRight: Padding.p_4xs,
-    display: "none",
+    display: 'none',
     left: 0,
   },
   party: {
-    fontWeight: "700",
+    fontWeight: '700',
     fontFamily: FontFamily.dMSansBold,
   },
   text: {
-    fontWeight: "500",
+    fontWeight: '500',
     fontFamily: FontFamily.dMSansMedium,
   },
   favor: {
@@ -353,18 +352,18 @@ const styles = StyleSheet.create({
   title2: {
     marginTop: 30,
     padding: Padding.p_4xs,
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
   },
   divider: {
-    borderStyle: "solid",
-    borderColor: "rgba(77, 77, 77, 0.5)",
+    borderStyle: 'solid',
+    borderColor: 'rgba(77, 77, 77, 0.5)',
     borderBottomWidth: 1,
   },
   onboardselectscreen: {
     backgroundColor: Color.labelColorDarkPrimary,
-    width: "100%",
+    width: '100%',
     flex: 1,
   },
 });

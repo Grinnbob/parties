@@ -11,7 +11,7 @@ export const FinishStep: React.FC = () => {
         <Text style={styles.title}>Your request has been sent!</Text>
         <View style={styles.textContainer}>
           <View style={styles.textInnerContainer}>
-            <Text style={styles.subTitle}>What Next?</Text>
+            <Text style={styles.subTitle}>What’s next?</Text>
             <View style={styles.textItem}>
               <Text style={styles.round}>&#9679;</Text>
               <Text style={styles.text}>

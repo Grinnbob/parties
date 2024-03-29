@@ -47,7 +47,7 @@ export const PartyMessageScreen: React.FC<PartyMessageScreenProps> = ({
         </View>
         <View style={styles.hidden} />
       </View>
-      <Divider />
+      <Divider style={styles.divider} />
       <Chat conversationId={conversationId} userId={user.id} />
     </View>
   );

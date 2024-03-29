@@ -35,13 +35,16 @@ type QuoteMessageProps = {
   chatMessage: ChatMessageModel;
   isMe: boolean;
   setMessages: Dispatch<SetStateAction<ChatMessageModel[]>>;
+  vendorId: number;
 };
 
 export const QuoteMessage: React.FC<QuoteMessageProps> = ({
   chatMessage,
   isMe,
   setMessages,
+  vendorId,
 }) => {
+  const [user] = useGlobalState(StateTypes.user.key, StateTypes.user.default);
   const {isLoading: isPaymentLoading, fetchPaymentSheetParams} = usePayment();
   const toast = useToast();
   const {party, quote} = chatMessage;
@@ -145,8 +148,6 @@ export const QuoteMessage: React.FC<QuoteMessageProps> = ({
     }
   }, []);
 
-  const [user] = useGlobalState(StateTypes.user.key, StateTypes.user.default);
-
   const handleAccept = useCallback(() => {
     if (chatMessage.quoteId) {
       setMessages(prevState => {
@@ -190,6 +191,8 @@ export const QuoteMessage: React.FC<QuoteMessageProps> = ({
       />
     );
   }
+
+  console.log('vendorId', vendorId);
 
   if (chatMessage.meta?.status === QuoteStatusEnum.ACCEPTED_BY_VENDOR) {
     return (
@@ -289,7 +292,7 @@ export const QuoteMessage: React.FC<QuoteMessageProps> = ({
           </>
         }
       />
-      {!isMe &&
+      {!!vendorId &&
         (chatMessage.quote?.status === QuoteStatusEnum.PENDING ||
           chatMessage.quote?.status === QuoteStatusEnum.NEW) && (
           <>
@@ -304,7 +307,7 @@ export const QuoteMessage: React.FC<QuoteMessageProps> = ({
                   onPress={toggleQuoteModal}
                 />
                 <Button
-                  text="Denny Request"
+                  text="Deny Request"
                   onPress={toggleDenyVendorModal}
                   style={styles.denyRequestButton}
                 />

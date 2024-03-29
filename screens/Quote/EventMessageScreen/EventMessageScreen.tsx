@@ -51,7 +51,7 @@ export const EventMessageScreen: React.FC<EventMessageScreenProps> = ({
         </View>
         <View style={styles.hidden} />
       </View>
-      <Divider />
+      <Divider style={styles.divider} />
       <Chat
         conversationId={conversationId}
         userId={user.id}
