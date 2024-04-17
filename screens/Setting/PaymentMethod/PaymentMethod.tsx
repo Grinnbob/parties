@@ -8,6 +8,7 @@ import {useNavigation} from '@react-navigation/core';
 import {Color} from '../../../GlobalStyles';
 import {useFocusEffect} from '@react-navigation/native';
 import layout from '../../../utils/layout';
+
 export const PaymentMethod: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [url, setUrl] = useState('');

@@ -9,6 +9,7 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "start:development": "NODE_ENV=development npx react-native start",
+    "start:staging": "NODE_ENV=staging npx react-native start",
     "start:production": "NODE_ENV=production npx react-native start",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },

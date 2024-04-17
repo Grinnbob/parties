@@ -46,7 +46,7 @@ const LoginScreen = () => {
   const login = async () => {
     try {
       setIsLoading(true);
-      console.log("email, password", email, password);
+      // console.log("email, password", email, password);
       const res = await apis.auth.signIn({ email, password });
       console.log("RES SIGN IN", res);
       if (res && res.success === false) {
