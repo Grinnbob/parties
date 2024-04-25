@@ -35,7 +35,6 @@ export const deleteById = async (id: string) => {
 }
 
 export const getAll = async (query: any = {}) => {
-    console.log("------getAll", query)
     let url = `${Base}/`
     let first = true
     let queryArray = Object.keys(query)

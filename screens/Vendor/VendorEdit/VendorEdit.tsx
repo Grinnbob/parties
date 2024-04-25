@@ -7,6 +7,7 @@ import {
   ImageBackground,
   ActivityIndicator,
   Dimensions,
+  AppState,
 } from 'react-native';
 import apis from '../../../apis';
 import {Text, useToast} from 'native-base';
@@ -51,6 +52,9 @@ import {Color} from '../../../GlobalStyles';
 import {PastProjectsList} from '../../../components/Moleculs/PastProjectsList';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useImageSelect} from '../../../hooks/useImageSelect';
+import { GetStripeButton } from '../../../components/Moleculs/GetStripeButton';
+import { getVendorStripeStatus, onboardStart } from '../../../apis/routes/user';
+import { Linking } from 'react-native';
 
 const height = Dimensions.get('window').height;
 
@@ -99,6 +103,10 @@ export const VendorEdit: React.FC<VendorEditProps> = ({navigation, route}) => {
     StateTypes.token.key,
     StateTypes.token.default,
   );
+  const [isStripeLoading, setIsStripeLoading] = useState(false);
+  const [isStripeCompleted, setIsStripeCompleted] = useState(false);
+  const appState = useRef(AppState.currentState);
+
 
   const handleServiceDeleted = useCallback(
     (service: ServiceModel) => {
@@ -147,10 +155,39 @@ export const VendorEdit: React.FC<VendorEditProps> = ({navigation, route}) => {
     }
   }, [user]);
 
+  const getStripeStatus = async () => {
+    const result = await getVendorStripeStatus();    
+    if (result.success) {
+      if (result.data.configured) setIsStripeCompleted(true);
+    } else {
+      toast.show({
+        placement: 'top',
+        description: `Can't get stripe status.`
+      });
+      setIsStripeCompleted(false);
+    }
+  }
+
+  useEffect(() => {
+    getStripeStatus();
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        getStripeStatus();
+      }
+      appState.current = nextAppState;
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
   const getVendorInfo = async () => {
     try {
       let data;
-      console.log('vendorvendorvendor', vendor);
       if (vendor?.id) {
         data = vendor;
       } else {
@@ -198,7 +235,6 @@ export const VendorEdit: React.FC<VendorEditProps> = ({navigation, route}) => {
         setBackground(data.background);
         setCity(data.city);
         setState(data.state);
-        console.log('data.address', data.address);
         setAddress(data.address || '');
         ref.current?.setAddressText(data.address || '');
         setDistance(data.distance ? String(data.distance) : '');
@@ -255,6 +291,8 @@ export const VendorEdit: React.FC<VendorEditProps> = ({navigation, route}) => {
         errorMessage = 'Please add at least 5 Specialities';
       } else if (!serviceDescription) {
         errorMessage = 'Please add Description';
+      } else if (!isStripeCompleted) {
+        errorMessage = 'Please connect your Stripe account';
       }
 
       if (errorMessage) {
@@ -352,7 +390,7 @@ export const VendorEdit: React.FC<VendorEditProps> = ({navigation, route}) => {
     } catch (error) {
       toast.show({
         placement: 'top',
-        description: error,
+        description: `${error}`,
       });
     }
   };
@@ -421,6 +459,16 @@ export const VendorEdit: React.FC<VendorEditProps> = ({navigation, route}) => {
       setIsAiDescriptionLoading(false);
     }
   }, [vendor, vendorKeyList, toast]);
+
+  const handleStripe = async () => {
+    setIsStripeLoading(true);
+    const response = await onboardStart();
+    if (response?.success && response?.data?.url) {
+      await Linking.openURL(response.data.url);
+    }
+    setIsStripeLoading(false);
+    getStripeStatus();
+  }
 
   return (
     <KeyboardAwareScrollView
@@ -593,7 +641,7 @@ export const VendorEdit: React.FC<VendorEditProps> = ({navigation, route}) => {
                         onChangeText: setAddress,
                       }}
                       onPress={(data, details = null) => {
-                        setAddress(details.formatted_address);
+                        setAddress(details?.formatted_address);
                         setLat(details?.geometry?.location?.lat);
                         setLong(details?.geometry?.location?.lng);
                         setCity(
@@ -625,7 +673,10 @@ export const VendorEdit: React.FC<VendorEditProps> = ({navigation, route}) => {
                   albumCompleted={!!album?.data?.length}
                   businessDescriptionCompleted={!!serviceDescription?.length}
                   servicesCompleted={!!services?.data?.length}
-                />
+                  stripeCompleted={isStripeCompleted}
+                /> 
+
+                <GetStripeButton handleStripe={handleStripe} isLoading={isStripeLoading} />
 
                 <SpecialitiesList
                   keys={vendorKeyList}

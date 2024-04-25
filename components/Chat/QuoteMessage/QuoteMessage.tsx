@@ -83,27 +83,25 @@ export const QuoteMessage: React.FC<QuoteMessageProps> = ({
     });
   }, []);
 
-  const toggleAcceptHostQuoteModal = useCallback(() => {
-    // fetchPaymentSheetParams(
-    //   (quote?.price! * quote?.downpayment!) / 100,
-    //   quote?.vendorId!,
-    // );
-    if (isAcceptHostQuoteModalLoading) {
-      return;
-    }
-    setIsAcceptHostQuoteModalOpen(prevState => {
-      return !prevState;
-    });
+  const toggleAcceptHostQuoteModal = useCallback(async () => {
+    if (isAcceptHostQuoteModalLoading) return;
+    setIsAcceptHostQuoteModalOpen(prevState => !prevState);
   }, [isAcceptHostQuoteModalLoading]);
 
   const acceptHostQuote = useCallback(async () => {
     setIsAcceptHostQuoteModalLoading(true);
+    toggleAcceptHostQuoteModal();
+
+    await fetchPaymentSheetParams(
+      (quote?.price! * quote?.downpayment!) / 100,
+      quote?.vendorId!,
+    );
+    
     const response = await apis.quote.changeStatus(
       quote?.id!,
       QuoteStatusEnum.ACCEPTED_BY_HOST,
     );
-    setIsAcceptHostQuoteModalLoading(false);
-    toggleAcceptHostQuoteModal();
+
     if (!response.success) {
       toast.show({
         placement: 'top',
@@ -120,6 +118,7 @@ export const QuoteMessage: React.FC<QuoteMessageProps> = ({
         return newState;
       });
     }
+    setIsAcceptHostQuoteModalLoading(false);
   }, []);
 
   const denyHostQuote = useCallback(async () => {
@@ -192,7 +191,6 @@ export const QuoteMessage: React.FC<QuoteMessageProps> = ({
     );
   }
 
-  console.log('vendorId', vendorId);
 
   if (chatMessage.meta?.status === QuoteStatusEnum.ACCEPTED_BY_VENDOR) {
     return (
@@ -236,13 +234,13 @@ export const QuoteMessage: React.FC<QuoteMessageProps> = ({
         <ConfirmationModal
           isOpen={isDenyHostModalOpen}
           onClose={toggleDenyHostModal}
-          title="Are sure to denied this offer?"
+          title="Are you sure to deny this offer?"
           onAccept={denyHostQuote}
           isLoading={isDenyHostQuoteModalLoading}
         />
 
         <ConfirmationModal
-          title="Are sure to accept this offer?"
+          title="Are you sure to accept this offer?"
           isOpen={isAcceptHostQuoteModalOpen}
           onClose={toggleAcceptHostQuoteModal}
           onAccept={acceptHostQuote}

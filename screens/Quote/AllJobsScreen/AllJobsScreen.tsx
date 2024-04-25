@@ -32,12 +32,14 @@ const tabs = [
     statuses: [
       QuoteStatusEnum.ACCEPTED_BY_VENDOR,
       QuoteStatusEnum.PENDING,
-      QuoteStatusEnum.ACCEPTED_BY_HOST,
     ],
   },
   {
     id: 'accepted',
-    statuses: [QuoteStatusEnum.ACCEPTED],
+    statuses: [
+      QuoteStatusEnum.ACCEPTED, 
+      QuoteStatusEnum.ACCEPTED_BY_HOST,
+    ],
     label: 'Accepted',
   },
 ];

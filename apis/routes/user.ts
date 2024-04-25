@@ -9,6 +9,18 @@ interface AVATAR {
   uri: string;
 }
 
+interface ResponseType<T> {
+  success: boolean;
+  data: T
+}
+
+type ResponseOnboardingStart = {
+    object: string;
+    created: number;
+    expires_at: number;
+    url: string;
+}
+
 export const create = async (data: USER) => {
   const response = await API.postApi(`${Base}/`, data);
   return response;
@@ -63,12 +75,12 @@ export const UploadAvatar = async (data: AVATAR) => {
   }
 };
 
-export const onboardStart = async () => {
+export const onboardStart = async (): Promise<ResponseType<ResponseOnboardingStart>> => {
   const response = await API.getApi(`${Base}/onboardStart`);
   return response;
 };
 
-export const onboardEnd = async () => {
+export const onboardFinish = async () => {
   const response = await API.getApi(`${Base}/onboardFinish`);
   return response;
 };
@@ -77,6 +89,14 @@ export const payToVendor = async (params: {
   amount: number;
   vendorId: number;
 }) => {
-  const response = await API.postApi(`${Base}/pay`, params);
+  const response = await API.postApi(`${Base}/paymentIntent`, params);
   return response;
 };
+
+export const getVendorStripeStatus = async (): Promise<ResponseType<{
+        configured: boolean
+    }>> => 
+{
+    const response = await API.getApi(`${Base}/vendor/status`)
+    return response
+}

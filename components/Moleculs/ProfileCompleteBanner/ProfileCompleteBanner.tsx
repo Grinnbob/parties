@@ -9,25 +9,30 @@ type ProfileCompleteBannerProps = {
   businessDescriptionCompleted: boolean;
   servicesCompleted: boolean;
   albumCompleted: boolean;
+  stripeCompleted: boolean;
 };
 export const ProfileCompleteBanner: React.FC<ProfileCompleteBannerProps> = ({
   businessDescriptionCompleted,
   servicesCompleted,
   albumCompleted,
+  stripeCompleted
 }) => {
   const percent = useMemo(() => {
     let value = 0;
     if (businessDescriptionCompleted) {
-      value += 20;
+      value += 25;
     }
     if (albumCompleted) {
-      value += 40;
+      value += 25;
     }
     if (servicesCompleted) {
-      value += 40;
+      value += 25;
+    }
+    if (stripeCompleted) {
+      value += 25;
     }
     return value;
-  }, [businessDescriptionCompleted, albumCompleted, servicesCompleted]);
+  }, [businessDescriptionCompleted, albumCompleted, servicesCompleted, stripeCompleted]);
 
   const checksList = useMemo(() => {
     return [
@@ -37,8 +42,9 @@ export const ProfileCompleteBanner: React.FC<ProfileCompleteBannerProps> = ({
       },
       { text: "Add Media of your past work", success: albumCompleted },
       { text: "Add & Price your service", success: servicesCompleted },
+      { text: "Connect your Stripe account", success: stripeCompleted },
     ];
-  }, [servicesCompleted, albumCompleted, businessDescriptionCompleted]);
+  }, [servicesCompleted, albumCompleted, businessDescriptionCompleted, stripeCompleted]);
 
   return (
     <View style={styles.root}>

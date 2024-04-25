@@ -6,17 +6,12 @@ import {useToast} from 'native-base';
 export const usePayment = () => {
   const toast = useToast();
   const {initPaymentSheet, presentPaymentSheet} = useStripe();
-
-  const [paymentId, setPaymentId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const submitHandler = (amount: number, paymentId: string) => {};
   const initializePaymentSheet = async (
     paymentIntent: string,
     ephemeralId: string,
     customer: string,
-    amount: number,
-    paymentId: string,
   ) => {
     const {error} = await initPaymentSheet({
       merchantDisplayName: 'Example, Inc.',
@@ -31,57 +26,53 @@ export const usePayment = () => {
 
     if (!error) {
       const {error} = await presentPaymentSheet(); // you can't change the variable name (error)
-      console.log('Your order is confirmed///!', error);
-
       if (error?.code === 'Canceled' || error?.code === 'Failed') {
-        setIsLoading(false);
+        toast.show({
+          placement: 'top',
+          description: `${error}`,
+        });
       } else {
-        // alert(`Error code: ${error.code}`, error.message);
-        submitHandler(amount, paymentId);
+        return;
       }
+    } else {
+      toast.show({
+        placement: 'top',
+        description: `${error}`,
+      });
+      setIsLoading(false);
     }
   };
 
-  const fetchPaymentSheetParams = async (amount: number, vendorId: number) => {
+  const fetchPaymentSheetParams = async (amount: number, vendorId: number, 
+  ) => {
     const orderAmount = Number(amount);
+    setIsLoading(true);
 
     let data = {
       amount: orderAmount,
       vendorId,
     };
-    setIsLoading(true);
-    let response;
-    response = await payToVendor(data);
-    if (response.status === 200) {
-      console.log('response', response);
-      let resp = response.data;
+    let response = await payToVendor(data);
+    console.log('response', response);
 
-      const {paymentIntent, ephemeralKey, customer} = resp?.data;
-      const paymentID = paymentIntent?.client_secret; // may change for android
-      const ephemeralId = ephemeralKey?.secret; // will be changed for android
-
+    if (response.success) {
+      const {paymentIntent, ephemeralKey, customer} = response.data;
       if (paymentIntent) {
-        setPaymentId(paymentIntent.id);
-
-        initializePaymentSheet(
-          paymentId,
-          ephemeralId,
+        await initializePaymentSheet(
+          paymentIntent?.client_secret, // may change for android
+          ephemeralKey?.secret, // will be changed for android
           customer,
-          amount,
-          paymentIntent.id,
         );
-      } else {
-        console.log('payment id', paymentID);
-
-        submitHandler(amount, paymentID);
+        setIsLoading(false);
       }
+      
     } else {
       toast.show({
         placement: 'top',
         description: response.message,
       });
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
 
   return {
